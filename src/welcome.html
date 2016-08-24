@@ -1,0 +1,129 @@
+<html data-ng-app="KongDash" lang="en">
+<head><meta charset="UTF-8" />
+<meta name=viewport content="width=device-width, initial-scale=1"/>
+<title>KongDash</title>
+
+<link rel="stylesheet" type="text/css" href="css/roboto.css" />
+<link rel="stylesheet" type="text/css" href="css/material-icons.css" />
+<link rel="stylesheet" type="text/css" href="css/framework.css" />
+<link rel="stylesheet" type="text/css" href="css/dark-theme.css" />
+
+<style type="text/css">
+main { padding-top: 10%; overflow: hidden; }
+
+.icon { text-align: center;  }
+.icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
+.icon p { margin: 0 0 10px 0; padding: 0; }
+.icon p.caption { font-size: 3rem; text-transform: uppercase; text-shadow: 1px 1px #1A242D; }
+
+form.form { max-width: 400px; margin: 0 auto 0 auto;  }
+</style>
+
+<script type="text/javascript">
+if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+}
+
+var {ipcRenderer} = require('electron')
+var kongConfig = ipcRenderer.sendSync('get-kong-config', '')
+</script>
+
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-animate.js"></script>
+<script type="text/javascript" src="js/angular-toast.js"></script>
+</head>
+<body class="body">
+<main data-ng-controller="WelcomeController">
+    <div class="icon">
+        <img src="images/kongdash-icon.png" alt="KongDash" />
+        <p class="caption">KongDash</p>
+    </div>
+
+    <form action="#/" class="form hidden" id="configForm">
+        <div class="form__field">
+            <label class="field-label">Admin API URI</label>
+            <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
+        </div>
+
+        <div class="form__field">
+            <label class="field-label">Username</label>
+            <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
+        </div>
+
+        <div class="form__field">
+            <label class="field-label">Password</label>
+            <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
+        </div>
+
+        <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
+    </form>
+
+    <footer class="footer">
+        <span class="hpadding-20 pull-left">Desktop client for Kong Admin API</span>
+        <span class="hpadding-20 pull-right">Version 0.1.0</span>
+    </footer>
+</main>
+<script type="text/javascript">
+var app = angular.module('KongDash', ['ngToast']);
+
+app.config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.defaults.withCredentials = false;
+}])
+
+app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', function ($scope, $element, $http, toast) {
+    $scope.kongConfig = kongConfig, $scope.writeConfig = false;
+
+    var form = $element.find('form#configForm')
+
+    var connectHost = function () {
+        $http({
+            method: 'GET',
+            url: $scope.kongConfig.host
+        }).then(function (response) {
+            if ($scope.writeConfig) {
+                ipcRenderer.send('write-kong-config', $scope.kongConfig)
+
+                ipcRenderer.on('write-kong-config-success', (event, arg) => {
+                    $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
+
+                }).on('write-kong-config-error', (event, arg) => {
+                    if (form.hasClass('hidden')) form.fadeIn(400)
+                    toast.error(arg.message)
+                })
+            } else {
+                $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
+            }
+
+        }, function (response) {
+            if (form.hasClass('hidden')) form.fadeIn(400)
+
+            toast.error('Could not connect to ' + $scope.kongConfig.host)
+        })
+    }
+
+    form.on('submit', function () {
+        $scope.writeConfig = true
+        connectHost()
+
+        return false
+    })
+
+    var timeout = setInterval(function () {
+        $element.find(".icon").slideUp({ duration: 300 })
+
+        if ( typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host ) {
+            connectHost()
+            clearInterval(timeout)
+
+        } else {
+            form.fadeIn({ duration: 400, complete: function () { clearInterval(timeout) } })
+        }
+    }, 2000)
+}])
+</script>
+</body>
+</html>
