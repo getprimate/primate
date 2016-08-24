@@ -1,0 +1,70 @@
+<div class="panel panel-border success" id="panelAdd">
+<div class="panel__heading pointer">Add new API</div>
+
+<div class="panel__body">
+    <form class="form hidden" method="post" action="#">
+        <div class="row">
+            <div class="col md-4">
+                <input type="text" name="apiName" value="" data-ng-model="formInput.apiName" placeholder="API Name" />
+            </div>
+            <div class="col md-4">
+                <input type="text" name="requestHost" value="" data-ng-model="formInput.requestHost" placeholder="Request Host" />
+            </div>
+            <div class="col md-4">
+                <input type="text" name="requestPath" value="" data-ng-model="formInput.requestPath" placeholder="Request Path" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col md-12">
+                <input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col md-4">
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" /> Preserve Host</label>
+            </div>
+            <div class="col md-4">
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripRequestPath" name="stripRequestPath" /> Strip Request Path</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col md-12">
+                <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
+                <button class="btn success" type="submit" name="actionAdd" value="add">Add API</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+<div class="well">
+<div class="well__heading">List of APIs</div>
+<table id="apiTable" class="table" cellpadding="0" cellspacing="0">
+    <thead data-ng-if="apiList.length>0"><tr><th>Flags</th><th>Request Path</th><th>Upstream URL</th><th>Created</th><th>Actions</th></tr></thead>
+
+    <tbody>
+        <tr data-ng-repeat="api in apiList">
+            <td>
+            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve host" data-ng-if="api.preserve_host==true" class="material-icons success state-highlight">assignment_turned_in</i>
+            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve host" data-ng-if="api.preserve_host==false" class="material-icons default state-highlight">assignment_turned_in</i>
+            <i data-attribute="strip_request_path" data-api-id="{{api.id}}" title="Strip request path" data-ng-if="api.strip_request_path==true" class="material-icons success state-highlight">spellcheck</i>
+            <i data-attribute="strip_request_path" data-api-id="{{api.id}}" title="Strip request path" data-ng-if="api.strip_request_path==false" class="material-icons default state-highlight">spellcheck</i>
+            </td>
+
+            <td><a href="#/api/{{api.id}}">{{api.request_path || api.id}}</a></td>
+            <td>{{api.upstream_url}}</td>
+            <td>{{api.created_at | date}}</td>
+            <td>
+                <div class="action-group">
+                    <a href="#/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
+                    <i class="material-icons danger delete" data-target="API" data-url="/apis/{{api.id}}">delete_forever</i>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot data-ng-if="apiList.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
+</table>
+</div>

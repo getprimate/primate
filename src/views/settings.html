@@ -1,0 +1,46 @@
+<div class="container">
+<div class="row">
+    <div class="col md-6">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Kong Settings</div>
+    <div class="panel__body">
+        <form method="post" action="#/" id="formKongConfig" class="form">
+            <div class="form__field">
+            <label class="field-label">Host</label>
+            <div class="field-input">
+                <input data-ng-model="kongConfig.host" required="" type="text" placeholder="Eg: http://localhost:8001" />
+            </div>
+            </div>
+
+            <div class="form__field">
+            <label class="field-label">Username</label>
+            <div class="field-input">
+                <input data-ng-model="kongConfig.username" type="text" placeholder="Optional" />
+            </div>
+            </div>
+
+            <div class="form__field">
+            <label class="field-label">Host</label>
+            <div class="field-input">
+                <input data-ng-model="kongConfig.username" type="password" placeholder="Optional" />
+            </div>
+            </div>
+
+            <div class="form__field">
+                <a href="#/" class="btn default">Cancel</a>
+                <button type="submit" class="btn info">Update</button>
+            </div>
+        </form>
+    </div>
+    </div>
+    </div>
+<div class="col md-6">
+    <div class="panel panel-border info">
+        <div class="panel__heading">App Configuration</div>
+        <div class="panel__body">
+            <dl class="horizontal"><dt>Version</dt> <dd>0.1.0</dd></dl>
+        </div>
+    </div>
+</div>
+</div>
+</div>

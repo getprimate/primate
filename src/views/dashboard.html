@@ -1,0 +1,56 @@
+<div class="container">
+
+<div class="row">
+<div class="col md-5">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Gateway</div>
+    <div class="panel__body">
+        <dl class="horizontal"><dt>Host Name</dt><dd>: {{kongStat.hostname}}</dd></dl>
+        <dl class="horizontal"><dt>Tag Line</dt><dd>: {{kongStat.tagline}}</dd></dl>
+        <dl class="horizontal"><dt>Address</dt><dd>: {{kongStat.configuration.dns_resolver.address || 'NA'}}</dd></dl>
+        <dl class="horizontal"><dt>Gateway Version</dt><dd>: {{kongStat.version}}</dd></dl>
+        <dl class="horizontal"><dt>Lua Version </dt><dd>: {{kongStat.lua_version}}</dd></dl>
+    </div>
+    </div>
+</div>
+
+<div class="col md-3">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Timers</div>
+    <div class="panel__body">
+        <dl class="horizontal"><dt>Running</dt><dd>: {{kongStat.timers.running}}</dd></dl>
+        <dl class="horizontal"><dt>Pending</dt><dd>: {{kongStat.timers.pending}}</dd></dl>
+    </div>
+    </div>
+</div>
+
+<div class="col md-4">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Cluster</div>
+    <div class="panel__body">
+        <dl class="horizontal"><dt>Listen</dt><dd>: {{kongStat.configuration.cluster_listen}}</dd></dl>
+        <dl class="horizontal"><dt>Profile</dt><dd>: {{kongStat.configuration.cluster.profile}}</dd></dl>
+        <dl class="horizontal"><dt>TTL</dt><dd>: {{kongStat.configuration.cluster.ttl_on_failure}}</dd></dl>
+    </div>
+    </div>
+</div>
+</div>
+
+<div class="row">
+<div class="col md-5">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Database</div>
+    <div class="panel__body">
+        <dl class="horizontal"><dt>DBMS</dt><dd>: {{kongStat.configuration.database}}</dd></dl>
+        <dl class="horizontal"><dt>Host</dt><dd>: {{kongStat.configuration[database].host}}</dd></dl>
+        <dl class="horizontal"><dt>Database</dt><dd>: {{kongStat.configuration[database].database}}</dd></dl>
+        <dl class="horizontal"><dt>User</dt><dd>: {{kongStat.configuration[database].user}}</dd></dl>
+        <dl class="horizontal"><dt>Port</dt><dd>: {{kongStat.configuration[database].port}}</dd></dl>
+    </div>
+    </div>
+</div>
+
+<div class="col-md-7"></div>
+</div>
+
+</div>

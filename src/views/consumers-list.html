@@ -1,0 +1,42 @@
+<div class="panel panel-border success" id="panelAdd">
+    <div class="panel__heading pointer">New Consumer</div>
+
+    <div class="panel__body">
+        <form class="form hidden" method="post" action="#">
+            <div class="row">
+            <div class="col md-6"><input type="text" name="userName" value="" data-ng-model="formInput.userName" placeholder="Username" /></div>
+            <div class="col md-6"><input type="text" name="customId" value="" data-ng-model="formInput.customId" placeholder="Custom Id" /></div>
+            </div>
+
+            <div class="row">
+            <div class="col md-12">
+                <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
+                <button class="btn success" type="submit" name="actionAdd" value="add">Add Consumer</button>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="well">
+<div class="well__heading">List of consumers</div>
+<table id="consumersTable" class="table data-table" cellpadding="0" cellspacing="0">
+    <thead data-ng-if="consumersList.length>0"><tr><th>Username</th><th>Custom Id</th><th>Created</th><th>Actions</th></tr></thead>
+
+    <tbody>
+    <tr data-ng-repeat="consumer in consumersList">
+        <td><a href="#/consumers/{{consumer.id}}"><b>{{consumer.username}}</b></a></td>
+        <td>{{consumer.custom_id}}</td>
+        <td>{{consumer.created_at | date}}</td>
+        <td>
+            <div class="action-group">
+                <a title="Edit Consumer" href="#/consumers/{{consumer.id}}"><i class="material-icons warning">edit</i></a>
+                <a title="Enabled Plugins" href="#/consumers/{{consumer.id}}/plugins"><i class="material-icons info">extension</i></a>
+                <i title="Delete Consumer" class="material-icons danger delete" data-target="consumer" data-url="/consumers/{{consumer.id}}">delete_forever</i>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot data-ng-if="consumersList.length<=0"><tr><th>Consumer list is empty.</th></tr></tfoot>
+</table>
+</div>

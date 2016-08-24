@@ -1,0 +1,62 @@
+<div class="container">
+<form id="editPlugins" class="form" method="post" action="#">
+    <div class="panel panel-border info"><div class="panel__heading">Plugin Configuration</div>
+    <div class="panel__body">
+    <div class="row">
+    <div class="col md-5">
+        <div class="form__field">
+            <label class="field-label">Plugin Name</label>
+            <div class="field-input">
+            <select data-ng-disabled="{{pluginId!=null}}" class="stretch" name="name" data-ng-model="formInput.name">
+                <option data-ng-repeat="plugin in enabledPlugins" value="{{plugin}}">{{plugin}}</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="form__field">
+        <label class="field-label">Consumer</label>
+        <div class="field-input">
+            <select data-ng-disabled="{{pluginId!=null}}" class="stretch" name="consumer" data-ng-model="formInput.consumer_id">
+                <option value="">All Consumers</option>
+                <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.username}}</option>
+            </select>
+        </div>
+        </div>
+
+        <div class="form__field">
+            <a href="#/api/{{apiId}}" class="btn default cancel">Cancel</a>
+            <button class="btn info" type="submit">{{pluginId==null ? 'Add Plugin' : 'Update'}}</button>
+        </div>
+    </div><!-- .col.md-5 -->
+
+    <div class="col md-7">
+        <div data-ng-repeat="(fieldName, fieldParams) in schemaFields" data-ng-if="fieldName.charAt(0)!='_'" data-ng-switch data-on="fieldParams.type">
+            <div class="form__field" data-ng-switch-when="boolean">
+                <label class="checkbox info"><input data-ng-model="formInput.config[fieldName]" type="checkbox" value="">{{fieldName | pgname}}</label>
+            </div>
+
+            <div class="form__field" data-ng-switch-when="array">
+                <label class="field-label">{{fieldName | pgname}}</label>
+                <div data-ng-if="fieldParams.enum" class="input-control checkbox-list">
+                    <label class="checkbox default" data-ng-repeat="enum in fieldParams.enum">
+                        <input data-ng-model="checkBoxes[fieldName][enum]" type="checkbox" value="{{enum}}">{{enum}}</label>
+                </div>
+
+                <div data-ng-if="!fieldParams.enum" class="field-input">
+                    <input data-ng-model="formInput.config[fieldName]" type="text" value="{{fieldParams.default | splice}}" />
+                </div>
+            </div>
+
+            <div class="form__field" data-ng-switch-default>
+                <label class="field-label">{{fieldName | pgname}}</label>
+                <div class="field-input">
+                    <input data-ng-model="formInput.config[fieldName]" type="text" value="" placeholder="">
+                </div>
+            </div>
+        </div>
+    </div><!-- .col.md-7 -->
+    </div><!-- .row -->
+    </div><!-- .panel__body -->
+    </div><!-- .panel.panel-border.info -->
+</form>
+</div>
