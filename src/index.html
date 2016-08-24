@@ -1,0 +1,110 @@
+<html data-ng-app="KongDash" lang="en">
+<head><meta charset="UTF-8" />
+<meta name=viewport content="width=device-width, initial-scale=1"/>
+<title>KongDash</title>
+
+<link rel="stylesheet" type="text/css" href="css/roboto.css" />
+<link rel="stylesheet" type="text/css" href="css/material-icons.css" />
+<link rel="stylesheet" type="text/css" href="css/framework.css" />
+<link rel="stylesheet" type="text/css" href="css/dark-theme.css" />
+
+<script type="text/javascript">
+if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+}
+</script>
+
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-animate.js"></script>
+<script type="text/javascript" src="js/angular-toast.js"></script>
+
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="controllers/header.js"></script>
+<script type="text/javascript" src="controllers/footer.js"></script>
+<script type="text/javascript" src="controllers/dashboard.js"></script>
+<script type="text/javascript" src="controllers/api-list.js"></script>
+<script type="text/javascript" src="controllers/api-edit.js"></script>
+<script type="text/javascript" src="controllers/plugin-edit.js"></script>
+<script type="text/javascript" src="controllers/consumer-list.js"></script>
+<script type="text/javascript" src="controllers/consumer-edit.js"></script>
+<script type="text/javascript" src="controllers/plugin-list.js"></script>
+<script type="text/javascript" src="controllers/settings.js"></script>
+</head>
+<body class="body">
+
+<div class="app-layout">
+<aside class="drawer">
+    <div class="icon">
+
+        <div>KongDash</div>
+    </div>
+    <nav class="navigation">
+        <a class="navigation__link active" data-ng-href="#/">
+            <p><i class="material-icons">dashboard</i></p> <p>Dashboard</p>
+        </a>
+
+        <a class="navigation__link" data-ng-href="#/api">
+            <p><i class="material-icons">settings_input_component</i></p> <p>APIs</p>
+        </a>
+        <a class="navigation__link" data-ng-href="#/consumers">
+            <p><i class="material-icons">person_pin</i></p> <p>Consumers</p>
+        </a>
+        <a class="navigation__link" data-ng-href="#/plugins">
+            <p><i class="material-icons">extension</i></p> <p>Plugins</p>
+        </a>
+        <hr />
+
+        <a class="navigation__link" data-ng-href="#/settings">
+            <p><i class="material-icons">build</i></p> <p>Settings</p>
+        </a>
+    </nav><!-- .navigation -->
+</aside>
+
+<main class="content">
+    <header class="content__header" data-ng-controller="HeaderController">
+        <span class="navigate" data-ng-if="viewFactory.prevUrl">
+            <a href="{{viewFactory.prevUrl}}" title="Previous"><i class="material-icons">keyboard_arrow_left</i></a>
+        </span>
+        <span class="title">{{viewFactory.title}}</span>
+        <div class="actions">
+            <button data-ng-if="viewFactory.deleteAction" data-target="{{viewFactory.deleteAction.target}}" data-url="{{viewFactory.deleteAction.url}}" data-redirect="{{viewFactory.deleteAction.redirect || viewFactory.prevUrl}}" type="button" class="btn danger delete">Delete</button>
+        </div>
+    </header>
+    <section class="content__wrapper {{animation || 'fade'}}" data-ng-view="">Temp</section>
+    <footer class="footer" data-ng-controller="FooterController">
+        <span class="pull-right hpadding-20">{{viewFactory.host}}</span>
+    </footer>
+</main>
+</div>
+
+<script type="text/javascript">
+(function (content) {
+    content.on('click', '.delete', function (event) {
+        var target = angular.element(event.target)
+
+        if (confirm ('Delete this ' + target.data('target') + '?')) {
+            var $http = angular.element('html').injector().get('$http')
+            var toast = angular.element('body').injector().get('toast')
+
+            $http({
+                method: 'DELETE',
+                url: buildUrl(target.data('url'))
+            }).then( () => {
+                toast.success(target.data('target') + ' deleted')
+
+                if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200)
+                else window.location.href = target.data('redirect')
+
+            }, () => {
+                toast.error('Could not delete ' + target.data('target'))
+            })
+        }
+    })
+})(angular.element('main.content'))
+</script>
+</body>
+</html>
