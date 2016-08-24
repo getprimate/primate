@@ -1,0 +1,5 @@
+.idea/
+node_modules/
+*.log
+*.xcf
+TODO.txt
