@@ -1,5 +1,5 @@
-app.controller('PluginListController', ['$scope', '$routeParams', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, $httpParamSerializerJQLike, viewFactory, toast) {
+app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
+    function ($scope, $routeParams, $http, viewFactory, toast) {
 
     viewFactory.title = "Plugin List";
     viewFactory.deleteAction = null;
@@ -38,8 +38,8 @@ app.controller('PluginListController', ['$scope', '$routeParams', '$http', '$htt
         $http({
             method: 'PATCH',
             url: buildUrl('/plugins/' + checkbox.val()),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function () {
             toast.success('Plugin ' + (payload.enabled ? 'enabled' : 'disabled'));
 

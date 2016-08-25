@@ -1,20 +1,7 @@
-app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, $httpParamSerializerJQLike, viewFactory, toast) {
-
-    $scope.animation = 'fade';
+app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
+    function ($scope, $routeParams, $http, viewFactory, toast) {
 
     var action = 'create';
-
-    $scope.apiId = $routeParams.apiId || null;
-    $scope.pluginId = $routeParams.pluginId || null;
-
-    $scope.actionTitle = ($scope.pluginId == null) ? 'Apply New Plugin' : 'Edit Plugin';
-
-    $scope.formInput = { config:{} };
-    $scope.checkBoxes = {};
-    $scope.flexTableObj = {};
-
-    viewFactory.deleteAction = null;
 
     $scope.fetchSchema = function (plugin, callback) {
         $http({
@@ -68,8 +55,6 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$htt
         }
     };
 
-    var pluginForm = angular.element('form#editPlugins');
-
     $http({
         method: 'GET',
         url: buildUrl('/plugins/enabled')
@@ -90,60 +75,24 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$htt
         toast.warning('Could not fetch list of consumers');
     });
 
-    if ($scope.pluginId == null) {
-        pluginForm.on('change', 'select[name="name"]', function (event) {
-            $scope.formInput = { name: event.target.value, config:{} };
-            $scope.fetchSchema(event.target.value);
-        });
+    $scope.apiId = $routeParams.apiId;
+    $scope.formInput = { config:{} };
+    $scope.checkBoxes = {};
+    $scope.flexTableObj = {};
 
-        viewFactory.prevUrl = '#/api/' + $scope.apiId;
-        viewFactory.title = 'Add New Plugin';
-    } else {
-        action = 'update';
-
-        $http({
-            method: 'GET',
-            url: buildUrl('/plugins/' + $scope.pluginId)
-        }).then(function (response) {
-            $scope.apiId = response.data.api_id;
-
-            $scope.formInput.consumer_id = response.data.consumer_id || null;
-            $scope.formInput.name   = response.data.name;
-            $scope.formInput.config = response.data.config;
-
-            $scope.fetchSchema(response.data.name, function () {
-                angular.forEach($scope.checkBoxes, function (value, key) {
-                    var enumList = response.data.config[key];
-
-                    for (i=0; i<enumList.length; i++) {
-                        $scope.checkBoxes[key][enumList[i]] = true
-                    }
-                })
-            });
-
-            viewFactory.prevUrl = '#/api/' + $scope.apiId;
-            viewFactory.title = 'Edit ' + response.data.name + ' Plugin'
-
-        }, function () {
-            toast.error('Could not fetch plugin details')
-        })
-    }
+    var pluginForm = angular.element('form#editPlugins');
 
     pluginForm.on('submit', function (event) {
         event.preventDefault();
 
-        var valueArray;
-
         angular.forEach($scope.checkBoxes, function (value, key) {
-            valueArray = [];
+            $scope.formInput.config[key] = [];
 
             if (typeof value != 'object') return;
 
             angular.forEach(value, function (flag, eName) {
-                if (flag === true) valueArray.push(eName)
+                if (flag === true) $scope.formInput.config[key].push(eName)
             });
-
-            $scope.formInput.config[key] = valueArray.join(',')
         });
 
         if ( $scope.pluginSchema.no_consumer ) {
@@ -158,8 +107,8 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$htt
         var config = {
             method: '',
             url: '',
-            data: $httpParamSerializerJQLike($scope.formInput),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: $scope.formInput,
+            headers: {'Content-Type': 'application/json'}
         };
 
         if (action === 'create') {
@@ -177,7 +126,7 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$htt
 
         }, function (response) {
             toast.error(response.data.message || JSON.stringify(response.data));
-        })
+        });
     }).on('click', 'button.add-flex-table', function (event) {
         var parent = angular.element(event.target).parent('div');
         var objName = parent.children('input[type="text"]').val();
@@ -185,5 +134,50 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', '$htt
         if (!objName) return;
 
         parent.append(angular.element('<div></div>', { 'data-ng-include': "'views/plugin-flexible-table.html'" }));
-    })
+    });
+
+    if (typeof $routeParams.pluginId === 'string') {
+        $scope.pluginId = $routeParams.pluginId;
+        action = 'update';
+
+        $http({
+            method: 'GET',
+            url: buildUrl('/plugins/' + $scope.pluginId)
+        }).then(function (response) {
+            $scope.apiId = response.data.api_id;
+
+            $scope.fetchSchema(response.data.name, function () {
+                $scope.formInput.consumer_id = response.data.consumer_id || null;
+                $scope.formInput.name = response.data.name;
+                $scope.formInput.config = response.data.config;
+
+                angular.forEach($scope.checkBoxes, function (value, key) {
+                    var enumList = response.data.config[key];
+
+                    for (i=0; i<enumList.length; i++) {
+                        $scope.checkBoxes[key][enumList[i]] = true
+                    }
+                })
+            });
+
+            viewFactory.prevUrl = '#/api/' + $scope.apiId;
+            viewFactory.title = 'Edit ' + response.data.name + ' Plugin';
+            viewFactory.deleteAction = {target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId};
+
+        }, function () {
+            toast.error('Could not fetch plugin details');
+        })
+
+    } else {
+        action = 'create';
+
+        viewFactory.prevUrl = '#/api/' + $scope.apiId;
+        viewFactory.title = 'Add New Plugin';
+        viewFactory.deleteAction = null;
+
+        pluginForm.on('change', 'select[name="name"]', function (event) {
+            $scope.formInput = { name: event.target.value, config:{} };
+            $scope.fetchSchema(event.target.value);
+        });
+    }
 }]);

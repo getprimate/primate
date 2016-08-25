@@ -1,5 +1,5 @@
-app.controller('ApiListController', ['$scope', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $http, $httpParamSerializerJQLike, viewFactory, toast) {
+app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
+    function ($scope, $http, viewFactory, toast) {
 
     viewFactory.title = 'API List';
     viewFactory.prevUrl = viewFactory.deleteAction = null;
@@ -45,8 +45,8 @@ app.controller('ApiListController', ['$scope', '$http', '$httpParamSerializerJQL
         $http({
             method: 'PATCH',
             url: buildUrl('/apis/' + icon.data('api-id')),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function () {
             if ( payload[attribute] == true) {
                 icon.removeClass('default').addClass('success');
@@ -108,8 +108,8 @@ app.controller('ApiListController', ['$scope', '$http', '$httpParamSerializerJQL
         $http({
             method: 'POST',
             url: buildUrl('/apis/'),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function (response) {
             $scope.apiList.push(response.data);
 

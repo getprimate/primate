@@ -1,5 +1,5 @@
-app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, $httpParamSerializerJQLike, viewFactory, toast) {
+app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
+    function ($scope, $routeParams, $http, viewFactory, toast) {
 
     $scope.consumerId = $routeParams.consumerId;
     $scope.formInput = {};
@@ -68,8 +68,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', '$h
         $http({
             method: 'POST',
             url: buildUrl('/consumers/' + $scope.consumerId + '/' + authName),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function (response) {
             $scope.authMethods[dataModel].push(response.data);
             toast.success('Authentication saved');

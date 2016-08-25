@@ -1,5 +1,5 @@
-app.controller('ConsumerListController', ['$scope', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $http, $httpParamSerializerJQLike, viewFactory, toast) {
+app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toast',
+    function ($scope, $http, viewFactory, toast) {
 
     $scope.formInput = {
         userName: '',
@@ -58,8 +58,8 @@ app.controller('ConsumerListController', ['$scope', '$http', '$httpParamSerializ
         $http({
             method: 'POST',
             url: buildUrl('/consumers/'),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function(response) {
             $scope.consumerList.push(response.data);
             toast.success('Added new consumer');

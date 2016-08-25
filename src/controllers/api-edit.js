@@ -1,5 +1,5 @@
-app.controller('ApiEditController', ['$scope', '$routeParams', '$http', '$httpParamSerializerJQLike', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, $httpParamSerializerJQLike, viewFactory, toast) {
+app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
+    function ($scope, $routeParams, $http, viewFactory, toast) {
 
     $scope.apiId = $routeParams.apiId;
     $scope.formInput = {};
@@ -84,8 +84,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', '$httpPa
         $http({
             method: 'PATCH',
             url: buildUrl('/apis/' + $scope.apiId),
-            data: $httpParamSerializerJQLike(payload),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: payload,
+            headers: {'Content-Type': 'application/json'}
         }).then(function () {
             toast.success('API details updated');
 
@@ -105,8 +105,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', '$httpPa
         $http({
             method: 'PATCH',
             url: buildUrl('/apis/' + $scope.apiId + '/plugins/' + event.target.value),
-            data: $httpParamSerializerJQLike({ enabled: (state == 'enabled') }),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            data: { enabled: (state == 'enabled') },
+            headers: {'Content-Type': 'application/json'}
         }).then(function () {
             toast.success('Plugin ' + event.target.dataset.name + ' ' + state)
 

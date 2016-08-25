@@ -26,7 +26,7 @@ function startMainWindow () {
     })
     mainWindow.loadURL('file://' + absPath + '/src/welcome.html')
 
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', () => {
         mainWindow = null
