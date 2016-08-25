@@ -1,0 +1,34 @@
+<p class="subheading border-bottom-dashed">{{fieldName | pgname}}</p>
+<div data-ng-repeat="(subFieldName, subFieldParams) in fieldParams.schema.fields" data-ng-if="subFieldName.charAt(0)!='_'" data-ng-switch data-on="subFieldParams.type">
+    <div class="form__field" data-ng-switch-when="undefined">
+        <label class="field-label">{{subFieldName | pgname}}</label>
+        <div class="field-input" data-ng-if="subFieldParams.enum">
+            <select class="stretch" data-ng-model="formInput.config[fieldName][subFieldName]">
+                <option data-ng-repeat="option in subFieldParams.enum" value="{{option}}">{{option}}</option>
+            </select>
+        </div><!-- If enum is provided -->
+    </div>
+
+    <div class="form__field" data-ng-switch-when="boolean">
+        <label class="checkbox info"><input data-ng-model="formInput.config[fieldName][subFieldName]" type="checkbox" value="">{{subFieldName | pgname}}</label>
+    </div>
+
+    <div class="form__field" data-ng-switch-when="array">
+        <label class="field-label">{{subFieldName | pgname}}</label>
+        <div data-ng-if="subFieldParams.enum" class="input-control checkbox-list">
+            <label class="checkbox default" data-ng-repeat="enum in subFieldParams.enum">
+                <input data-ng-model="checkBoxes[fieldName][subFieldName][enum]" type="checkbox" value="{{enum}}">{{enum}}</label>
+        </div>
+
+        <div data-ng-if="!subFieldParams.enum" class="field-input">
+            <input data-ng-model="formInput.config[fieldName][subFieldName]" type="text" value="{{subFieldParams.default | splice}}" />
+        </div>
+    </div>
+
+    <div class="form__field" data-ng-switch-default>
+        <label class="field-label">{{subFieldName | pgname}}</label>
+        <div class="field-input">
+            <input data-ng-model="formInput.config[fieldName][subFieldName]" type="text" value="{{subFieldParams.default || ''}}" placeholder="" />
+        </div>
+    </div>
+</div>
