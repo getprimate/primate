@@ -75,6 +75,8 @@
 <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this API.</th></tr></tfoot>
 </table>
 </div>
+
+<div data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
 </div>
 </div>
 </div>

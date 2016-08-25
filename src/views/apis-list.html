@@ -68,3 +68,5 @@
     <tfoot data-ng-if="apiList.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
 </table>
 </div>
+
+<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchApiList(nextUrl)">Load Next</button></div>

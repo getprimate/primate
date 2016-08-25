@@ -13,8 +13,8 @@
             </div>
         </div>
 
-        <div class="form__field">
-        <label class="field-label">Consumer</label>
+        <div class="form__field" data-ng-if="!pluginSchema.no_consumer">
+        <label class="field-label">Apply to</label>
         <div class="field-input">
             <select data-ng-disabled="{{pluginId!=null}}" class="stretch" name="consumer" data-ng-model="formInput.consumer_id">
                 <option value="">All Consumers</option>
@@ -30,7 +30,16 @@
     </div><!-- .col.md-5 -->
 
     <div class="col md-7">
-        <div data-ng-repeat="(fieldName, fieldParams) in schemaFields" data-ng-if="fieldName.charAt(0)!='_'" data-ng-switch data-on="fieldParams.type">
+        <div data-ng-repeat="(fieldName, fieldParams) in pluginSchema.fields" data-ng-if="fieldName.charAt(0)!='_'" data-ng-switch data-on="fieldParams.type">
+            <div class="form__field" data-ng-switch-when="undefined">
+                <label class="field-label">{{fieldName | pgname}}</label>
+                <div class="field-input" data-ng-if="fieldParams.enum">
+                    <select class="stretch" data-ng-model="formInput.config[fieldName]">
+                        <option data-ng-repeat="option in fieldParams.enum" value="{{option}}">{{option}}</option>
+                    </select>
+                </div><!-- If enum is provided -->
+            </div>
+
             <div class="form__field" data-ng-switch-when="boolean">
                 <label class="checkbox info"><input data-ng-model="formInput.config[fieldName]" type="checkbox" value="">{{fieldName | pgname}}</label>
             </div>
@@ -47,10 +56,24 @@
                 </div>
             </div>
 
+            <div data-ng-switch-when="table">
+                <div data-ng-if="!fieldParams.schema.flexible" data-ng-include="'views/plugin-static-table.html'"></div>
+                <div data-ng-if="fieldParams.schema.flexible">
+                    <div data-ng-repeat="(customFieldName, customFieldParams) in formInput.config[fieldName] track by $index" class="flex-table-container">
+                        <div data-ng-include="'views/plugin-flexible-table.html'"></div>
+                    </div>
+                    <div class="form__field">
+                        <div class="field-input input-group-button">
+                        <input data-ng-model="flexTableObj[fieldName]" type="text" value="" placeholder="{{fieldName | pgname}} object name" /><button type="button" class="btn info add-flex-table" data-ng-click="newCustomForm(fieldName, fieldParams.schema.fields)">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="form__field" data-ng-switch-default>
                 <label class="field-label">{{fieldName | pgname}}</label>
                 <div class="field-input">
-                    <input data-ng-model="formInput.config[fieldName]" type="text" value="" placeholder="">
+                    <input data-ng-model="formInput.config[fieldName]" type="text" value="{{fieldParams.default || ''}}" placeholder="" />
                 </div>
             </div>
         </div>

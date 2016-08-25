@@ -1,10 +1,10 @@
 <div class="well">
 <div class="well__heading">List of plugins</div>
 <table id="pluginsTable" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead data-ng-if="pluginsList.length>0"><tr><th>Status</th><th>Name</th><th>API id</th><th>Consumer</th><th>Created</th><th>Actions</th></tr></thead>
+    <thead data-ng-if="pluginList.length>0"><tr><th>Status</th><th>Name</th><th>API id</th><th>Consumer</th><th>Created</th><th>Actions</th></tr></thead>
 
     <tbody>
-        <tr data-ng-repeat="plugin in pluginsList">
+        <tr data-ng-repeat="plugin in pluginList">
             <td><label class="checkbox success">
                 <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
             </label></td>
@@ -21,6 +21,8 @@
             </td>
         </tr>
     </tbody>
-    <tfoot data-ng-if="pluginsList.length<=0"><tr><th>Plugin list is empty.</th></tr></tfoot>
+    <tfoot data-ng-if="pluginList.length<=0"><tr><th>Plugin list is empty.</th></tr></tfoot>
 </table>
 </div>
+
+<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextUrl)">Load Next</button></div>
