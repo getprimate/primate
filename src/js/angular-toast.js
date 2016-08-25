@@ -1,11 +1,11 @@
-(function (window, angular, undefined) { 'use strict'
+(function (window, angular, undefined) { 'use strict';
 
     if (typeof angular == 'undefined') {
-        return
+        return;
     }
 
     var displayMessage = function (message) {
-        var body = angular.element('body'), status
+        var body = angular.element('body'), status;
 
         if (body.children('.notification').length > 0)
             body.children('.notification').remove();
@@ -36,7 +36,7 @@
 
         body.append(div);
         var interval = setInterval(function () { div.fadeOut({ duration: 1000, complete: function () { clearInterval(interval); } }) }, 4000);
-    }
+    };
 
     angular.module('ngToast', [])
         .provider('toast', [function () {
@@ -49,5 +49,5 @@
                     success: function (message) { displayMessage({ type: 'success', text: message }) }
                 }
             }]
-        }])
-})(window, window.angular)
+        }]);
+})(window, window.angular);
