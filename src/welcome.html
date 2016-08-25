@@ -15,6 +15,7 @@ main { padding-top: 10%; overflow: hidden; }
 .icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
 .icon p { margin: 0 0 10px 0; padding: 0; }
 .icon p.caption { font-size: 2.5rem; text-shadow: 1px 1px #1A242D; font-weight: 500; }
+.icon .description { font-size: 1rem; font-weight: 400; color: #B5BCCE; text-shadow: 1px 1px #1A242D; }
 
 form.form { max-width: 400px; margin: 0 auto 0 auto;  }
 </style>
@@ -32,12 +33,14 @@ if (typeof module === 'object') {
 <script type="text/javascript" src="js/angular-route.min.js"></script>
 <script type="text/javascript" src="js/angular-animate.js"></script>
 <script type="text/javascript" src="js/angular-toast.js"></script>
+<script type="text/javascript" src="js/angular-base64.min.js"></script>
 </head>
 <body class="body">
 <main data-ng-controller="WelcomeController">
     <div class="icon">
         <img src="images/icon-236x236.png" alt="KongDash" />
         <p class="caption">KongDash</p>
+        <p class="description">Dashboard for Kong Admin API</p>
     </div>
 
     <form action="#/" class="form hidden" id="configForm">
@@ -68,13 +71,20 @@ if (typeof module === 'object') {
 var {ipcRenderer} = require('electron');
 var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
 
-var app = angular.module('KongDash', ['ngToast']);
+var app = angular.module('KongDash', ['ngToast', 'base64']);
 
-app.config(['$httpProvider', function ($httpProvider) {
-    $httpProvider.defaults.withCredentials = false;
+app.config(['$httpProvider', '$base64', function ($httpProvider, $base64) {
+    if (typeof kongConfig.username === 'string' && kongConfig.username) {
+        $httpProvider.defaults.withCredentials = true;
+        $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(kongConfig.username + ':' + (kongConfig.password || ''));
+
+    } else {
+        $httpProvider.defaults.withCredentials = false;
+    }
 }]);
 
 app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', function ($scope, $element, $http, toast) {
+
     $scope.kongConfig = kongConfig;
     $scope.writeConfig = false;
 

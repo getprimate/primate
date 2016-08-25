@@ -5,10 +5,17 @@ var buildUrl = function (url) {
     return (kongConfig.host) + url;
 };
 
-var app = angular.module('KongDash', ['ngRoute', 'ngAnimate', 'ngToast']);
+var app = angular.module('KongDash', ['ngRoute', 'ngAnimate', 'ngToast', 'base64']);
 
-app.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
-    $httpProvider.defaults.withCredentials = false;
+app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvider, $httpProvider, $base64) {
+
+    if (typeof kongConfig.username === 'string' && kongConfig.username) {
+        $httpProvider.defaults.withCredentials = true;
+        $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(kongConfig.username + ':' + (kongConfig.password || ''));
+
+    } else {
+        $httpProvider.defaults.withCredentials = false;
+    }
 
     $routeProvider
         .when('/', {

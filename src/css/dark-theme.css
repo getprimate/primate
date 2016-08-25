@@ -49,8 +49,7 @@ table.table td > a { color: #64bfe0; font-weight: 500; }
 
 input[type=text],
 input[type=number],
-input[type=password] {
-    padding: 8px; background-color: #394C57; border: 2px solid #4B5D67; border-radius: 4px; color: #EFEFEF; font-weight: 600; }
+input[type=password] { background-color: #394C57; border-color: #4B5D67; color: #EFEFEF; }
 
     input[type=text]:focus,
     input[type=number]:focus,
@@ -74,6 +73,8 @@ select option { color: #A7C5D0; background: #305064; border: 1px solid #AFAFAF; 
 .panel .panel__heading { background-color: #2F3E47; color: rgba(255, 255, 255, 0.9); }
 
 .border-solid { border: 1px solid #49626e; }
+
+.border-bottom-dashed { border-bottom: 1px dashed #49626e }
 
 div.input-control { background-color: #394C57; border-color: #4B5D67 !important; }
 
