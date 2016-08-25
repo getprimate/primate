@@ -6,8 +6,26 @@ app.controller('ConsumerListController', ['$scope', '$http', '$httpParamSerializ
         customId: ''
     };
 
-    viewFactory.title = 'Consumer List'
-    viewFactory.prevUrl = viewFactory.deleteAction = null
+    $scope.consumerList = [];
+
+    $scope.fetchConsumerList = function (url) {
+        $http({
+            method: 'GET',
+            url: url
+        }).then(function (response) {
+            $scope.nextUrl = response.data.next || '';
+
+            for (var i=0; i<response.data.data.length; i++ ) {
+                $scope.consumerList.push(response.data.data[i]);
+            }
+
+        }, function () {
+            toast.error('Could not load list of consumers');
+        });
+    };
+
+    viewFactory.title = 'Consumer List';
+    viewFactory.prevUrl = viewFactory.deleteAction = null;
 
     var panelAdd = angular.element('div#panelAdd');
     var consumerForm = panelAdd.children('div.panel__body').children('form');
@@ -42,11 +60,11 @@ app.controller('ConsumerListController', ['$scope', '$http', '$httpParamSerializ
             url: buildUrl('/consumers/'),
             data: $httpParamSerializerJQLike(payload),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then((response) => {
-            $scope.consumersList.push(response.data);
+        }).then(function(response) {
+            $scope.consumerList.push(response.data);
             toast.success('Added new consumer');
 
-        }, (response) => {
+        }, function (response) {
             if (response.status == 401) toast.error('Duplicate value for one of the consumer properties');
             else toast.error('Could not add new consumer');
         });
@@ -58,13 +76,5 @@ app.controller('ConsumerListController', ['$scope', '$http', '$httpParamSerializ
         consumerForm.slideUp(300);
     });
 
-    $http({
-        method: 'GET',
-        url: buildUrl('/consumers')
-    }).then((response) => {
-        $scope.consumersList = response.data.data;
-
-    }, () => {
-        toast.error('Could not load list of consumers');
-    });
+    $scope.fetchConsumerList(buildUrl('/consumers'))
 }]);
