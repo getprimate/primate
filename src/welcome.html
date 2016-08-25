@@ -24,9 +24,6 @@ if (typeof module === 'object') {
     window.module = module;
     module = undefined;
 }
-
-var {ipcRenderer} = require('electron')
-var kongConfig = ipcRenderer.sendSync('get-kong-config', '')
 </script>
 
 <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
@@ -68,62 +65,66 @@ var kongConfig = ipcRenderer.sendSync('get-kong-config', '')
     </footer>
 </main>
 <script type="text/javascript">
+var {ipcRenderer} = require('electron');
+var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
+
 var app = angular.module('KongDash', ['ngToast']);
 
 app.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.defaults.withCredentials = false;
-}])
+}]);
 
 app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', function ($scope, $element, $http, toast) {
-    $scope.kongConfig = kongConfig, $scope.writeConfig = false;
+    $scope.kongConfig = kongConfig;
+    $scope.writeConfig = false;
 
-    var form = $element.find('form#configForm')
+    var form = $element.find('form#configForm');
 
     var connectHost = function () {
         $http({
             method: 'GET',
             url: $scope.kongConfig.host
-        }).then(function (response) {
+        }).then(function () {
             if ($scope.writeConfig) {
-                ipcRenderer.send('write-kong-config', $scope.kongConfig)
+                ipcRenderer.send('write-kong-config', $scope.kongConfig);
 
-                ipcRenderer.on('write-kong-config-success', (event, arg) => {
+                ipcRenderer.on('write-kong-config-success', function () {
                     $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
 
-                }).on('write-kong-config-error', (event, arg) => {
-                    if (form.hasClass('hidden')) form.fadeIn(400)
-                    toast.error(arg.message)
+                }).on('write-kong-config-error', function (event, arg) {
+                    if (form.hasClass('hidden')) form.fadeIn(400);
+                    toast.error(arg.message);
                 })
             } else {
-                $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
+                $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } });
             }
 
-        }, function (response) {
-            if (form.hasClass('hidden')) form.fadeIn(400)
+        }, function () {
+            if (form.hasClass('hidden')) form.fadeIn(400);
 
-            toast.error('Could not connect to ' + $scope.kongConfig.host)
+            toast.error('Could not connect to ' + $scope.kongConfig.host);
         })
-    }
+    };
 
     form.on('submit', function () {
-        $scope.writeConfig = true
-        connectHost()
+        $scope.writeConfig = true;
+        connectHost();
 
-        return false
-    })
+        return false;
+    });
 
     var timeout = setInterval(function () {
-        $element.find(".icon").slideUp({ duration: 300 })
+        $element.find(".icon").slideUp({ duration: 300 });
 
         if ( typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host ) {
-            connectHost()
-            clearInterval(timeout)
+            connectHost();
+            clearInterval(timeout);
 
         } else {
-            form.fadeIn({ duration: 400, complete: function () { clearInterval(timeout) } })
+            form.fadeIn({ duration: 400, complete: function () { clearInterval(timeout) } });
         }
-    }, 2000)
-}])
+    }, 2000);
+}]);
 </script>
 </body>
 </html>

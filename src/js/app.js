@@ -1,9 +1,9 @@
-var {ipcRenderer} = require('electron')
-var kongConfig = ipcRenderer.sendSync('get-kong-config', '')
+var {ipcRenderer} = require('electron');
+var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
 
 var buildUrl = function (url) {
-    return (kongConfig.host) + url
-}
+    return (kongConfig.host) + url;
+};
 
 var app = angular.module('KongDash', ['ngRoute', 'ngAnimate', 'ngToast']);
 
@@ -56,38 +56,38 @@ app.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpPr
 app.filter('pgname', function () {
     return function (input) {
         if (typeof input != 'string' || input == null) {
-            return ''
+            return '';
         }
 
-        return (input.charAt(0).toUpperCase() + input.substr(1).toLowerCase()).split('_').join(' ')
+        return (input.charAt(0).toUpperCase() + input.substr(1).toLowerCase()).split('_').join(' ');
     }
-})
+});
 
 app.filter('splice', function () {
     return function (input) {
-        if (typeof input != 'array' && typeof input != 'object') {
-            return ''
+        if (typeof input != 'object') {
+            return '';
         }
 
-        return input.join(', ')
-    }
-})
+        return input.join(', ');
+    };
+});
 
 app.factory('viewFactory', function () {
     return { title: '', prevUrl: '', host: kongConfig.host }
-})
+});
 
 app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
-        viewFactory.prevUrl = current
+        viewFactory.prevUrl = current;
 
         if (next.indexOf('#') > 1) {
-            var refArray = next.split('#/')[1].split('/')
+            var refArray = next.split('#/')[1].split('/');
 
-            var href = '#/' + refArray[0], nav = angular.element('nav.navigation')
+            var href = '#/' + refArray[0], nav = angular.element('nav.navigation');
 
-            nav.find('a.navigation__link').removeClass('active')
+            nav.find('a.navigation__link').removeClass('active');
             nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active')
         }
     })
-}])
+}]);

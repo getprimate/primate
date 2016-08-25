@@ -84,27 +84,27 @@ if (typeof module === 'object') {
 <script type="text/javascript">
 (function (content) {
     content.on('click', '.delete', function (event) {
-        var target = angular.element(event.target)
+        var target = angular.element(event.target);
 
         if (confirm ('Delete this ' + target.data('target') + '?')) {
-            var $http = angular.element('html').injector().get('$http')
-            var toast = angular.element('body').injector().get('toast')
+            var $http = angular.element('html').injector().get('$http');
+            var toast = angular.element('body').injector().get('toast');
 
             $http({
                 method: 'DELETE',
                 url: buildUrl(target.data('url'))
-            }).then( () => {
-                toast.success(target.data('target') + ' deleted')
+            }).then(function () {
+                toast.success(target.data('target') + ' deleted');
 
-                if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200)
-                else window.location.href = target.data('redirect')
+                if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200);
+                else window.location.href = target.data('redirect');
 
-            }, () => {
-                toast.error('Could not delete ' + target.data('target'))
+            }, function () {
+                toast.error('Could not delete ' + target.data('target'));
             })
         }
     })
-})(angular.element('main.content'))
+})(angular.element('main.content'));
 </script>
 </body>
 </html>
