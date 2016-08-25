@@ -4,6 +4,8 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
     var action = 'create';
 
     $scope.fetchSchema = function (plugin, callback) {
+        $scope.checkBoxes = {};
+
         $http({
             method: 'GET',
             url: buildUrl('/plugins/schema/' + plugin)
@@ -77,7 +79,6 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
 
     $scope.apiId = $routeParams.apiId;
     $scope.formInput = { config:{} };
-    $scope.checkBoxes = {};
     $scope.flexTableObj = {};
 
     var pluginForm = angular.element('form#editPlugins');
