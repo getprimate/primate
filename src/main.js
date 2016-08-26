@@ -1,8 +1,7 @@
-var electron = require('electron'),
-    path = require('path'),
-    pathExtra = require('path-extra'),
-    jsonfile = require('jsonfile')
-
+const electron = require('electron')
+const path = require('path')
+const pathExtra = require('path-extra')
+const jsonfile = require('jsonfile')
 
 var absPath = path.dirname(`${__dirname}`),
     configFile = pathExtra.datadir('KongDash') + '/config.json'
