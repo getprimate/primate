@@ -33,7 +33,7 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
 
     var authNotebook = angular.element('#authNotebook.notebook');
 
-    let authName, dataModel;
+    let authName = 'key-auth', dataModel = 'keyAuthList';
     authNotebook.on('click', '.col.tab', function (event) {
         var tab = angular.element(event.target);
         var targetView = authNotebook.find(tab.data('target-view'));
