@@ -24,7 +24,7 @@ function startMainWindow () {
         minWidth: 900,
 	    icon: absPath + '/kongdash-icon.png'
     })
-    mainWindow.loadURL('file://' + absPath + '/src/welcome.html')
+    mainWindow.loadURL('file://' + absPath + '/src/configure.html')
 
     mainWindow.webContents.openDevTools();
 
