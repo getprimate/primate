@@ -40,9 +40,30 @@ gulp.task('start', (next) => {
     });
 });
 
-gulp.task('release-linux-x64', (next) => {
+gulp.task('build-linux', (next) => {
+    electronPackager(_.extend(RELEASE_SETTINGS, {
+        platform: 'linux',
+        arch: 'all'
+    }), next)
+});
+
+gulp.task('build-linux32', (next) => {
+    electronPackager(_.extend(RELEASE_SETTINGS, {
+        platform: 'linux',
+        arch: 'ia32'
+    }), next)
+});
+
+gulp.task('build-linux64', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
         platform: 'linux',
         arch: 'x64'
+    }), next)
+});
+
+gulp.task('build-win', (next) => {
+    electronPackager(_.extend(RELEASE_SETTINGS, {
+        platform: 'win32',
+        arch: 'all'
     }), next)
 });

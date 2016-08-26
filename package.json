@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./node_modules/.bin/gulp start",
-    "build:linux-x64": "./node_modules/.bin/gulp start"
+    "build:linux": "./node_modules/.bin/gulp build-linux32",
+    "build:linux32": "./node_modules/.bin/gulp build-linux32",
+    "build:linux64": "./node_modules/.bin/gulp build-linux64",
+    "build:windows": "./node_modules/.bin/gulp build-win"
   },
   "repository": {
     "type": "git",
