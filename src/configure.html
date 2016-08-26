@@ -43,7 +43,7 @@ if (typeof module === 'object') {
         <p class="description">Dashboard for Kong Admin API</p>
     </div>
 
-    <form action="#/" class="form hidden" id="configForm">
+    <form action="#" class="form hidden" id="configForm">
         <div class="form__field">
             <label class="field-label">Admin API URI</label>
             <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
@@ -102,8 +102,12 @@ app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', fun
                     $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
 
                 }).on('write-kong-config-error', function (event, arg) {
-                    if (form.hasClass('hidden')) form.fadeIn(400);
                     toast.error(arg.message);
+
+                    var interval = setInterval(function () {
+                        clearInterval(interval);
+                        window.location.href = 'index.html';
+                    }, 2000);
                 })
             } else {
                 $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } });
