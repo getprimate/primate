@@ -50,12 +50,6 @@ ul.list { display: block;  margin: 0; padding: 0; }
 
 ul.list li { display: block; padding: 4px; border-radius: 4px; margin-bottom: 10px; }
 
-/* Notebooks and tabs */
-.notebook .tab { cursor: pointer; }
-
-.notebook > .row:first-child { padding-top: 20px; border-radius: 5px 5px 0 0; }
-.notebook .tab.active { border-radius: 5px 5px 0 0 !important; }
-
 /* Wells */
 .well { margin-bottom: 25px; padding: 0; border-radius: 5px; }
 
@@ -213,6 +207,12 @@ dl.horizontal > dd { width: 60%; }
 
 .panel .panel__heading { padding: 12px 15px 12px 15px; border-radius: 5px; font-weight: 500; font-size: 0.97rem; }
 .panel .panel__body { border-radius: 0 0 3px 3px; padding-left: 15px; padding-right: 15px; }
+
+/* Notebooks and tabs */
+.notebook .tab { cursor: pointer; padding: 5px 0 5px 0; }
+
+.notebook > .row:first-child { padding-top: 20px; border-radius: 5px 5px 0 0; margin-top: 0; margin-bottom: 0; }
+.notebook .tab.active { border-radius: 5px 5px 0 0 !important; }
 
 /* Helpers */
 .subheading { margin: 0 0 10px 0; padding: 0 0 10px 0; }
