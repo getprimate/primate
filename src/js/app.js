@@ -1,5 +1,5 @@
 var {ipcRenderer} = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
+var kongConfig = ipcRenderer.sendSync('get-kong-config');
 
 /**
  * Joins host name and API resource path
@@ -122,6 +122,10 @@ app.factory('viewFactory', function () {
  * sidebar link upon location change.
  */
 app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
+    var appConfig = ipcRenderer.sendSync('get-app-config');
+
+    $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'slide-right' : '';
+
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         viewFactory.prevUrl = current;
 
