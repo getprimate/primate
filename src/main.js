@@ -21,7 +21,7 @@ function startMainWindow () {
         title: app.getName(),
         minHeight: 500,
         minWidth: 900,
-	    icon: absPath + '/kongdash-icon.png'
+	    icon: absPath + '/kongdash-256x256.png'
     })
     mainWindow.loadURL('file://' + absPath + '/src/init.html')
 
