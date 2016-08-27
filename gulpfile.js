@@ -13,13 +13,16 @@ const RELEASE_SETTINGS = {
     dir: '.',
     name: packageJson.name,
     out: 'dist',
-    'app-version': '0.1.0-beta',
-    'version-string' : {
+    'app-version': packageJson.version,
+    'win32metadata' : {
+        ProductName : packageJson.name,
+        CompanyName: packageJson.author,
+        FileDescription: packageJson.description,
+        OriginalFilename: packageJson.name + '.exe',
         ProductVersion : '0.1.0-beta',
-        ProductName : 'KongDash'
     },
     ignore : '/node_modules/(' + _.keys(packageJson.devDependencies).join('|') + ')',
-    appPath : 'src/main.js',
+    appPath : packageJson.main,
     overwrite: true,
     asar: true,
     prune: true
