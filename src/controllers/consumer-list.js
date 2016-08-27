@@ -65,8 +65,7 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
             toast.success('Added new consumer');
 
         }, function (response) {
-            if (response.status == 401) toast.error('Duplicate value for one of the consumer properties');
-            else toast.error('Could not add new consumer');
+            toast.error(response.data);
         });
 
         return false;

@@ -43,8 +43,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
         }).then(function (response) {
             toast.success('Consumer updated');
 
-        }, function () {
-            toast.error('Could not update consumer');
+        }, function (response) {
+            toast.error(response.data);
         });
 
         return false;
@@ -95,8 +95,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
             $scope.authMethods[dataModel].push(response.data);
             toast.success('Authentication saved');
 
-        }, function () {
-            toast.error('Could not add new authentication');
+        }, function (response) {
+            toast.error(response.data);
         });
 
         return false;
