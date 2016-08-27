@@ -32,35 +32,35 @@ app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvi
             controller: 'DashboardController'
         })
         .when('/api', {
-            templateUrl: 'views/apis-list.html',
+            templateUrl: 'views/api-list.html',
             controller: 'ApiListController'
         })
         .when('/api/:apiId', {
-            templateUrl: 'views/apis-edit.html',
+            templateUrl: 'views/api-edit.html',
             controller: 'ApiEditController'
         })
         .when('/api/:apiId/plugins', {
-            templateUrl: 'views/plugins-edit.html',
+            templateUrl: 'views/plugin-edit.html',
             controller: 'PluginEditController'
         })
         .when('/plugins', {
-            templateUrl: 'views/plugins-list.html',
+            templateUrl: 'views/plugin-list.html',
             controller: 'PluginListController'
         })
         .when('/plugins/:pluginId', {
-            templateUrl: 'views/plugins-edit.html',
+            templateUrl: 'views/plugin-edit.html',
             controller: 'PluginEditController'
         })
         .when('/consumers', {
-            templateUrl: 'views/consumers-list.html',
+            templateUrl: 'views/consumer-list.html',
             controller: 'ConsumerListController'
         })
         .when('/consumers/:consumerId', {
-            templateUrl: 'views/consumers-edit.html',
+            templateUrl: 'views/consumer-edit.html',
             controller: 'ConsumerEditController'
         })
         .when('/consumers/:consumerId/plugins', {
-            templateUrl: 'views/plugins-list.html',
+            templateUrl: 'views/plugin-list.html',
             controller: 'PluginListController'
         })
         .when('/settings', {

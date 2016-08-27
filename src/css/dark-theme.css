@@ -66,6 +66,7 @@ i.material-icons.warning { color: #F9C851 !important; }
 
 .content__header { background-color: #222D37; color: #E1EBF1; border-bottom: 1px solid #2F3E47; }
 .content__header .navigate a { background-color: transparent; }
+.content__header .navigate a:hover { background-color: #2F3E47; }
 
 nav.navigation { background: transparent; }
 

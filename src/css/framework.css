@@ -88,8 +88,8 @@ aside + main { float: none; position: absolute; left: 80px; width: calc(100% - 8
 .content__header .navigate,
 .content__header .title { display: block; float: left; position: relative; height: 100%; width: auto; }
 
-.content__header .navigate a { display: block; height: 100%; padding: 8px 0 0 8px; text-align: left; }
-.content__header .navigate i { font-size: 2.6rem; }
+.content__header .navigate a { display: block; height: 100%; padding: 10px 0 0 8px; margin-right: 2px; text-align: left; }
+.content__header .navigate i { font-size: 2.3rem; }
 
 .content__header .title { padding: 12px 0 0 20px; font-size: 1.4rem; font-weight: 300; }
 .content__header .navigate ~ .title { padding-left: 0; }
