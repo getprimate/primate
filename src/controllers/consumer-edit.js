@@ -26,9 +26,28 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
         url: buildUrl('/consumers/' + $scope.consumerId)
     }).then(function (response) {
         $scope.formInput.username = response.data.username;
-        $scope.formInput.customId = response.data.custom_id;
+        $scope.formInput.custom_id = response.data.custom_id;
     }, function () {
         toast.error('Could not load consumer details');
+    });
+
+    var consumerEditForm = angular.element('form#consumerEditForm');
+    consumerEditForm.on('submit', function (event) {
+        event.preventDefault();
+
+        $http({
+            method: 'PATCH',
+            url: buildUrl('/consumers/' + $scope.consumerId + '/'),
+            data: $scope.formInput,
+            headers: {'Content-Type': 'application/json'}
+        }).then(function (response) {
+            toast.success('Consumer updated');
+
+        }, function () {
+            toast.error('Could not update consumer');
+        });
+
+        return false;
     });
 
     var authNotebook = angular.element('#authNotebook.notebook');
@@ -57,6 +76,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
         angular.element(event.target).parents('.auth-view').find('form.form-new-auth').slideToggle(300);
 
     }).on('submit', 'form.form-new-auth', function (event) {
+        event.preventDefault();
+
         var form = angular.element(event.target);
         var payload = {};
 
@@ -77,6 +98,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
         }, function () {
             toast.error('Could not add new authentication');
         });
+
+        return false;
     });
 
     $scope.fetchAuthList('key-auth', 'keyAuthList');
