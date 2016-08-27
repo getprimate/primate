@@ -89,8 +89,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         }).then(function () {
             toast.success('API details updated');
 
-        }, function () {
-            toast.error('Could not update API');
+        }, function (response) {
+            toast.error(response.data);
         });
 
         return false
