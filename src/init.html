@@ -5,7 +5,6 @@
 
 <link rel="stylesheet" type="text/css" href="css/roboto.css" />
 <link rel="stylesheet" type="text/css" href="css/material-icons.css" />
-<link rel="stylesheet" type="text/css" href="css/animations.css" />
 <link rel="stylesheet" type="text/css" href="css/framework.css" />
 <link rel="stylesheet" type="text/css" href="css/dark-theme.css" />
 
@@ -99,10 +98,10 @@ app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', fun
             if ($scope.writeConfig) {
                 ipcRenderer.send('write-kong-config', $scope.kongConfig);
 
-                ipcRenderer.on('write-kong-config-success', function () {
+                ipcRenderer.on('write-config-success', function () {
                     $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
 
-                }).on('write-kong-config-error', function (event, arg) {
+                }).on('write-config-error', function (event, arg) {
                     toast.error(arg.message);
 
                     var interval = setInterval(function () {
