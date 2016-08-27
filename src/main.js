@@ -10,7 +10,7 @@ var {app, ipcMain, BrowserWindow, Menu} = electron
 
 app.setName('KongDash')
 
-let mainWindow, globalConfig = { kong: {} }
+let mainWindow, globalConfig = { kong: {}, app: { enableAnimation: true } }
 
 function startMainWindow () {
     mainWindow = new BrowserWindow({
@@ -25,7 +25,7 @@ function startMainWindow () {
     })
     mainWindow.loadURL('file://' + absPath + '/src/init.html')
 
-    /* Debugging
+    //* Debugging
     mainWindow.webContents.openDevTools();
     //*/
 
@@ -37,10 +37,7 @@ function startMainWindow () {
 app.on('ready', () => {
     try {
         var config = jsonfile.readFileSync(configFile)
-
-        globalConfig.kong.host = config.host
-        globalConfig.kong.username = config.username
-        globalConfig.kong.password = config.password
+        globalConfig = config
 
     } catch (ignored) {
 
@@ -101,17 +98,34 @@ app.on('window-all-closed', () => {
         app.quit()
 });
 
-ipcMain.on('get-kong-config', (event, arg) => {
-    return event.returnValue = globalConfig.kong
+ipcMain.on('get-kong-config', (event) => {
+    event.returnValue = globalConfig.kong
+})
+
+ipcMain.on('get-app-config', (event) => {
+    event.returnValue = globalConfig.app
 })
 
 ipcMain.on('write-kong-config', (event, arg) => {
-    jsonfile.writeFile(configFile, arg, function (error) {
+    globalConfig.kong = arg;
+
+    jsonfile.writeFile(configFile, globalConfig, function (error) {
         if (error) {
-            event.sender.send('write-kong-config-error', {message: 'Could not write configuration file'})
+            event.sender.send('write-app-config-error', {message: 'Could not write configuration file'})
         } else {
-            globalConfig.kong = arg
-            event.sender.send('write-kong-config-success', {})
+            event.sender.send('write-app-config-success', {})
+        }
+    })
+})
+
+ipcMain.on('write-app-config', (event, arg) => {
+    globalConfig.app = arg;
+
+    jsonfile.writeFile(configFile, globalConfig, function (error) {
+        if (error) {
+            event.sender.send('write-app-config-error', {message: 'Could not write configuration file'})
+        } else {
+            event.sender.send('write-app-config-success', {})
         }
     })
 })
