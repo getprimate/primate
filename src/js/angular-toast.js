@@ -10,6 +10,24 @@
         if (body.children('.notification').length > 0)
             body.children('.notification').remove();
 
+        var text = '';
+
+        if (typeof message.text === 'object') {
+            if (Object.keys(message.text).length > 0) {
+                var firstKey = Object.keys(message.text)[0];
+
+                if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string') {
+                    text = message.text[firstKey];
+                } else {
+                    text = firstKey + ' ' + message.text[firstKey];
+                }
+            } else {
+                text = 'No details available!';
+            }
+        } else {
+            text = message.text
+        }
+
         switch (message.type) {
             case 'danger':
                 status = 'Error!';
@@ -29,7 +47,7 @@
         }
 
         var div = angular.element('<div></div>', { class: 'notification ' + message.type })
-            .html('<b>' + status + '</b> ' + message.text + '.')
+            .html('<b>' + status + '</b> ' + text + '.')
             .on('click', function () {
                 div.fadeOut(200);
             });
