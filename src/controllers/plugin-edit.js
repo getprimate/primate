@@ -123,7 +123,7 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
 
         $http(config).then(function () {
             toast.success('Plugin ' + action + 'd');
-            
+
         }, function (response) {
             toast.error(response.data.message || JSON.stringify(response.data));
         });
