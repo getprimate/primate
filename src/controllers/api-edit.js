@@ -5,7 +5,7 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
     $scope.formInput = {};
 
     viewFactory.title = 'Edit API';
-    viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/apis'};
+    viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/api'};
 
     $scope.pluginList = [];
 
