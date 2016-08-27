@@ -64,6 +64,7 @@ gulp.task('build-linux64', (next) => {
 gulp.task('build-win', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
         platform: 'win32',
-        arch: 'all'
+        arch: 'all',
+        icon: 'resources/icons/kongdash-256x256.ico'
     }), next)
 });
