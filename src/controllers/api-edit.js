@@ -36,8 +36,10 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         $scope.formInput.preserveHost = response.data.preserve_host;
         $scope.formInput.stripRequestPath = response.data.strip_request_path;
 
-    }, function () {
+    }, function (response) {
         toast.error('Could not load API details')
+
+        if (response && response.status === 404) window.location.href = '#/api';
     });
 
     var apiForm = angular.element('form#formEdit');

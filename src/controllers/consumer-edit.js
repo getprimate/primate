@@ -27,8 +27,10 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     }).then(function (response) {
         $scope.formInput.username = response.data.username;
         $scope.formInput.custom_id = response.data.custom_id;
-    }, function () {
+
+    }, function (response) {
         toast.error('Could not load consumer details');
+        if (response && response.status === 404) window.location.href = '#/consumers';
     });
 
     var consumerEditForm = angular.element('form#consumerEditForm');
