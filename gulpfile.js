@@ -13,9 +13,9 @@ const RELEASE_SETTINGS = {
     dir: '.',
     name: packageJson.name,
     out: 'dist',
-    'app-version': '0.1.0',
+    'app-version': '0.1.0-beta',
     'version-string' : {
-        ProductVersion : '0.1.0',
+        ProductVersion : '0.1.0-beta',
         ProductName : 'KongDash'
     },
     ignore : '/node_modules/(' + _.keys(packageJson.devDependencies).join('|') + ')',
