@@ -84,6 +84,19 @@ app.filter('pgname', function () {
 });
 
 /**
+ * Strips protocol (http:// or https://) from URL.
+ */
+app.filter('stripProtocol', function () {
+    return function (input) {
+        if (!input) return '';
+
+        if (input.indexOf('s://') > 1) return input.split('https://')[1];
+
+        return (input.split('http://')[1]) || '';
+    }
+});
+
+/**
  * Joins a string array with commas.
  */
 app.filter('splice', function () {
