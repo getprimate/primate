@@ -25,7 +25,9 @@ function startMainWindow () {
     })
     mainWindow.loadURL('file://' + absPath + '/src/configure.html')
 
+    /* Debugging
     mainWindow.webContents.openDevTools();
+    //*/
 
     mainWindow.on('closed', () => {
         mainWindow = null
