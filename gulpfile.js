@@ -12,7 +12,7 @@ const _ = require('underscore');
 const RELEASE_SETTINGS = {
     dir: '.',
     name: packageJson.name,
-    out: 'dist',
+    out: 'releases',
     'app-version': packageJson.version,
     'win32metadata' : {
         ProductName : packageJson.name,
