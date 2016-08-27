@@ -69,7 +69,7 @@ var navigateBack = function () {
             <button data-ng-if="viewFactory.deleteAction" data-target="{{viewFactory.deleteAction.target}}" data-url="{{viewFactory.deleteAction.url}}" data-redirect="{{viewFactory.deleteAction.redirect || viewFactory.prevUrl}}" type="button" class="btn danger delete">Delete</button>
         </div>
     </header>
-    <section class="content__wrapper {{animation || 'slide-right'}}" data-ng-view="">Temp</section>
+    <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Temp</section>
     <footer class="footer" data-ng-controller="FooterController">
         <span class="pull-right hpadding-20">{{viewFactory.host | stripProtocol}}</span>
     </footer>
