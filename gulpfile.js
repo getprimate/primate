@@ -21,7 +21,7 @@ const RELEASE_SETTINGS = {
         OriginalFilename: packageJson.name + '.exe',
         ProductVersion : '0.1.0-beta',
     },
-    ignore : '/node_modules/(' + _.keys(packageJson.devDependencies).join('|') + ')',
+    ignore : '.gitignore|*.md|gulpfile.js|*.xcf|TODO.txt',
     appPath : packageJson.main,
     overwrite: true,
     asar: true,
