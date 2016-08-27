@@ -35,14 +35,6 @@ if (typeof module === 'object') {
 <script type="text/javascript" src="controllers/consumer-edit.js"></script>
 <script type="text/javascript" src="controllers/plugin-list.js"></script>
 <script type="text/javascript" src="controllers/settings.js"></script>
-
-<script type="text/javascript">
-var navigateBack = function () {
-    if (window) {
-        window.history.back();
-    }
-};
-</script>
 </head>
 <body class="body">
 
@@ -62,7 +54,7 @@ var navigateBack = function () {
 <main class="content">
     <header class="content__header" data-ng-controller="HeaderController">
         <span class="navigate" data-ng-if="viewFactory.prevUrl">
-            <a href="javascript:navigateBack();" title="Previous"><i class="material-icons">keyboard_arrow_left</i></a>
+            <a href="{{viewFactory.prevUrl}}" title="Previous"><i class="material-icons">keyboard_arrow_left</i></a>
         </span>
         <span class="title">{{viewFactory.title}}</span>
         <div class="actions">
