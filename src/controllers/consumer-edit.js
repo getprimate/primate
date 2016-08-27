@@ -7,7 +7,7 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     $scope.authMethods = {};
 
     viewFactory.title = 'Edit Consumer';
-    viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId };
+    viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
 
     $scope.fetchAuthList = function (authName, dataModel) {
         $http({
