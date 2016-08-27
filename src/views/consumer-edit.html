@@ -1,5 +1,5 @@
 <div class="panel panel-border info">
-<div class="panel__heading">Edit Consumer</div>
+<div class="panel__heading">Update Consumer</div>
 <div class="panel__body">
     <form id="editForm" class="form" method="post" action="#">
     <div class="row">
@@ -14,7 +14,7 @@
     <div class="row">
     <div class="col md-12">
         <a href="#/consumers" class="btn default">Cancel</a>
-        <button class="btn info" type="submit">Update</button>
+        <button class="btn info" type="submit" name="action" value="update">Update</button>
     </div>
     </div>
     </form>
@@ -37,10 +37,10 @@
     <div class="highlight hpadding-10">
     <p class="toggle-form pointer no-margin padding-10">Add new key</p>
     <form class="form hpadding-10 form-new-auth hidden">
-        <div class="form__field"><input class="param" type="text" name="key" placeholder="Key" value="" /></div>
+        <div class="form__field"><input class="param" type="text" name="key" placeholder="Key (Leave blank to auto-generate)" value="" /></div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
     </div>
     <hr class="no-margin" />
@@ -67,7 +67,7 @@
         </div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
     </div>
     <hr class="no-margin" />
@@ -99,7 +99,7 @@
         </div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
 </div>
 <hr class="no-margin" />
@@ -129,7 +129,7 @@
         </div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
 </div>
 <hr class="no-margin" />
@@ -157,7 +157,7 @@
         </div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
 </div>
 <hr class="no-margin" />
@@ -182,7 +182,7 @@
         <div class="form__field"><input class="param" type="text" name="group" placeholder="Group name" value="" /></div>
         <div class="form__field">
             <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit">Add</button></div>
+            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
 </div>
 <hr class="no-margin" />
