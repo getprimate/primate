@@ -125,7 +125,7 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
             toast.success('Plugin ' + action + 'd');
 
         }, function (response) {
-            toast.error(response.data.message || JSON.stringify(response.data));
+            toast.error(response.data);
         });
     }).on('click', 'button.add-flex-table', function (event) {
         var parent = angular.element(event.target).parent('div');
