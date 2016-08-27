@@ -48,29 +48,14 @@ var navigateBack = function () {
 
 <div class="app-layout">
 <aside class="drawer">
-    <div class="icon">
-
-        <div>KongDash</div>
-    </div>
+    <div class="icon"><div>KongDash</div></div>
     <nav class="navigation">
-        <a class="navigation__link active" data-ng-href="#/">
-            <p><i class="material-icons">dashboard</i></p> <p>Dashboard</p>
-        </a>
-
-        <a class="navigation__link" data-ng-href="#/api">
-            <p><i class="material-icons">settings_input_component</i></p> <p>APIs</p>
-        </a>
-        <a class="navigation__link" data-ng-href="#/consumers">
-            <p><i class="material-icons">person_pin</i></p> <p>Consumers</p>
-        </a>
-        <a class="navigation__link" data-ng-href="#/plugins">
-            <p><i class="material-icons">extension</i></p> <p>Plugins</p>
-        </a>
+        <a class="navigation__link active" data-ng-href="#/"><p><i class="material-icons">dashboard</i></p><p>Dashboard</p></a>
+        <a class="navigation__link" data-ng-href="#/api"><p><i class="material-icons">settings_input_component</i></p> <p>APIs</p></a>
+        <a class="navigation__link" data-ng-href="#/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
+        <a class="navigation__link" data-ng-href="#/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
         <hr />
-
-        <a class="navigation__link" data-ng-href="#/settings">
-            <p><i class="material-icons">build</i></p> <p>Settings</p>
-        </a>
+        <a class="navigation__link" data-ng-href="#/settings"><p><i class="material-icons">build</i></p> <p>Settings</p></a>
     </nav><!-- .navigation -->
 </aside>
 
@@ -84,9 +69,9 @@ var navigateBack = function () {
             <button data-ng-if="viewFactory.deleteAction" data-target="{{viewFactory.deleteAction.target}}" data-url="{{viewFactory.deleteAction.url}}" data-redirect="{{viewFactory.deleteAction.redirect || viewFactory.prevUrl}}" type="button" class="btn danger delete">Delete</button>
         </div>
     </header>
-    <section class="content__wrapper {{animation || 'fade'}}" data-ng-view="">Temp</section>
+    <section class="content__wrapper {{animation || 'slide-right'}}" data-ng-view="">Temp</section>
     <footer class="footer" data-ng-controller="FooterController">
-        <span class="pull-right hpadding-20">{{viewFactory.host}}</span>
+        <span class="pull-right hpadding-20">{{viewFactory.host | stripProtocol}}</span>
     </footer>
 </main>
 </div>
