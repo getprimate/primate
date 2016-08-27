@@ -2,7 +2,7 @@
 
 > Desktop client for [Kong](https://getkong.org/) admin API
 
-[![](screenshot.jpg)](https://ajaysreedhar.github.io/kongdash/)
+[![](screenshot.png)](https://ajaysreedhar.github.io/kongdash/)
 
 ### Development
 - Requires nodejs (v4.4.7 or higher) and npm (v2.15.8 or higher)
