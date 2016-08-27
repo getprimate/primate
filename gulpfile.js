@@ -40,12 +40,6 @@ gulp.task('start', (next) => {
     });
 });
 
-gulp.task('build-linux', (next) => {
-    electronPackager(_.extend(RELEASE_SETTINGS, {
-        platform: 'linux',
-        arch: 'all'
-    }), next)
-});
 
 gulp.task('build-linux32', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
@@ -61,10 +55,18 @@ gulp.task('build-linux64', (next) => {
     }), next)
 });
 
-gulp.task('build-win', (next) => {
+gulp.task('build-windows32', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
         platform: 'win32',
-        arch: 'all',
+        arch: 'ia32',
+        icon: 'resources/icons/kongdash-256x256.ico'
+    }), next)
+});
+
+gulp.task('build-windows64', (next) => {
+    electronPackager(_.extend(RELEASE_SETTINGS, {
+        platform: 'win32',
+        arch: 'x64',
         icon: 'resources/icons/kongdash-256x256.ico'
     }), next)
 });
