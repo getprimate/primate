@@ -116,12 +116,7 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
             toast.success('New API added')
 
         }, function (response) {
-            if (response.status == 401) {
-                toast.error('Duplicate value for one of the API parameters');
-                
-            } else {
-                toast.error('Could not add new API');
-            }
+            toast.error(response.data)
         });
 
         return false
