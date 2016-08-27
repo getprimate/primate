@@ -111,9 +111,9 @@ ipcMain.on('write-kong-config', (event, arg) => {
 
     jsonfile.writeFile(configFile, globalConfig, function (error) {
         if (error) {
-            event.sender.send('write-app-config-error', {message: 'Could not write configuration file'})
+            event.sender.send('write-config-error', {message: 'Could not write configuration file'})
         } else {
-            event.sender.send('write-app-config-success', {})
+            event.sender.send('write-config-success', {})
         }
     })
 })
@@ -123,9 +123,9 @@ ipcMain.on('write-app-config', (event, arg) => {
 
     jsonfile.writeFile(configFile, globalConfig, function (error) {
         if (error) {
-            event.sender.send('write-app-config-error', {message: 'Could not write configuration file'})
+            event.sender.send('write-config-error', {message: 'Could not write configuration file'})
         } else {
-            event.sender.send('write-app-config-success', {})
+            event.sender.send('write-config-success', {})
         }
     })
 })
