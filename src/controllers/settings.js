@@ -14,10 +14,10 @@ app.controller('SettingsController', ['$rootScope', '$scope', 'viewFactory', 'to
 
         ipcRenderer.send('write-kong-config', $scope.kongConfig);
 
-        ipcRenderer.on('write-kong-config-success', function () {
+        ipcRenderer.on('write-config-success', function () {
             toast.success('Kong configuration saved')
 
-        }).on('write-app-config-error', function (event, arg) {
+        }).on('write-config-error', function (event, arg) {
             toast.error(arg.message)
         });
 
@@ -38,10 +38,10 @@ app.controller('SettingsController', ['$rootScope', '$scope', 'viewFactory', 'to
 
         ipcRenderer.send('write-app-config', $scope.appConfig);
 
-        ipcRenderer.on('write-app-config-success', function () {
+        ipcRenderer.on('write-config-success', function () {
             toast.success('App configuration saved')
 
-        }).on('write-app-config-error', function (event, arg) {
+        }).on('write-config-error', function (event, arg) {
             toast.error(arg.message)
         });
     });
