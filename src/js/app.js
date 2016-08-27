@@ -1,14 +1,22 @@
 var {ipcRenderer} = require('electron');
 var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
 
-var buildUrl = function (url) {
-    return (kongConfig.host) + url;
+/**
+ * Joins host name and API resource path
+ *
+ * @param resource API resource path
+ * @return URL
+ */
+var buildUrl = function (resource) {
+    return (kongConfig.host) + resource;
 };
 
 var app = angular.module('KongDash', ['ngRoute', 'ngAnimate', 'ngToast', 'base64']);
 
 app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvider, $httpProvider, $base64) {
 
+    /* Add a basic authorization header
+    if username and password are provided in the settings */
     if (typeof kongConfig.username === 'string' && kongConfig.username) {
         $httpProvider.defaults.withCredentials = true;
         $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(kongConfig.username + ':' + (kongConfig.password || ''));
@@ -17,6 +25,7 @@ app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvi
         $httpProvider.defaults.withCredentials = false;
     }
 
+    /* Configure routeProvider */
     $routeProvider
         .when('/', {
             templateUrl: 'views/dashboard.html',
@@ -60,6 +69,10 @@ app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvi
         })
 }]);
 
+/**
+ * Converts first letter of a string to uppercase and
+ * replaces underscores with whitespaces.
+ */
 app.filter('pgname', function () {
     return function (input) {
         if (typeof input != 'string' || input == null) {
@@ -70,6 +83,9 @@ app.filter('pgname', function () {
     }
 });
 
+/**
+ * Joins a string array with commas.
+ */
 app.filter('splice', function () {
     return function (input) {
         if (typeof input != 'object') {
@@ -80,10 +96,18 @@ app.filter('splice', function () {
     };
 });
 
+/**
+ * Holds current page title, current host URL and
+ * URL of the previous page.
+ */
 app.factory('viewFactory', function () {
     return { title: '', prevUrl: '', host: kongConfig.host }
 });
 
+/**
+ * Detects and highlights the correct
+ * sidebar link upon location change.
+ */
 app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         viewFactory.prevUrl = current;
