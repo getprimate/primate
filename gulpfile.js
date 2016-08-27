@@ -21,7 +21,7 @@ const RELEASE_SETTINGS = {
         OriginalFilename: packageJson.name + '.exe',
         ProductVersion : packageJson.version,
     },
-    ignore : '/.gitignore|CHANGELOG.md|README.md|gulpfile.js|kongdash-256x256.png/',
+    ignore : '/.gitignore|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
     appPath : packageJson.main,
     overwrite: true,
     asar: true,
