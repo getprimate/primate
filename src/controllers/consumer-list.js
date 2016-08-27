@@ -3,7 +3,7 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
 
     $scope.formInput = {
         userName: '',
-        customId: ''
+        custom_id: ''
     };
 
     $scope.consumerList = [];
@@ -45,8 +45,8 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
             payload.username = $scope.formInput.userName;
         }
 
-        if ($scope.formInput.customId.trim().length > 1) {
-            payload.custom_id = $scope.formInput.customId;
+        if ($scope.formInput.custom_id.trim().length > 1) {
+            payload.custom_id = $scope.formInput.custom_id;
         }
 
         if (typeof payload.username === 'undefined' &&
