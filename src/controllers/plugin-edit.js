@@ -160,7 +160,7 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
                 })
             });
 
-            viewFactory.prevUrl = '#/api/' + $scope.apiId;
+
             viewFactory.title = 'Edit ' + response.data.name + ' Plugin';
             viewFactory.deleteAction = {target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId};
 
@@ -180,4 +180,6 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
             $scope.fetchSchema(event.target.value);
         });
     }
+
+    $scope.prevUrl = viewFactory.prevUrl;
 }]);
