@@ -69,7 +69,7 @@ npm run pack:windows32
 
 For Windows 64-bit:
 ```shell
-npm run pack:windows32
+npm run pack:windows64
 ```
 
 The packaaged application will be moved to releases/ directory.
