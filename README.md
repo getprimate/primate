@@ -10,7 +10,7 @@
 Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .exe installer and run it.
 
 #### On Linux
-_Ubuntu and other debian distributions:_
+_Ubuntu and other Debian distributions:_
 
 - Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .deb package. 
 - Run `dpkg -i kongdash-x.y.z-arch.deb`
@@ -32,7 +32,7 @@ _x.y.z refers to the version number and arch refers to the architecture (ia32 or
 ### For Developers
 All kinds of contributions are welcome.
 
-- Requires nodejs (v4.4.7 or higher) and npm (v2.15.8 or higher).
+- Requires NodeJs (v4.4.7 or higher) and npm (v2.15.8 or higher).
 - Built with [Electron](http://electron.atom.io/).
 
 Clone the repository
@@ -72,7 +72,7 @@ For Windows 64-bit:
 npm run pack:windows64
 ```
 
-The packaaged application will be moved to releases/ directory.
+The packaged application will be moved to releases/ directory.
 
 ### License
 MIT License. See [LICENSE](LICENSE).
