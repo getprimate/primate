@@ -2,7 +2,6 @@ app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'view
     function ($scope, $routeParams, $http, viewFactory, toast) {
 
     viewFactory.title = "Plugin List";
-    viewFactory.deleteAction = null;
 
     var filters = [];
 

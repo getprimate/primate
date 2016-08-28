@@ -25,7 +25,7 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
     };
 
     viewFactory.title = 'Consumer List';
-    viewFactory.prevUrl = viewFactory.deleteAction = null;
+    viewFactory.prevUrl = null;
 
     var panelAdd = angular.element('div#panelAdd');
     var consumerForm = panelAdd.children('div.panel__body').children('form');

@@ -1,7 +1,7 @@
 app.controller('DashboardController', ['$scope', '$http', 'viewFactory', 'toast', function ($scope, $http, viewFactory, toast) {
 
     viewFactory.title = 'Dashboard';
-    viewFactory.prevUrl = viewFactory.deleteAction = null;
+    viewFactory.prevUrl = null;
 
     $http({
         method: 'GET',

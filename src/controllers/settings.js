@@ -1,5 +1,5 @@
 app.controller('SettingsController', ['$rootScope', '$scope', 'viewFactory', 'toast', function ($rootScope, $scope, viewFactory, toast) {
-    viewFactory.deleteAction = viewFactory.prevUrl = null;
+    viewFactory.prevUrl = null;
     viewFactory.title = 'Settings';
 
     $scope.kongConfig = kongConfig;

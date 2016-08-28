@@ -2,7 +2,7 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
     function ($scope, $http, viewFactory, toast) {
 
     viewFactory.title = 'API List';
-    viewFactory.prevUrl = viewFactory.deleteAction = null;
+    viewFactory.prevUrl = null;
 
     $scope.formInput = {
         apiName: '',
