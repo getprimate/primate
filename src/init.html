@@ -40,7 +40,7 @@ if (typeof module === 'object') {
     <div class="icon">
         <img src="images/logo-192x192.png" alt="KongDash" />
         <p class="caption">KongDash</p>
-        <p class="description">Dashboard for Kong Admin API</p>
+        <p class="description">Version 0.1.0-beta</p>
     </div>
 
     <form action="#" class="form hidden" id="configForm">
@@ -63,7 +63,7 @@ if (typeof module === 'object') {
     </form>
 
     <footer class="footer">
-        <span class="hpadding-20 pull-right">Version 0.1.0-beta</span>
+        <span class="hpadding-20 pull-right" id="status"></span>
     </footer>
 </main>
 <script type="text/javascript">
@@ -83,6 +83,9 @@ app.config(['$httpProvider', '$base64', function ($httpProvider, $base64) {
 }]);
 
 app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', function ($scope, $element, $http, toast) {
+
+    var statusBar = $element.find('footer.footer').children('span');
+    statusBar.html('Reading configuration...');
 
     $scope.kongConfig = kongConfig;
     $scope.writeConfig = false;
@@ -127,6 +130,7 @@ app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', fun
     });
 
     var timeout = setInterval(function () {
+        statusBar.html('');
         $element.find(".icon").slideUp({ duration: 300 });
 
         if ( typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host ) {
