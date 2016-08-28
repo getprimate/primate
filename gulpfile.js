@@ -14,12 +14,21 @@ const RELEASE_SETTINGS = {
     name: packageJson.name,
     out: 'releases',
     'app-version': packageJson.version,
-    'win32metadata' : {
-        ProductName : packageJson.name,
+	'version-string': {
+		ProductName : packageJson.name,
         CompanyName: packageJson.author,
         FileDescription: packageJson.description,
         OriginalFilename: packageJson.name + '.exe',
         ProductVersion : packageJson.version,
+		FileVersion: packageJson.version,
+		Copyright: 'Copyright (c) 2016 ' + packageJson.author
+	},
+    win32metadata : {
+        ProductName : packageJson.name,
+        CompanyName: packageJson.author,
+        FileDescription: packageJson.description,
+        OriginalFilename: packageJson.name + '.exe',
+        ProductVersion : packageJson.version
     },
     ignore : '/.gitignore|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
     appPath : packageJson.main,
