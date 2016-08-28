@@ -7,7 +7,6 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     $scope.authMethods = {};
 
     viewFactory.title = 'Edit Consumer';
-    viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
 
     $scope.fetchAuthList = function (authName, dataModel) {
         $http({
@@ -27,6 +26,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     }).then(function (response) {
         $scope.formInput.username = response.data.username;
         $scope.formInput.custom_id = response.data.custom_id;
+
+        viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
 
     }, function (response) {
         toast.error('Could not load consumer details');

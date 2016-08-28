@@ -5,8 +5,6 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
     $scope.formInput = {};
 
     viewFactory.title = 'Edit API';
-    viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/api'};
-
     $scope.pluginList = [];
 
     $scope.fetchPluginList = function (url) {
@@ -35,6 +33,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         $scope.formInput.apiName = (typeof response.data.name == 'undefined') ? '' : response.data.name;
         $scope.formInput.preserveHost = response.data.preserve_host;
         $scope.formInput.stripRequestPath = response.data.strip_request_path;
+
+        viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/api'};
 
     }, function (response) {
         toast.error('Could not load API details');

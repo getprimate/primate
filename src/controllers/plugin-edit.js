@@ -174,7 +174,6 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
 
         viewFactory.prevUrl = '#/api/' + $scope.apiId;
         viewFactory.title = 'Add New Plugin';
-        viewFactory.deleteAction = null;
 
         pluginForm.on('change', 'select[name="name"]', function (event) {
             $scope.formInput = { name: event.target.value, config:{} };
