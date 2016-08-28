@@ -2,7 +2,7 @@
 
 > An elegant desktop client for [Kong](https://getkong.org/) admin API
 
-[![](screenshot.png)](screenshot.png)
+[![](screenshot.png)](https://raw.githubusercontent.com/ajaysreedhar/kongdash/master/screenshot.png)
 
 ### How to Install
 
