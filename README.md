@@ -4,7 +4,32 @@
 
 [![](screenshot.png)](https://ajaysreedhar.github.io/kongdash/)
 
-### Development
+### How to Install
+
+#### On Windows
+Simply download the latest installer and run it.
+
+#### On Linux
+_Ubuntu and other debian distributions_
+Download the latest .deb installer and run
+```shell
+dpkg -i kongdash-x.y.z-arch.deb
+```
+
+_Fedora and other Linux distributions_
+Download the latest kongdash-x.y.z-linux-arch.tar.gz archive.
+Extract the archive and run install.sh script
+
+```shell
+tar -xvf kongdash-x.y.z-linux-arch.tar.gz
+cd kongdash-x.y.z-linux-arch
+./install.sh
+```
+
+
+### For Developers
+All kinds of contributions are welcome.
+
 - Requires nodejs (v4.4.7 or higher) and npm (v2.15.8 or higher)
 - Built with [Electron](http://electron.atom.io/)
 
@@ -23,28 +48,29 @@ Run the app
 npm start
 ```
 
-### Build
+### Make a release
 
 For Linux 32 bit
 ```shell
-npm run build:linux32
+npm run pack:linux32
 ```
 
 For Linux 64 bit
 ```shell
-npm run build:linux64
+npm run pack:linux64
 ```
 
 For Windows 32 bit
 ```shell
-npm run build:windows32
+npm run pack:windows32
 ```
 
 For Windows 64 bit
 ```shell
-npm run build:windows32
+npm run pack:windows32
 ```
 
+The packaaged application will be moved to releases/ directory.
 
 ### License
 MIT License. See [LICENSE](LICENSE)
