@@ -37,7 +37,7 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         $scope.formInput.stripRequestPath = response.data.strip_request_path;
 
     }, function (response) {
-        toast.error('Could not load API details')
+        toast.error('Could not load API details');
 
         if (response && response.status === 404) window.location.href = '#/api';
     });

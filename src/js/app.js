@@ -127,6 +127,7 @@ app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
     $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'slide-right' : '';
 
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        viewFactory.deleteAction = null;
         viewFactory.prevUrl = current;
 
         if (next.indexOf('#') > 1) {
