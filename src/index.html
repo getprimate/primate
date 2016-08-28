@@ -86,8 +86,8 @@ if (typeof module === 'object') {
                 if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200);
                 else window.location.href = target.data('redirect');
 
-            }, function () {
-                toast.error('Could not delete ' + target.data('target'));
+            }, function (response) {
+                toast.error(response.data);
             })
         }
     })
