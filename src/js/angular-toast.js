@@ -12,20 +12,24 @@
 
         var text = '';
 
-        if (typeof message.text === 'object') {
-            if (Object.keys(message.text).length > 0) {
-                var firstKey = Object.keys(message.text)[0];
+        try {
+            if (typeof message.text === 'object') {
+                if (Object.keys(message.text).length > 0) {
+                    var firstKey = Object.keys(message.text)[0];
 
-                if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string') {
-                    text = message.text[firstKey];
+                    if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string') {
+                        text = message.text[firstKey];
+                    } else {
+                        text = firstKey + ' ' + message.text[firstKey];
+                    }
                 } else {
-                    text = firstKey + ' ' + message.text[firstKey];
+                    text = 'No details available!';
                 }
             } else {
-                text = 'No details available!';
+                text = message.text
             }
-        } else {
-            text = message.text
+        } catch (e) {
+            text = 'No details available!'
         }
 
         switch (message.type) {
