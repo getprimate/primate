@@ -12,7 +12,7 @@ Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) 
 #### On Linux
 _Ubuntu and other debian distributions:_
 
-- Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .deb installer. 
+- Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .deb package. 
 - Run `dpkg -i kongdash-x.y.z-arch.deb`
 
 
