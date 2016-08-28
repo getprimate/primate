@@ -1,7 +1,7 @@
 {
   "name": "KongDash",
   "version": "0.1.0-beta",
-  "description": "Desktop client for Kong Admin API",
+  "description": "An elegant desktop client for Kong Admin API",
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
