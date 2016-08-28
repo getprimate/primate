@@ -52,22 +52,22 @@ npm start
 
 ### Make a release
 
-For Linux 32-bit:
+Linux 32-bit:
 ```shell
 npm run pack:linux32
 ```
 
-For Linux 64-bit:
+Linux 64-bit:
 ```shell
 npm run pack:linux64
 ```
 
-For Windows-32-bit:
+Windows 32-bit:
 ```shell
 npm run pack:windows32
 ```
 
-For Windows 64-bit:
+Windows 64-bit:
 ```shell
 npm run pack:windows64
 ```
