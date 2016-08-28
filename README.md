@@ -18,7 +18,7 @@ _Ubuntu and other Debian distributions:_
 
 _Fedora and other Linux distributions:_
 
-- Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) kongdash-x.y.z-linux-arch.tar.gz archive.
+- Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .tar.gz archive.
 - Extract the archive and run install.sh script.
 
 ```shell
