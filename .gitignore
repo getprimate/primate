@@ -1,7 +1,7 @@
 .idea/
 node_modules/
 dist/
-release/
+releases/
 *.log
 *.xcf
 TODO.txt
