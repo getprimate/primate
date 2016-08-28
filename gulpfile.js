@@ -17,7 +17,7 @@ const RELEASE_SETTINGS = {
 	'version-string': {
 		ProductName : packageJson.name,
         CompanyName: packageJson.author,
-        FileDescription: packageJson.description,
+        FileDescription: packageJson.name,
         OriginalFilename: packageJson.name + '.exe',
         ProductVersion : packageJson.version,
 		'file-version': packageJson.version,
@@ -75,7 +75,7 @@ gulp.task('pack-windows32', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
         platform: 'win32',
         arch: 'ia32',
-		icon: './resources/icons/kongdash-256x256.ico'
+		icon: 'resources/icons/kongdash-256x256.ico'
     }), next)
 });
 
@@ -83,6 +83,6 @@ gulp.task('pack-windows64', (next) => {
     electronPackager(_.extend(RELEASE_SETTINGS, {
         platform: 'win32',
         arch: 'x64',
-		icon: './resources/icons/kongdash-256x256.ico'
+		icon: 'resources/icons/kongdash-256x256.ico'
     }), next)
 });
