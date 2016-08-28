@@ -7,7 +7,7 @@
 ### How to Install
 
 #### On Windows
-Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) installer and run it.
+Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .exe installer and run it.
 
 #### On Linux
 _Ubuntu and other debian distributions_
