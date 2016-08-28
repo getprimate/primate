@@ -11,13 +11,16 @@ Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) 
 
 #### On Linux
 _Ubuntu and other debian distributions_
+
 Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .deb installer and run
 ```shell
 dpkg -i kongdash-x.y.z-arch.deb
 ```
 
 _Fedora and other Linux distributions_
+
 Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) kongdash-x.y.z-linux-arch.tar.gz archive.
+
 Extract the archive and run install.sh script
 
 ```shell
