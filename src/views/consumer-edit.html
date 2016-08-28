@@ -193,7 +193,7 @@
     <tr data-ng-repeat="acl in authMethods.aclList">
         <td>{{acl.group}}</td>
         <td>{{acl.created_at | date}}</td>
-        <td class="action-icons"><i class="material-icons danger delete" data-target="group" data-url="/consumers/{{consumerId}}/acls`/{{acl.id}}">delete_forever</i></td>
+        <td class="action-icons"><i class="material-icons danger delete" data-target="group" data-url="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</i></td>
     </tr>
     </tbody>
 </table>
