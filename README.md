@@ -7,17 +7,17 @@
 ### How to Install
 
 #### On Windows
-Simply download the latest installer and run it.
+Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) installer and run it.
 
 #### On Linux
 _Ubuntu and other debian distributions_
-Download the latest .deb installer and run
+Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .deb installer and run
 ```shell
 dpkg -i kongdash-x.y.z-arch.deb
 ```
 
 _Fedora and other Linux distributions_
-Download the latest kongdash-x.y.z-linux-arch.tar.gz archive.
+Download the [latest](https://github.com/ajaysreedhar/kongdash/releases) kongdash-x.y.z-linux-arch.tar.gz archive.
 Extract the archive and run install.sh script
 
 ```shell
@@ -26,6 +26,7 @@ cd kongdash-x.y.z-linux-arch
 ./install.sh
 ```
 
+_x.y.z refers to the version number and arch refers to the architecture (ia32 or x64)_
 
 ### For Developers
 All kinds of contributions are welcome.
