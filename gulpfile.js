@@ -30,7 +30,11 @@ const RELEASE_SETTINGS = {
         CompanyName: packageJson.author,
         FileDescription: packageJson.description,
         OriginalFilename: packageJson.name + '.exe',
-        ProductVersion : packageJson.version
+        ProductVersion : packageJson.version,
+		'file-version': packageJson.version,
+		'product-version': packageJson.version,
+		LegalCopyright: 'Copyright (c) 2016 ' + packageJson.author,
+		icon: 'resources/icons/kongdash-256x256.ico'
     },
     ignore : '/.gitignore|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
     appPath : packageJson.main,
