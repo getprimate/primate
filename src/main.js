@@ -85,7 +85,7 @@ app.on('browser-window-created', (e, window) => {
         }, {
             label: 'About KongDash',
             click: () => {
-                electron.shell.openExternal('http:ajaysreedhar.github.io/kongdash')
+                electron.shell.openExternal('https://ajaysreedhar.github.io/kongdash/')
             }
         }]
     }]
