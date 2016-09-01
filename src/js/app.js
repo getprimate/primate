@@ -1,28 +1,16 @@
 var {ipcRenderer} = require('electron');
 var kongConfig = ipcRenderer.sendSync('get-kong-config');
 
-/**
- * Joins host name and API resource path
- *
- * @param resource API resource path
- * @return URL
- */
-var buildUrl = function (resource) {
-    return (kongConfig.host) + resource;
-};
+var app = angular.module('KongDashApp', ['ngRoute', 'ngAnimate', 'kongdash']);
 
-var app = angular.module('KongDash', ['ngRoute', 'ngAnimate', 'ngToast', 'base64']);
+app.config(['$routeProvider', 'kdAjaxProvider' , function ($routeProvider, kdAjaxProvider) {
 
-app.config(['$routeProvider', '$httpProvider', '$base64' , function ($routeProvider, $httpProvider, $base64) {
+    kdAjaxProvider.setHost(kongConfig.host);
 
     /* Add a basic authorization header
     if username and password are provided in the settings */
     if (typeof kongConfig.username === 'string' && kongConfig.username) {
-        $httpProvider.defaults.withCredentials = true;
-        $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(kongConfig.username + ':' + (kongConfig.password || ''));
-
-    } else {
-        $httpProvider.defaults.withCredentials = false;
+        kdAjaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
     }
 
     /* Configure routeProvider */
