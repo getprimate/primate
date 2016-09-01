@@ -1,5 +1,5 @@
-app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toast',
-    function ($scope, $http, viewFactory, toast) {
+app.controller('ConsumerListController', ['$scope', 'ajax', 'viewFactory', 'toast',
+    function ($scope, ajax, viewFactory, toast) {
 
     $scope.formInput = {
         userName: '',
@@ -9,9 +9,8 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
     $scope.consumerList = [];
 
     $scope.fetchConsumerList = function (url) {
-        $http({
-            method: 'GET',
-            url: url
+        ajax.get({
+            resource: url
         }).then(function (response) {
             $scope.nextUrl = response.data.next || '';
 
@@ -55,11 +54,9 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
             return false;
         }
 
-        $http({
-            method: 'POST',
-            url: buildUrl('/consumers/'),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        ajax.post({
+            resource: '/consumers/',
+            data: payload
         }).then(function(response) {
             $scope.consumerList.push(response.data);
             toast.success('Added new consumer');
@@ -75,5 +72,5 @@ app.controller('ConsumerListController', ['$scope', '$http', 'viewFactory', 'toa
         consumerForm.slideUp(300);
     });
 
-    $scope.fetchConsumerList(buildUrl('/consumers'))
+    $scope.fetchConsumerList('/consumers')
 }]);

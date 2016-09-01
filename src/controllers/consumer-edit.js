@@ -1,5 +1,5 @@
-app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, viewFactory, toast) {
+app.controller('ConsumerEditController', ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+    function ($scope, $routeParams, ajax, viewFactory, toast) {
 
     $scope.consumerId = $routeParams.consumerId;
     $scope.formInput = {};
@@ -9,9 +9,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     viewFactory.title = 'Edit Consumer';
 
     $scope.fetchAuthList = function (authName, dataModel) {
-        $http({
-            method: 'GET',
-            url: buildUrl('/consumers/' + $scope.consumerId + '/' + authName)
+        ajax.get({
+            resource: '/consumers/' + $scope.consumerId + '/' + authName
         }).then(function (response) {
             $scope.authMethods[dataModel]  = response.data.data
 
@@ -20,9 +19,8 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
         })
     };
 
-    $http({
-        method: 'GET',
-        url: buildUrl('/consumers/' + $scope.consumerId)
+    ajax.get({
+        resource: '/consumers/' + $scope.consumerId
     }).then(function (response) {
         $scope.formInput.username = response.data.username;
         $scope.formInput.custom_id = response.data.custom_id;
@@ -38,12 +36,10 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
     consumerEditForm.on('submit', function (event) {
         event.preventDefault();
 
-        $http({
-            method: 'PATCH',
-            url: buildUrl('/consumers/' + $scope.consumerId + '/'),
-            data: $scope.formInput,
-            headers: {'Content-Type': 'application/json'}
-        }).then(function (response) {
+        ajax.patch({
+            resource: '/consumers/' + $scope.consumerId + '/',
+            data: $scope.formInput
+        }).then(function () {
             toast.success('Consumer updated');
 
         }, function (response) {
@@ -89,11 +85,9 @@ app.controller('ConsumerEditController', ['$scope', '$routeParams', '$http', 'vi
             payload[name] = element.value;
         });
 
-        $http({
-            method: 'POST',
-            url: buildUrl('/consumers/' + $scope.consumerId + '/' + authName),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        ajax.post({
+            resource: '/consumers/' + $scope.consumerId + '/' + authName,
+            data: payload
         }).then(function (response) {
             $scope.authMethods[dataModel].push(response.data);
             toast.success('Authentication saved');
