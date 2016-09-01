@@ -1,5 +1,4 @@
-app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
-    function ($scope, $http, viewFactory, toast) {
+app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory', function ($scope, kdAjax, kdToast, viewFactory) {
 
     viewFactory.title = 'API List';
     viewFactory.prevUrl = null;
@@ -15,9 +14,8 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
 
     $scope.apiList = [];
     $scope.fetchApiList = function (url) {
-        $http({
-            method: 'GET',
-            url: url
+        kdAjax.get({
+            resource: url
         }).then(function (response) {
             $scope.nextUrl = response.data.next || '';
 
@@ -26,7 +24,7 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
             }
 
         }, function () {
-            toast.error('Could not load list of APIs')
+            kdToast.error('Could not load list of APIs')
         })
     };
 
@@ -42,11 +40,8 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
 
         payload[attribute] = ((icon.hasClass('success')) ? false : true );
 
-        $http({
-            method: 'PATCH',
-            url: buildUrl('/apis/' + icon.data('api-id')),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        kdAjax.patch({
+            resource: '/apis/' + icon.data('api-id')
         }).then(function () {
             if ( payload[attribute] == true) {
                 icon.removeClass('default').addClass('success');
@@ -55,10 +50,10 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
                 icon.removeClass('success').addClass('default');
             }
 
-            toast.success('Attribute ' + attribute + ' set to ' + payload[attribute]);
+            kdToast.success('Attribute ' + attribute + ' set to ' + payload[attribute]);
 
         }, function () {
-            toast.error('Unable to update ' + attribute);
+            kdToast.error('Unable to update ' + attribute);
         })
     });
 
@@ -105,18 +100,16 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
         payload.strip_request_path = $scope.formInput.stripRequestPath;
         payload.preserve_host = $scope.formInput.preserveHost;
 
-        $http({
-            method: 'POST',
-            url: buildUrl('/apis/'),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        kdAjax.post({
+            resource: '/apis/',
+            data: payload
         }).then(function (response) {
             $scope.apiList.push(response.data);
 
-            toast.success('New API added')
+            kdToast.success('New API added')
 
         }, function (response) {
-            toast.error(response.data)
+            kdToast.error(response.data)
         });
 
         return false
@@ -126,5 +119,5 @@ app.controller('ApiListController', ['$scope', '$http', 'viewFactory', 'toast',
         apiForm.slideUp(300);
     });
 
-    $scope.fetchApiList(buildUrl('/apis'));
+    $scope.fetchApiList('/apis');
 }]);
