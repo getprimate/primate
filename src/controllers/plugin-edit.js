@@ -1,14 +1,13 @@
-app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, viewFactory, toast) {
+app.controller('PluginEditController', ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+    function ($scope, $routeParams, ajax, viewFactory, toast) {
 
     var action = 'create';
 
     $scope.fetchSchema = function (plugin, callback) {
         $scope.checkBoxes = {};
 
-        $http({
-            method: 'GET',
-            url: buildUrl('/plugins/schema/' + plugin)
+        ajax.get({
+            resource: '/plugins/schema/' + plugin
         }).then(function (response) {
             $scope.pluginSchema = response.data;
 
@@ -57,9 +56,8 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
         }
     };
 
-    $http({
-        method: 'GET',
-        url: buildUrl('/plugins/enabled')
+    ajax.get({
+        resource: '/plugins/enabled'
     }).then(function (response) {
         $scope.enabledPlugins = response.data.enabled_plugins;
 
@@ -67,9 +65,8 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
         toast.error('Could not fetch list of enabled plugins');
     });
 
-    $http({
-        method: 'GET',
-        url: buildUrl('/consumers')
+    ajax.get({
+        resource: '/consumers'
     }).then(function (response) {
         $scope.consumerList = response.data.data;
 
@@ -114,14 +111,14 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
 
         if (action === 'create') {
             config.method = 'POST';
-            config.url = buildUrl('/apis/' + $scope.apiId + '/plugins/')
+            config.resource = '/apis/' + $scope.apiId + '/plugins/'
 
         } else if (action === 'update') {
             config.method = 'PATCH';
-            config.url = buildUrl('/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId)
+            config.resource = '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId
         }
 
-        $http(config).then(function () {
+        ajax.request(config).then(function () {
             toast.success('Plugin ' + action + 'd');
 
         }, function (response) {
@@ -140,9 +137,8 @@ app.controller('PluginEditController', ['$scope', '$routeParams', '$http', 'view
         $scope.pluginId = $routeParams.pluginId;
         action = 'update';
 
-        $http({
-            method: 'GET',
-            url: buildUrl('/plugins/' + $scope.pluginId)
+        ajax.get({
+            resource: '/plugins/' + $scope.pluginId
         }).then(function (response) {
             $scope.apiId = response.data.api_id;
 

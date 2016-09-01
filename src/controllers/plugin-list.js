@@ -1,5 +1,5 @@
-app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, viewFactory, toast) {
+app.controller('PluginListController', ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+    function ($scope, $routeParams, ajax, viewFactory, toast) {
 
     viewFactory.title = "Plugin List";
 
@@ -14,9 +14,8 @@ app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'view
 
     $scope.pluginList = [];
     $scope.fetchPluginList = function(url) {
-        $http({
-            method: 'GET',
-            url: url
+        ajax.get({
+            resource: url
         }).then(function (response) {
             $scope.nextUrl = response.data.next || '';
 
@@ -34,11 +33,9 @@ app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'view
 
         payload.enabled = checkbox.is(':checked');
 
-        $http({
-            method: 'PATCH',
-            url: buildUrl('/plugins/' + checkbox.val()),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        ajax.patch({
+            resource: '/plugins/' + checkbox.val(),
+            data: payload
         }).then(function () {
             toast.success('Plugin ' + (payload.enabled ? 'enabled' : 'disabled'));
 
@@ -47,5 +44,5 @@ app.controller('PluginListController', ['$scope', '$routeParams', '$http', 'view
         })
     });
 
-    $scope.fetchPluginList(buildUrl('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : '')));
+    $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
 }]);
