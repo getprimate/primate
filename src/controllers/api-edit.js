@@ -1,5 +1,5 @@
-app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFactory', 'toast',
-    function ($scope, $routeParams, $http, viewFactory, toast) {
+app.controller('ApiEditController', ['$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
+    function ($scope, $routeParams, ajax, toast, viewFactory) {
 
     $scope.apiId = $routeParams.apiId;
     $scope.formInput = {};
@@ -8,9 +8,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
     $scope.pluginList = [];
 
     $scope.fetchPluginList = function (url) {
-        $http({
-            method: 'GET',
-            url: url
+        ajax.get({
+            resource: url
         }).then(function (response) {
             $scope.nextPluginUrl = response.data.next || '';
 
@@ -23,9 +22,8 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         })
     };
 
-    $http({
-        method: 'GET',
-        url: buildUrl('/apis/' + $scope.apiId)
+    ajax.get({
+        resource: '/apis/' + $scope.apiId
     }).then(function (response) {
         $scope.formInput.upstreamUrl = response.data.upstream_url;
         $scope.formInput.requestPath = (typeof response.data.request_path == 'undefined') ? '' : response.data.request_path;
@@ -83,11 +81,9 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         payload.strip_request_path = $scope.formInput.stripRequestPath;
         payload.preserve_host = $scope.formInput.preserveHost;
 
-        $http({
-            method: 'PATCH',
-            url: buildUrl('/apis/' + $scope.apiId),
-            data: payload,
-            headers: {'Content-Type': 'application/json'}
+        ajax.patch({
+            resource: '/apis/' + $scope.apiId,
+            data: payload
         }).then(function () {
             toast.success('API details updated');
 
@@ -104,11 +100,9 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         if (event.target.checked) state = 'enabled';
         else state = 'disabled';
 
-        $http({
-            method: 'PATCH',
-            url: buildUrl('/apis/' + $scope.apiId + '/plugins/' + event.target.value),
+        ajax.patch({
+            url: '/apis/' + $scope.apiId + '/plugins/' + event.target.value,
             data: { enabled: (state == 'enabled') },
-            headers: {'Content-Type': 'application/json'}
         }).then(function () {
             toast.success('Plugin ' + event.target.dataset.name + ' ' + state)
 
@@ -117,5 +111,5 @@ app.controller('ApiEditController', ['$scope', '$routeParams', '$http', 'viewFac
         })
     });
 
-    $scope.fetchPluginList(buildUrl('/apis/' + $scope.apiId + '/plugins'))
+    $scope.fetchPluginList('/apis/' + $scope.apiId + '/plugins')
 }]);
