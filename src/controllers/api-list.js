@@ -1,4 +1,4 @@
-app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory', function ($scope, kdAjax, kdToast, viewFactory) {
+app.controller('ApiListController', ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
 
     viewFactory.title = 'API List';
     viewFactory.prevUrl = null;
@@ -14,7 +14,7 @@ app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory
 
     $scope.apiList = [];
     $scope.fetchApiList = function (url) {
-        kdAjax.get({
+        ajax.get({
             resource: url
         }).then(function (response) {
             $scope.nextUrl = response.data.next || '';
@@ -24,7 +24,7 @@ app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory
             }
 
         }, function () {
-            kdToast.error('Could not load list of APIs')
+            toast.error('Could not load list of APIs')
         })
     };
 
@@ -40,7 +40,7 @@ app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory
 
         payload[attribute] = ((icon.hasClass('success')) ? false : true );
 
-        kdAjax.patch({
+        ajax.patch({
             resource: '/apis/' + icon.data('api-id')
         }).then(function () {
             if ( payload[attribute] == true) {
@@ -50,10 +50,10 @@ app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory
                 icon.removeClass('success').addClass('default');
             }
 
-            kdToast.success('Attribute ' + attribute + ' set to ' + payload[attribute]);
+            toast.success('Attribute ' + attribute + ' set to ' + payload[attribute]);
 
         }, function () {
-            kdToast.error('Unable to update ' + attribute);
+            toast.error('Unable to update ' + attribute);
         })
     });
 
@@ -100,16 +100,16 @@ app.controller('ApiListController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory
         payload.strip_request_path = $scope.formInput.stripRequestPath;
         payload.preserve_host = $scope.formInput.preserveHost;
 
-        kdAjax.post({
+        ajax.post({
             resource: '/apis/',
             data: payload
         }).then(function (response) {
             $scope.apiList.push(response.data);
 
-            kdToast.success('New API added')
+            toast.success('New API added')
 
         }, function (response) {
-            kdToast.error(response.data)
+            toast.error(response.data)
         });
 
         return false
