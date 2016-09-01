@@ -1,16 +1,15 @@
-app.controller('DashboardController', ['$scope', '$http', 'viewFactory', 'toast', function ($scope, $http, viewFactory, toast) {
+app.controller('DashboardController', ['$scope', 'kdAjax', 'kdToast', 'viewFactory', function ($scope, kdAjax, kdToast, viewFactory) {
 
     viewFactory.title = 'Dashboard';
     viewFactory.prevUrl = null;
 
-    $http({
-        method: 'GET',
-        url: buildUrl( '/' )
+    kdAjax.get({
+        resource: '/'
     }).then(function (response) {
         $scope.kongStat = response.data;
         $scope.database = $scope.kongStat.configuration.database;
 
     }, function () {
-        toast.error('Could not populate data');
+        kdToast.error('Could not populate data');
     })
 }]);
