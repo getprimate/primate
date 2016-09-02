@@ -1,4 +1,4 @@
-(function (angular, app) {
+(function (app) {
 
     var controller = 'DashboardController';
 
@@ -21,4 +21,4 @@
             toast.error('Could not populate data');
         })
     }]);
-})(window.angular, app);
+})(app);
