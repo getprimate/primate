@@ -1,3 +1,5 @@
+const VERSION = 'v0.1.0-beta';
+
 const electron  = require('electron');
 const path      = require('path');
 const pathExtra = require('path-extra');
@@ -8,7 +10,7 @@ var absPath = path.dirname(`${__dirname}`),
 
 var {app, ipcMain, BrowserWindow, Menu} = electron;
 
-let mainWindow, globalConfig = {kong: {}, app: {enableAnimation: true}};
+let mainWindow, appConfig = {kong: {}, app: {enableAnimation: true}};
 
 var startMainWindow = function () {
     mainWindow = new BrowserWindow({
@@ -36,10 +38,10 @@ app.setName('KongDash');
 
 app.on('ready', () => {
     try {
-        globalConfig = jsonfile.readFileSync(configFile);
+        appConfig = jsonfile.readFileSync(configFile);
 
     } finally {
-        startMainWindow()
+        startMainWindow();
     }
 });
 
@@ -60,8 +62,7 @@ app.on('browser-window-created', (e, window) => {
             label: 'Reload',
             accelerator: 'CmdOrCtrl+R',
             click: (item, focusedWindow) => {
-                if (focusedWindow)
-                    focusedWindow.reload()
+                if (focusedWindow) focusedWindow.reload();
             }
         }, {role: 'togglefullscreen'}]
     }, {
@@ -69,19 +70,19 @@ app.on('browser-window-created', (e, window) => {
         submenu: [{
             label: 'GitHub Repository',
             click: () => {
-                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash')
+                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash');
             }
         }, {
             label: 'Report Issues',
             click: () => {
-                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash/issues')
+                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash/issues');
             }
         }, {
            type: 'separator'
         }, {
             label: 'About KongDash',
             click: () => {
-                electron.shell.openExternal('https://ajaysreedhar.github.io/kongdash/')
+                electron.shell.openExternal('https://ajaysreedhar.github.io/kongdash/');
             }
         }]
     }];
@@ -93,36 +94,24 @@ app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') app.quit();
 });
 
-ipcMain.on('get-kong-config', (event) => {
-    event.returnValue = globalConfig.kong;
+ipcMain.on('get-config', (event, arg) => {
+    if (arg === 'VERSION') {
+        event.returnValue = VERSION;
+        return;
+    }
+
+    event.returnValue = appConfig[arg];
 });
 
-ipcMain.on('get-app-config', (event) => {
-    event.returnValue = globalConfig.app;
-});
+ipcMain.on('write-config', (event, arg) => {
+    appConfig[arg.name] = arg.settings;
 
-ipcMain.on('write-kong-config', (event, arg) => {
-    globalConfig.kong = arg;
-
-    jsonfile.writeFile(configFile, globalConfig, function (error) {
+    jsonfile.writeFile(configFile, appConfig, function (error) {
         if (error) {
             event.sender.send('write-config-error', {message: 'Could not write configuration file'});
 
         } else {
-            event.sender.send('write-config-success', {});
-        }
-    });
-});
-
-ipcMain.on('write-app-config', (event, arg) => {
-    globalConfig.app = arg;
-
-    jsonfile.writeFile(configFile, globalConfig, function (error) {
-        if (error) {
-            event.sender.send('write-config-error', {message: 'Could not write configuration file'});
-
-        } else {
-            event.sender.send('write-config-success', {});
+            event.sender.send('write-config-success', {message: 'Configuration saved successfully'});
         }
     });
 });
