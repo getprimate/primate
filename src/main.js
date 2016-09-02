@@ -1,18 +1,16 @@
-const electron = require('electron')
-const path = require('path')
-const pathExtra = require('path-extra')
-const jsonfile = require('jsonfile')
+const electron  = require('electron');
+const path      = require('path');
+const pathExtra = require('path-extra');
+const jsonfile  = require('jsonfile');
 
 var absPath = path.dirname(`${__dirname}`),
-    configFile = pathExtra.datadir('KongDash') + '/config.json'
+    configFile = pathExtra.datadir('KongDash') + '/config.json';
 
-var {app, ipcMain, BrowserWindow, Menu} = electron
+var {app, ipcMain, BrowserWindow, Menu} = electron;
 
-app.setName('KongDash')
+let mainWindow, globalConfig = {kong: {}, app: {enableAnimation: true}};
 
-let mainWindow, globalConfig = { kong: {}, app: { enableAnimation: true } }
-
-function startMainWindow () {
+var startMainWindow = function () {
     mainWindow = new BrowserWindow({
         backgroundColor: '#1A242D',
         width: 1100,
@@ -22,34 +20,32 @@ function startMainWindow () {
         minHeight: 500,
         minWidth: 900,
 	    icon: absPath + '/kongdash-256x256.png'
-    })
-    mainWindow.loadURL('file://' + absPath + '/src/init.html')
+    });
+    mainWindow.loadURL('file://' + absPath + '/src/init.html');
 
-    /* Debugging
+    //* Debugging
     mainWindow.webContents.openDevTools();
     //*/
 
     mainWindow.on('closed', () => {
-        mainWindow = null
-    })
-}
+        mainWindow = null;
+    });
+};
+
+app.setName('KongDash');
 
 app.on('ready', () => {
     try {
-        var config = jsonfile.readFileSync(configFile)
-        globalConfig = config
-
-    } catch (ignored) {
+        globalConfig = jsonfile.readFileSync(configFile);
 
     } finally {
         startMainWindow()
     }
-})
+});
 
 app.on('activate', () => {
-    if (mainWindow === null)
-        startMainWindow()
-})
+    if (mainWindow === null) startMainWindow();
+});
 
 app.on('browser-window-created', (e, window) => {
     var menuTemplate = [{
@@ -88,44 +84,45 @@ app.on('browser-window-created', (e, window) => {
                 electron.shell.openExternal('https://ajaysreedhar.github.io/kongdash/')
             }
         }]
-    }]
+    }];
 
-    window.setMenu(Menu.buildFromTemplate(menuTemplate))
-})
+    window.setMenu(Menu.buildFromTemplate(menuTemplate));
+});
 
 app.on('window-all-closed', () => {
-    if(process.platform !== 'darwin')
-        app.quit()
+    if(process.platform !== 'darwin') app.quit();
 });
 
 ipcMain.on('get-kong-config', (event) => {
-    event.returnValue = globalConfig.kong
-})
+    event.returnValue = globalConfig.kong;
+});
 
 ipcMain.on('get-app-config', (event) => {
-    event.returnValue = globalConfig.app
-})
+    event.returnValue = globalConfig.app;
+});
 
 ipcMain.on('write-kong-config', (event, arg) => {
     globalConfig.kong = arg;
 
     jsonfile.writeFile(configFile, globalConfig, function (error) {
         if (error) {
-            event.sender.send('write-config-error', {message: 'Could not write configuration file'})
+            event.sender.send('write-config-error', {message: 'Could not write configuration file'});
+
         } else {
-            event.sender.send('write-config-success', {})
+            event.sender.send('write-config-success', {});
         }
-    })
-})
+    });
+});
 
 ipcMain.on('write-app-config', (event, arg) => {
     globalConfig.app = arg;
 
     jsonfile.writeFile(configFile, globalConfig, function (error) {
         if (error) {
-            event.sender.send('write-config-error', {message: 'Could not write configuration file'})
+            event.sender.send('write-config-error', {message: 'Could not write configuration file'});
+
         } else {
-            event.sender.send('write-config-success', {})
+            event.sender.send('write-config-success', {});
         }
-    })
-})
+    });
+});
