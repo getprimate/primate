@@ -1,61 +1,164 @@
-var {ipcRenderer} = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-kong-config');
+var app = angular.module('KongDash', ['ngAnimate', 'base64'].concat(typeof ngDependency === 'undefined' ? [] : ngDependency));
 
-var app = angular.module('KongDashApp', ['ngRoute', 'ngAnimate', 'kongdash']);
+app.provider('ajax', ['$base64',  function ($base64) {
+    var httpConfig = {};
 
-app.config(['$routeProvider', 'kdAjaxProvider' , function ($routeProvider, kdAjaxProvider) {
+    var httpRequest = function (config) {
+        var request = {
+            method: config.method,
+            url: config.url || (httpConfig.host + config.resource),
+            headers: {},
+            withCredentials: false
+        };
 
-    kdAjaxProvider.setHost(kongConfig.host);
+        if (typeof config.data === 'object')
+            request.data = config.data;
 
-    /* Add a basic authorization header
-    if username and password are provided in the settings */
-    if (typeof kongConfig.username === 'string' && kongConfig.username) {
-        kdAjaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
-    }
+        if (typeof httpConfig.authorization === 'string') {
+            request.withCredentials = true;
+            request.headers['Authorization'] = httpConfig.authorization;
+        }
 
-    /* Configure routeProvider */
-    $routeProvider
-        .when('/', {
-            templateUrl: 'views/dashboard.html',
-            controller: 'DashboardController'
-        })
-        .when('/api', {
-            templateUrl: 'views/api-list.html',
-            controller: 'ApiListController'
-        })
-        .when('/api/:apiId', {
-            templateUrl: 'views/api-edit.html',
-            controller: 'ApiEditController'
-        })
-        .when('/api/:apiId/plugins', {
-            templateUrl: 'views/plugin-edit.html',
-            controller: 'PluginEditController'
-        })
-        .when('/plugins', {
-            templateUrl: 'views/plugin-list.html',
-            controller: 'PluginListController'
-        })
-        .when('/plugins/:pluginId', {
-            templateUrl: 'views/plugin-edit.html',
-            controller: 'PluginEditController'
-        })
-        .when('/consumers', {
-            templateUrl: 'views/consumer-list.html',
-            controller: 'ConsumerListController'
-        })
-        .when('/consumers/:consumerId', {
-            templateUrl: 'views/consumer-edit.html',
-            controller: 'ConsumerEditController'
-        })
-        .when('/consumers/:consumerId/plugins', {
-            templateUrl: 'views/plugin-list.html',
-            controller: 'PluginListController'
-        })
-        .when('/settings', {
-            templateUrl: 'views/settings.html',
-            controller: 'SettingsController'
-        })
+        if (typeof httpConfig.accept === 'string')
+            request.headers['Accept'] = httpConfig.accept;
+
+        if (typeof httpConfig.contentType === 'string')
+            request.headers['Content-Type'] = httpConfig.contentType;
+
+        if (typeof config.headers === 'object') {
+            Object.keys(config.headers).forEach(function (item) {
+                request.headers[item] = config.headers[item];
+            });
+        }
+
+        if (Object.keys(request.headers).length <= 0)
+            delete request.headers;
+
+        return request;
+    };
+
+    this.setHost = function (host) {
+        httpConfig.host = host;
+    };
+
+    this.basicAuth = function (username, password) {
+        httpConfig.authorization = 'Basic ' + $base64.encode(username + ':' + (password || ''));
+    };
+
+    this.accept = function (type) {
+        httpConfig.accept = 'Accept: ' + type;
+    };
+
+    this.contentType = function (type) {
+        httpConfig.contentType = 'Content-Type: ' + type;
+    };
+
+    this.$get = ['$http', function ($http) {
+        return {
+            request: function (config) {
+                return $http(httpRequest(config))
+            },
+            get: function (config) {
+                config.method = 'GET';
+                return $http(httpRequest(config));
+            },
+            post: function (config) {
+                config.method = 'POST';
+                return $http(httpRequest(config));
+            },
+            put: function (config) {
+                config.method = 'PUT';
+                return $http(httpRequest(config));
+            },
+            patch: function (config) {
+                config.method = 'PATCH';
+                return $http(httpRequest(config));
+            },
+            delete: function (config) {
+                config.method = 'DELETE';
+                return $http(httpRequest(config));
+            }
+        };
+    }];
 }]);
+
+app.factory('toast', function () {
+    return {
+        displayMessage: function (message) {
+            var body = angular.element('body'), status;
+
+            if (body.children('.notification').length > 0)
+                body.children('.notification').remove();
+
+            var text = '';
+
+            try {
+                if (typeof message.text === 'object') {
+                    if (Object.keys(message.text).length > 0) {
+                        var firstKey = Object.keys(message.text)[0];
+
+                        if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string') {
+                            text = message.text[firstKey];
+                        } else {
+                            text = firstKey + ' ' + message.text[firstKey];
+                        }
+                    } else {
+                        text = 'No details available!';
+                    }
+                } else {
+                    text = message.text
+                }
+            } catch (e) {
+                text = 'No details available!'
+            }
+
+            switch (message.type) {
+                case 'danger':
+                    status = 'Error!';
+                    break;
+
+                case 'success':
+                    status = 'Success!';
+                    break;
+
+                case 'warning':
+                    status = 'Warning!';
+                    break;
+
+                default:
+                    status = 'Message:';
+                    break
+            }
+
+            var div = angular.element('<div></div>', {class: 'notification ' + message.type})
+                .html('<b>' + status + '</b> ' + text + '.')
+                .on('click', function () {
+                    div.fadeOut(200);
+                });
+
+            body.append(div);
+            var interval = setInterval(function () {
+                div.fadeOut({
+                    duration: 1000, complete: function () {
+                        clearInterval(interval);
+                    }
+                })
+            }, 4000);
+        },
+        error: function (message) {
+            this.displayMessage({type: 'danger', text: message})
+        },
+        warning: function (message) {
+            this.displayMessage({type: 'warning', text: message})
+        },
+        info: function (message) {
+            this.displayMessage({type: 'info', text: message})
+        },
+        success: function (message) {
+            this.displayMessage({type: 'success', text: message})
+        }
+    };
+});
 
 /**
  * Converts first letter of a string to uppercase and
@@ -96,35 +199,3 @@ app.filter('splice', function () {
         return input.join(', ');
     };
 });
-
-/**
- * Holds current page title, current host URL and
- * URL of the previous page.
- */
-app.factory('viewFactory', function () {
-    return { title: '', prevUrl: '', host: kongConfig.host }
-});
-
-/**
- * Detects and highlights the correct
- * sidebar link upon location change.
- */
-app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
-    var appConfig = ipcRenderer.sendSync('get-app-config');
-
-    $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'slide-right' : '';
-
-    $rootScope.$on('$locationChangeStart', function (event, next, current) {
-        viewFactory.deleteAction = null;
-        viewFactory.prevUrl = current;
-
-        if (next.indexOf('#') > 1) {
-            var refArray = next.split('#/')[1].split('/');
-
-            var href = '#/' + refArray[0], nav = angular.element('nav.navigation');
-
-            nav.find('a.navigation__link').removeClass('active');
-            nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active')
-        }
-    })
-}]);
