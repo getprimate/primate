@@ -19,24 +19,9 @@ main { padding-top: 10%; overflow: hidden; }
 
 form.form { max-width: 400px; margin: 0 auto 0 auto;  }
 </style>
-
-<script type="text/javascript">
-if (typeof module === 'object') {
-    window.module = module;
-    module = undefined;
-}
-</script>
-
-<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-
-<script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/angular-route.min.js"></script>
-<script type="text/javascript" src="js/angular-animate.js"></script>
-<script type="text/javascript" src="js/angular-toast.js"></script>
-<script type="text/javascript" src="js/angular-base64.min.js"></script>
 </head>
 <body class="body">
-<main data-ng-controller="WelcomeController">
+<main data-ng-controller="InitController">
     <div class="icon">
         <img src="images/logo-192x192.png" alt="KongDash" />
         <p class="caption">KongDash</p>
@@ -44,104 +29,125 @@ if (typeof module === 'object') {
     </div>
 
     <form action="#" class="form hidden" id="configForm">
-        <div class="form__field">
-            <label class="field-label">Admin API URI</label>
-            <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
-        </div>
+    <div class="form__field">
+        <label class="field-label">Admin API URI</label>
+        <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
+    </div>
 
-        <div class="form__field">
-            <label class="field-label">Username</label>
-            <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
-        </div>
+    <div class="form__field">
+        <label class="field-label">Username</label>
+        <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
+    </div>
 
-        <div class="form__field">
-            <label class="field-label">Password</label>
-            <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
-        </div>
+    <div class="form__field">
+        <label class="field-label">Password</label>
+        <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
+    </div>
 
-        <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
+    <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
     </form>
 
     <footer class="footer">
         <span class="hpadding-20 pull-right" id="status"></span>
     </footer>
 </main>
+
 <script type="text/javascript">
+if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+}
+
 var {ipcRenderer} = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-kong-config', '');
+var kongConfig = ipcRenderer.sendSync('get-kong-config');
+</script>
 
-var app = angular.module('KongDash', ['ngToast', 'base64']);
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-animate.js"></script>
+<script type="text/javascript" src="js/angular-base64.min.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
 
-app.config(['$httpProvider', '$base64', function ($httpProvider, $base64) {
-    if (typeof kongConfig.username === 'string' && kongConfig.username) {
-        $httpProvider.defaults.withCredentials = true;
-        $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $base64.encode(kongConfig.username + ':' + (kongConfig.password || ''));
+<script type="text/javascript">
+(function (angular, app, ipcRenderer, kongConfig) {
 
-    } else {
-        $httpProvider.defaults.withCredentials = false;
+    if (typeof app === 'undefined') {
+        throw 'InitController: app is undefined';
     }
-}]);
 
-app.controller('WelcomeController', ['$scope', '$element', '$http', 'toast', function ($scope, $element, $http, toast) {
+    app.config(['ajaxProvider', function (ajaxProvider) {
+        if (typeof kongConfig.username === 'string') {
+            ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
+        }
+    }]);
 
-    var statusBar = $element.find('footer.footer').children('span');
-    statusBar.html('Reading configuration...');
+    app.controller('InitController', ['$scope', '$element', '$base64', 'ajax', 'toast', function ($scope, $element, $base64, ajax, toast) {
+        var statusBar = $element.find('footer.footer').children('span');
+        statusBar.html('Reading configuration...');
 
-    $scope.kongConfig = kongConfig;
-    $scope.writeConfig = false;
+        $scope.kongConfig = kongConfig;
 
-    var form = $element.find('form#configForm');
+        var form    = $element.find('form#configForm');
+        var connect = function (config, writeConfig) {
+            ajax.get(config).then(function () {
+                if (writeConfig === true) {
+                    ipcRenderer.send('write-kong-config', $scope.kongConfig);
 
-    var connectHost = function () {
-        $http({
-            method: 'GET',
-            url: $scope.kongConfig.host
-        }).then(function () {
-            if ($scope.writeConfig) {
-                ipcRenderer.send('write-kong-config', $scope.kongConfig);
+                    ipcRenderer.on('write-config-success', function () {
+                        $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html'; } });
 
-                ipcRenderer.on('write-config-success', function () {
-                    $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } })
+                    }).on('write-config-error', function (event, arg) {
+                        toast.error(arg.message);
 
-                }).on('write-config-error', function (event, arg) {
-                    toast.error(arg.message);
+                        var interval = setInterval(function () {
+                            clearInterval(interval);
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    });
+                } else {
+                    $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html'; } });
+                }
 
-                    var interval = setInterval(function () {
-                        clearInterval(interval);
-                        window.location.href = 'index.html';
-                    }, 2000);
-                })
-            } else {
-                $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html' } });
+            }, function (response) {
+                if (form.hasClass('hidden')) form.fadeIn(400);
+
+                if (response.status && parseInt(response.status) === 401 && $scope.kongConfig.username)
+                    toast.error('Invalid username or password');
+
+                else if (response.status && parseInt(response.status) === 401)
+                    toast.error('Please enter username and password');
+
+                else
+                    toast.error('Could not connect to ' + $scope.kongConfig.host);
+            });
+        };
+
+        form.on('submit', function () {
+            var config = {url: $scope.kongConfig.host, headers: {}};
+
+            if ($scope.kongConfig.username) {
+                config.headers['Authorization'] = 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''));
             }
 
-        }, function () {
-            if (form.hasClass('hidden')) form.fadeIn(400);
+            connect(config, true);
+            return false;
+        });
 
-            toast.error('Could not connect to ' + $scope.kongConfig.host);
-        })
-    };
+        var timeout = setInterval(function () {
+            statusBar.html('');
+            $element.find(".icon").slideUp({ duration: 300 });
 
-    form.on('submit', function () {
-        $scope.writeConfig = true;
-        connectHost();
+            if (typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host) {
+                connect({url: kongConfig.host}, false);
+                clearInterval(timeout);
 
-        return false;
-    });
-
-    var timeout = setInterval(function () {
-        statusBar.html('');
-        $element.find(".icon").slideUp({ duration: 300 });
-
-        if ( typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host ) {
-            connectHost();
-            clearInterval(timeout);
-
-        } else {
-            form.fadeIn({ duration: 400, complete: function () { clearInterval(timeout) } });
-        }
-    }, 2000);
-}]);
+            } else {
+                form.fadeIn({ duration: 400, complete: function () { clearInterval(timeout); } });
+            }
+        }, 2000);
+    }]);
+})(window.angular, app, ipcRenderer, kongConfig);
 </script>
 </body>
 </html>
