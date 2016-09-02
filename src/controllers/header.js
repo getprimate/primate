@@ -1,4 +1,4 @@
-(function (angular, app) {
+(function (app) {
 
     var controller = 'HeaderController';
 
@@ -10,4 +10,4 @@
         $scope.viewFactory = viewFactory;
         $scope.title = 'Dashboard';
     }]);
-})(window.angular, app);
+})(app);
