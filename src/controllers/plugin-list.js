@@ -1,48 +1,57 @@
-app.controller('PluginListController', ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-    function ($scope, $routeParams, ajax, viewFactory, toast) {
+(function (angular, app) {
 
-    viewFactory.title = "Plugin List";
+    var controller = 'PluginListController';
 
-    var filters = [];
-
-    if ($routeParams.consumerId) {
-        filters.push('consumer_id=' + $routeParams.consumerId);
-
-    } else {
-        viewFactory.prevUrl = null;
+    if (typeof app === 'undefined') {
+        throw ( controller + ': app is undefined');
     }
 
-    $scope.pluginList = [];
-    $scope.fetchPluginList = function(url) {
-        ajax.get({
-            resource: url
-        }).then(function (response) {
-            $scope.nextUrl = response.data.next || '';
+    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($scope, $routeParams, ajax, viewFactory, toast) {
 
-            for (var i=0; i<response.data.data.length; i++ ) {
-                $scope.pluginList.push(response.data.data[i]);
-            }
+        viewFactory.title = "Plugin List";
 
-        }, function () {
-            toast.error('Could not load list of plugins')
-        })
-    };
+        var filters = [];
 
-    angular.element('#pluginsTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
-        var checkbox = angular.element(event.target), payload={};
+        if ($routeParams.consumerId) {
+            filters.push('consumer_id=' + $routeParams.consumerId);
 
-        payload.enabled = checkbox.is(':checked');
+        } else {
+            viewFactory.prevUrl = null;
+        }
 
-        ajax.patch({
-            resource: '/plugins/' + checkbox.val(),
-            data: payload
-        }).then(function () {
-            toast.success('Plugin ' + (payload.enabled ? 'enabled' : 'disabled'));
+        $scope.pluginList = [];
+        $scope.fetchPluginList = function(url) {
+            ajax.get({
+                resource: url
+            }).then(function (response) {
+                $scope.nextUrl = response.data.next || '';
 
-        }, function () {
-            toast.error('Could not ' + (payload.enabled ? 'enable' : 'disable') + ' this plugin');
-        })
-    });
+                for (var i=0; i<response.data.data.length; i++ ) {
+                    $scope.pluginList.push(response.data.data[i]);
+                }
 
-    $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
-}]);
+            }, function () {
+                toast.error('Could not load list of plugins')
+            })
+        };
+
+        angular.element('#pluginsTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
+            var checkbox = angular.element(event.target), payload={};
+
+            payload.enabled = checkbox.is(':checked');
+
+            ajax.patch({
+                resource: '/plugins/' + checkbox.val(),
+                data: payload
+            }).then(function () {
+                toast.success('Plugin ' + (payload.enabled ? 'enabled' : 'disabled'));
+
+            }, function () {
+                toast.error('Could not ' + (payload.enabled ? 'enable' : 'disable') + ' this plugin');
+            })
+        });
+
+        $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
+    }]);
+})(window.angular, app);

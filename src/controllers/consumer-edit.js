@@ -1,103 +1,112 @@
-app.controller('ConsumerEditController', ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-    function ($scope, $routeParams, ajax, viewFactory, toast) {
+(function (angular, app) {
 
-    $scope.consumerId = $routeParams.consumerId;
-    $scope.formInput = {};
+    var controller = 'ConsumerEditController';
 
-    $scope.authMethods = {};
+    if (typeof app === 'undefined') {
+        throw ( controller + ': app is undefined');
+    }
 
-    viewFactory.title = 'Edit Consumer';
+    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($scope, $routeParams, ajax, viewFactory, toast) {
 
-    $scope.fetchAuthList = function (authName, dataModel) {
+        $scope.consumerId = $routeParams.consumerId;
+        $scope.formInput = {};
+
+        $scope.authMethods = {};
+
+        viewFactory.title = 'Edit Consumer';
+
+        $scope.fetchAuthList = function (authName, dataModel) {
+            ajax.get({
+                resource: '/consumers/' + $scope.consumerId + '/' + authName
+            }).then(function (response) {
+                $scope.authMethods[dataModel]  = response.data.data
+
+            }, function () {
+                toast.error('Could not load authentication details')
+            })
+        };
+
         ajax.get({
-            resource: '/consumers/' + $scope.consumerId + '/' + authName
+            resource: '/consumers/' + $scope.consumerId
         }).then(function (response) {
-            $scope.authMethods[dataModel]  = response.data.data
+            $scope.formInput.username = response.data.username;
+            $scope.formInput.custom_id = response.data.custom_id;
 
-        }, function () {
-            toast.error('Could not load authentication details')
-        })
-    };
-
-    ajax.get({
-        resource: '/consumers/' + $scope.consumerId
-    }).then(function (response) {
-        $scope.formInput.username = response.data.username;
-        $scope.formInput.custom_id = response.data.custom_id;
-
-        viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
-
-    }, function (response) {
-        toast.error('Could not load consumer details');
-        if (response && response.status === 404) window.location.href = '#/consumers';
-    });
-
-    var consumerEditForm = angular.element('form#consumerEditForm');
-    consumerEditForm.on('submit', function (event) {
-        event.preventDefault();
-
-        ajax.patch({
-            resource: '/consumers/' + $scope.consumerId + '/',
-            data: $scope.formInput
-        }).then(function () {
-            toast.success('Consumer updated');
+            viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
 
         }, function (response) {
-            toast.error(response.data);
+            toast.error('Could not load consumer details');
+            if (response && response.status === 404) window.location.href = '#/consumers';
         });
 
-        return false;
-    });
+        var consumerEditForm = angular.element('form#consumerEditForm');
+        consumerEditForm.on('submit', function (event) {
+            event.preventDefault();
 
-    var authNotebook = angular.element('#authNotebook.notebook');
+            ajax.patch({
+                resource: '/consumers/' + $scope.consumerId + '/',
+                data: $scope.formInput
+            }).then(function () {
+                toast.success('Consumer updated');
 
-    let authName = 'key-auth', dataModel = 'keyAuthList';
-    authNotebook.on('click', '.col.tab', function (event) {
-        var tab = angular.element(event.target);
-        var targetView = authNotebook.find(tab.data('target-view'));
+            }, function (response) {
+                toast.error(response.data);
+            });
 
-        authNotebook.children('.row').children('.tab').removeClass('active');
-        tab.addClass('active');
-
-        authNotebook.find('.auth-view:visible').hide({ duration:300, direction: 'left' });
-        targetView.show({ duration:300, direction:'right' });
-
-        dataModel = targetView.data('list-model');
-        authName  = targetView.data('auth-name');
-
-        if (typeof $scope.authMethods[dataModel] == 'undefined' || $scope.authMethods[dataModel].length <= 0) {
-            $scope.fetchAuthList(authName, dataModel);
-        }
-    }).on('click', 'button.btn.cancel', function (event) {
-        angular.element(event.target).parents('form.form-new-auth').slideUp(300);
-
-    }).on('click', '.toggle-form', function (event) {
-        angular.element(event.target).parents('.auth-view').find('form.form-new-auth').slideToggle(300);
-
-    }).on('submit', 'form.form-new-auth', function (event) {
-        event.preventDefault();
-
-        var form = angular.element(event.target);
-        var payload = {};
-
-        form.find('input.param').each(function (index, element) {
-            var name = element.name;
-            payload[name] = element.value;
+            return false;
         });
 
-        ajax.post({
-            resource: '/consumers/' + $scope.consumerId + '/' + authName,
-            data: payload
-        }).then(function (response) {
-            $scope.authMethods[dataModel].push(response.data);
-            toast.success('Authentication saved');
+        var authNotebook = angular.element('#authNotebook.notebook');
 
-        }, function (response) {
-            toast.error(response.data);
+        let authName = 'key-auth', dataModel = 'keyAuthList';
+        authNotebook.on('click', '.col.tab', function (event) {
+            var tab = angular.element(event.target);
+            var targetView = authNotebook.find(tab.data('target-view'));
+
+            authNotebook.children('.row').children('.tab').removeClass('active');
+            tab.addClass('active');
+
+            authNotebook.find('.auth-view:visible').hide({ duration:300, direction: 'left' });
+            targetView.show({ duration:300, direction:'right' });
+
+            dataModel = targetView.data('list-model');
+            authName  = targetView.data('auth-name');
+
+            if (typeof $scope.authMethods[dataModel] == 'undefined' || $scope.authMethods[dataModel].length <= 0) {
+                $scope.fetchAuthList(authName, dataModel);
+            }
+        }).on('click', 'button.btn.cancel', function (event) {
+            angular.element(event.target).parents('form.form-new-auth').slideUp(300);
+
+        }).on('click', '.toggle-form', function (event) {
+            angular.element(event.target).parents('.auth-view').find('form.form-new-auth').slideToggle(300);
+
+        }).on('submit', 'form.form-new-auth', function (event) {
+            event.preventDefault();
+
+            var form = angular.element(event.target);
+            var payload = {};
+
+            form.find('input.param').each(function (index, element) {
+                var name = element.name;
+                payload[name] = element.value;
+            });
+
+            ajax.post({
+                resource: '/consumers/' + $scope.consumerId + '/' + authName,
+                data: payload
+            }).then(function (response) {
+                $scope.authMethods[dataModel].push(response.data);
+                toast.success('Authentication saved');
+
+            }, function (response) {
+                toast.error(response.data);
+            });
+
+            return false;
         });
 
-        return false;
-    });
-
-    $scope.fetchAuthList('key-auth', 'keyAuthList');
-}]);
+        $scope.fetchAuthList('key-auth', 'keyAuthList');
+    }]);
+})(window.angular, app);

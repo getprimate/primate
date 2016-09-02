@@ -1,48 +1,57 @@
-app.controller('SettingsController', ['$rootScope', '$scope', 'viewFactory', 'toast', function ($rootScope, $scope, viewFactory, toast) {
-    viewFactory.prevUrl = null;
-    viewFactory.title = 'Settings';
+(function (angular, app, ipcRenderer, kongConfig) {
 
-    $scope.kongConfig = kongConfig;
-    $scope.appConfig = ipcRenderer.sendSync('get-app-config', '');
+    var controller = 'SettingsController';
 
-    var formKongConfig = angular.element('form#formKongConfig');
+    if (typeof app === 'undefined') {
+        throw ( controller + ': app is undefined');
+    }
 
-    formKongConfig.on('submit', function () {
-        viewFactory.host = kongConfig.host = $scope.kongConfig.host;
-        kongConfig.username = $scope.kongConfig.username;
-        kongConfig.password = $scope.kongConfig.password;
+    app.controller(controller, ['$rootScope', '$scope', 'viewFactory', 'toast', function ($rootScope, $scope, viewFactory, toast) {
+        viewFactory.prevUrl = null;
+        viewFactory.title = 'Settings';
 
-        ipcRenderer.send('write-kong-config', $scope.kongConfig);
+        $scope.kongConfig = kongConfig;
+        $scope.appConfig = ipcRenderer.sendSync('get-app-config', '');
 
-        ipcRenderer.on('write-config-success', function () {
-            toast.success('Kong configuration saved')
+        var formKongConfig = angular.element('form#formKongConfig');
 
-        }).on('write-config-error', function (event, arg) {
-            toast.error(arg.message)
+        formKongConfig.on('submit', function () {
+            viewFactory.host = kongConfig.host = $scope.kongConfig.host;
+            kongConfig.username = $scope.kongConfig.username;
+            kongConfig.password = $scope.kongConfig.password;
+
+            ipcRenderer.send('write-kong-config', $scope.kongConfig);
+
+            ipcRenderer.on('write-config-success', function () {
+                toast.success('Kong configuration saved')
+
+            }).on('write-config-error', function (event, arg) {
+                toast.error(arg.message)
+            });
+
+            return false;
         });
 
-        return false;
-    });
+        angular.element('#toggleAnimation').on('click', function (event) {
+            var checkbox = angular.element(event.target);
 
-    angular.element('#toggleAnimation').on('click', function (event) {
-        var checkbox = angular.element(event.target);
+            if (checkbox.is(':checked')) {
+                $rootScope.ngViewAnimation = 'slide-right';
+                $scope.appConfig.enableAnimation = true;
 
-        if (checkbox.is(':checked')) {
-            $rootScope.ngViewAnimation = 'slide-right';
-            $scope.appConfig.enableAnimation = true;
+            } else {
+                $rootScope.ngViewAnimation = '';
+                $scope.appConfig.enableAnimation = false;
+            }
 
-        } else {
-            $rootScope.ngViewAnimation = '';
-            $scope.appConfig.enableAnimation = false;
-        }
+            ipcRenderer.send('write-app-config', $scope.appConfig);
 
-        ipcRenderer.send('write-app-config', $scope.appConfig);
+            ipcRenderer.on('write-config-success', function () {
+                toast.success('App configuration saved')
 
-        ipcRenderer.on('write-config-success', function () {
-            toast.success('App configuration saved')
-
-        }).on('write-config-error', function (event, arg) {
-            toast.error(arg.message)
+            }).on('write-config-error', function (event, arg) {
+                toast.error(arg.message)
+            });
         });
-    });
-}]);
+    }]);
+})(window.angular, app, ipcRenderer, kongConfig);
