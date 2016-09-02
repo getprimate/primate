@@ -27,11 +27,11 @@
                 $scope.nextUrl = response.data.next || '';
 
                 for (var i=0; i<response.data.data.length; i++ ) {
-                    $scope.apiList.push(response.data.data[i])
+                    $scope.apiList.push(response.data.data[i]);
                 }
 
             }, function () {
-                toast.error('Could not load list of APIs')
+                toast.error('Could not load list of APIs');
             })
         };
 
@@ -65,7 +65,7 @@
         });
 
         panelAdd.children('div.panel__heading').on('click', function () {
-            apiForm.slideToggle(300)
+            apiForm.slideToggle(300);
         });
 
         apiForm.on('submit', function (event) {
@@ -119,7 +119,7 @@
                 toast.error(response.data)
             });
 
-            return false
+            return false;
         });
 
         apiForm.on('click', 'button[name="actionCancel"]', function () {
