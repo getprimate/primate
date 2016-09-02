@@ -1,6 +1,24 @@
 <div class="container">
 
 <div class="row">
+<div class="col md-8">
+    <div class="panel panel-border info">
+        <div class="panel__heading">Node Status</div>
+        <div class="panel__body"><canvas id="clusterStatChart" height="100"></canvas></div>
+    </div><!-- .panel.panel-border.info -->
+</div>
+
+<div class="col md-4">
+    <div class="panel panel-border info">
+        <div class="panel__heading">Timers</div>
+        <div class="panel__body">
+            <div class="vpadding-10"><canvas id="timersChart" height="194"></canvas></div>
+        </div>
+    </div><!-- .panel.panel-border.info -->
+</div>
+</div><!-- .row -->
+
+<div class="row">
 <div class="col md-5">
     <div class="panel panel-border info">
     <div class="panel__heading">Gateway</div>
@@ -16,16 +34,6 @@
 
 <div class="col md-3">
     <div class="panel panel-border info">
-    <div class="panel__heading">Timers</div>
-    <div class="panel__body">
-        <dl class="horizontal"><dt>Running</dt><dd>: {{kongStat.timers.running}}</dd></dl>
-        <dl class="horizontal"><dt>Pending</dt><dd>: {{kongStat.timers.pending}}</dd></dl>
-    </div>
-    </div>
-</div>
-
-<div class="col md-4">
-    <div class="panel panel-border info">
     <div class="panel__heading">Cluster</div>
     <div class="panel__body">
         <dl class="horizontal"><dt>Listen</dt><dd>: {{kongStat.configuration.cluster_listen}}</dd></dl>
@@ -34,10 +42,8 @@
     </div>
     </div>
 </div>
-</div>
 
-<div class="row">
-<div class="col md-5">
+<div class="col md-4">
     <div class="panel panel-border info">
     <div class="panel__heading">Database</div>
     <div class="panel__body">
@@ -49,8 +55,5 @@
     </div>
     </div>
 </div>
-
-<div class="col-md-7"></div>
-</div>
-
-</div>
+</div><!-- .row -->
+</div><!-- .container -->
