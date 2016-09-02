@@ -192,7 +192,7 @@ dl.horizontal dt, dl.horizontal dd { display: inline-block; margin: 0; padding: 
 
 dl.horizontal > dt { width: 38%; font-weight: 500; font-size: 0.95rem; }
 
-dl.horizontal > dd { width: 60%; }
+dl.horizontal > dd { width: 60%; font-size: 0.96rem; }
 
 /* Panels */
 .panel { margin-bottom: 20px; border-radius: 3px; }
