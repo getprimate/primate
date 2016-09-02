@@ -1,4 +1,4 @@
-const VERSION = 'v0.1.0-beta';
+const VERSION = 'v0.2.0';
 
 const electron  = require('electron');
 const path      = require('path');
