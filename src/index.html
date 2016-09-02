@@ -8,33 +8,6 @@
 <link rel="stylesheet" type="text/css" href="css/animations.css" />
 <link rel="stylesheet" type="text/css" href="css/framework.css" />
 <link rel="stylesheet" type="text/css" href="css/dark-theme.css" />
-
-<script type="text/javascript">
-if (typeof module === 'object') {
-    window.module = module;
-    module = undefined;
-}
-</script>
-
-<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-
-<script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/angular-route.min.js"></script>
-<script type="text/javascript" src="js/angular-animate.js"></script>
-<script type="text/javascript" src="js/angular-base64.min.js"></script>
-<script type="text/javascript" src="js/angular-toast.js"></script>
-
-<script type="text/javascript" src="js/app.js"></script>
-<script type="text/javascript" src="controllers/header.js"></script>
-<script type="text/javascript" src="controllers/footer.js"></script>
-<script type="text/javascript" src="controllers/dashboard.js"></script>
-<script type="text/javascript" src="controllers/api-list.js"></script>
-<script type="text/javascript" src="controllers/api-edit.js"></script>
-<script type="text/javascript" src="controllers/plugin-edit.js"></script>
-<script type="text/javascript" src="controllers/consumer-list.js"></script>
-<script type="text/javascript" src="controllers/consumer-edit.js"></script>
-<script type="text/javascript" src="controllers/plugin-list.js"></script>
-<script type="text/javascript" src="controllers/settings.js"></script>
 </head>
 <body class="body">
 
@@ -69,17 +42,151 @@ if (typeof module === 'object') {
 </div>
 
 <script type="text/javascript">
+if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+}
+
+var {ipcRenderer} = require('electron');
+var kongConfig    = ipcRenderer.sendSync('get-kong-config');
+var ngDependency  = ['ngRoute'];
+</script>
+
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/angular-route.min.js"></script>
+<script type="text/javascript" src="js/angular-animate.js"></script>
+<script type="text/javascript" src="js/angular-base64.min.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+
+<script type="text/javascript" src="controllers/header.js"></script>
+<script type="text/javascript" src="controllers/footer.js"></script>
+<script type="text/javascript" src="controllers/dashboard.js"></script>
+<script type="text/javascript" src="controllers/api-list.js"></script>
+<script type="text/javascript" src="controllers/api-edit.js"></script>
+<script type="text/javascript" src="controllers/plugin-edit.js"></script>
+<script type="text/javascript" src="controllers/consumer-list.js"></script>
+<script type="text/javascript" src="controllers/consumer-edit.js"></script>
+<script type="text/javascript" src="controllers/plugin-list.js"></script>
+<script type="text/javascript" src="controllers/settings.js"></script>
+
+<script type="text/javascript">
+/**
+ * Creates viewFactory, configures ajaxProvider and routeProvider
+ */
+(function (angular, app, ipcRenderer, kongConfig) {
+
+    if (typeof app === 'undefined') {
+        throw 'index.html: app is undefined';
+    }
+
+    /**
+     * Holds current page title, current host URL and
+     * URL of the previous page.
+     */
+    app.factory('viewFactory', function () {
+        return { title: '', prevUrl: '', host: kongConfig.host };
+    });
+
+    /**
+     * Configures route provider and ajax provider
+     */
+    app.config(['$routeProvider', 'ajaxProvider' , function ($routeProvider, ajaxProvider) {
+        ajaxProvider.setHost(kongConfig.host);
+
+        /* Add a basic authorization header
+         if username and password are provided in the settings. */
+        if (typeof kongConfig.username === 'string' && kongConfig.username) {
+            ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
+        }
+
+        /* Configure routes. */
+        $routeProvider
+            .when('/', {
+                templateUrl: 'views/dashboard.html',
+                controller: 'DashboardController'
+            })
+            .when('/cluster', {
+                templateUrl: 'views/cluster-list.html',
+                controller: 'ClusterListController'
+            })
+            .when('/api', {
+                templateUrl: 'views/api-list.html',
+                controller: 'ApiListController'
+            })
+            .when('/api/:apiId', {
+                templateUrl: 'views/api-edit.html',
+                controller: 'ApiEditController'
+            })
+            .when('/api/:apiId/plugins', {
+                templateUrl: 'views/plugin-edit.html',
+                controller: 'PluginEditController'
+            })
+            .when('/plugins', {
+                templateUrl: 'views/plugin-list.html',
+                controller: 'PluginListController'
+            })
+            .when('/plugins/:pluginId', {
+                templateUrl: 'views/plugin-edit.html',
+                controller: 'PluginEditController'
+            })
+            .when('/consumers', {
+                templateUrl: 'views/consumer-list.html',
+                controller: 'ConsumerListController'
+            })
+            .when('/consumers/:consumerId', {
+                templateUrl: 'views/consumer-edit.html',
+                controller: 'ConsumerEditController'
+            })
+            .when('/consumers/:consumerId/plugins', {
+                templateUrl: 'views/plugin-list.html',
+                controller: 'PluginListController'
+            })
+            .when('/settings', {
+                templateUrl: 'views/settings.html',
+                controller: 'SettingsController'
+            });
+    }]);
+
+    /**
+     * Detects and highlights the correct
+     * sidebar link upon location change.
+     */
+    app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
+        var appConfig = ipcRenderer.sendSync('get-app-config');
+
+        $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'slide-right' : '';
+
+        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            viewFactory.deleteAction = null;
+            viewFactory.prevUrl = current;
+
+            if (next.indexOf('#') > 1) {
+                var refArray = next.split('#/')[1].split('/');
+
+                var href = '#/' + refArray[0], nav = angular.element('nav.navigation');
+
+                nav.find('a.navigation__link').removeClass('active');
+                nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active')
+            }
+        })
+    }]);
+
+})(window.angular, app, ipcRenderer, kongConfig);
+
+/**
+ * Deletes a resource when a delete button is pressed.
+ */
 (function (content) {
     content.on('click', '.delete', function (event) {
         var target = angular.element(event.target);
 
         if (confirm ('Delete this ' + target.data('target') + '?')) {
-            var $http = angular.element('html').injector().get('$http');
+            var ajax  = angular.element('html').injector().get('ajax');
             var toast = angular.element('body').injector().get('toast');
 
-            $http({
-                method: 'DELETE',
-                url: buildUrl(target.data('url'))
+            ajax.delete({
+                resource: target.data('url')
             }).then(function () {
                 toast.success(target.data('target') + ' deleted');
 
