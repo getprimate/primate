@@ -15,10 +15,11 @@
 <aside class="drawer">
     <div class="icon"><div>KongDash</div></div>
     <nav class="navigation">
-        <a class="navigation__link active" data-ng-href="#/"><p><i class="material-icons">dashboard</i></p><p>Dashboard</p></a>
+        <a class="navigation__link active" data-ng-href="#/"><p><i class="material-icons">view_quilt</i></p><p>Dashboard</p></a>
         <a class="navigation__link" data-ng-href="#/api"><p><i class="material-icons">settings_input_component</i></p> <p>APIs</p></a>
         <a class="navigation__link" data-ng-href="#/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
         <a class="navigation__link" data-ng-href="#/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
+        <a class="navigation__link" data-ng-href="#/cluster"><p><i class="material-icons">device_hub</i></p><p>Cluster</p></a>
         <hr />
         <a class="navigation__link" data-ng-href="#/settings"><p><i class="material-icons">build</i></p> <p>Settings</p></a>
     </nav><!-- .navigation -->
@@ -58,6 +59,7 @@ var ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="js/angular-animate.js"></script>
 <script type="text/javascript" src="js/angular-base64.min.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/Chart.bundle.min.js"></script>
 
 <script type="text/javascript" src="controllers/header.js"></script>
 <script type="text/javascript" src="controllers/footer.js"></script>
@@ -68,6 +70,7 @@ var ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/consumer-list.js"></script>
 <script type="text/javascript" src="controllers/consumer-edit.js"></script>
 <script type="text/javascript" src="controllers/plugin-list.js"></script>
+<script type="text/javascript" src="controllers/cluster-list.js"></script>
 <script type="text/javascript" src="controllers/settings.js"></script>
 
 <script type="text/javascript">
