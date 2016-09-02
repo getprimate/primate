@@ -1,4 +1,4 @@
-(function (angular, app) {
+(function (app) {
 
     var controller = 'FooterController';
 
@@ -9,4 +9,4 @@
     app.controller(controller, ['$scope', 'viewFactory', function ($scope, viewFactory) {
         $scope.viewFactory = viewFactory;
     }]);
-})(window.angular, app);
+})(app);
