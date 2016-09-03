@@ -25,7 +25,7 @@ form.form { max-width: 400px; margin: 0 auto 0 auto;  }
     <div class="icon">
         <img src="images/logo-192x192.png" alt="KongDash" />
         <p class="caption">KongDash</p>
-        <p class="description">Version 0.1.0-beta</p>
+        <p class="description">Version {{version}}</p>
     </div>
 
     <form action="#" class="form hidden" id="configForm">
@@ -59,7 +59,7 @@ if (typeof module === 'object') {
 }
 
 var {ipcRenderer} = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-kong-config');
+var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 </script>
 
 <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
@@ -87,12 +87,13 @@ var kongConfig = ipcRenderer.sendSync('get-kong-config');
         statusBar.html('Reading configuration...');
 
         $scope.kongConfig = kongConfig;
+        $scope.version = ipcRenderer.sendSync('get-config', 'VERSION');
 
         var form    = $element.find('form#configForm');
         var connect = function (config, writeConfig) {
             ajax.get(config).then(function () {
                 if (writeConfig === true) {
-                    ipcRenderer.send('write-kong-config', $scope.kongConfig);
+                    ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
 
                     ipcRenderer.on('write-config-success', function () {
                         $element.fadeOut({ duration: 300, complete: function () { window.location.href = 'index.html'; } });
