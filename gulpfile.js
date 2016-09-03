@@ -34,7 +34,7 @@ const RELEASE_SETTINGS = {
 		'product-version': packageJson.version,
 		LegalCopyright: 'Copyright (c) 2016 ' + packageJson.author
     },
-    ignore : '/.gitignore|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
+    ignore : '/.gitignore|releases|dist|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
     appPath : packageJson.main,
     overwrite: true,
     asar: true,
@@ -47,7 +47,7 @@ gulp.task('start', (next) => {
     var child = childProcess.spawn(electron, ['./']);
 
     child.stdout.on('data', (data) => {
-        console.log(data);
+        console.log(data.toString('utf-8'));
     });
 
     child.on('exit', (code) => {
