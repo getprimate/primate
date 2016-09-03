@@ -1,4 +1,4 @@
-(function (angular, app, ipcRenderer, kongConfig) {
+(function (angular, app, ipcRenderer, kongConfig, appConfig) {
 
     var controller = 'SettingsController';
 
@@ -11,7 +11,8 @@
         viewFactory.title = 'Settings';
 
         $scope.kongConfig = kongConfig;
-        $scope.appConfig = ipcRenderer.sendSync('get-app-config', '');
+        $scope.appConfig  = appConfig;
+        $scope.version = ipcRenderer.sendSync('get-config', 'VERSION');
 
         var formKongConfig = angular.element('form#formKongConfig');
 
@@ -20,7 +21,7 @@
             kongConfig.username = $scope.kongConfig.username;
             kongConfig.password = $scope.kongConfig.password;
 
-            ipcRenderer.send('write-kong-config', $scope.kongConfig);
+            ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
 
             ipcRenderer.on('write-config-success', function () {
                 toast.success('Kong configuration saved')
@@ -44,7 +45,7 @@
                 $scope.appConfig.enableAnimation = false;
             }
 
-            ipcRenderer.send('write-app-config', $scope.appConfig);
+            ipcRenderer.send('write-config', { name: 'app', config: $scope.appConfig });
 
             ipcRenderer.on('write-config-success', function () {
                 toast.success('App configuration saved')
@@ -54,4 +55,4 @@
             });
         });
     }]);
-})(window.angular, app, ipcRenderer, kongConfig);
+})(window.angular, app, ipcRenderer, kongConfig, appConfig);
