@@ -1,4 +1,4 @@
-const VERSION = 'v0.2.0';
+const VERSION = '0.2.0';
 
 const electron  = require('electron');
 const path      = require('path');
@@ -104,7 +104,7 @@ ipcMain.on('get-config', (event, arg) => {
 });
 
 ipcMain.on('write-config', (event, arg) => {
-    appConfig[arg.name] = arg.settings;
+    appConfig[arg.name] = arg.config;
 
     jsonfile.writeFile(configFile, appConfig, function (error) {
         if (error) {
