@@ -41,7 +41,7 @@
             Chart.defaults.global.defaultFontStyle = 'bold';
 
             var chart = {
-                labels: ["Handled", "Accepted", "Active", "Waiting", "Reading", "Writing"],
+                labels: ['Handled', 'Accepted', 'Active', 'Waiting', 'Reading', 'Writing'],
                 data: [20,
                     20,
                     10,
@@ -62,7 +62,7 @@
                 data: {
                     labels: chart.labels,
                     datasets: [{
-                        label: "Connections",
+                        label: 'Connections',
                         data: chart.data,
                         backgroundColor: chart.backgrounds,
                         borderColor: chart.borders,

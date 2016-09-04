@@ -39,14 +39,14 @@ module.exports = function (gulp, packageJson) {
         electronPackager(_.extend(RELEASE_SETTINGS, {
             platform: 'linux',
             arch: 'ia32'
-        }), next)
+        }), next);
     });
 
     gulp.task('pack-linux64', (next) => {
         electronPackager(_.extend(RELEASE_SETTINGS, {
             platform: 'linux',
             arch: 'x64'
-        }), next)
+        }), next);
     });
 
     gulp.task('pack-windows32', (next) => {
@@ -54,7 +54,7 @@ module.exports = function (gulp, packageJson) {
             platform: 'win32',
             arch: 'ia32',
             icon: 'resources/icons/kongdash-256x256.ico'
-        }), next)
+        }), next);
     });
 
     gulp.task('pack-windows64', (next) => {
@@ -62,6 +62,6 @@ module.exports = function (gulp, packageJson) {
             platform: 'win32',
             arch: 'x64',
             icon: 'resources/icons/kongdash-256x256.ico'
-        }), next)
+        }), next);
     });
 };

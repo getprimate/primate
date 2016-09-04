@@ -9,7 +9,7 @@
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
 
-        viewFactory.title = "Plugin List";
+        viewFactory.title = 'Plugin List';
 
         var filters = [];
 
@@ -32,8 +32,8 @@
                 }
 
             }, function () {
-                toast.error('Could not load list of plugins')
-            })
+                toast.error('Could not load list of plugins');
+            });
         };
 
         angular.element('#pluginsTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
@@ -49,7 +49,7 @@
 
             }, function () {
                 toast.error('Could not ' + (payload.enabled ? 'enable' : 'disable') + ' this plugin');
-            })
+            });
         });
 
         $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));

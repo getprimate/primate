@@ -35,8 +35,6 @@
         var panelAdd = angular.element('div#panelAdd');
         var consumerForm = panelAdd.children('div.panel__body').children('form');
 
-        var table = angular.element('table#consumersTable');
-
         panelAdd.children('div.panel__heading').on('click', function () {
             consumerForm.slideToggle(300);
         });
@@ -78,6 +76,6 @@
             consumerForm.slideUp(300);
         });
 
-        $scope.fetchConsumerList('/consumers')
+        $scope.fetchConsumerList('/consumers');
     }]);
 })(window.angular, app);

@@ -20,11 +20,11 @@
             ajax.get({
                 resource: '/consumers/' + $scope.consumerId + '/' + authName
             }).then(function (response) {
-                $scope.authMethods[dataModel]  = response.data.data
+                $scope.authMethods[dataModel]  = response.data.data;
 
             }, function () {
-                toast.error('Could not load authentication details')
-            })
+                toast.error('Could not load authentication details');
+            });
         };
 
         ajax.get({

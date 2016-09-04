@@ -23,7 +23,7 @@
                     if (value.type == 'array' && typeof value.enum != 'undefined') {
                         $scope.checkBoxes[key] = {};
 
-                        for (i=0; i<value.enum.length; i++) {
+                        for (var i=0; i<value.enum.length; i++) {
                             $scope.checkBoxes[key][value.enum[i]] = false;
                         }
                     } else if (typeof value.default != 'undefined') {
@@ -97,17 +97,17 @@
                 if (typeof value != 'object') return;
 
                 angular.forEach(value, function (flag, eName) {
-                    if (flag === true) $scope.formInput.config[key].push(eName)
+                    if (flag === true) $scope.formInput.config[key].push(eName);
                 });
             });
 
             if ( $scope.pluginSchema.no_consumer ) {
                 if (typeof $scope.formInput.consumer_id != 'undefined')
-                    delete $scope.formInput.consumer_id
+                    delete $scope.formInput.consumer_id;
 
             } else {
                 if (typeof $scope.formInput.consumer_id != 'undefined' && !$scope.formInput.consumer_id)
-                    delete $scope.formInput.consumer_id
+                    delete $scope.formInput.consumer_id;
             }
 
             var config = {
@@ -119,11 +119,11 @@
 
             if (action === 'create') {
                 config.method = 'POST';
-                config.resource = '/apis/' + $scope.apiId + '/plugins/'
+                config.resource = '/apis/' + $scope.apiId + '/plugins/';
 
             } else if (action === 'update') {
                 config.method = 'PATCH';
-                config.resource = '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId
+                config.resource = '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId;
             }
 
             ajax.request(config).then(function () {
@@ -138,7 +138,7 @@
 
             if (!objName) return;
 
-            parent.append(angular.element('<div></div>', { 'data-ng-include': "'views/plugin-flexible-table.html'" }));
+            parent.append(angular.element('<div></div>', { 'data-ng-include': '\'views/plugin-flexible-table.html\'' }));
         });
 
         if (typeof $routeParams.pluginId === 'string') {
@@ -158,10 +158,10 @@
                     angular.forEach($scope.checkBoxes, function (value, key) {
                         var enumList = response.data.config[key];
 
-                        for (i=0; i<enumList.length; i++) {
-                            $scope.checkBoxes[key][enumList[i]] = true
+                        for (var i=0; i<enumList.length; i++) {
+                            $scope.checkBoxes[key][enumList[i]] = true;
                         }
-                    })
+                    });
                 });
 
 
@@ -171,7 +171,7 @@
             }, function (response) {
                 toast.error('Could not fetch plugin details');
                 if (response && response.status === 404) window.location.href = '#/api';
-            })
+            });
 
         } else {
             action = 'create';

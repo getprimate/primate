@@ -24,10 +24,10 @@
             ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
 
             ipcRenderer.on('write-config-success', function () {
-                toast.success('Kong configuration saved')
+                toast.success('Kong configuration saved');
 
             }).on('write-config-error', function (event, arg) {
-                toast.error(arg.message)
+                toast.error(arg.message);
             });
 
             return false;
@@ -48,10 +48,10 @@
             ipcRenderer.send('write-config', { name: 'app', config: $scope.appConfig });
 
             ipcRenderer.on('write-config-success', function () {
-                toast.success('App configuration saved')
+                toast.success('App configuration saved');
 
             }).on('write-config-error', function (event, arg) {
-                toast.error(arg.message)
+                toast.error(arg.message);
             });
         });
     }]);
