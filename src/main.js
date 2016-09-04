@@ -23,7 +23,7 @@ var startMainWindow = function () {
         title: app.getName(),
         minHeight: 500,
         minWidth: 900,
-	    icon: absPath + '/kongdash-256x256.png'
+        icon: absPath + '/kongdash-256x256.png'
     });
     mainWindow.loadURL('file://' + absPath + '/src/init.html');
 
@@ -80,7 +80,7 @@ app.on('browser-window-created', (e, window) => {
                 electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash/issues');
             }
         }, {
-           type: 'separator'
+            type: 'separator'
         }, {
             label: 'About KongDash',
             click: () => {
