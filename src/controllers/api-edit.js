@@ -27,7 +27,7 @@
 
             }, function () {
                 toast.error('Could not load plugin list');
-            })
+            });
         };
 
         ajax.get({
@@ -99,7 +99,7 @@
                 toast.error(response.data);
             });
 
-            return false
+            return false;
         });
 
         angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
@@ -112,13 +112,13 @@
                 resource: '/apis/' + $scope.apiId + '/plugins/' + event.target.value,
                 data: { enabled: (state == 'enabled') },
             }).then(function () {
-                toast.success('Plugin ' + event.target.dataset.name + ' ' + state)
+                toast.success('Plugin ' + event.target.dataset.name + ' ' + state);
 
             }, function () {
-                toast.error('Status could not not be changed')
-            })
+                toast.error('Status could not not be changed');
+            });
         });
 
-        $scope.fetchPluginList('/apis/' + $scope.apiId + '/plugins')
+        $scope.fetchPluginList('/apis/' + $scope.apiId + '/plugins');
     }]);
 })(window.angular, app);
