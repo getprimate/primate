@@ -1,6 +1,6 @@
 (function (app) {
 
-    var controller = "ClusterListController";
+    var controller = 'ClusterListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
