@@ -32,7 +32,7 @@
 
             }, function () {
                 toast.error('Could not load list of APIs');
-            })
+            });
         };
 
         var panelAdd = angular.element('div#panelAdd');
@@ -61,7 +61,7 @@
 
             }, function () {
                 toast.error('Unable to update ' + attribute);
-            })
+            });
         });
 
         panelAdd.children('div.panel__heading').on('click', function () {
@@ -113,10 +113,10 @@
             }).then(function (response) {
                 $scope.apiList.push(response.data);
 
-                toast.success('New API added')
+                toast.success('New API added');
 
             }, function (response) {
-                toast.error(response.data)
+                toast.error(response.data);
             });
 
             return false;
