@@ -56,7 +56,7 @@ app.provider('ajax', ['$base64',  function ($base64) {
     this.$get = ['$http', function ($http) {
         return {
             request: function (config) {
-                return $http(httpRequest(config))
+                return $http(httpRequest(config));
             },
             get: function (config) {
                 config.method = 'GET';
@@ -106,10 +106,10 @@ app.factory('toast', function () {
                         text = 'No details available!';
                     }
                 } else {
-                    text = message.text
+                    text = message.text;
                 }
             } catch (e) {
-                text = 'No details available!'
+                text = 'No details available!';
             }
 
             switch (message.type) {
@@ -127,7 +127,7 @@ app.factory('toast', function () {
 
                 default:
                     status = 'Message:';
-                    break
+                    break;
             }
 
             var div = angular.element('<div></div>', {class: 'notification ' + message.type})
@@ -142,20 +142,20 @@ app.factory('toast', function () {
                     duration: 1000, complete: function () {
                         clearInterval(interval);
                     }
-                })
+                });
             }, 4000);
         },
         error: function (message) {
-            this.displayMessage({type: 'danger', text: message})
+            this.displayMessage({type: 'danger', text: message});
         },
         warning: function (message) {
-            this.displayMessage({type: 'warning', text: message})
+            this.displayMessage({type: 'warning', text: message});
         },
         info: function (message) {
-            this.displayMessage({type: 'info', text: message})
+            this.displayMessage({type: 'info', text: message});
         },
         success: function (message) {
-            this.displayMessage({type: 'success', text: message})
+            this.displayMessage({type: 'success', text: message});
         }
     };
 });
@@ -171,7 +171,7 @@ app.filter('pgname', function () {
         }
 
         return (input.charAt(0).toUpperCase() + input.substr(1).toLowerCase()).split('_').join(' ');
-    }
+    };
 });
 
 /**
@@ -184,7 +184,7 @@ app.filter('stripProtocol', function () {
         if (input.indexOf('s://') > 1) return input.split('https://')[1];
 
         return (input.split('http://')[1]) || '';
-    }
+    };
 });
 
 /**
