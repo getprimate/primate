@@ -4,8 +4,8 @@
   "description": "An elegant desktop client for Kong Admin API",
   "main": "src/main.js",
   "scripts": {
-    "test":           "eslint ./src/main.js ./src/controllers ./src/js/kongdash-angular-app.js",
-    "lint":           "npm test",
+    "test":           "npm run lint",
+    "lint":           "eslint ./src/main.js ./src/controllers ./src/js/kongdash-angular-app.js",
     "start":          "gulp start",
     "pack:linux32":   "gulp pack-linux32",
     "pack:linux64":   "gulp pack-linux64",
