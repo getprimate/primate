@@ -62,13 +62,7 @@ app.on('browser-window-created', (e, window) => {
         submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }]
     }, {
         label: 'Window',
-        submenu: [{
-            label: 'Reload',
-            accelerator: 'CmdOrCtrl+R',
-            click: (item, focusedWindow) => {
-                if (focusedWindow) focusedWindow.reload();
-            }
-        }, {role: 'togglefullscreen'}]
+        submenu: [{role: 'togglefullscreen'}]
     }, {
         label: 'Help',
         submenu: [{
