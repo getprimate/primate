@@ -1,4 +1,4 @@
-(function (app) {
+(function (angular, app, ipcRenderer) {
     'use strict';
 
     var controller = 'FooterController';
@@ -7,7 +7,28 @@
         throw ( controller + ': app is undefined');
     }
 
-    app.controller(controller, ['$scope', 'viewFactory', function ($scope, viewFactory) {
+    app.controller(controller, ['$scope', '$element', '$http', 'viewFactory', 'toast', function ($scope, $element, $http, viewFactory, toast) {
+        var semver = require('semver');
+        var version = ipcRenderer.sendSync('get-config', 'VERSION');
+
         $scope.viewFactory = viewFactory;
+
+        $http({
+            method: 'GET',
+            url : 'https://api.github.com/repos/ajaysreedhar/kongdash/releases/latest'
+        }).then(function (response) {
+            var release = response.data;
+
+            if (release.draft === false && release.prerelease === false && semver.gt(release.tag_name, version)) {
+                toast.info('New version ' + release.name + ' available');
+
+                $element.find('#staticMessage').html(angular.element('<a></a>', {
+                    href: release.html_url
+                }).html('New version ' + release.name + ' available'));
+            }
+
+        }, function () {
+
+        });
     }]);
-})(app);
+})(window.angular, app, ipcRenderer);
