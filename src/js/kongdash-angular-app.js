@@ -1,5 +1,6 @@
 'use strict';
 
+/* global angular:true ngDependency:true */
 var app = angular.module('KongDash', ['ngAnimate', 'base64'].concat(typeof ngDependency === 'undefined' ? [] : ngDependency));
 
 app.provider('ajax', ['$base64',  function ($base64) {
