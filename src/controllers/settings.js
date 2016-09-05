@@ -25,11 +25,12 @@
                 $scope.kongConfig.host = $scope.kongConfig.host.substring(0, $scope.kongConfig.host.length - 1);
             }
 
-            var config = {url: $scope.kongConfig.host, headers: {}};
-
-            if ($scope.kongConfig.username) {
-                config.headers['Authorization'] = 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''));
-            }
+            var config = {
+                url: $scope.kongConfig.host,
+                headers: {
+                    'Authorization': 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''))
+                }
+            };
 
             ajax.get(config).then(function (response) {
                 try {
