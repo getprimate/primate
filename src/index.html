@@ -37,7 +37,8 @@
     </header>
     <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Temp</section>
     <footer class="footer" data-ng-controller="FooterController">
-        <span class="pull-right hpadding-20">{{viewFactory.host | stripProtocol}}</span>
+        <div id="staticMessage" class="pull-left hpadding-20"></div>
+        <div class="pull-right hpadding-20">{{viewFactory.host | stripProtocol}}</div>
     </footer>
 </main>
 </div>
@@ -48,7 +49,7 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-var {ipcRenderer} = require('electron');
+var {electron, ipcRenderer} = require('electron');
 var kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
 var appConfig     = ipcRenderer.sendSync('get-config', 'app');
 
