@@ -7,7 +7,7 @@ module.exports = function (gulp, packageJson) {
     var RELEASE_SETTINGS = {
         dir: '.',
         name: packageJson.name,
-        out: 'releases',
+        out: 'release',
         'app-version': packageJson.version,
         'version-string': {
             ProductName : packageJson.name,
@@ -29,7 +29,7 @@ module.exports = function (gulp, packageJson) {
             'product-version': packageJson.version,
             LegalCopyright: 'Copyright (c) 2016 ' + packageJson.author
         },
-        ignore : '/.gitignore|releases|dist|CHANGELOG.md|README.md|gulpfile.js|screenshot.png/',
+        ignore : /.idea|dist|release|tasks|tests|.gitignore|.eslintrc.json|gulpfile.js|screenshot.png|README.md|CHANGELOG.md$/,
         appPath : packageJson.main,
         overwrite: true,
         asar: true,
