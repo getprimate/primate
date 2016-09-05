@@ -15,9 +15,9 @@
 
         $scope.consumerList = [];
 
-        $scope.fetchConsumerList = function (url) {
+        $scope.fetchConsumerList = function (resource) {
             ajax.get({
-                resource: url
+                resource: resource
             }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 

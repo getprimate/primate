@@ -22,9 +22,9 @@
         }
 
         $scope.pluginList = [];
-        $scope.fetchPluginList = function(url) {
+        $scope.fetchPluginList = function(resource) {
             ajax.get({
-                resource: url
+                resource: resource
             }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
