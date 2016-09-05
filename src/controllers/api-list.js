@@ -49,7 +49,8 @@
             payload[attribute] = ((icon.hasClass('success')) ? false : true );
 
             ajax.patch({
-                resource: '/apis/' + icon.data('api-id')
+                resource: '/apis/' + icon.data('api-id'),
+                data: payload
             }).then(function () {
                 if ( payload[attribute] == true) {
                     icon.removeClass('default').addClass('success');
