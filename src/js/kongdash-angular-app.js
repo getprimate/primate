@@ -48,7 +48,7 @@ app.provider('ajax', ['$base64',  function ($base64) {
     };
 
     this.accept = function (type) {
-        httpConfig.accept = 'Accept: ' + type;
+        httpConfig.accept = type;
     };
 
     this.contentType = function (type) {
