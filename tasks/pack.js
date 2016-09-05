@@ -9,6 +9,7 @@ module.exports = function (gulp, packageJson) {
         name: packageJson.name,
         out: 'release',
         'app-version': packageJson.version,
+        'app-copyright': 'Copyright (c) 2016 ' + packageJson.author,
         'version-string': {
             ProductName : packageJson.name,
             CompanyName: packageJson.author,
@@ -32,7 +33,7 @@ module.exports = function (gulp, packageJson) {
         ignore : /.idea|dist|release|tasks|tests|.gitignore|.eslintrc.json|gulpfile.js|screenshot.png|README.md|CHANGELOG.md$/,
         appPath : packageJson.main,
         overwrite: true,
-        asar: true,
+        asar: false,
         prune: true
     };
 
@@ -63,6 +64,14 @@ module.exports = function (gulp, packageJson) {
             platform: 'win32',
             arch: 'x64',
             icon: 'resources/icons/kongdash-256x256.ico'
+        }), next);
+    });
+
+    gulp.task('pack-osx', (next) => {
+        electronPackager(_.extend(RELEASE_SETTINGS, {
+            platform: 'mas',
+            arch: 'all',
+            icon: 'resources/icons/kongdash-256x256.icns'
         }), next);
     });
 };
