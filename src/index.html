@@ -151,6 +151,10 @@ var ngDependency  = ['ngRoute'];
             .when('/settings', {
                 templateUrl: 'views/settings.html',
                 controller: 'SettingsController'
+            })
+            .otherwise({
+                templateUrl: 'views/dashboard.html',
+                controller: 'DashboardController'
             });
     }]);
 
@@ -171,9 +175,9 @@ var ngDependency  = ['ngRoute'];
                 var href = '#/' + refArray[0], nav = angular.element('nav.navigation');
 
                 nav.find('a.navigation__link').removeClass('active');
-                nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active')
+                nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
             }
-        })
+        });
     }]);
 
 })(window.angular, app, ipcRenderer, kongConfig, appConfig);
@@ -199,9 +203,9 @@ var ngDependency  = ['ngRoute'];
 
             }, function (response) {
                 toast.error(response.data);
-            })
+            });
         }
-    })
+    });
 })(angular.element('main.content'));
 </script>
 </body>
