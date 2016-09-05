@@ -1,4 +1,5 @@
 (function (app) {
+    'use strict';
 
     var controller = 'ClusterListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');

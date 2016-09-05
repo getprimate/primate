@@ -1,4 +1,5 @@
 (function (angular, app, ipcRenderer, kongConfig, appConfig) {
+    'use strict';
 
     var controller = 'SettingsController';
 

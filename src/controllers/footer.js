@@ -1,4 +1,5 @@
 (function (app) {
+    'use strict';
 
     var controller = 'FooterController';
 

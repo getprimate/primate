@@ -1,4 +1,5 @@
 (function (angular, app) {
+    'use strict';
 
     var controller = 'ConsumerEditController';
 
