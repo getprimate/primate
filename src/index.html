@@ -49,7 +49,8 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-var {electron, ipcRenderer} = require('electron');
+var electron      = require('electron');
+var {ipcRenderer} = electron;
 var kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
 var appConfig     = ipcRenderer.sendSync('get-config', 'app');
 
@@ -182,10 +183,19 @@ var ngDependency  = ['ngRoute'];
 
 })(window.angular, app, ipcRenderer, kongConfig, appConfig);
 
-/**
- * Deletes a resource when a delete button is pressed.
- */
-(function (content) {
+(function (content, electron) {
+
+    /**
+     * Open all external links in default browser.
+     */
+    content.on('click', 'a[href^="http"]', function (event) {
+        event.preventDefault();
+        electron.shell.openExternal(event.target.href);
+    });
+
+    /**
+     * Deletes a resource when a delete button is pressed.
+     */
     content.on('click', '.delete', function (event) {
         var target = angular.element(event.target);
 
@@ -206,7 +216,7 @@ var ngDependency  = ['ngRoute'];
             });
         }
     });
-})(angular.element('main.content'));
+})(angular.element('main.content'), electron);
 </script>
 </body>
 </html>
