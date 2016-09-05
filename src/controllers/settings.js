@@ -55,8 +55,15 @@
                     toast.error('Could not detect Kong Admin API running on the provided URL');
                 }
 
-            }, function () {
-                toast.error('Could not connect to ' + $scope.kongConfig.host);
+            }, function (response) {
+                if (response.status && parseInt(response.status) === 401 && $scope.kongConfig.username)
+                    toast.error('Invalid username or password');
+
+                else if (response.status && parseInt(response.status) === 401)
+                    toast.error('Please enter username and password');
+
+                else
+                    toast.error('Could not connect to ' + $scope.kongConfig.host);
             });
 
             return false;
