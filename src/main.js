@@ -42,6 +42,8 @@ app.on('ready', () => {
     try {
         appConfig = jsonfile.readFileSync(configFile);
 
+    } catch (e) {
+        /* Ignore. Uses default settings. */
     } finally {
         startMainWindow();
     }
