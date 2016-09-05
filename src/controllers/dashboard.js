@@ -1,5 +1,5 @@
 /* global app:true Chart:true */
-(function (angular, app) {
+(function (angular, app, Chart) {
     'use strict';
 
     var controller = 'DashboardController';
@@ -42,7 +42,7 @@
             Chart.defaults.global.defaultFontColor = '#9db4be';
             Chart.defaults.global.defaultFontStyle = 'bold';
 
-            var chart = {
+            var chartConfig = {
                 labels: ['Handled', 'Accepted', 'Active', 'Waiting', 'Reading', 'Writing'],
                 data: [server.connections_handled,
                     server.connections_accepted,
@@ -62,12 +62,12 @@
             new Chart(angular.element('#clusterStatChart')[0].getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: chart.labels,
+                    labels: chartConfig.labels,
                     datasets: [{
                         label: 'Connections',
-                        data: chart.data,
-                        backgroundColor: chart.backgrounds,
-                        borderColor: chart.borders,
+                        data: chartConfig.data,
+                        backgroundColor: chartConfig.backgrounds,
+                        borderColor: chartConfig.borders,
                         borderWidth: 1
                     }]
                 },
@@ -77,4 +77,4 @@
 
         });
     }]);
-})(window.angular, app);
+})(window.angular, app, Chart);
