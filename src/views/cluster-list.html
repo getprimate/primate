@@ -5,7 +5,12 @@
 
         <tbody>
         <tr data-ng-repeat="cluster in clusterList">
-            <td>{{cluster.status}}</td>
+            <td data-ng-switch data-on="cluster.status">
+                <span data-ng-switch-when="alive" class="label success">Alive</span>
+                <span data-ng-switch-when="left" class="label warning">Left</span>
+                <span data-ng-switch-when="failed" class="label danger">Failed</span>
+                <span data-ng-switch-default class="label info">{{cluster.status}}</span>
+            </td>
             <td>{{cluster.name}}</td>
             <td>{{cluster.address}}</td>
         </tr>
