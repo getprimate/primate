@@ -7,7 +7,7 @@
         throw ( controller + ': app is undefined');
     }
 
-    app.controller(controller, ['$rootScope', '$scope', 'viewFactory', 'toast', function ($rootScope, $scope, viewFactory, toast) {
+    app.controller(controller, ['$rootScope', '$scope', '$base64', 'ajax', 'viewFactory', 'toast', function ($rootScope, $scope, $base64, ajax, viewFactory, toast) {
         viewFactory.prevUrl = null;
         viewFactory.title = 'Settings';
 
@@ -17,18 +17,46 @@
 
         var formKongConfig = angular.element('form#formKongConfig');
 
-        formKongConfig.on('submit', function () {
-            viewFactory.host = kongConfig.host = $scope.kongConfig.host;
-            kongConfig.username = $scope.kongConfig.username;
-            kongConfig.password = $scope.kongConfig.password;
+        formKongConfig.on('submit', function (event) {
 
-            ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
+            event.preventDefault();
 
-            ipcRenderer.on('write-config-success', function () {
-                toast.success('Kong configuration saved');
+            if ($scope.kongConfig.host.charAt($scope.kongConfig.host.length - 1) === '/') {
+                $scope.kongConfig.host = $scope.kongConfig.host.substring(0, $scope.kongConfig.host.length - 1);
+            }
 
-            }).on('write-config-error', function (event, arg) {
-                toast.error(arg.message);
+            var config = {url: $scope.kongConfig.host, headers: {}};
+
+            if ($scope.kongConfig.username) {
+                config.headers['Authorization'] = 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''));
+            }
+
+            ajax.get(config).then(function (response) {
+                try {
+                    if (typeof response.data != 'object' || typeof response.data.version === 'undefined') {
+                        toast.error('Could not detect Kong Admin API running on the provided URL');
+                        return;
+                    }
+
+                    viewFactory.host = kongConfig.host = $scope.kongConfig.host;
+                    kongConfig.username = $scope.kongConfig.username;
+                    kongConfig.password = $scope.kongConfig.password;
+
+                    ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
+
+                    ipcRenderer.on('write-config-success', function () {
+                        toast.success('Kong configuration saved');
+
+                    }).on('write-config-error', function (event, arg) {
+                        toast.error(arg.message);
+                    });
+
+                } catch (e) {
+                    toast.error('Could not detect Kong Admin API running on the provided URL');
+                }
+
+            }, function () {
+                toast.error('Could not connect to ' + $scope.kongConfig.host);
             });
 
             return false;
