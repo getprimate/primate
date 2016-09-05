@@ -77,6 +77,9 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
     }
 
     app.config(['ajaxProvider', function (ajaxProvider) {
+        ajaxProvider.accept('application/json');
+        ajaxProvider.contentType('application/json');
+
         if (typeof kongConfig.username === 'string') {
             ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
         }
@@ -91,7 +94,6 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
         var form    = $element.find('form#configForm');
         var connect = function (config, writeConfig) {
-
             if ($scope.kongConfig.host.charAt($scope.kongConfig.host.length - 1) === '/') {
                 $scope.kongConfig.host = $scope.kongConfig.host.substring(0, $scope.kongConfig.host.length - 1);
             }
@@ -144,7 +146,7 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
         };
 
         form.on('submit', function () {
-            var config = {url: $scope.kongConfig.host, headers: {}};
+            var config = {url: $scope.kongConfig.host};
 
             if ($scope.kongConfig.username) {
                 config.headers['Authorization'] = 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''));
