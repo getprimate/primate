@@ -25,7 +25,7 @@
                     labels: ['Running', 'Pending'],
                     datasets: [{
                         label: 'Timers',
-                        data: [2, 1],
+                        data: [$scope.kongStat.timers.running, $scope.kongStat.timers.pending],
                         backgroundColor:['#10C469', '#FFCE56']
                     }]
                 },
@@ -44,12 +44,12 @@
 
             var chart = {
                 labels: ['Handled', 'Accepted', 'Active', 'Waiting', 'Reading', 'Writing'],
-                data: [20,
-                    20,
-                    10,
-                    3,
-                    8,
-                    2],
+                data: [server.connections_handled,
+                    server.connections_accepted,
+                    server.connections_active,
+                    server.connections_waiting,
+                    server.connections_reading,
+                    server.connections_writing],
                 backgrounds: ['rgba(24, 138, 226, 0.5)',
                     'rgba(16, 196, 105, 0.5)',
                     'rgba(128, 197, 218, 0.5)',
