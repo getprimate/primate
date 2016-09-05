@@ -52,7 +52,7 @@ app.provider('ajax', ['$base64',  function ($base64) {
     };
 
     this.contentType = function (type) {
-        httpConfig.contentType = 'Content-Type: ' + type;
+        httpConfig.contentType = type;
     };
 
     this.$get = ['$http', function ($http) {
