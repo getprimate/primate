@@ -1,6 +1,6 @@
 module.exports = function (gulp) {
     'use strict';
-    
+
     var childProcess = require('child_process');
     var electron = require('electron-prebuilt');
 
