@@ -1,3 +1,4 @@
+/* global app:true ipcRenderer:true kongConfig:true appConfig:true */
 (function (angular, app, ipcRenderer, kongConfig, appConfig) {
     'use strict';
 

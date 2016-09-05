@@ -1,3 +1,4 @@
+/* global app:true ipcRenderer:true */
 (function (angular, app, ipcRenderer) {
     'use strict';
 

@@ -1,3 +1,4 @@
+/* global app:true */
 (function (app) {
     'use strict';
 

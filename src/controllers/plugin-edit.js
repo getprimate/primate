@@ -1,3 +1,4 @@
+/* global app:true */
 (function (angular, app) {
     'use strict';
 
