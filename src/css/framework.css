@@ -20,7 +20,7 @@ a { text-decoration: none; color: inherit; }
 hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
 
 /* Labels */
-.label { border-radius: 10px; display: inline-block; padding: 0 12px 0 12px; font-weight: 500; }
+.label { border-radius: 10px; display: inline-block; padding: 0 12px 0 12px; font-weight: 400; }
 
 /* Notifications */
 .notification { float: none; position: fixed; bottom: 45px; right: 20px;
