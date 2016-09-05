@@ -10,7 +10,7 @@
         "sourceType": "module"
     },
     "rules": {
-        "linebreak-style": ["error", "unix"],
+        "linebreak-style": ["warn", "unix"],
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "no-console": ["warn"]
