@@ -30,7 +30,7 @@ form.form { max-width: 400px; margin: 0 auto 0 auto;  }
 
     <form action="#" class="form hidden" id="configForm">
     <div class="form__field">
-        <label class="field-label">Admin API URI</label>
+        <label class="field-label">Admin API URL</label>
         <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
     </div>
 
@@ -91,7 +91,26 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
         var form    = $element.find('form#configForm');
         var connect = function (config, writeConfig) {
-            ajax.get(config).then(function () {
+
+            if ($scope.kongConfig.host.charAt($scope.kongConfig.host.length - 1) === '/') {
+                $scope.kongConfig.host = $scope.kongConfig.host.substring(0, $scope.kongConfig.host.length - 1);
+            }
+
+            ajax.get(config).then(function (response) {
+
+                try {
+                    if (typeof response.data != 'object' || typeof response.data.version === 'undefined') {
+                        toast.error('Could not detect Kong Admin API running on the provided URL');
+                        if (form.hasClass('hidden')) form.fadeIn(400);
+                        return;
+                    }
+
+                } catch (e) {
+                    toast.error('Could not detect Kong Admin API running on the provided URL');
+                    if (form.hasClass('hidden')) form.fadeIn(400);
+                    return;
+                }
+
                 if (writeConfig === true) {
                     ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
 
