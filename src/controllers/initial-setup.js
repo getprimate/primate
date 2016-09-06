@@ -1,3 +1,4 @@
+/* global app:true ipcRenderer:true kongConfig:true */
 (function (angular, app, ipcRenderer, kongConfig) {
 
     app.controller('InitialSetupController', ['$scope', '$element', '$base64', 'ajax', 'toast', function ($scope, $element, $base64, ajax, toast) {
@@ -70,7 +71,7 @@
 
         var timeout = setInterval(function () {
             statusBar.html('');
-            $element.find(".icon").slideUp({ duration: 300 });
+            $element.find('.icon').slideUp({ duration: 300 });
 
             if (typeof $scope.kongConfig.host === 'string' && $scope.kongConfig.host) {
                 connect({url: kongConfig.host}, false);
