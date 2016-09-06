@@ -2,7 +2,7 @@
 (function (angular, app, ipcRenderer, kongConfig) {
 
     var controller = 'InitialSetupController';
-    
+
     if (typeof app === 'undefined') {
         throw ( controller + ': app is undefined');
     }
