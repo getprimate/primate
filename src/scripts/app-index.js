@@ -1,10 +1,8 @@
-/**
- * Creates viewFactory, configures ajaxProvider and routeProvider
- */
+/* global app:true ipcRenderer:true kongConfig:true appConfig:true */
 (function (angular, app, ipcRenderer, kongConfig, appConfig) {
 
     if (typeof app === 'undefined') {
-        throw 'index.html: app is undefined';
+        throw 'app-index.js: app is undefined';
     }
 
     /**
@@ -105,7 +103,8 @@
 
 })(window.angular, app, ipcRenderer, kongConfig, appConfig);
 
-(function (content, electron) {
+/* global angular:true electron:true */
+(function (angular, content, electron) {
 
     /**
      * Open all external links in default browser.
@@ -138,4 +137,4 @@
             });
         }
     });
-})(angular.element('main.content'), electron);
+})(window.angular, angular.element('main.content'), electron);

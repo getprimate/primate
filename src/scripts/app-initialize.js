@@ -1,6 +1,7 @@
-(function (app) {
+/* global app:true kongConfig:true */
+(function (app, kongConfig) {
     if (typeof app === 'undefined') {
-        throw 'InitController: app is undefined';
+        throw 'app-initialize.js: app is undefined';
     }
 
     app.config(['ajaxProvider', function (ajaxProvider) {
@@ -11,4 +12,4 @@
             ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
         }
     }]);
-})(app);
+})(app, kongConfig);
