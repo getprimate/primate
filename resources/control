@@ -1,0 +1,12 @@
+Package: kongdash
+Version: 0.1.0-beta
+License: MIT
+Vendor: Ajay Sreedhar
+Section: web
+Priority: extra
+Architecture: amd64
+Maintainer: Ajay Sreedhar <ajaysreedhar468@gmail.com>
+Homepage: https://ajaysreedhar.github.io/kongdash/
+Description: KongDash
+ An elegant desktop client for Kong Admin API.
+ - https://github.com/ajaysreedhar/kongdash
