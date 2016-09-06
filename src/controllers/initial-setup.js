@@ -1,7 +1,13 @@
 /* global app:true ipcRenderer:true kongConfig:true */
 (function (angular, app, ipcRenderer, kongConfig) {
 
-    app.controller('InitialSetupController', ['$scope', '$element', '$base64', 'ajax', 'toast', function ($scope, $element, $base64, ajax, toast) {
+    var controller = 'InitialSetupController';
+    
+    if (typeof app === 'undefined') {
+        throw ( controller + ': app is undefined');
+    }
+
+    app.controller(controller, ['$scope', '$element', '$base64', 'ajax', 'toast', function ($scope, $element, $base64, ajax, toast) {
         var statusBar = $element.find('footer.footer').children('span');
         statusBar.html('Reading configuration...');
 
