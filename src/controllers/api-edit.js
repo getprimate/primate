@@ -1,11 +1,9 @@
 /* global app:true */
-(function (angular, app) {
+(function (angular, app) { 'use strict';
 
     var controller = 'ApiEditController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
         function ($scope, $routeParams, ajax, toast, viewFactory) {
@@ -17,9 +15,7 @@
         $scope.pluginList = [];
 
         $scope.fetchPluginList = function (url) {
-            ajax.get({
-                resource: url
-            }).then(function (response) {
+            ajax.get({ resource: url }).then(function (response) {
                 $scope.nextPluginUrl = response.data.next || '';
 
                 for (var i=0; i<response.data.data.length; i++ ) {
@@ -31,9 +27,7 @@
             });
         };
 
-        ajax.get({
-            resource: '/apis/' + $scope.apiId
-        }).then(function (response) {
+        ajax.get({ resource: '/apis/' + $scope.apiId }).then(function (response) {
             $scope.formInput.upstreamUrl = response.data.upstream_url;
             $scope.formInput.requestPath = (typeof response.data.request_path == 'undefined') ? '' : response.data.request_path;
             $scope.formInput.requestHost = (typeof response.data.request_host == 'undefined') ? '' : response.data.request_host;
@@ -122,4 +116,5 @@
 
         $scope.fetchPluginList('/apis/' + $scope.apiId + '/plugins');
     }]);
+
 })(window.angular, app);

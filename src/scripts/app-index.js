@@ -1,9 +1,9 @@
+'use strict';
+
 /* global app:true ipcRenderer:true kongConfig:true appConfig:true */
 (function (angular, app, ipcRenderer, kongConfig, appConfig) {
 
-    if (typeof app === 'undefined') {
-        throw 'app-index.js: app is undefined';
-    }
+    if (typeof app === 'undefined') throw 'app-index.js: app is undefined';
 
     /**
      * Holds current page title, current host URL and
@@ -92,8 +92,8 @@
 
             if (next.indexOf('#') > 1) {
                 var refArray = next.split('#/')[1].split('/');
-
-                var href = '#/' + refArray[0], nav = angular.element('nav.navigation');
+                var href = '#/' + refArray[0];
+                var nav  = angular.element('nav.navigation');
 
                 nav.find('a.navigation__link').removeClass('active');
                 nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
@@ -118,15 +118,15 @@
      * Deletes a resource when a delete button is pressed.
      */
     content.on('click', '.delete', function (event) {
+        event.preventDefault();
+
         var target = angular.element(event.target);
 
         if (confirm ('Delete this ' + target.data('target') + '?')) {
             var ajax  = angular.element('html').injector().get('ajax');
             var toast = angular.element('body').injector().get('toast');
 
-            ajax.delete({
-                resource: target.data('url')
-            }).then(function () {
+            ajax.delete({ resource: target.data('url') }).then(function () {
                 toast.success(target.data('target') + ' deleted');
 
                 if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200);
@@ -137,4 +137,5 @@
             });
         }
     });
+
 })(window.angular, angular.element('main.content'), electron);

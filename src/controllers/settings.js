@@ -1,12 +1,9 @@
 /* global app:true ipcRenderer:true kongConfig:true appConfig:true */
-(function (angular, app, ipcRenderer, kongConfig, appConfig) {
-    'use strict';
+(function (angular, app, ipcRenderer, kongConfig, appConfig) { 'use strict';
 
     var controller = 'SettingsController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$rootScope', '$scope', '$base64', 'ajax', 'viewFactory', 'toast', function ($rootScope, $scope, $base64, ajax, viewFactory, toast) {
         viewFactory.prevUrl = null;
@@ -19,7 +16,6 @@
         var formKongConfig = angular.element('form#formKongConfig');
 
         formKongConfig.on('submit', function (event) {
-
             event.preventDefault();
 
             if ($scope.kongConfig.host.charAt($scope.kongConfig.host.length - 1) === '/') {
@@ -93,4 +89,5 @@
             });
         });
     }]);
+
 })(window.angular, app, ipcRenderer, kongConfig, appConfig);

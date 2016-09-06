@@ -1,12 +1,9 @@
 /* global app:true */
-(function (angular, app) {
-    'use strict';
+(function (angular, app) { 'use strict';
 
     var controller = 'PluginEditController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
@@ -16,9 +13,7 @@
         $scope.fetchSchema = function (plugin, callback) {
             $scope.checkBoxes = {};
 
-            ajax.get({
-                resource: '/plugins/schema/' + plugin
-            }).then(function (response) {
+            ajax.get({ resource: '/plugins/schema/' + plugin }).then(function (response) {
                 $scope.pluginSchema = response.data;
 
                 angular.forEach($scope.pluginSchema.fields, function (value, key) {
@@ -147,9 +142,7 @@
             $scope.pluginId = $routeParams.pluginId;
             action = 'update';
 
-            ajax.get({
-                resource: '/plugins/' + $scope.pluginId
-            }).then(function (response) {
+            ajax.get({ resource: '/plugins/' + $scope.pluginId }).then(function (response) {
                 $scope.apiId = response.data.api_id;
 
                 $scope.fetchSchema(response.data.name, function () {
@@ -189,4 +182,5 @@
 
         $scope.prevUrl = viewFactory.prevUrl;
     }]);
+
 })(window.angular, app);

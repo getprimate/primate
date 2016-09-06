@@ -1,5 +1,4 @@
-module.exports = function (gulp, packageJson) {
-    'use strict';
+module.exports = function (gulp, packageJson) { 'use strict';
 
     var _ = require('underscore');
     var electronPackager = require('electron-packager');

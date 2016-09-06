@@ -1,11 +1,9 @@
 /* global app:true ipcRenderer:true kongConfig:true */
-(function (angular, app, ipcRenderer, kongConfig) {
+(function (angular, app, ipcRenderer, kongConfig) { 'use strict';
 
     var controller = 'InitialSetupController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$element', '$base64', 'ajax', 'toast', function ($scope, $element, $base64, ajax, toast) {
         var statusBar = $element.find('footer.footer').children('span');
@@ -64,7 +62,9 @@
             });
         };
 
-        form.on('submit', function () {
+        form.on('submit', function (event) {
+            event.preventDefault();
+
             var config = {url: $scope.kongConfig.host, headers: {}};
 
             if ($scope.kongConfig.username) {
@@ -88,4 +88,5 @@
             }
         }, 2000);
     }]);
+
 })(window.angular, app, ipcRenderer, kongConfig);

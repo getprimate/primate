@@ -1,16 +1,14 @@
 /* global app:true ipcRenderer:true */
-(function (angular, app, ipcRenderer) {
-    'use strict';
+(function (angular, app, ipcRenderer) { 'use strict';
 
     var controller = 'FooterController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+
+    var semver = require('semver');
+    var version = ipcRenderer.sendSync('get-config', 'VERSION');
 
     app.controller(controller, ['$scope', '$element', '$http', 'viewFactory', 'toast', function ($scope, $element, $http, viewFactory, toast) {
-        var semver = require('semver');
-        var version = ipcRenderer.sendSync('get-config', 'VERSION');
 
         $scope.viewFactory = viewFactory;
 
@@ -29,7 +27,8 @@
             }
 
         }, function () {
-
+            /* Ignore */
         });
     }]);
+
 })(window.angular, app, ipcRenderer);

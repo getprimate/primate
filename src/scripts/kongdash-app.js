@@ -100,11 +100,11 @@ app.factory('toast', function () {
                     if (Object.keys(message.text).length > 0) {
                         var firstKey = Object.keys(message.text)[0];
 
-                        if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string') {
+                        if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string')
                             text = message.text[firstKey];
-                        } else {
+                        else
                             text = firstKey + ' ' + message.text[firstKey];
-                        }
+
                     } else {
                         text = 'No details available!';
                     }
@@ -149,16 +149,16 @@ app.factory('toast', function () {
             }, 4000);
         },
         error: function (message) {
-            this.displayMessage({type: 'danger', text: message});
+            this.displayMessage({ type: 'danger', text: message });
         },
         warning: function (message) {
-            this.displayMessage({type: 'warning', text: message});
+            this.displayMessage({ type: 'warning', text: message });
         },
         info: function (message) {
-            this.displayMessage({type: 'info', text: message});
+            this.displayMessage({ type: 'info', text: message });
         },
         success: function (message) {
-            this.displayMessage({type: 'success', text: message});
+            this.displayMessage({ type: 'success', text: message });
         }
     };
 });

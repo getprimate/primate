@@ -1,12 +1,9 @@
 /* global app:true */
-(function (angular, app) {
-    'use strict';
+(function (angular, app) { 'use strict';
 
     var controller = 'PluginListController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
@@ -15,18 +12,12 @@
 
         var filters = [];
 
-        if ($routeParams.consumerId) {
-            filters.push('consumer_id=' + $routeParams.consumerId);
-
-        } else {
-            viewFactory.prevUrl = null;
-        }
+        if ($routeParams.consumerId) filters.push('consumer_id=' + $routeParams.consumerId);
+        else viewFactory.prevUrl = null;
 
         $scope.pluginList = [];
         $scope.fetchPluginList = function(resource) {
-            ajax.get({
-                resource: resource
-            }).then(function (response) {
+            ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
                 for (var i=0; i<response.data.data.length; i++ ) {
@@ -56,4 +47,5 @@
 
         $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
     }]);
+
 })(window.angular, app);

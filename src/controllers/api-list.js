@@ -1,12 +1,9 @@
 /* global app:true */
-(function (angular, app) {
-    'use strict';
+(function (angular, app) { 'use strict';
 
     var controller = 'ApiListController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
         viewFactory.title = 'API List';
@@ -23,9 +20,7 @@
 
         $scope.apiList = [];
         $scope.fetchApiList = function (resource) {
-            ajax.get({
-                resource: resource
-            }).then(function (response) {
+            ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
                 for (var i=0; i<response.data.data.length; i++ ) {
@@ -131,4 +126,5 @@
 
         $scope.fetchApiList('/apis');
     }]);
+
 })(window.angular, app);

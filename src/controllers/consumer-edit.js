@@ -1,12 +1,9 @@
 /* global app:true */
-(function (angular, app) {
-    'use strict';
+(function (angular, app) { 'use strict';
 
     var controller = 'ConsumerEditController';
 
-    if (typeof app === 'undefined') {
-        throw ( controller + ': app is undefined');
-    }
+    if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
@@ -19,9 +16,7 @@
         viewFactory.title = 'Edit Consumer';
 
         $scope.fetchAuthList = function (authName, dataModel) {
-            ajax.get({
-                resource: '/consumers/' + $scope.consumerId + '/' + authName
-            }).then(function (response) {
+            ajax.get({ resource: '/consumers/' + $scope.consumerId + '/' + authName }).then(function (response) {
                 $scope.authMethods[dataModel]  = response.data.data;
 
             }, function () {
@@ -29,9 +24,7 @@
             });
         };
 
-        ajax.get({
-            resource: '/consumers/' + $scope.consumerId
-        }).then(function (response) {
+        ajax.get({ resource: '/consumers/' + $scope.consumerId }).then(function (response) {
             $scope.formInput.username = response.data.username;
             $scope.formInput.custom_id = response.data.custom_id;
 
@@ -111,4 +104,5 @@
 
         $scope.fetchAuthList('key-auth', 'keyAuthList');
     }]);
+
 })(window.angular, app);
