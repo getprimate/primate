@@ -27,7 +27,7 @@ var startMainWindow = function () {
     });
     mainWindow.loadURL('file://' + absPath + '/src/init.html');
 
-    /* Debugging
+    //* Debugging
     mainWindow.webContents.openDevTools();
     //*/
 
@@ -85,7 +85,13 @@ app.on('browser-window-created', (e, window) => {
         }]
     }];
 
-    window.setMenu(Menu.buildFromTemplate(menuTemplate));
+    var menu = Menu.buildFromTemplate(menuTemplate);
+
+    if (process.platform === 'darwin' || process.platform === 'mas') {
+	Menu.setApplicationMenu(menu);
+    } else {
+        window.setMenu(menu);
+    }
 });
 
 app.on('window-all-closed', () => {
