@@ -29,10 +29,10 @@ module.exports = function (gulp, packageJson) { 'use strict';
             'product-version': packageJson.version,
             LegalCopyright: 'Copyright (c) 2016 ' + packageJson.author
         },
-        ignore : /.idea|dist|release|resources|tasks|tests|.gitignore|.eslintrc.json|gulpfile.js|screenshot.png|README.md|CHANGELOG.md$/,
+        ignore : /.idea|release|resources|tasks|.gitignore|.eslintrc.json|gulpfile.js|screenshot.png|README.md|CHANGELOG.md$/,
         appPath : packageJson.main,
         overwrite: true,
-        asar: false,
+        asar: true,
         prune: true
     };
 
