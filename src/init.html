@@ -28,7 +28,7 @@ form.form { max-width: 400px; margin: 0 auto 0 auto;  }
         <p class="description">Version {{version}}</p>
     </div>
 
-    <form action="#" class="form hidden" id="configForm">
+    <form method="POST" action="#" class="form hidden" id="configForm">
     <div class="form__field">
         <label class="field-label">Admin API URL</label>
         <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
@@ -134,11 +134,8 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
             }, function (response) {
                 if (form.hasClass('hidden')) form.fadeIn(400);
 
-                if (response.status && parseInt(response.status) === 401 && $scope.kongConfig.username)
-                    toast.error('Invalid username or password');
-
-                else if (response.status && parseInt(response.status) === 401)
-                    toast.error('Please enter username and password');
+                if (response.status && parseInt(response.status) === 401)
+                    toast.error('Please provide correct username and password');
 
                 else
                     toast.error('Could not connect to ' + $scope.kongConfig.host);
@@ -146,7 +143,7 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
         };
 
         form.on('submit', function () {
-            var config = {url: $scope.kongConfig.host};
+            var config = {url: $scope.kongConfig.host, headers: {}};
 
             if ($scope.kongConfig.username) {
                 config.headers['Authorization'] = 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''));
