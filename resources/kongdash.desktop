@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=KongDash
+Comment=An elegant desktop client for Kong admin API.
+GenericName=Kong Dashboard
+Exec=/opt/kongdash-x64/KongDash %U
+Icon=kongdash
+Terminal=false
+Type=Application
+StartupNotify=true
+StartupWMClass=kongdash
+Keywords=Kong;KongDash;Dashboard;Admin API;
+Categories=Network;
