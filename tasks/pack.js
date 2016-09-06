@@ -70,7 +70,7 @@ module.exports = function (gulp, packageJson) {
     gulp.task('pack-osx', (next) => {
         electronPackager(_.extend(RELEASE_SETTINGS, {
             platform: 'darwin',
-            arch: 'x64',
+            arch: 'all',
             icon: 'resources/icons/kongdash-256x256.icns'
         }), next);
     });
