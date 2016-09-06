@@ -11,7 +11,7 @@
 </head>
 <body class="body">
 
-<div class="app-layout">
+<div class="app-layout hidden">
 <aside class="drawer">
     <div class="icon"><div>KongDash</div></div>
     <nav class="navigation">
@@ -78,5 +78,11 @@ var ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/plugin-list.js"></script>
 <script type="text/javascript" src="controllers/cluster-list.js"></script>
 <script type="text/javascript" src="controllers/settings.js"></script>
+
+<script type="text/javascript">
+(function (angular) {
+    angular.element('.app-layout').fadeIn({ duration: 1000 });
+})(window.angular);
+</script>
 </body>
 </html>
