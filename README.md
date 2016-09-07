@@ -53,8 +53,8 @@ Run the app
 npm start
 ```
 
-Run eslint
-```shell npm test``` or ```shell npm run lint```
+Run ESLint
+```npm test``` or ```npm run lint```
 
 ### Make a release
 
