@@ -6,9 +6,6 @@
 
 ### How to Install
 
-#### On Windows
-Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .exe installer and run it.
-
 #### On Linux
 _Ubuntu and other Debian distributions:_
 
@@ -28,6 +25,12 @@ cd kongdash-x.y.z-linux-arch
 ```
 
 _x.y.z refers to the version number and arch refers to the architecture (ia32 or x64)._
+
+#### On Windows
+Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) .exe installer and run it.
+
+#### On Mac OS X
+Download and open the [latest](https://github.com/ajaysreedhar/kongdash/releases) .dmg image, move the app to /Applications to start using it.
 
 ### For Developers
 All kinds of contributions are welcome.
@@ -50,6 +53,9 @@ Run the app
 npm start
 ```
 
+Run eslint
+```shell npm test``` or ```shell npm run lint```
+
 ### Make a release
 
 Linux 32-bit:
@@ -62,6 +68,11 @@ Linux 64-bit:
 npm run pack:linux64
 ```
 
+Mac OS X (64-bit only):
+```shell
+npm run pack:osx
+```
+
 Windows 32-bit:
 ```shell
 npm run pack:windows32
@@ -72,7 +83,7 @@ Windows 64-bit:
 npm run pack:windows64
 ```
 
-The packaged application will be moved to releases/ directory.
+The packaged application will be moved to release/ directory.
 
 ### License
 MIT License. See [LICENSE](LICENSE).
