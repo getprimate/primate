@@ -68,6 +68,7 @@ module.exports = function (gulp, packageJson) { 'use strict';
 
     gulp.task('pack-osx', (next) => {
         electronPackager(_.extend(RELEASE_SETTINGS, {
+            'app-bundle-id': 'io.kongdash',
             platform: 'darwin',
             arch: 'all',
             icon: 'resources/icons/kongdash-256x256.icns'
