@@ -13,12 +13,14 @@ main.content { background-color: #1A242D; }
 footer.footer { background-color: #222D37; border-top: 1px solid #2F3E47;
     color: #76868F; font-size: 0.85rem; font-weight: 500; }
 
+i.material-icons { cursor: pointer !important; }
 i.material-icons.primary { color: #188AE2 !important; }
 i.material-icons.success { color: #10C469 !important; }
 i.material-icons.default { color: #545454 !important; }
 i.material-icons.danger { color: #FF5B5B !important; }
 i.material-icons.info { color: #35B8E0 !important; }
 i.material-icons.warning { color: #F9C851 !important; }
+i.material-icons.md-17 { font-size: 17px !important; }
 
 .label { color: #ffffff; }
 .label.default { background-color: #9db4be; }
@@ -150,3 +152,6 @@ ul.list li { background-color: #394C57 }
 .well .highlight { background-color: #34444d; }
 
 .well .well__heading { color: #B3C2CC; border-bottom: 1px solid #1F262D; }
+
+.left { float:left !important; }
+.right { float:right !important; }
