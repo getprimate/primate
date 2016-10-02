@@ -3,14 +3,18 @@
 <div class="row">
 <div class="col md-8">
     <div class="panel panel-border info">
-        <div class="panel__heading">Node Status</div>
+        <div class="panel__heading">Node Status
+            <span class="right refresh" ng-click="refreshStatus('true')"><i class="material-icons md-17">autorenew</i></span>
+        </div>
         <div class="panel__body"><canvas id="clusterStatChart" height="100"></canvas></div>
     </div><!-- .panel.panel-border.info -->
 </div>
 
 <div class="col md-4">
     <div class="panel panel-border info">
-        <div class="panel__heading">Timers</div>
+        <div class="panel__heading">Timers
+            <span class="right refresh" ng-click="refreshTimer()"><i class="material-icons md-17">autorenew</i></span>
+        </div>
         <div class="panel__body">
             <div class="vpadding-10"><canvas id="timersChart" height="194"></canvas></div>
         </div>
