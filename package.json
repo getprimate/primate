@@ -31,7 +31,7 @@
   "homepage": "https://ajaysreedhar.github.io/kongdash/",
   "dependencies": {
     "jsonfile": "^3.0.0",
-    "path-extra": "^4.2.0",
+    "ospath": "^1.2.2",
     "request": "^2.81.0",
     "semver": "^5.3.0",
     "underscore": "^1.8.3"
