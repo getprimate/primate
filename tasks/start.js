@@ -1,7 +1,7 @@
 module.exports = function (gulp) { 'use strict';
 
     var childProcess = require('child_process');
-    var electron = require('electron-prebuilt');
+    var electron = require('electron');
 
     gulp.task('start', (next) => {
         var child = childProcess.spawn(electron, ['./']);
