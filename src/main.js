@@ -4,11 +4,11 @@ const VERSION = '0.2.0';
 
 const electron  = require('electron');
 const path      = require('path');
-const pathExtra = require('path-extra');
+const ospath = require('ospath');
 const jsonfile  = require('jsonfile');
 
 var absPath = path.dirname(__dirname),
-    configFile = pathExtra.datadir('KongDash') + '/config.json';
+    configFile = ospath.home() + '/KongDash' + '/config.json';
 
 var {app, ipcMain, BrowserWindow, Menu} = electron;
 
