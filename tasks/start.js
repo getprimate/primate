@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 module.exports = function (gulp) { 'use strict';
 
-    var childProcess = require('child_process');
-    var electron = require('electron');
+    const childProcess = require('child_process');
+    const electron = require('electron');
 
     gulp.task('start', (next) => {
-        var child = childProcess.spawn(electron, ['./']);
+        let child = childProcess.spawn(electron, ['./']);
 
         child.stdout.on('data', (data) => {
             console.log(data.toString('utf-8'));
