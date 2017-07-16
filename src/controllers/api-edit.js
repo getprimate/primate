@@ -1,7 +1,7 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
 
-    var controller = 'ApiEditController';
+    const controller = 'ApiEditController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
@@ -18,7 +18,7 @@
             ajax.get({ resource: url }).then(function (response) {
                 $scope.nextPluginUrl = response.data.next || '';
 
-                for (var i=0; i<response.data.data.length; i++ ) {
+                for (let i=0; i<response.data.data.length; i++ ) {
                     $scope.pluginList.push(response.data.data[i]);
                 }
 
@@ -29,9 +29,9 @@
 
         ajax.get({ resource: '/apis/' + $scope.apiId }).then(function (response) {
             $scope.formInput.upstreamUrl = response.data.upstream_url;
-            $scope.formInput.requestPath = (typeof response.data.request_path == 'undefined') ? '' : response.data.request_path;
-            $scope.formInput.requestHost = (typeof response.data.request_host == 'undefined') ? '' : response.data.request_host;
-            $scope.formInput.apiName = (typeof response.data.name == 'undefined') ? '' : response.data.name;
+            $scope.formInput.requestPath = (typeof response.data.request_path === 'undefined') ? '' : response.data.request_path;
+            $scope.formInput.requestHost = (typeof response.data.request_host === 'undefined') ? '' : response.data.request_host;
+            $scope.formInput.apiName = (typeof response.data.name === 'undefined') ? '' : response.data.name;
             $scope.formInput.preserveHost = response.data.preserve_host;
             $scope.formInput.stripRequestPath = response.data.strip_request_path;
 
@@ -105,7 +105,7 @@
 
             ajax.patch({
                 resource: '/apis/' + $scope.apiId + '/plugins/' + event.target.value,
-                data: { enabled: (state == 'enabled') },
+                data: { enabled: (state === 'enabled') },
             }).then(function () {
                 toast.success('Plugin ' + event.target.dataset.name + ' ' + state);
 
