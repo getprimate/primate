@@ -1,7 +1,7 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
 
-    var controller = 'ApiListController';
+    const controller = 'ApiListController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
@@ -10,12 +10,19 @@
         viewFactory.prevUrl = null;
 
         $scope.formInput = {
-            apiName: '',
-            requestHost: '',
-            requestPath: '',
+            name: '',
+            methods: '',
+            hosts: '',
+            uris: '',
             upstreamUrl: '',
-            preserveHost: true,
-            stripRequestPath: false
+            retries: '',
+            connectTimeout: '',
+            sendTimeout: '',
+            readTimeout: '',
+            preserveHost: false,
+            stripUri: true,
+            httpsOnly: false,
+            httpIfTerminated: true
         };
 
         $scope.apiList = [];
@@ -23,7 +30,7 @@
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (var i=0; i<response.data.data.length; i++ ) {
+                for (let i = 0; i < response.data.data.length; i++) {
                     $scope.apiList.push(response.data.data[i]);
                 }
 
@@ -42,13 +49,13 @@
             var payload = {};
             var attribute = icon.data('attribute');
 
-            payload[attribute] = ((icon.hasClass('success')) ? false : true );
+            payload[attribute] = !(icon.hasClass('success'));
 
             ajax.patch({
                 resource: '/apis/' + icon.data('api-id'),
                 data: payload
             }).then(function () {
-                if ( payload[attribute] == true) {
+                if ( payload[attribute] === true) {
                     icon.removeClass('default').addClass('success');
 
                 } else {
@@ -71,39 +78,57 @@
 
             var payload = {};
 
-            if ($scope.formInput.apiName.trim().length > 1) {
-                payload.name = $scope.formInput.apiName;
-            }
+            if ($scope.formInput.name.trim().length > 1) {
+                payload.name = $scope.formInput.name;
 
-            if ($scope.formInput.requestHost.trim().length > 1) {
-                payload.request_host = $scope.formInput.requestHost;
-            }
-
-            if (typeof payload.name === 'undefined' &&
-                typeof payload.request_host === 'undefined') {
+            } else {
                 apiForm.find('input[name="apiName"]').focus();
                 return false;
             }
 
-            if ($scope.formInput.requestPath.trim().length > 1) {
-                payload.request_path = $scope.formInput.requestPath;
+            if ($scope.formInput.hosts.trim().length > 1) {
+                payload.hosts = $scope.formInput.hosts;
             }
 
-            if ( typeof payload.request_path === 'undefined' &&
-                typeof payload.request_host === 'undefined') {
-                apiForm.find('input[name="requestPath"]').focus();
+            if ($scope.formInput.uris.trim().length > 1) {
+                payload.uris = $scope.formInput.uris;
+            }
+
+            if ($scope.formInput.methods.trim().length > 1) {
+                payload.methods = $scope.formInput.methods;
+            }
+
+            if (typeof payload.hosts === 'undefined' &&
+                typeof payload.uris === 'undefined' &&
+                typeof payload.methods === 'undefined') {
+                apiForm.find('input[name="hosts"]').focus();
                 return false;
             }
 
             if ($scope.formInput.upstreamUrl.trim().length > 1) {
                 payload.upstream_url = $scope.formInput.upstreamUrl;
+
             } else {
                 apiForm.find('input[name="upstreamUrl"]').focus();
                 return false;
             }
 
-            payload.strip_request_path = $scope.formInput.stripRequestPath;
+            payload.retries = (isNaN($scope.formInput.retries) || $scope.formInput.retries === '') ?
+                5 : parseInt($scope.formInput.retries);
+
+            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || $scope.formInput.connectTimeout === '') ?
+                60000 : parseInt($scope.formInput.connectTimeout);
+
+            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || $scope.formInput.sendTimeout ==='') ?
+                60000 : parseInt($scope.formInput.sendTimeout);
+
+            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || $scope.formInput.readTimeout === '') ?
+                60000 : parseInt($scope.formInput.readTimeout);
+
+            payload.strip_uri = $scope.formInput.stripUri;
             payload.preserve_host = $scope.formInput.preserveHost;
+            payload.https_only = $scope.formInput.httpsOnly;
+            payload.http_if_terminated = $scope.formInput.httpIfTerminated;
 
             ajax.post({
                 resource: '/apis/',
@@ -111,9 +136,10 @@
             }).then(function (response) {
                 $scope.apiList.push(response.data);
 
-                toast.success('New API added');
+                toast.success('New API \'' + payload.name + '\' added');
 
             }, function (response) {
+                console.log(payload);
                 toast.error(response.data);
             });
 
