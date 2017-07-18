@@ -3,6 +3,8 @@ node_modules/
 dist/
 releases/
 release/
+TODO.txt
 *.log
 *.xcf
-TODO.txt
+*.bak
+*.old
