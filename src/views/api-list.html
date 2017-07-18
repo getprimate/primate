@@ -4,14 +4,23 @@
 <div class="panel__body">
     <form class="form hidden" method="post" action="#">
         <div class="row">
-            <div class="col md-4">
-                <input type="text" name="apiName" value="" data-ng-model="formInput.apiName" placeholder="API Name" />
+            <div class="col md-6">
+                <input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" />
             </div>
-            <div class="col md-4">
-                <input type="text" name="requestHost" value="" data-ng-model="formInput.requestHost" placeholder="Request Host" />
+            <div class="col md-6">
+                <input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" />
             </div>
-            <div class="col md-4">
-                <input type="text" name="requestPath" value="" data-ng-model="formInput.requestPath" placeholder="Request Path" />
+        </div>
+
+        <div class="row">
+            <div class="col md-12">
+                <input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col md-12">
+                <input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" />
             </div>
         </div>
 
@@ -22,11 +31,35 @@
         </div>
 
         <div class="row">
-            <div class="col md-4">
+            <div class="col md-3">
+                <input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries" />
+            </div>
+
+            <div class="col md-3">
+                <input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout" />
+            </div>
+
+            <div class="col md-3">
+                <input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout" />
+            </div>
+
+            <div class="col md-3">
+                <input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col md-3">
                 <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" /> Preserve Host</label>
             </div>
-            <div class="col md-4">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripRequestPath" name="stripRequestPath" /> Strip Request Path</label>
+            <div class="col md-3">
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripUri" name="stripUri" /> Strip URIs</label>
+            </div>
+            <div class="col md-3">
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpsOnly" name="httpsOnly" /> HTTPS Only</label>
+            </div>
+            <div class="col md-3">
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpIfTerminated" name="httpIfTerminated" /> HTTP if terminated</label>
             </div>
         </div>
 
@@ -54,7 +87,7 @@
             <i data-attribute="strip_request_path" data-api-id="{{api.id}}" title="Strip request path" data-ng-if="api.strip_request_path==false" class="material-icons default state-highlight">spellcheck</i>
             </td>
 
-            <td><a href="#/api/{{api.id}}">{{api.request_path || api.id}}</a></td>
+            <td><a href="#/api/{{api.id}}">{{api.name || api.id}}</a></td>
             <td>{{api.upstream_url}}</td>
             <td>{{api.created_at | date}}</td>
             <td>
