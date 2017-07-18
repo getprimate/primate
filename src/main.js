@@ -8,7 +8,7 @@ const ospath = require('ospath');
 const jsonfile  = require('jsonfile');
 
 var absPath = path.dirname(__dirname),
-    configFile = ospath.home() + '/KongDash' + '/config.json';
+    configFile = ospath.data() + '/KongDash' + '/config.json';
 
 var {app, ipcMain, BrowserWindow, Menu} = electron;
 
@@ -27,7 +27,7 @@ var startMainWindow = function () {
     });
     mainWindow.loadURL('file://' + absPath + '/src/initialize.html');
 
-    /* Debugging
+    //* Debugging
     mainWindow.webContents.openDevTools();
     //*/
 
@@ -112,7 +112,7 @@ ipcMain.on('write-config', (event, arg) => {
 
     jsonfile.writeFile(configFile, appConfig, function (error) {
         if (error) {
-            event.sender.send('write-config-error', {message: 'Could not write configuration file'});
+            event.sender.send('write-config-error', {message: 'Could not write configuration file.' + error});
 
         } else {
             event.sender.send('write-config-success', {message: 'Configuration saved successfully'});
