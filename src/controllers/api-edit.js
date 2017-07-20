@@ -66,7 +66,7 @@
                 apiForm.find('input[name="apiName"]').focus();
                 return false;
             }
-            
+
             payload.hosts = Array.isArray($scope.formInput.hosts) ? $scope.formInput.hosts.join() : $scope.formInput.hosts;
             payload.uris = Array.isArray($scope.formInput.uris) ? $scope.formInput.uris.join() : $scope.formInput.uris;
             payload.methods = Array.isArray($scope.formInput.methods) ? $scope.formInput.methods.join() : $scope.formInput.methods;
