@@ -28,12 +28,21 @@
         };
 
         ajax.get({ resource: '/apis/' + $scope.apiId }).then(function (response) {
+            $scope.formInput.name = response.data.name;
+            $scope.formInput.methods = (typeof response.data.methods === 'undefined') ? '' : response.data.methods;
+            $scope.formInput.uris = (typeof response.data.uris === 'undefined') ? '' : response.data.uris;
+            $scope.formInput.hosts = (typeof response.data.hosts === 'undefined') ? '' : response.data.hosts;
             $scope.formInput.upstreamUrl = response.data.upstream_url;
-            $scope.formInput.requestPath = (typeof response.data.request_path === 'undefined') ? '' : response.data.request_path;
-            $scope.formInput.requestHost = (typeof response.data.request_host === 'undefined') ? '' : response.data.request_host;
-            $scope.formInput.apiName = (typeof response.data.name === 'undefined') ? '' : response.data.name;
+
+            $scope.formInput.retries = response.data.retries;
+            $scope.formInput.connectTimeout = response.data.upstream_connect_timeout;
+            $scope.formInput.sendTimeout = response.data.upstream_send_timeout;
+            $scope.formInput.readTimeout = response.data.upstream_read_timeout;
+
+            $scope.formInput.httsOnly = response.data.https_only;
+            $scope.formInput.httpIfTerminated = response.data.http_if_terminated;
             $scope.formInput.preserveHost = response.data.preserve_host;
-            $scope.formInput.stripRequestPath = response.data.strip_request_path;
+            $scope.formInput.stripUri = response.data.strip_uri;
 
             viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/api'};
 
@@ -50,39 +59,57 @@
 
             var payload = {};
 
-            if ($scope.formInput.apiName.trim().length > 1) {
-                payload.name = $scope.formInput.apiName;
-            }
+            if ($scope.formInput.name.trim().length > 1) {
+                payload.name = $scope.formInput.name;
 
-            if ($scope.formInput.requestHost.trim().length > 1) {
-                payload.request_host = $scope.formInput.requestHost;
-            }
-
-            if (typeof payload.name === 'undefined' &&
-                typeof payload.request_host === 'undefined') {
+            } else {
                 apiForm.find('input[name="apiName"]').focus();
                 return false;
             }
 
-            if ($scope.formInput.requestPath.trim().length > 1) {
-                payload.request_path = $scope.formInput.requestPath;
+            if ($scope.formInput.hosts.trim().length > 1) {
+                payload.hosts = $scope.formInput.hosts;
             }
 
-            if ( typeof payload.request_path === 'undefined' &&
-                typeof payload.request_host === 'undefined') {
-                apiForm.find('input[name="requestPath"]').focus();
+            if ($scope.formInput.uris.trim().length > 1) {
+                payload.uris = $scope.formInput.uris;
+            }
+
+            if ($scope.formInput.methods.trim().length > 1) {
+                payload.methods = $scope.formInput.methods;
+            }
+
+            if (typeof payload.hosts === 'undefined' &&
+                typeof payload.uris === 'undefined' &&
+                typeof payload.methods === 'undefined') {
+                apiForm.find('input[name="hosts"]').focus();
                 return false;
             }
 
             if ($scope.formInput.upstreamUrl.trim().length > 1) {
                 payload.upstream_url = $scope.formInput.upstreamUrl;
+
             } else {
                 apiForm.find('input[name="upstreamUrl"]').focus();
                 return false;
             }
 
-            payload.strip_request_path = $scope.formInput.stripRequestPath;
+            payload.retries = (isNaN($scope.formInput.retries) || $scope.formInput.retries === '') ?
+                5 : parseInt($scope.formInput.retries);
+
+            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || $scope.formInput.connectTimeout === '') ?
+                60000 : parseInt($scope.formInput.connectTimeout);
+
+            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || $scope.formInput.sendTimeout ==='') ?
+                60000 : parseInt($scope.formInput.sendTimeout);
+
+            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || $scope.formInput.readTimeout === '') ?
+                60000 : parseInt($scope.formInput.readTimeout);
+
+            payload.strip_uri = $scope.formInput.stripUri;
             payload.preserve_host = $scope.formInput.preserveHost;
+            payload.https_only = $scope.formInput.httpsOnly;
+            payload.http_if_terminated = $scope.formInput.httpIfTerminated;
 
             ajax.patch({
                 resource: '/apis/' + $scope.apiId,
