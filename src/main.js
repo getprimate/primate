@@ -56,7 +56,12 @@ app.on('activate', () => {
 app.on('browser-window-created', (e, window) => {
     var menuTemplate = [{
         label: 'File',
-        submenu: [{ role: 'quit' }]
+        submenu: [{
+            label: 'Settings',
+            click: () => {
+                mainWindow.webContents.send('open-settings-view', '');
+            }
+        }, { role: 'quit' }]
     }, {
         label: 'Edit',
         submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }]
