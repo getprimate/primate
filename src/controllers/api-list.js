@@ -113,16 +113,16 @@
                 return false;
             }
 
-            payload.retries = (isNaN($scope.formInput.retries) || $scope.formInput.retries === '') ?
+            payload.retries = (isNaN($scope.formInput.retries) || !$scope.formInput.retries) ?
                 5 : parseInt($scope.formInput.retries);
 
-            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || $scope.formInput.connectTimeout === '') ?
+            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || !$scope.formInput.connectTimeout) ?
                 60000 : parseInt($scope.formInput.connectTimeout);
 
-            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || $scope.formInput.sendTimeout ==='') ?
+            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || !$scope.formInput.sendTimeout) ?
                 60000 : parseInt($scope.formInput.sendTimeout);
 
-            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || $scope.formInput.readTimeout === '') ?
+            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || !$scope.formInput.readTimeout) ?
                 60000 : parseInt($scope.formInput.readTimeout);
 
             payload.strip_uri = $scope.formInput.stripUri;

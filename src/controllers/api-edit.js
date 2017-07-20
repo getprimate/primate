@@ -39,7 +39,7 @@
             $scope.formInput.sendTimeout = response.data.upstream_send_timeout;
             $scope.formInput.readTimeout = response.data.upstream_read_timeout;
 
-            $scope.formInput.httsOnly = response.data.https_only;
+            $scope.formInput.httpsOnly = response.data.https_only;
             $scope.formInput.httpIfTerminated = response.data.http_if_terminated;
             $scope.formInput.preserveHost = response.data.preserve_host;
             $scope.formInput.stripUri = response.data.strip_uri;
@@ -67,17 +67,15 @@
                 return false;
             }
 
-            if ($scope.formInput.hosts.trim().length > 1) {
-                payload.hosts = $scope.formInput.hosts;
-            }
 
-            if ($scope.formInput.uris.trim().length > 1) {
-                payload.uris = $scope.formInput.uris;
-            }
+            payload.hosts = (typeof $scope.formInput.hosts === 'object'
+                && Array.isArray($scope.formInput.hosts)) ? $scope.formInput.hosts.join() : $scope.formInput.hosts;
 
-            if ($scope.formInput.methods.trim().length > 1) {
-                payload.methods = $scope.formInput.methods;
-            }
+            payload.uris = (typeof $scope.formInput.uris === 'object'
+                && Array.isArray($scope.formInput.uris)) ? $scope.formInput.uris.join() : $scope.formInput.uris;
+
+            payload.methods = (typeof $scope.formInput.methods === 'object'
+                && Array.isArray($scope.formInput.methods)) ? $scope.formInput.methods.join() : $scope.formInput.methods;
 
             if (typeof payload.hosts === 'undefined' &&
                 typeof payload.uris === 'undefined' &&
@@ -94,16 +92,16 @@
                 return false;
             }
 
-            payload.retries = (isNaN($scope.formInput.retries) || $scope.formInput.retries === '') ?
+            payload.retries = (isNaN($scope.formInput.retries) || !$scope.formInput.retries) ?
                 5 : parseInt($scope.formInput.retries);
 
-            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || $scope.formInput.connectTimeout === '') ?
+            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || !$scope.formInput.connectTimeout) ?
                 60000 : parseInt($scope.formInput.connectTimeout);
 
-            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || $scope.formInput.sendTimeout ==='') ?
+            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || !$scope.formInput.sendTimeout) ?
                 60000 : parseInt($scope.formInput.sendTimeout);
 
-            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || $scope.formInput.readTimeout === '') ?
+            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || !$scope.formInput.readTimeout) ?
                 60000 : parseInt($scope.formInput.readTimeout);
 
             payload.strip_uri = $scope.formInput.stripUri;
