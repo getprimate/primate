@@ -29,9 +29,9 @@
 
         ajax.get({ resource: '/apis/' + $scope.apiId }).then(function (response) {
             $scope.formInput.name = response.data.name;
-            $scope.formInput.methods = (typeof response.data.methods === 'undefined') ? '' : response.data.methods;
-            $scope.formInput.uris = (typeof response.data.uris === 'undefined') ? '' : response.data.uris;
-            $scope.formInput.hosts = (typeof response.data.hosts === 'undefined') ? '' : response.data.hosts;
+            $scope.formInput.methods = Array.isArray(response.data.methods) ? response.data.methods.join() : '';
+            $scope.formInput.uris = Array.isArray(response.data.uris) ? response.data.uris.join() : '';
+            $scope.formInput.hosts = Array.isArray(response.data.hosts) ? response.data.hosts.join() : '';
             $scope.formInput.upstreamUrl = response.data.upstream_url;
 
             $scope.formInput.retries = response.data.retries;
@@ -66,16 +66,10 @@
                 apiForm.find('input[name="apiName"]').focus();
                 return false;
             }
-
-
-            payload.hosts = (typeof $scope.formInput.hosts === 'object'
-                && Array.isArray($scope.formInput.hosts)) ? $scope.formInput.hosts.join() : $scope.formInput.hosts;
-
-            payload.uris = (typeof $scope.formInput.uris === 'object'
-                && Array.isArray($scope.formInput.uris)) ? $scope.formInput.uris.join() : $scope.formInput.uris;
-
-            payload.methods = (typeof $scope.formInput.methods === 'object'
-                && Array.isArray($scope.formInput.methods)) ? $scope.formInput.methods.join() : $scope.formInput.methods;
+            
+            payload.hosts = Array.isArray($scope.formInput.hosts) ? $scope.formInput.hosts.join() : $scope.formInput.hosts;
+            payload.uris = Array.isArray($scope.formInput.uris) ? $scope.formInput.uris.join() : $scope.formInput.uris;
+            payload.methods = Array.isArray($scope.formInput.methods) ? $scope.formInput.methods.join() : $scope.formInput.methods;
 
             if (typeof payload.hosts === 'undefined' &&
                 typeof payload.uris === 'undefined' &&
