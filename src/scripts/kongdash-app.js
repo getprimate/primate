@@ -169,7 +169,7 @@ app.factory('toast', function () {
  */
 app.filter('pgname', function () {
     return function (input) {
-        if (typeof input != 'string' || input == null) {
+        if (typeof input !== 'string' || input === null) {
             return '';
         }
 
@@ -195,7 +195,7 @@ app.filter('stripProtocol', function () {
  */
 app.filter('splice', function () {
     return function (input) {
-        if (typeof input != 'object') {
+        if (typeof input !== 'object') {
             return '';
         }
 
