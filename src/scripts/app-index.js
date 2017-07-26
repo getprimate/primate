@@ -13,8 +13,13 @@
         return { title: '', prevUrl: '', host: kongConfig.host };
     });
 
+    ipcRenderer.on('open-settings-view', function () {
+        /* TODO: use $location */
+        window.location.href = '#/settings';
+    });
+
     /**
-     * Configures route provider and ajax provider
+     * Configures route provider and ajax provider.
      */
     app.config(['$routeProvider', 'ajaxProvider' , function ($routeProvider, ajaxProvider) {
         ajaxProvider.setHost(kongConfig.host);
@@ -111,6 +116,8 @@
      */
     content.on('click', 'a[href^="http"]', function (event) {
         event.preventDefault();
+
+        /* TODO: implement in main.js. Use ipcRenderer to send events. */
         electron.shell.openExternal(event.target.href);
     });
 
@@ -129,7 +136,7 @@
             ajax.delete({ resource: target.data('url') }).then(function () {
                 toast.success(target.data('target') + ' deleted');
 
-                if ( event.target.nodeName == 'I' ) target.parents('tr').fadeOut(200);
+                if ( event.target.nodeName === 'I' ) target.parents('tr').fadeOut(200);
                 else window.location.href = target.data('redirect');
 
             }, function (response) {
