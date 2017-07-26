@@ -1,7 +1,7 @@
 /* global app:true ipcRenderer:true kongConfig:true appConfig:true */
 (function (angular, app, ipcRenderer, kongConfig, appConfig) { 'use strict';
 
-    var controller = 'SettingsController';
+    const controller = 'SettingsController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
@@ -31,7 +31,7 @@
 
             ajax.get(config).then(function (response) {
                 try {
-                    if (typeof response.data != 'object' || typeof response.data.version === 'undefined') {
+                    if (typeof response.data !== 'object' || typeof response.data.version === 'undefined') {
                         toast.error('Could not detect Kong Admin API running on the provided URL');
                         return;
                     }
