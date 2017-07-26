@@ -20,8 +20,9 @@
         <a class="navigation__link" data-ng-href="#/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
         <a class="navigation__link" data-ng-href="#/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
         <a class="navigation__link" data-ng-href="#/cluster"><p><i class="material-icons">device_hub</i></p><p>Cluster</p></a>
-        <hr />
-        <a class="navigation__link" data-ng-href="#/settings"><p><i class="material-icons">build</i></p> <p>Settings</p></a>
+        <a class="navigation__link" data-ng-href="#/certificates"><p><i class="material-icons">pages</i></p><p>Certificates</p></a>
+        <a class="navigation__link" data-ng-href="#/upstreams"><p><i class="material-icons">backup</i></p><p>Upstreams</p></a>
+
     </nav><!-- .navigation -->
 </aside>
 
@@ -49,7 +50,7 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-var electron      = require('electron');
+const electron      = require('electron');
 var {ipcRenderer} = electron;
 var kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
 var appConfig     = ipcRenderer.sendSync('get-config', 'app');
