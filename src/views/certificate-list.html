@@ -1,0 +1,55 @@
+<div class="panel panel-border success" id="panelAdd">
+    <div class="panel__heading pointer">Add New Certificate</div>
+
+    <div class="panel__body">
+        <form class="form hidden" method="post" action="#">
+            <div class="row">
+                <div class="col md-12">
+                    <textarea name="certificate" data-ng-model="formInput.certificate" placeholder="Certificate"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col md-12">
+                    <textarea name="privateKey" data-ng-model="formInput.privateKey" placeholder="Private Key"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col md-12">
+                    <input type="text" name="snis" value="" data-ng-model="formInput.snis" placeholder="SNIs (Optional)" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col md-12">
+                    <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
+                    <button class="btn success" type="submit" name="action" value="add">Add Certificate</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="well">
+    <div class="well__heading">List of Certificates</div>
+    <table id="certTable" class="table" cellpadding="0" cellspacing="0">
+        <thead data-ng-if="certList.length>0"><tr><th>ID</th><th>Created At</th><th>Actions</th></tr></thead>
+
+        <tbody>
+        <tr data-ng-repeat="cert in certList">
+            <td><a href="#/certificates/{{cert.id}}">{{cert.id}}</a></td>
+            <td>{{cert.created_at | date}}</td>
+            <td>
+                <div class="action-group">
+                    <a href="#/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                    <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No certificates added yet.</th></tr></tfoot>
+    </table>
+</div>
+
+<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchCertList(nextUrl)">Load Next</button></div>
