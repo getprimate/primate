@@ -1,0 +1,56 @@
+<div class="container">
+<div class="row">
+    <div class="col md-7">
+    <div class="panel panel-border info">
+    <div class="panel__heading">Certificate Details</div>
+    <div class="panel__body">
+        <form id="formEdit" class="form" method="post" action="#">
+            <div class="form__field">
+                <label class="field-label">Certificate</label>
+                <div class="field-input"><textarea name="certificate" data-ng-model="formInput.certificate" placeholder=""></textarea></div>
+            </div>
+
+            <div class="form__field">
+                <label class="field-label">Private Key</label>
+                <div class="field-input"><textarea name="privateKey" data-ng-model="formInput.privateKey" placeholder=""></textarea></div>
+            </div>
+
+            <div class="form__field">
+                <a class="btn default" href="#/certificates">Cancel</a>
+                <button class="btn info" type="submit" name="action" value="update">Update</button>
+            </div>
+        </form>
+    </div><!-- .panel__body -->
+    </div><!-- .panel__heading -->
+    </div><!-- .col-md-7 -->
+
+    <div class="col md-5">
+        <div class="well">
+            <div class="well__heading">SNIs
+                <div class="pull-right"><span id="btnAddSNI" class="btn mini success">+</span></div>
+            </div>
+
+            <form id="formSNIs" class="form no-margin hidden" method="post" action="#">
+                <div class="hpadding-10 pad-top-10">
+                    <input type="text" name="host" placeholder="Type host name and press enter..." />
+                </div>
+            </form>
+
+            <table id="sniListTable" class="table" cellpadding="0" cellspacing="0">
+                <thead data-ng-if="sniList.length>0"><tr><th class="md-8">Host name</th> <th>Actions</th></tr> </thead>
+
+                <tbody>
+                <tr data-ng-repeat="name in sniList track by $index">
+                    <td>{{name}}</td>
+                    <td><div class="action-group ">
+                        <i class="material-icons danger delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
+                    </div></td>
+                </tr>
+                </tbody>
+
+                <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="3">No host names configured to use this certificate.</th></tr></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
