@@ -1,7 +1,6 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
-
-    var controller = 'ConsumerEditController';
+    const controller = 'ConsumerEditController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
@@ -68,7 +67,7 @@
             dataModel = targetView.data('list-model');
             authName  = targetView.data('auth-name');
 
-            if (typeof $scope.authMethods[dataModel] == 'undefined' || $scope.authMethods[dataModel].length <= 0) {
+            if (typeof $scope.authMethods[dataModel] === 'undefined' || $scope.authMethods[dataModel].length <= 0) {
                 $scope.fetchAuthList(authName, dataModel);
             }
         }).on('click', 'button.btn.cancel', function (event) {
