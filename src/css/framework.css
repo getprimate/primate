@@ -246,6 +246,7 @@ dl.horizontal > dd { width: 60%; font-size: 0.96rem; }
 .vpadding-10 { padding-top: 10px !important; padding-bottom: 10px !important; }
 .vpadding-20 { padding-top: 20px !important; padding-bottom: 20px !important; }
 
+.pad-top-10 { padding-top: 10px; }
 .pad-top-20 { padding-top: 20px; }
 
 .stretch { display: inline-block; width: 100%; }
