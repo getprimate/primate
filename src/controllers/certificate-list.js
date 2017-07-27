@@ -58,7 +58,7 @@
             }
 
             if ($scope.formInput.snis.trim().length > 0) {
-                payload.snis = $scope.formInput.snis.split(',');
+                payload.snis = $scope.formInput.snis;
             }
 
             ajax.post({
@@ -70,6 +70,7 @@
 
             }, (response) => {
                 toast.error(response.data);
+                console.log(payload);
             });
 
             return false;
