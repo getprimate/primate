@@ -1,7 +1,7 @@
 'use strict';
 
-/* global app:true ipcRenderer:true kongConfig:true appConfig:true */
-(function (angular, app, ipcRenderer, kongConfig, appConfig) {
+/* global app:true kongConfig:true appConfig:true */
+(function (angular, app, kongConfig, appConfig) {
 
     if (typeof app === 'undefined') throw 'app-index.js: app is undefined';
 
@@ -11,11 +11,6 @@
      */
     app.factory('viewFactory', function () {
         return { title: '', prevUrl: '', host: kongConfig.host };
-    });
-
-    ipcRenderer.on('open-settings-view', function () {
-        /* TODO: use $location */
-        window.location.href = '#/settings';
     });
 
     /**
@@ -106,19 +101,22 @@
         });
     }]);
 
-})(window.angular, app, ipcRenderer, kongConfig, appConfig);
+})(window.angular, app, kongConfig, appConfig);
 
-/* global angular:true electron:true */
-(function (angular, content, electron) {
+/* global angular:true ipcRenderer:true */
+(function (angular, content, ipcRenderer) {
+
+    ipcRenderer.on('open-settings-view', function () {
+        /* TODO: use $location */
+        window.location.href = '#/settings';
+    });
 
     /**
      * Open all external links in default browser.
      */
     content.on('click', 'a[href^="http"]', function (event) {
         event.preventDefault();
-
-        /* TODO: implement in main.js. Use ipcRenderer to send events. */
-        electron.shell.openExternal(event.target.href);
+        ipcRenderer.send('open-external', event.target.href);
     });
 
     /**
@@ -145,4 +143,4 @@
         }
     });
 
-})(window.angular, angular.element('main.content'), electron);
+})(window.angular, angular.element('main.content'), ipcRenderer);
