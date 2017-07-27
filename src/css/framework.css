@@ -164,11 +164,15 @@ form.form div.input-control label.field-label { margin-bottom: 5px; }
 
 input[type=text],
 input[type=number],
-input[type=password] { width: 100%; padding: 8px; border: 2px solid transparent; border-radius: 4px; font-weight: 500; }
+input[type=password],
+textarea { width: 100%; padding: 8px; border: 2px solid transparent; border-radius: 4px; font-weight: 500; }
 
 input[type=text]:focus,
 input[type=number]:focus,
-input[type=password]:focus { outline-width: 0; }
+input[type=password]:focus,
+textarea { outline-width: 0; }
+
+textarea { max-width: 100%; min-width: 100%; max-height: 400px; min-height: 100px; width: 100%; height: 200px; }
 
 .input-group-button input { vertical-align: top; display: inline-block; width: 80%; margin-right: 0;
     border-right-width: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; line-height: 5px; }
