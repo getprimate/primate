@@ -69,6 +69,22 @@
                 templateUrl: 'views/plugin-list.html',
                 controller: 'PluginListController'
             })
+            .when('/certificates', {
+                templateUrl: 'views/certificate-list.html',
+                controller: 'CertificateListController'
+            })
+            .when('/certificates/:certificateId', {
+                templateUrl: 'views/certificate-edit.html',
+                controller: 'CertificateEditController'
+            })
+            .when('/upstreams', {
+                templateUrl: 'views/upstream-list.html',
+                controller: 'UpstreamListController'
+            })
+            .when('/upstreams/:upstreamId', {
+                templateUrl: 'views/upstream-edit.html',
+                controller: 'UpstreamEditController'
+            })
             .when('/settings', {
                 templateUrl: 'views/settings.html',
                 controller: 'SettingsController'
