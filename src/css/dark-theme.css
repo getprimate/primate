@@ -90,13 +90,16 @@ table.table tr:nth-child(even) td { background-color: transparent; }
 
 input[type=text],
 input[type=number],
-input[type=password] { background-color: #394C57; border-color: #4B5D67; color: #EFEFEF; }
+input[type=password],
+textarea { background-color: #394C57; border-color: #4B5D67; color: #EFEFEF; }
 
     input[type=text]:focus,
     input[type=number]:focus,
+    textarea:focus,
     input[type=text]:active,
     input[type=number]:active,
     input[type=password]:active,
+    textarea:active,
     select:focus { border-color: #76868F; background-color: #435966; }
 
 form.form label { color: #afbdc4; }
