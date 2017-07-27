@@ -124,3 +124,7 @@ ipcMain.on('write-config', (event, arg) => {
         }
     });
 });
+
+ipcMain.on('open-external', (event, arg) => {
+    electron.shell.openExternal(arg);
+});
