@@ -170,9 +170,11 @@ textarea { width: 100%; padding: 8px; border: 2px solid transparent; border-radi
 input[type=text]:focus,
 input[type=number]:focus,
 input[type=password]:focus,
-textarea { outline-width: 0; }
+textarea:focus { outline-width: 0; }
 
-textarea { max-width: 100%; min-width: 100%; max-height: 400px; min-height: 100px; width: 100%; height: 200px; }
+textarea {
+    max-width: 100%; min-width: 100%; max-height: 400px; min-height: 100px;
+    width: 100%; height: 200px; font-family: 'Roboto', sans-serif; }
 
 .input-group-button input { vertical-align: top; display: inline-block; width: 80%; margin-right: 0;
     border-right-width: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; line-height: 5px; }
