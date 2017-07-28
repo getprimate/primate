@@ -37,7 +37,7 @@
 
         <form id="formTarget" class="form no-margin hidden" method="post" action="#">
             <div class="hpadding-10 pad-top-10">
-                <input type="text" name="host" placeholder="Type (target, weight) and press enter..." />
+                <input type="text" name="target" placeholder="Type (target, weight) and press enter..." />
             </div>
         </form>
 
@@ -49,7 +49,7 @@
                 <td>{{tg.target}}</td>
                 <td>{{tg.weight}}</td>
                 <td><div class="action-group ">
-                    <i class="material-icons danger delete" data-target="host name" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}">delete_forever</i>
+                    <i class="material-icons danger delete" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}">delete_forever</i>
                 </div></td>
             </tr>
             </tbody>
