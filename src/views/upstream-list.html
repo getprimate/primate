@@ -1,0 +1,54 @@
+<div class="panel panel-border success" id="panelAdd">
+<div class="panel__heading pointer">Add Upstream</div>
+
+<div class="panel__body">
+    <form class="form hidden" method="post" action="#">
+        <div class="row">
+        <div class="col md-8">
+            <input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" />
+        </div>
+
+        <div class="col md-4">
+            <input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" />
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col md-12">
+            <input type="text" name="orderList" value="" data-ng-model="formInput.orderList" placeholder="Order List (Optional)" />
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col md-12">
+            <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
+            <button class="btn success" type="submit" name="action" value="add">Add Upstream</button>
+        </div>
+        </div>
+    </form>
+</div>
+</div>
+
+<div class="well">
+    <div class="well__heading">List of Upstreams</div>
+    <table id="upstreamTable" class="table" cellpadding="0" cellspacing="0">
+        <thead data-ng-if="upstreamList.length>0"><tr><th>Name</th><th>Slots</th><th>Created At</th><th>Actions</th></tr></thead>
+
+        <tbody>
+        <tr data-ng-repeat="upstream in upstreamList">
+            <td><a href="#/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
+            <td>{{upstream.slots}}</td>
+            <td>{{upstream.created_at | date}}</td>
+            <td>
+                <div class="action-group">
+                    <a href="#/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
+                    <i class="material-icons danger delete" data-target="Upstream" data-url="/upstreams/{{upstream.id}}">delete_forever</i>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot data-ng-if="upstream.length<=0"><tr><th colspan="5">No upstreams added yet.</th></tr></tfoot>
+    </table>
+</div>
+
+<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchUpstreamList(nextUrl)">Load Next</button></div>
