@@ -1,6 +1,6 @@
 {
   "name": "KongDash",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An elegant desktop client for Kong Admin API",
   "main": "src/main.js",
   "scripts": {
