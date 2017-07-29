@@ -1,6 +1,6 @@
 'use strict';
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 const electron  = require('electron');
 const path      = require('path');
@@ -27,7 +27,7 @@ var startMainWindow = function () {
     });
     mainWindow.loadURL('file://' + absPath + '/src/initialize.html');
 
-    //* Debugging
+    /* Debugging
     mainWindow.webContents.openDevTools();
     //*/
 
