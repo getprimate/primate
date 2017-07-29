@@ -2,7 +2,6 @@
 (function (angular, app) { 'use strict';
 
     const controller = 'ApiListController';
-
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
@@ -30,8 +29,8 @@
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (let i = 0; i < response.data.data.length; i++) {
-                    $scope.apiList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++) {
+                    $scope.apiList.push(response.data.data[index]);
                 }
 
             }, function () {
@@ -39,15 +38,15 @@
             });
         };
 
-        var panelAdd = angular.element('div#panelAdd');
-        var apiForm = panelAdd.children('div.panel__body').children('form');
+        let panelAdd = angular.element('div#panelAdd');
+        let apiForm = panelAdd.children('div.panel__body').children('form');
 
-        var table = angular.element('table#apiTable');
+        let table = angular.element('table#apiTable');
 
         table.on('click', 'i.state-highlight', function (event) {
-            var icon = angular.element(event.target);
-            var payload = {};
-            var attribute = icon.data('attribute');
+            let icon = angular.element(event.target);
+            let payload = {};
+            let attribute = icon.data('attribute');
 
             payload[attribute] = !(icon.hasClass('success'));
 
@@ -55,7 +54,7 @@
                 resource: '/apis/' + icon.data('api-id'),
                 data: payload
             }).then(function () {
-                if ( payload[attribute] === true) {
+                if (payload[attribute] === true) {
                     icon.removeClass('default').addClass('success');
 
                 } else {
@@ -76,7 +75,7 @@
         apiForm.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.name.trim().length > 1) {
                 payload.name = $scope.formInput.name;
@@ -98,9 +97,9 @@
                 payload.methods = $scope.formInput.methods;
             }
 
-            if (typeof payload.hosts === 'undefined' &&
-                typeof payload.uris === 'undefined' &&
-                typeof payload.methods === 'undefined') {
+            if (typeof payload.hosts === 'undefined'
+                && typeof payload.uris === 'undefined'
+                && typeof payload.methods === 'undefined') {
                 apiForm.find('input[name="hosts"]').focus();
                 return false;
             }
