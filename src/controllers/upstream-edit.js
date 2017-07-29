@@ -49,7 +49,7 @@
 
             let payload = {};
 
-            if ($scope.formInput.hostname.trim().length > 10) {
+            if ($scope.formInput.hostname.trim().length > 0) {
                 payload.name = $scope.formInput.hostname;
 
             } else {
