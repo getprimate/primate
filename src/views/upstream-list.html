@@ -5,17 +5,17 @@
     <form class="form hidden" method="post" action="#">
         <div class="row">
         <div class="col md-8">
-            <input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" />
+            <input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" title="A host name that can be referenced in an upstream_url" />
         </div>
 
         <div class="col md-4">
-            <input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" />
+            <input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" title="The number of slots in the load balancer algorithm" />
         </div>
         </div>
 
         <div class="row">
         <div class="col md-12">
-            <textarea name="orderList" data-ng-model="formInput.orderList" placeholder="Order List (Optional)"></textarea>
+            <textarea class="tx-small" name="orderList" data-ng-model="formInput.orderList" placeholder="Order List (Optional)" title="A randomly ordered distribution of the slots in the load balancer"></textarea>
         </div>
         </div>
 
