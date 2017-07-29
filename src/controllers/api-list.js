@@ -139,7 +139,6 @@
                 toast.success('New API \'' + payload.name + '\' added');
 
             }, function (response) {
-                console.log(payload);
                 toast.error(response.data);
             });
 
