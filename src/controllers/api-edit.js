@@ -4,8 +4,8 @@
     const controller = 'ApiEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
-        function ($scope, $routeParams, ajax, toast, viewFactory) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
+        function ($window, $scope, $routeParams, ajax, toast, viewFactory) {
 
         viewFactory.title = 'Edit API';
 
@@ -45,10 +45,9 @@
 
             viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#!/api'};
 
-        }, function (response) {
+        }, function () {
             toast.error('Could not load API details');
-
-            if (response && response.status === 404) window.location.href = '#!/api';
+            $window.location.href = '#!/api';
         });
 
         let apiForm = angular.element('form#formEdit');
