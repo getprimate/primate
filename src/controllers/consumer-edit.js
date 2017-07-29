@@ -7,7 +7,7 @@
         function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
 
         viewFactory.title = 'Edit Consumer';
-        
+
         $scope.consumerId = $routeParams.consumerId;
         $scope.formInput = {};
         $scope.authMethods = {};
