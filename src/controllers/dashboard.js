@@ -1,26 +1,22 @@
 /* global app:true Chart:true */
 (function (angular, app, Chart) { 'use strict';
-
-    var controller = 'DashboardController';
-
+    const controller = 'DashboardController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     Chart.defaults.global.defaultFontColor = '#9db4be';
     Chart.defaults.global.defaultFontStyle = 'bold';
 
-    var createChart = function (container, data) {
+    let createChart = function (container, data) {
         if (typeof data.options === 'undefined') data.options = {responsive: true, scales: {xAxes: [{ticks: {beginAtZero: true}}]}};
 
         return new Chart (angular.element(container)[0].getContext('2d'), data);
     };
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
-
         viewFactory.title = 'Dashboard';
         viewFactory.prevUrl = null;
 
         $scope.refreshTimer = function(master) {
-
             ajax.get({ resource: '/' }).then(function (response) {
                 $scope.kongStat = response.data;
                 $scope.database = $scope.kongStat.configuration.database;
@@ -42,11 +38,9 @@
 
         };
 
-
         $scope.refreshStatus = function(master) {
-
             ajax.get({ resource: '/status' }).then(function (response) {
-                var server = response.data.server;
+                let server = response.data.server;
 
                 createChart('#clusterStatChart', {
                     type: 'bar',
@@ -69,10 +63,8 @@
 
         };
 
-
         $scope.refreshStatus(true);
         $scope.refreshTimer(true);
 
     }]);
-
 })(window.angular, app, Chart);
