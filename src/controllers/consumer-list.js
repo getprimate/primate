@@ -1,24 +1,24 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
-
-    var controller = 'ConsumerListController';
-
+    const controller = 'ConsumerListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function ($scope, ajax, viewFactory, toast) {
+        viewFactory.title = 'Consumer List';
+        viewFactory.prevUrl = null;
+
+        $scope.consumerList = [];
         $scope.formInput = {
             userName: '',
             custom_id: ''
         };
 
-        $scope.consumerList = [];
-
         $scope.fetchConsumerList = function (resource) {
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (var i=0; i<response.data.data.length; i++ ) {
-                    $scope.consumerList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++) {
+                    $scope.consumerList.push(response.data.data[index]);
                 }
 
             }, function () {
@@ -26,11 +26,8 @@
             });
         };
 
-        viewFactory.title = 'Consumer List';
-        viewFactory.prevUrl = null;
-
-        var panelAdd = angular.element('div#panelAdd');
-        var consumerForm = panelAdd.children('div.panel__body').children('form');
+        let panelAdd = angular.element('div#panelAdd');
+        let consumerForm = panelAdd.children('div.panel__body').children('form');
 
         panelAdd.children('div.panel__heading').on('click', function () {
             consumerForm.slideToggle(300);
@@ -39,7 +36,7 @@
         consumerForm.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.userName.trim().length > 1) {
                 payload.username = $scope.formInput.userName;
@@ -75,5 +72,4 @@
 
         $scope.fetchConsumerList('/consumers');
     }]);
-
 })(window.angular, app);
