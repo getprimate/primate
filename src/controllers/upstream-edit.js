@@ -8,7 +8,11 @@
         function ($scope, $routeParams, ajax, viewFactory, toast) {
 
             $scope.upstreamId = $routeParams.upstreamId;
-            $scope.formInput = {};
+            $scope.formInput = {
+                hostname: '',
+                slots: '',
+                orderList: ''
+            };
             $scope.targetList = [];
 
             viewFactory.title = 'Edit Upstream';
@@ -17,8 +21,8 @@
                 $scope.formInput.hostname = response.data.name;
                 $scope.formInput.slots = response.data.slots;
 
-                $scope.orderList = (typeof response.data.orderlist === 'object'
-                && Array.isArray(response.data.orderlist)) ? response.data.orderlist : '';
+                $scope.formInput.orderList = (typeof response.data.orderlist === 'object'
+                    && Array.isArray(response.data.orderlist)) ? response.data.orderlist : '';
 
                 viewFactory.deleteAction = {target: 'Upstream', url: '/upstreams/' + $scope.upstreamId, redirect: '#/upstreams'};
 
@@ -36,27 +40,42 @@
 
                 var payload = {};
 
-                if ($scope.formInput.certificate.trim().length > 10) {
-                    payload.cert = $scope.formInput.certificate;
+                if ($scope.formInput.hostname.trim().length > 10) {
+                    payload.name = $scope.formInput.hostname;
 
                 } else {
-                    formEdit.find('textarea[name="certificate"]').focus();
+                    formEdit.find('input[name="hostname"]').focus();
                     return false;
                 }
 
-                if ($scope.formInput.privateKey.trim().length > 10) {
-                    payload.key = $scope.formInput.privateKey;
+                payload.slots = (isNaN($scope.formInput.slots) || !$scope.formInput.slots) ?
+                    1000 : parseInt($scope.formInput.slots);
 
-                } else {
-                    formEdit.find('textarea[name="privateKey"]').focus();
-                    return false;
+                if ($scope.formInput.orderList !== null && $scope.formInput.orderList.trim().length > 0) {
+                    payload.orderlist = [];
+
+                    try {
+                        let split = $scope.formInput.orderList.split(','), e;
+                        for (let index in split) {
+                            e = parseInt(split[index].trim());
+
+                            if (isNaN(e)) {
+                                toast.error('Invalid number ' + split[index] + ' in order list');
+                                return false;
+                            }
+
+                            payload.orderlist.push(e);
+                        }
+                    } catch (e) {
+                        toast.error('Invalid order list');
+                    }
                 }
 
                 ajax.patch({
-                    resource: '/certificates/' + $scope.certId,
+                    resource: '/upstreams/' + $scope.upstreamId,
                     data: payload
                 }).then(() => {
-                    toast.success('Certificate updated');
+                    toast.success('Upstream updated');
 
                 }, (response) => {
                     toast.error(response.data);
@@ -71,19 +90,25 @@
                 let targetInput = formTarget.children('div.hpadding-10.pad-top-10').children('input[name="target"]');
                 let payload = {};
 
-                if (targetInput.val().trim().length <= 0) {
+                if (null === targetInput.val() || targetInput.val().trim().length <= 0) {
                     return false;
                 }
 
-                payload.name = targetInput.val();
-                payload.ssl_certificate_id = $scope.certId;
+                let tgArray = targetInput.val().trim().split(',');
+
+                payload.target = tgArray[0] || '';
+                payload.weight = (!tgArray[1] || isNaN(tgArray[1])) ? 100 : parseInt(tgArray[1]);
 
                 ajax.post({
-                    resource: '/snis/',
+                    resource: '/upstreams/' + $scope.upstreamId + '/targets',
                     data: payload
-                }).then(function () {
-                    toast.success('New host name added');
-                    $scope.sniList.push(targetInput.val());
+                }).then(function (response) {
+                    toast.success('New target added');
+                    $scope.targetList.push({
+                        target: tgArray[0],
+                        weight: tgArray[1],
+                        id: response.data.id
+                    });
 
                     targetInput.val('');
 

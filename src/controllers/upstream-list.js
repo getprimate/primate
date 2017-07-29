@@ -68,7 +68,7 @@
                         payload.orderlist.push(e);
                     }
                 } catch (e) {
-                    toast.error('Invalid order list!!!');
+                    toast.error('Invalid order list');
                 }
             }
 
@@ -80,7 +80,6 @@
                 toast.success('Upstream added');
 
             }, (response) => {
-                alert(payload);
                 toast.error(response.data);
             });
 
