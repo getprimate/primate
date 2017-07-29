@@ -3,7 +3,7 @@
 [#14](https://github.com/ajaysreedhar/kongdash/issues/14)
 - New views to manage certificates and upstreams
 [#16](https://github.com/ajaysreedhar/kongdash/issues/16)
-- Fixed settings reload issue [#2](https://github.com/ajaysreedhar/kongdash/issues/2),
+- Fixed settings reload issues [#2](https://github.com/ajaysreedhar/kongdash/issues/2),
 [#10](https://github.com/ajaysreedhar/kongdash/issues/10)
 - Settings option moved to File menu
 
