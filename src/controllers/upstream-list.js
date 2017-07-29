@@ -1,45 +1,44 @@
 /* global app:true */
-((angular, app) => { 'use strict';
+(function(angular, app) { 'use strict';
     const controller = 'UpstreamListController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function ($scope, ajax, viewFactory, toast) {
+        viewFactory.title = 'Upstreams';
+        viewFactory.prevUrl = null;
+
+        $scope.upstreamList = [];
         $scope.formInput = {
             hostname: '',
             slots: '',
             orderList: ''
         };
 
-        $scope.upstreamList = [];
-
-        $scope.fetchUpstreamList = (resource) => {
-            ajax.get({ resource: resource }).then((response) => {
+        $scope.fetchUpstreamList = function (resource) {
+            ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (let i = 0; i < response.data.data.length; i++ ) {
-                    $scope.upstreamList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++ ) {
+                    $scope.upstreamList.push(response.data.data[index]);
                 }
 
-            }, () => {
+            }, function () {
                 toast.error('Could not load upstreams');
             });
         };
 
-        viewFactory.title = 'Upstreams';
-        viewFactory.prevUrl = null;
+        let panelAdd = angular.element('div#panelAdd');
+        let formUpstream = panelAdd.children('div.panel__body').children('form');
 
-        var panelAdd = angular.element('div#panelAdd');
-        var formUpstream = panelAdd.children('div.panel__body').children('form');
-
-        panelAdd.children('div.panel__heading').on('click', () => {
+        panelAdd.children('div.panel__heading').on('click', function () {
             formUpstream.slideToggle(300);
         });
 
-        formUpstream.on('submit', (event) => {
+        formUpstream.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.hostname.trim().length > 10) {
                 payload.name = $scope.formInput.hostname;
@@ -75,22 +74,21 @@
             ajax.post({
                 resource: '/upstreams/',
                 data: payload
-            }).then((response) => {
+            }).then(function (response) {
                 $scope.upstreamList.push(response.data);
                 toast.success('Upstream added');
 
-            }, (response) => {
+            }, function (response) {
                 toast.error(response.data);
             });
 
             return false;
         });
 
-        formUpstream.on('click', 'button[name="actionCancel"]', () => {
+        formUpstream.on('click', 'button[name="actionCancel"]', function () {
             formUpstream.slideUp(300);
         });
 
         $scope.fetchUpstreamList('/upstreams/');
     }]);
-
 })(window.angular, app);
