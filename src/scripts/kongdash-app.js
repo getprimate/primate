@@ -4,10 +4,10 @@
 var app = angular.module('KongDash', ['ngAnimate', 'base64'].concat(typeof ngDependency === 'undefined' ? [] : ngDependency));
 
 app.provider('ajax', ['$base64',  function ($base64) {
-    var httpConfig = {};
+    let httpConfig = {};
 
-    var httpRequest = function (config) {
-        var request = {
+    let httpRequest = function (config) {
+        let request = {
             method: config.method,
             url: config.url || (httpConfig.host + config.resource),
             headers: {},
@@ -95,17 +95,15 @@ app.provider('ajax', ['$base64',  function ($base64) {
 app.factory('toast', function () {
     return {
         displayMessage: function (message) {
-            var body = angular.element('body'), status;
+            let body = angular.element('body'), text = '', status;
 
             if (body.children('.notification').length > 0)
                 body.children('.notification').remove();
 
-            var text = '';
-
             try {
                 if (typeof message.text === 'object') {
                     if (Object.keys(message.text).length > 0) {
-                        var firstKey = Object.keys(message.text)[0];
+                        let firstKey = Object.keys(message.text)[0];
 
                         if ((firstKey === 'error' || firstKey === 'message') && typeof message.text[firstKey] === 'string')
                             text = message.text[firstKey];
@@ -140,14 +138,14 @@ app.factory('toast', function () {
                     break;
             }
 
-            var div = angular.element('<div></div>', {class: 'notification ' + message.type})
+            let div = angular.element('<div></div>', {class: 'notification ' + message.type})
                 .html('<b>' + status + '</b> ' + text + '.')
                 .on('click', function () {
                     div.fadeOut(200);
                 });
 
             body.append(div);
-            var interval = setInterval(function () {
+            let interval = setInterval(function () {
                 div.fadeOut({
                     duration: 1000, complete: function () {
                         clearInterval(interval);
