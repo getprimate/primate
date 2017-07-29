@@ -6,7 +6,7 @@
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
-        
+
         $scope.upstreamId = $routeParams.upstreamId;
         $scope.formInput = {
             hostname: '',
