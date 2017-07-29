@@ -1,16 +1,13 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
-
-    var controller = 'PluginListController';
-
+    const controller = 'PluginListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
-
         viewFactory.title = 'Plugin List';
 
-        var filters = [];
+        let filters = [];
 
         if ($routeParams.consumerId) filters.push('consumer_id=' + $routeParams.consumerId);
         else viewFactory.prevUrl = null;
@@ -20,8 +17,8 @@
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (var i=0; i<response.data.data.length; i++ ) {
-                    $scope.pluginList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++) {
+                    $scope.pluginList.push(response.data.data[index]);
                 }
 
             }, function () {
@@ -30,8 +27,7 @@
         };
 
         angular.element('#pluginsTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
-            var checkbox = angular.element(event.target), payload={};
-
+            let checkbox = angular.element(event.target), payload={};
             payload.enabled = checkbox.is(':checked');
 
             ajax.patch({
@@ -47,5 +43,4 @@
 
         $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
     }]);
-
 })(window.angular, app);
