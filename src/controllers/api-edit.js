@@ -2,24 +2,23 @@
 (function (angular, app) { 'use strict';
 
     const controller = 'ApiEditController';
-
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
         function ($scope, $routeParams, ajax, toast, viewFactory) {
 
+        viewFactory.title = 'Edit API';
+
         $scope.apiId = $routeParams.apiId;
         $scope.formInput = {};
-
-        viewFactory.title = 'Edit API';
         $scope.pluginList = [];
 
         $scope.fetchPluginList = function (url) {
             ajax.get({ resource: url }).then(function (response) {
                 $scope.nextPluginUrl = response.data.next || '';
 
-                for (let i=0; i<response.data.data.length; i++ ) {
-                    $scope.pluginList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++) {
+                    $scope.pluginList.push(response.data.data[index]);
                 }
 
             }, function () {
@@ -52,12 +51,12 @@
             if (response && response.status === 404) window.location.href = '#!/api';
         });
 
-        var apiForm = angular.element('form#formEdit');
+        let apiForm = angular.element('form#formEdit');
 
         apiForm.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.name.trim().length > 1) {
                 payload.name = $scope.formInput.name;
@@ -71,9 +70,10 @@
             payload.uris = Array.isArray($scope.formInput.uris) ? $scope.formInput.uris.join() : $scope.formInput.uris;
             payload.methods = Array.isArray($scope.formInput.methods) ? $scope.formInput.methods.join() : $scope.formInput.methods;
 
-            if (typeof payload.hosts === 'undefined' &&
-                typeof payload.uris === 'undefined' &&
-                typeof payload.methods === 'undefined') {
+            if (typeof payload.hosts === 'undefined'
+                && typeof payload.uris === 'undefined'
+                && typeof payload.methods === 'undefined') {
+
                 apiForm.find('input[name="hosts"]').focus();
                 return false;
             }
@@ -117,10 +117,7 @@
         });
 
         angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
-            var state = 'enabled';
-
-            if (event.target.checked) state = 'enabled';
-            else state = 'disabled';
+            let state = (event.target.checked) ? 'enabled' : 'disabled';
 
             ajax.patch({
                 resource: '/apis/' + $scope.apiId + '/plugins/' + event.target.value,
