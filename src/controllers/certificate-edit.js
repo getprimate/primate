@@ -21,12 +21,12 @@
             $scope.sniList = (typeof response.data.snis === 'object'
                 && Array.isArray(response.data.snis)) ? response.data.snis : [];
 
-            viewFactory.deleteAction = {target: 'Certificate', url: '/certificates/' + $scope.certId, redirect: '#/certificates'};
+            viewFactory.deleteAction = {target: 'Certificate', url: '/certificates/' + $scope.certId, redirect: '#!/certificates'};
 
         }, function (response) {
             toast.error('Could not load certificate details');
 
-            if (response && response.status === 404) window.location.href = '#/certificates';
+            if (response && response.status === 404) window.location.href = '#!/certificates';
         });
 
         var formEdit = angular.element('form#formEdit');

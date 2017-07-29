@@ -36,12 +36,12 @@
 
         <tbody>
         <tr data-ng-repeat="upstream in upstreamList">
-            <td><a href="#/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
+            <td><a href="#!/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
             <td>{{upstream.slots}}</td>
             <td>{{upstream.created_at | date}}</td>
             <td>
                 <div class="action-group">
-                    <a href="#/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
+                    <a href="#!/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
                     <i class="material-icons danger delete" data-target="Upstream" data-url="/upstreams/{{upstream.id}}">delete_forever</i>
                 </div>
             </td>

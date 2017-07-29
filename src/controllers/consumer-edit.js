@@ -27,11 +27,11 @@
             $scope.formInput.username = response.data.username;
             $scope.formInput.custom_id = response.data.custom_id;
 
-            viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#/consumers' };
+            viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#!/consumers' };
 
         }, function (response) {
             toast.error('Could not load consumer details');
-            if (response && response.status === 404) window.location.href = '#/consumers';
+            if (response && response.status === 404) window.location.href = '#!/consumers';
         });
 
         var consumerEditForm = angular.element('form#consumerEditForm');

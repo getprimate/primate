@@ -165,13 +165,13 @@
 
             }, function (response) {
                 toast.error('Could not fetch plugin details');
-                if (response && response.status === 404) window.location.href = '#/api';
+                if (response && response.status === 404) window.location.href = '#!/api';
             });
 
         } else {
             action = 'create';
 
-            viewFactory.prevUrl = '#/api/' + $scope.apiId;
+            viewFactory.prevUrl = '#!/api/' + $scope.apiId;
             viewFactory.title = 'Add New Plugin';
 
             pluginForm.on('change', 'select[name="name"]', function (event) {

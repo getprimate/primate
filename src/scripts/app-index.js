@@ -124,7 +124,7 @@
 
     ipcRenderer.on('open-settings-view', function () {
         /* TODO: use $location */
-        window.location.href = '#/settings';
+        window.location.href = '#!/settings';
     });
 
     /**

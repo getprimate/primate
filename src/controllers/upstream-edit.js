@@ -35,14 +35,14 @@
             $scope.formInput.slots = response.data.slots;
 
             $scope.formInput.orderList = (typeof response.data.orderlist === 'object'
-                && Array.isArray(response.data.orderlist)) ? response.data.orderlist : '';
+                && Array.isArray(response.data.orderlist)) ? response.data.orderlist.join() : '';
 
-            viewFactory.deleteAction = {target: 'Upstream', url: '/upstreams/' + $scope.upstreamId, redirect: '#/upstreams'};
+            viewFactory.deleteAction = {target: 'Upstream', url: '/upstreams/' + $scope.upstreamId, redirect: '#!/upstreams'};
 
         }, function (response) {
             toast.error('Could not load upstream details');
 
-            if (response && response.status === 404) window.location.href = '#/upstreams';
+            if (response && response.status === 404) window.location.href = '#!/upstreams';
         });
 
         var formEdit = angular.element('form#formEdit');

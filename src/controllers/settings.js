@@ -45,6 +45,10 @@
                     ipcRenderer.on('write-config-success', function () {
                         toast.success('Kong configuration saved');
 
+                        app.config(['ajaxProvider', function (ajaxProvider) {
+                            ajaxProvider.setHost($scope.kongConfig.host);
+                        }]);
+
                     }).on('write-config-error', function (event, arg) {
                         toast.error(arg.message);
                     });

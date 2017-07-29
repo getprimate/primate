@@ -21,7 +21,7 @@
             </div>
 
             <div class="form__field">
-            <a class="btn default" href="#/upstreams">Cancel</a>
+            <a class="btn default" href="#!/upstreams">Cancel</a>
             <button class="btn info" type="submit" name="action" value="update">Update</button>
             </div>
         </form>
@@ -49,7 +49,7 @@
                 <td>{{tg.target}}</td>
                 <td>{{tg.weight}}</td>
                 <td><div class="action-group ">
-                    <i class="material-icons danger delete" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}">delete_forever</i>
+                    <i class="material-icons warning delete disable" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Disable with weight 0">report_problem</i>
                 </div></td>
             </tr>
             </tbody>

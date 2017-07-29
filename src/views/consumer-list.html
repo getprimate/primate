@@ -25,13 +25,13 @@
 
     <tbody>
     <tr data-ng-repeat="consumer in consumerList">
-        <td><a href="#/consumers/{{consumer.id}}"><b>{{consumer.username}}</b></a></td>
+        <td><a href="#!/consumers/{{consumer.id}}"><b>{{consumer.username}}</b></a></td>
         <td>{{consumer.custom_id}}</td>
         <td>{{consumer.created_at | date}}</td>
         <td>
             <div class="action-group">
-                <a title="Edit Consumer" href="#/consumers/{{consumer.id}}"><i class="material-icons warning">edit</i></a>
-                <a title="Enabled Plugins" href="#/consumers/{{consumer.id}}/plugins"><i class="material-icons info">extension</i></a>
+                <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><i class="material-icons warning">edit</i></a>
+                <a title="Enabled Plugins" href="#!/consumers/{{consumer.id}}/plugins"><i class="material-icons info">extension</i></a>
                 <i title="Delete Consumer" class="material-icons danger delete" data-target="consumer" data-url="/consumers/{{consumer.id}}">delete_forever</i>
             </div>
         </td>

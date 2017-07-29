@@ -44,12 +44,12 @@
             $scope.formInput.preserveHost = response.data.preserve_host;
             $scope.formInput.stripUri = response.data.strip_uri;
 
-            viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#/api'};
+            viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#!/api'};
 
         }, function (response) {
             toast.error('Could not load API details');
 
-            if (response && response.status === 404) window.location.href = '#/api';
+            if (response && response.status === 404) window.location.href = '#!/api';
         });
 
         var apiForm = angular.element('form#formEdit');

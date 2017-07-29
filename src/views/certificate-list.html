@@ -36,11 +36,11 @@
 
         <tbody>
         <tr data-ng-repeat="cert in certList">
-            <td><a href="#/certificates/{{cert.id}}">{{cert.id}}</a></td>
+            <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a></td>
             <td>{{cert.created_at | date}}</td>
             <td>
                 <div class="action-group">
-                    <a href="#/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                    <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
                     <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
                 </div>
             </td>

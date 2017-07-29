@@ -87,12 +87,12 @@
             <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==false" class="material-icons default state-highlight">spellcheck</i>
             </td>
 
-            <td><a href="#/api/{{api.id}}">{{api.name || api.id}}</a></td>
+            <td><a href="#!/api/{{api.id}}">{{api.name || api.id}}</a></td>
             <td>{{api.upstream_url}}</td>
             <td>{{api.created_at | date}}</td>
             <td>
                 <div class="action-group">
-                    <a href="#/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
+                    <a href="#!/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
                     <i class="material-icons danger delete" data-target="API" data-url="/apis/{{api.id}}">delete_forever</i>
                 </div>
             </td>
