@@ -13,7 +13,14 @@
         $scope.appConfig  = appConfig;
         $scope.version = ipcRenderer.sendSync('get-config', 'VERSION');
 
-        var formKongConfig = angular.element('form#formKongConfig');
+        let formKongConfig = angular.element('form#formKongConfig');
+
+        ipcRenderer.on('write-config-success', function () {
+            toast.success('Settings saved');
+
+        }).on('write-config-error', function (event, arg) {
+            toast.error(arg.message);
+        });
 
         formKongConfig.on('submit', function (event) {
             event.preventDefault();
@@ -22,11 +29,9 @@
                 $scope.kongConfig.host = $scope.kongConfig.host.substring(0, $scope.kongConfig.host.length - 1);
             }
 
-            var config = {
+            let config = {
                 url: $scope.kongConfig.host,
-                headers: {
-                    'Authorization': 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''))
-                }
+                headers: { 'Authorization': 'Basic ' + $base64.encode($scope.kongConfig.username + ':' + ($scope.kongConfig.password || ''))}
             };
 
             ajax.get(config).then(function (response) {
@@ -42,16 +47,8 @@
 
                     ipcRenderer.send('write-config', { name: 'kong', config: $scope.kongConfig });
 
-                    ipcRenderer.on('write-config-success', function () {
-                        toast.success('Kong configuration saved');
-
-                        app.config(['ajaxProvider', function (ajaxProvider) {
-                            ajaxProvider.setHost($scope.kongConfig.host);
-                        }]);
-
-                    }).on('write-config-error', function (event, arg) {
-                        toast.error(arg.message);
-                    });
+                    ajax.setHost(kongConfig.host);
+                    ajax.basicAuth($scope.kongConfig.username, $scope.kongConfig.password);
 
                 } catch (e) {
                     toast.error('Could not detect Kong Admin API running on the provided URL');
@@ -72,7 +69,7 @@
         });
 
         angular.element('#toggleAnimation').on('click', function (event) {
-            var checkbox = angular.element(event.target);
+            let checkbox = angular.element(event.target);
 
             if (checkbox.is(':checked')) {
                 $rootScope.ngViewAnimation = 'slide-right';
@@ -84,13 +81,6 @@
             }
 
             ipcRenderer.send('write-config', { name: 'app', config: $scope.appConfig });
-
-            ipcRenderer.on('write-config-success', function () {
-                toast.success('App configuration saved');
-
-            }).on('write-config-error', function (event, arg) {
-                toast.error(arg.message);
-            });
         });
     }]);
 
