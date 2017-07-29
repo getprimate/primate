@@ -1,7 +1,7 @@
 /* global app:true */
 (function (app) { 'use strict';
 
-    var controller = 'ClusterListController';
+    const controller = 'ClusterListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
@@ -15,8 +15,8 @@
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = response.data.next || '';
 
-                for (var i = 0; i < response.data.data.length; i++ ) {
-                    $scope.clusterList.push(response.data.data[i]);
+                for (let index = 0; index < response.data.data.length; index++ ) {
+                    $scope.clusterList.push(response.data.data[index]);
                 }
             }, function () {
                 toast.error('Could not load list of clusters');
@@ -25,5 +25,4 @@
 
         $scope.fetchClusterList('/cluster');
     }]);
-
 })(app);
