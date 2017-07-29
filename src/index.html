@@ -15,13 +15,13 @@
 <aside class="drawer">
     <div class="icon"><div>KongDash</div></div>
     <nav class="navigation">
-        <a class="navigation__link active" data-ng-href="#/"><p><i class="material-icons">view_quilt</i></p><p>Dashboard</p></a>
-        <a class="navigation__link" data-ng-href="#/api"><p><i class="material-icons">settings_input_component</i></p> <p>APIs</p></a>
-        <a class="navigation__link" data-ng-href="#/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
-        <a class="navigation__link" data-ng-href="#/certificates"><p><i class="material-icons">pages</i></p><p>Certificates</p></a>
-        <a class="navigation__link" data-ng-href="#/upstreams"><p><i class="material-icons">backup</i></p><p>Upstreams</p></a>
-        <a class="navigation__link" data-ng-href="#/cluster"><p><i class="material-icons">device_hub</i></p><p>Cluster</p></a>
-        <a class="navigation__link" data-ng-href="#/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
+        <a class="navigation__link active" data-ng-href="#!/"><p><i class="material-icons">view_quilt</i></p><p>Dashboard</p></a>
+        <a class="navigation__link" data-ng-href="#!/api"><p><i class="material-icons">settings_input_component</i></p> <p>APIs</p></a>
+        <a class="navigation__link" data-ng-href="#!/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
+        <a class="navigation__link" data-ng-href="#!/certificates"><p><i class="material-icons">pages</i></p><p>Certificates</p></a>
+        <a class="navigation__link" data-ng-href="#!/upstreams"><p><i class="material-icons">backup</i></p><p>Upstreams</p></a>
+        <a class="navigation__link" data-ng-href="#!/cluster"><p><i class="material-icons">device_hub</i></p><p>Cluster</p></a>
+        <a class="navigation__link" data-ng-href="#!/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
 
     </nav><!-- .navigation -->
 </aside>
@@ -57,10 +57,10 @@ var appConfig     = ipcRenderer.sendSync('get-config', 'app');
 var ngDependency  = ['ngRoute'];
 </script>
 
-<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-route.min.js"></script>
-<script type="text/javascript" src="js/angular-animate.js"></script>
+<script type="text/javascript" src="js/angular-animate.min.js"></script>
 <script type="text/javascript" src="js/angular-base64.min.js"></script>
 <script type="text/javascript" src="scripts/kongdash-app.js"></script>
 <script type="text/javascript" src="js/Chart.bundle.min.js"></script>
