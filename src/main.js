@@ -54,14 +54,14 @@ app.on('activate', () => {
 });
 
 app.on('browser-window-created', (e, window) => {
-    var menuTemplate = [{
+    let menuTemplate = [{
         label: 'File',
         submenu: [{
             label: 'Settings',
             click: () => {
                 mainWindow.webContents.send('open-settings-view', '');
             }
-        }, { role: 'quit' }]
+        }, { type: 'separator' }, { role: 'quit' }]
     }, {
         label: 'Edit',
         submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }]
@@ -90,10 +90,11 @@ app.on('browser-window-created', (e, window) => {
         }]
     }];
 
-    var menu = Menu.buildFromTemplate(menuTemplate);
+    let menu = Menu.buildFromTemplate(menuTemplate);
 
     if (process.platform === 'darwin' || process.platform === 'mas') {
-	Menu.setApplicationMenu(menu);
+        Menu.setApplicationMenu(menu);
+
     } else {
         window.setMenu(menu);
     }
