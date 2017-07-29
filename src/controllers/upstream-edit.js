@@ -3,8 +3,8 @@
     const controller = 'UpstreamEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($scope, $routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
         viewFactory.title = 'Edit Upstream';
 
         $scope.upstreamId = $routeParams.upstreamId;
@@ -37,10 +37,9 @@
 
             viewFactory.deleteAction = {target: 'Upstream', url: '/upstreams/' + $scope.upstreamId, redirect: '#!/upstreams'};
 
-        }, function (response) {
+        }, function () {
             toast.error('Could not load upstream details');
-
-            if (response && response.status === 404) window.location.href = '#!/upstreams';
+            $window.location.href = '#!/upstreams';
         });
 
         let formEdit = angular.element('form#formEdit'), formTarget = angular.element('form#formTarget');

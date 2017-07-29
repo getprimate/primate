@@ -159,9 +159,9 @@
                 viewFactory.title = 'Edit ' + response.data.name + ' Plugin';
                 viewFactory.deleteAction = { target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId };
 
-            }, function (response) {
+            }, function () {
                 toast.error('Could not fetch plugin details');
-                if (response && response.status === 404) $window.location.href = '#!/api';
+                $window.location.href = '#!/api';
             });
 
         } else {

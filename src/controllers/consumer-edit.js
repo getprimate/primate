@@ -27,9 +27,9 @@
 
             viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#!/consumers' };
 
-        }, function (response) {
+        }, function () {
             toast.error('Could not load consumer details');
-            if (response && 404 === parseInt(response.status)) $window.location.href = '#!/consumers';
+            $window.location.href = '#!/consumers';
         });
 
         let consumerEditForm = angular.element('form#consumerEditForm'),
