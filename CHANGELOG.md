@@ -1,3 +1,12 @@
+## v0.3.0
+- Supports Kong Admin API v0.10.x
+[#14](https://github.com/ajaysreedhar/kongdash/issues/14)
+- Options to manage certificates and upstreams
+[#16](https://github.com/ajaysreedhar/kongdash/issues/16)
+- Settings option moved to File menu
+- Fixed settings reload issue [#2](https://github.com/ajaysreedhar/kongdash/issues/2),
+[#10](https://github.com/ajaysreedhar/kongdash/issues/10) 
+
 ## v0.2.0
 
 - Check for updates and notify
