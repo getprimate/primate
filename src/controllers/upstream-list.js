@@ -52,8 +52,24 @@
             payload.slots = (isNaN($scope.formInput.slots) || !$scope.formInput.slots) ?
                 1000 : parseInt($scope.formInput.slots);
 
-            if ( $scope.formInput.orderList !== null && $scope.formInput.orderList.trim().length > 0) {
-                payload.orderlist = $scope.formInput.orderList;
+            if ($scope.formInput.orderList !== null && $scope.formInput.orderList.trim().length > 0) {
+                payload.orderlist = [];
+
+                try {
+                    let split = $scope.formInput.orderList.split(','), e;
+                    for (let index in split) {
+                        e = parseInt(split[index].trim());
+
+                        if (isNaN(e)) {
+                            toast.error('Invalid number ' + split[index] + ' in order list');
+                            return false;
+                        }
+
+                        payload.orderlist.push(e);
+                    }
+                } catch (e) {
+                    toast.error('Invalid order list!!!');
+                }
             }
 
             ajax.post({
@@ -64,6 +80,7 @@
                 toast.success('Upstream added');
 
             }, (response) => {
+                alert(payload);
                 toast.error(response.data);
             });
 
