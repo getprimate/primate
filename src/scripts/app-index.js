@@ -107,9 +107,9 @@
             viewFactory.prevUrl = current;
 
             if (next.indexOf('#') > 1) {
-                var refArray = next.split('#/')[1].split('/');
-                var href = '#/' + refArray[0];
-                var nav  = angular.element('nav.navigation');
+                let refArray = next.split('#!/')[1].split('/');
+                let href = '#!/' + refArray[0];
+                let nav  = angular.element('nav.navigation');
 
                 nav.find('a.navigation__link').removeClass('active');
                 nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
@@ -141,14 +141,16 @@
     content.on('click', '.delete', function (event) {
         event.preventDefault();
 
-        var target = angular.element(event.target);
+        let target = angular.element(event.target), action = 'Delete';
 
-        if (confirm ('Delete this ' + target.data('target') + '?')) {
-            var ajax  = angular.element('html').injector().get('ajax');
-            var toast = angular.element('body').injector().get('toast');
+        if (target.hasClass('disable')) action = 'Disable';
+
+        if (confirm (action + ' this ' + target.data('target') + '?')) {
+            let ajax  = angular.element('html').injector().get('ajax');
+            let toast = angular.element('body').injector().get('toast');
 
             ajax.delete({ resource: target.data('url') }).then(function () {
-                toast.success(target.data('target') + ' deleted');
+                toast.success(target.data('target') + ' ' + action.toLowerCase() + 'd');
 
                 if ( event.target.nodeName === 'I' ) target.parents('tr').fadeOut(200);
                 else window.location.href = target.data('redirect');
