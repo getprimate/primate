@@ -1,18 +1,17 @@
 /* global app:true */
-((angular, app) => { 'use strict';
+(function (angular, app) { 'use strict';
 
     const controller = 'CertificateEditController';
-
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($scope, $routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
+
+        viewFactory.title = 'Edit Certificate';
 
         $scope.certId = $routeParams.certificateId;
         $scope.formInput = {};
         $scope.sniList = [];
-
-        viewFactory.title = 'Edit Certificate';
 
         ajax.get({ resource: '/certificates/' + $scope.certId }).then(function (response) {
             $scope.formInput.certificate = response.data.cert;
@@ -21,21 +20,23 @@
             $scope.sniList = (typeof response.data.snis === 'object'
                 && Array.isArray(response.data.snis)) ? response.data.snis : [];
 
-            viewFactory.deleteAction = {target: 'Certificate', url: '/certificates/' + $scope.certId, redirect: '#!/certificates'};
+            viewFactory.deleteAction = {
+                target: 'Certificate',
+                url: '/certificates/' + $scope.certId,
+                redirect: '#!/certificates'
+            };
 
-        }, function (response) {
+        }, function () {
             toast.error('Could not load certificate details');
-
-            if (response && response.status === 404) window.location.href = '#!/certificates';
+            $window.location.href = '#!/certificates';
         });
 
-        var formEdit = angular.element('form#formEdit');
-        var formSNIs = angular.element('form#formSNIs');
+        let formEdit = angular.element('form#formEdit'), formSNIs = angular.element('form#formSNIs');
 
-        formEdit.on('submit', (event) => {
+        formEdit.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.certificate.trim().length > 10) {
                 payload.cert = $scope.formInput.certificate;
@@ -56,17 +57,17 @@
             ajax.patch({
                 resource: '/certificates/' + $scope.certId,
                 data: payload
-            }).then(() => {
+            }).then(function() {
                 toast.success('Certificate updated');
 
-            }, (response) => {
+            }, function (response) {
                 toast.error(response.data);
             });
 
             return false;
         });
 
-        formSNIs.on('submit', (event) => {
+        formSNIs.on('submit', function (event) {
             event.preventDefault();
 
             let hostInput = formSNIs.children('div.hpadding-10.pad-top-10').children('input[name="host"]');
