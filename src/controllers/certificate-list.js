@@ -70,7 +70,6 @@
 
             }, (response) => {
                 toast.error(response.data);
-                console.log(payload);
             });
 
             return false;
