@@ -1,6 +1,5 @@
 /* global app:true ipcRenderer:true kongConfig:true appConfig:true */
 (function (angular, app, ipcRenderer, kongConfig, appConfig) { 'use strict';
-
     const controller = 'SettingsController';
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
@@ -83,5 +82,4 @@
             ipcRenderer.send('write-config', { name: 'app', config: $scope.appConfig });
         });
     }]);
-
 })(window.angular, app, ipcRenderer, kongConfig, appConfig);
