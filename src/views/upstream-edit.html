@@ -7,17 +7,17 @@
         <form id="formEdit" class="form" method="post" action="#">
             <div class="form__field">
             <label class="field-label">Name</label>
-            <div class="field-input"><input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" /></div>
+            <div class="field-input"><input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" title="A host name that can be referenced in an upstream_url" /></div>
             </div>
 
             <div class="form__field">
             <label class="field-label">Slots</label>
-            <div class="field-input"><input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" /></div>
+            <div class="field-input"><input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" title="The number of slots in the load balancer algorithm" /></div>
             </div>
 
             <div class="form__field">
             <label class="field-label">Order List</label>
-            <div class="field-input"><textarea name="orderList" data-ng-model="formInput.orderList"></textarea></div>
+            <div class="field-input"><textarea class="tx-small" name="orderList" data-ng-model="formInput.orderList" title="A randomly ordered distribution of the slots in the load balancer"></textarea></div>
             </div>
 
             <div class="form__field">
@@ -37,7 +37,7 @@
 
         <form id="formTarget" class="form no-margin hidden" method="post" action="#">
             <div class="hpadding-10 pad-top-10">
-                <input type="text" name="target" placeholder="Type (target, weight) and press enter..." />
+                <input type="text" name="target" placeholder="Type (target:port, weight) and press enter" title="Example: 127.0.0.1:8080, 15" />
             </div>
         </form>
 
