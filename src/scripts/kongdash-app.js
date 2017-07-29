@@ -80,6 +80,13 @@ app.provider('ajax', ['$base64',  function ($base64) {
             delete: function (config) {
                 config.method = 'DELETE';
                 return $http(httpRequest(config));
+            },
+            setHost: function (host) {
+                httpConfig.host = host;
+            },
+            basicAuth: function (username, password) {
+                if (!username) return;
+                httpConfig.authorization = 'Basic ' + $base64.encode(username + ':' + (password || ''));
             }
         };
     }];
