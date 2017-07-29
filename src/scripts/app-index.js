@@ -108,8 +108,7 @@
 
             if (next.indexOf('#') > 1) {
                 let refArray = next.split('#!/')[1].split('/');
-                let href = '#!/' + refArray[0];
-                let nav  = angular.element('nav.navigation');
+                let href = '#!/' + refArray[0], nav  = angular.element('nav.navigation');
 
                 nav.find('a.navigation__link').removeClass('active');
                 nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
@@ -120,7 +119,7 @@
 })(window.angular, app, kongConfig, appConfig);
 
 /* global angular:true ipcRenderer:true */
-(function (angular, content, ipcRenderer) {
+(function (window, angular, content, ipcRenderer) {
 
     ipcRenderer.on('open-settings-view', function () {
         /* TODO: use $location */
@@ -141,9 +140,8 @@
     content.on('click', '.delete', function (event) {
         event.preventDefault();
 
-        let target = angular.element(event.target), action = 'Delete';
-
-        if (target.hasClass('disable')) action = 'Disable';
+        let target = angular.element(event.target);
+        let action = target.hasClass('disable') ? 'Disable' : 'Delete';
 
         if (confirm (action + ' this ' + target.data('target') + '?')) {
             let ajax  = angular.element('html').injector().get('ajax');
@@ -161,4 +159,4 @@
         }
     });
 
-})(window.angular, angular.element('main.content'), ipcRenderer);
+})(window, window.angular, angular.element('main.content'), ipcRenderer);
