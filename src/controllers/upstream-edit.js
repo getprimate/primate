@@ -1,19 +1,19 @@
 /* global app:true */
-((angular, app) => { 'use strict';
+(function (angular, app) { 'use strict';
     const controller = 'UpstreamEditController';
-
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
         function ($scope, $routeParams, ajax, viewFactory, toast) {
+        viewFactory.title = 'Edit Upstream';
 
         $scope.upstreamId = $routeParams.upstreamId;
+        $scope.targetList = [];
         $scope.formInput = {
             hostname: '',
             slots: '',
             orderList: ''
         };
-        $scope.targetList = [];
 
         $scope.fetchTargetList = function (url) {
             ajax.get({ resource: url }).then(function (response) {
@@ -27,8 +27,6 @@
                 toast.error('Could not load targets');
             });
         };
-
-        viewFactory.title = 'Edit Upstream';
 
         ajax.get({ resource: '/upstreams/' + $scope.upstreamId }).then(function (response) {
             $scope.formInput.hostname = response.data.name;
@@ -45,13 +43,12 @@
             if (response && response.status === 404) window.location.href = '#!/upstreams';
         });
 
-        var formEdit = angular.element('form#formEdit');
-        var formTarget = angular.element('form#formTarget');
+        let formEdit = angular.element('form#formEdit'), formTarget = angular.element('form#formTarget');
 
-        formEdit.on('submit', (event) => {
+        formEdit.on('submit', function (event) {
             event.preventDefault();
 
-            var payload = {};
+            let payload = {};
 
             if ($scope.formInput.hostname.trim().length > 10) {
                 payload.name = $scope.formInput.hostname;
@@ -87,17 +84,17 @@
             ajax.patch({
                 resource: '/upstreams/' + $scope.upstreamId,
                 data: payload
-            }).then(() => {
+            }).then(function () {
                 toast.success('Upstream updated');
 
-            }, (response) => {
+            }, function (response) {
                 toast.error(response.data);
             });
 
             return false;
         });
 
-        formTarget.on('submit', (event) => {
+        formTarget.on('submit', function (event) {
             event.preventDefault();
 
             let targetInput = formTarget.children('div.hpadding-10.pad-top-10').children('input[name="target"]');
@@ -136,5 +133,4 @@
 
         $scope.fetchTargetList('/upstreams/' + $scope.upstreamId + '/targets');
     }]);
-
 })(window.angular, app);
