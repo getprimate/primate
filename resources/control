@@ -1,5 +1,5 @@
 Package: kongdash
-Version: 0.1.0-beta
+Version: 0.3.0
 License: MIT
 Vendor: Ajay Sreedhar
 Section: web
@@ -10,3 +10,9 @@ Homepage: https://ajaysreedhar.github.io/kongdash/
 Description: KongDash
  An elegant desktop client for Kong Admin API.
  - https://github.com/ajaysreedhar/kongdash
+
+ What's new?
+ - Supports Kong Admin API v0.10.x
+ - Options to manage certificates and upstreams
+ - Settings option moved to File menu
+ - Bug fixes and performance improvements
