@@ -1,18 +1,16 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
     const controller = 'ConsumerEditController';
-
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($scope, $routeParams, ajax, viewFactory, toast) {
-
-        $scope.consumerId = $routeParams.consumerId;
-        $scope.formInput = {};
-
-        $scope.authMethods = {};
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
 
         viewFactory.title = 'Edit Consumer';
+        
+        $scope.consumerId = $routeParams.consumerId;
+        $scope.formInput = {};
+        $scope.authMethods = {};
 
         $scope.fetchAuthList = function (authName, dataModel) {
             ajax.get({ resource: '/consumers/' + $scope.consumerId + '/' + authName }).then(function (response) {
@@ -31,10 +29,14 @@
 
         }, function (response) {
             toast.error('Could not load consumer details');
-            if (response && response.status === 404) window.location.href = '#!/consumers';
+            if (response && 404 === parseInt(response.status)) $window.location.href = '#!/consumers';
         });
 
-        var consumerEditForm = angular.element('form#consumerEditForm');
+        let consumerEditForm = angular.element('form#consumerEditForm'),
+            authNotebook = angular.element('#authNotebook.notebook'),
+            authName = 'key-auth',
+            dataModel = 'keyAuthList';
+
         consumerEditForm.on('submit', function (event) {
             event.preventDefault();
 
@@ -51,12 +53,9 @@
             return false;
         });
 
-        var authNotebook = angular.element('#authNotebook.notebook');
-
-        let authName = 'key-auth', dataModel = 'keyAuthList';
         authNotebook.on('click', '.col.tab', function (event) {
-            var tab = angular.element(event.target);
-            var targetView = authNotebook.find(tab.data('target-view'));
+            let tab = angular.element(event.target);
+            let targetView = authNotebook.find(tab.data('target-view'));
 
             authNotebook.children('.row').children('.tab').removeClass('active');
             tab.addClass('active');
@@ -79,12 +78,10 @@
         }).on('submit', 'form.form-new-auth', function (event) {
             event.preventDefault();
 
-            var form = angular.element(event.target);
-            var payload = {};
+            let form = angular.element(event.target), payload = {};
 
             form.find('input.param').each(function (index, element) {
-                var name = element.name;
-                payload[name] = element.value;
+                payload[element.name] = element.value;
             });
 
             ajax.post({
