@@ -1,14 +1,12 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
-
-    var controller = 'PluginEditController';
-
+    const controller = 'PluginEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($scope, $routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
 
-        var action = 'create';
+        let action = 'create';
 
         $scope.fetchSchema = function (plugin, callback) {
             $scope.checkBoxes = {};
@@ -17,18 +15,18 @@
                 $scope.pluginSchema = response.data;
 
                 angular.forEach($scope.pluginSchema.fields, function (value, key) {
-                    if (value.type == 'array' && typeof value.enum != 'undefined') {
+                    if (value.type === 'array' && typeof value.enum !== 'undefined') {
                         $scope.checkBoxes[key] = {};
 
-                        for (var i=0; i<value.enum.length; i++) {
+                        for (let i = 0; i < value.enum.length; i++) {
                             $scope.checkBoxes[key][value.enum[i]] = false;
                         }
-                    } else if (typeof value.default != 'undefined') {
+                    } else if (typeof value.default !== 'undefined') {
                         $scope.formInput.config[key] = value.default;
                     }
                 });
 
-                if (typeof callback == 'function') {
+                if (typeof callback === 'function') {
                     callback(response);
                 }
 
@@ -38,7 +36,7 @@
         };
 
         $scope.newCustomForm = function(field, schema) {
-            if (!$scope.flexTableObj[field] || $scope.flexTableObj[field] == '') {
+            if (!$scope.flexTableObj[field] || $scope.flexTableObj[field] === '') {
                 return;
             }
 
@@ -70,9 +68,7 @@
             toast.error('Could not fetch list of enabled plugins');
         });
 
-        ajax.get({
-            resource: '/consumers'
-        }).then(function (response) {
+        ajax.get({ resource: '/consumers' }).then(function (response) {
             $scope.consumerList = response.data.data;
 
         }, function () {
@@ -83,7 +79,7 @@
         $scope.formInput = { config:{} };
         $scope.flexTableObj = {};
 
-        var pluginForm = angular.element('form#editPlugins');
+        let pluginForm = angular.element('form#editPlugins');
 
         pluginForm.on('submit', function (event) {
             event.preventDefault();
@@ -91,7 +87,7 @@
             angular.forEach($scope.checkBoxes, function (value, key) {
                 $scope.formInput.config[key] = [];
 
-                if (typeof value != 'object') return;
+                if (typeof value !== 'object') return;
 
                 angular.forEach(value, function (flag, eName) {
                     if (flag === true) $scope.formInput.config[key].push(eName);
@@ -99,15 +95,15 @@
             });
 
             if ( $scope.pluginSchema.no_consumer ) {
-                if (typeof $scope.formInput.consumer_id != 'undefined')
+                if (typeof $scope.formInput.consumer_id !== 'undefined')
                     delete $scope.formInput.consumer_id;
 
             } else {
-                if (typeof $scope.formInput.consumer_id != 'undefined' && !$scope.formInput.consumer_id)
+                if (typeof $scope.formInput.consumer_id !== 'undefined' && !$scope.formInput.consumer_id)
                     delete $scope.formInput.consumer_id;
             }
 
-            var config = {
+            let config = {
                 method: '',
                 url: '',
                 data: $scope.formInput,
@@ -130,8 +126,8 @@
                 toast.error(response.data);
             });
         }).on('click', 'button.add-flex-table', function (event) {
-            var parent = angular.element(event.target).parent('div');
-            var objName = parent.children('input[type="text"]').val();
+            let parent = angular.element(event.target).parent('div');
+            let objName = parent.children('input[type="text"]').val();
 
             if (!objName) return;
 
@@ -151,9 +147,9 @@
                     $scope.formInput.config = response.data.config;
 
                     angular.forEach($scope.checkBoxes, function (value, key) {
-                        var enumList = response.data.config[key];
+                        let enumList = response.data.config[key];
 
-                        for (var i=0; i<enumList.length; i++) {
+                        for (let i = 0; i < enumList.length; i++) {
                             $scope.checkBoxes[key][enumList[i]] = true;
                         }
                     });
@@ -161,11 +157,11 @@
 
 
                 viewFactory.title = 'Edit ' + response.data.name + ' Plugin';
-                viewFactory.deleteAction = {target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId};
+                viewFactory.deleteAction = { target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId };
 
             }, function (response) {
                 toast.error('Could not fetch plugin details');
-                if (response && response.status === 404) window.location.href = '#!/api';
+                if (response && response.status === 404) $window.location.href = '#!/api';
             });
 
         } else {
