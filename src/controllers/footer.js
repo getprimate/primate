@@ -1,22 +1,21 @@
 /* global app:true ipcRenderer:true */
 (function (angular, app, ipcRenderer) { 'use strict';
-
-    var controller = 'FooterController';
-
+    const controller = 'FooterController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    var semver = require('semver');
-    var version = ipcRenderer.sendSync('get-config', 'VERSION');
+    const semver = require('semver');
+    const version = ipcRenderer.sendSync('get-config', 'VERSION');
 
-    app.controller(controller, ['$scope', '$element', '$http', 'viewFactory', 'toast', function ($scope, $element, $http, viewFactory, toast) {
-
+    app.controller(controller, ['$scope', '$element', '$http', 'viewFactory', 'toast',
+        function ($scope, $element, $http, viewFactory, toast) {
         $scope.viewFactory = viewFactory;
 
         $http({
             method: 'GET',
             url : 'https://api.github.com/repos/ajaysreedhar/kongdash/releases/latest'
+
         }).then(function (response) {
-            var release = response.data;
+            let release = response.data;
 
             if (release.draft === false && release.prerelease === false && semver.gt(release.tag_name, version)) {
                 toast.info('New version ' + release.name + ' available');
@@ -30,5 +29,4 @@
             /* Ignore */
         });
     }]);
-
 })(window.angular, app, ipcRenderer);
