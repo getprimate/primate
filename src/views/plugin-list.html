@@ -9,8 +9,8 @@
                 <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
             </label></td>
 
-            <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
-            <td><a href="#!/api/{{plugin.api_id}}"><b>{{plugin.api_id}}</b></a></td>
+            <td><a href="#!/plugins/{{plugin.id}}">{{plugin.name}}</a></td>
+            <td><a href="#!/api/{{plugin.api_id}}">{{plugin.api_id}}</a></td>
             <td>{{plugin.consumer_id || 'All Consumers'}}</td>
             <td>{{plugin.created_at | date}}</td>
             <td>
