@@ -66,8 +66,6 @@ i.material-icons.md-17 { font-size: 17px !important; }
 .btn.dark { background-color: #3B4B54; color: #AAC5D4; }
 .btn.dark:hover { background-color: #556972; }
 
-
-
 .content__header { background-color: #222D37; color: #E1EBF1; border-bottom: 1px solid #2F3E47; }
 .content__header .navigate a { background-color: transparent; }
 .content__header .navigate a:hover { background-color: #2F3E47; }
