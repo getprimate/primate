@@ -19,7 +19,6 @@
         $scope.refreshTimer = function(master) {
             ajax.get({ resource: '/' }).then(function (response) {
                 $scope.kongStat = response.data;
-                $scope.database = $scope.kongStat.configuration.database;
 
                 createChart('#timersChart', {
                     type: 'horizontalBar',
