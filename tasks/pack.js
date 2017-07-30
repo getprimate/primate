@@ -1,9 +1,8 @@
 module.exports = function (gulp, packageJson) { 'use strict';
+    const _ = require('underscore');
+    const electronPackager = require('electron-packager');
 
-    var _ = require('underscore');
-    var electronPackager = require('electron-packager');
-
-    var RELEASE_SETTINGS = {
+    const RELEASE_SETTINGS = {
         dir: '.',
         name: packageJson.name,
         out: 'release',
