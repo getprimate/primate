@@ -15,7 +15,8 @@
 
         $scope.fetchPluginList = function (url) {
             ajax.get({ resource: url }).then(function (response) {
-                $scope.nextPluginUrl = response.data.next || '';
+                $scope.nextPluginUrl = (typeof response.data.next === 'string') ?
+                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.pluginList.push(response.data.data[index]);

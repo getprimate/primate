@@ -17,7 +17,8 @@
 
         $scope.fetchTargetList = function (url) {
             ajax.get({ resource: url }).then(function (response) {
-                $scope.nextTargetUrl = response.data.next || '';
+                $scope.nextTargetUrl = (typeof response.data.next === 'string') ?
+                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.targetList.push(response.data.data[index]);
