@@ -41,7 +41,9 @@ a.btn { display: inline-block; font-weight: 400; padding-top: 6px; padding-botto
 main header.content__header .actions .btn { padding: 5px 15px 5px 15px; height: 28px; }
 
 .btn.mini { height: auto; padding: 1px 10px 1px 10px; }
-.pagination .btn, .pagination > .btn.mini { padding: 2px 0 0 0; }
+.pagination { text-align: right; }
+.pagination > .btn { padding: 6px !important; }
+.pagination > .btn.mini { padding: 2px 0 0 0; }
 
 /* Unordered list */
 ul.list { display: block;  margin: 0; padding: 0; }
