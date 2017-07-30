@@ -13,6 +13,8 @@ main.content { background-color: #1A242D; }
 footer.footer { background-color: #222D37; border-top: 1px solid #2F3E47;
     color: #76868F; font-size: 0.85rem; font-weight: 500; }
 
+#staticMessage a { color: #D2D2D2; }
+
 i.material-icons { cursor: pointer !important; }
 i.material-icons.primary { color: #188AE2 !important; }
 i.material-icons.success { color: #10C469 !important; }
