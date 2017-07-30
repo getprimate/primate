@@ -10,7 +10,7 @@ Homepage: https://ajaysreedhar.github.io/kongdash/
 Description: KongDash
  An elegant desktop client for Kong Admin API.
  - https://github.com/ajaysreedhar/kongdash
- - Supports Kong Admin API v0.10.x
+ - Support for Kong Admin API v0.10.x
  - Options to manage certificates and upstreams
  - Settings option moved to File menu
  - Bug fixes and performance improvements
