@@ -4,48 +4,27 @@
 <div class="panel__body">
     <form class="form hidden" method="post" action="#">
         <div class="row">
-            <div class="col md-6">
-                <input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" />
-            </div>
-            <div class="col md-6">
-                <input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" />
-            </div>
+            <div class="col md-6"><input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" title="Unique name for the API" /></div>
+            <div class="col md-6"><input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" title="A comma-separated list of HTTP methods that points to the API." /></div>
         </div>
 
         <div class="row">
-            <div class="col md-12">
-                <input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" />
-            </div>
+            <div class="col md-12"><input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" title="A comma-separated list of domain names that points to the API." /></div>
         </div>
 
         <div class="row">
-            <div class="col md-12">
-                <input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" />
-            </div>
+            <div class="col md-12"><input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" title="A comma-separated list of URIs prefixes that points to the API." /></div>
         </div>
 
         <div class="row">
-            <div class="col md-12">
-                <input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" />
-            </div>
+            <div class="col md-12"><input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" title="The base target URL that points to the API server." /></div>
         </div>
 
         <div class="row">
-            <div class="col md-3">
-                <input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries" />
-            </div>
-
-            <div class="col md-3">
-                <input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout" />
-            </div>
-
-            <div class="col md-3">
-                <input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout" />
-            </div>
-
-            <div class="col md-3">
-                <input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout" />
-            </div>
+            <div class="col md-3"><input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries (Optional)" title="Number of retries to execute upon failure to proxy (Default 5)" /></div>
+            <div class="col md-3"><input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout (Optional)" title="Upstream connect timeout (Default 60000)" /></div>
+            <div class="col md-3"><input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout (Optional)" title="Upstream send timeout (Default 60000)" /></div>
+            <div class="col md-3"><input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout (Optional)" title="Upstream read timeout (Default 60000)" /></div>
         </div>
 
         <div class="row">
