@@ -1,5 +1,6 @@
 'use strict';
 
+const APP_NAME = 'KongDash';
 const VERSION = '0.3.0';
 
 const electron  = require('electron');
@@ -7,14 +8,11 @@ const path      = require('path');
 const ospath = require('ospath');
 const jsonfile  = require('jsonfile');
 
-var absPath = path.dirname(__dirname),
-    configFile = ospath.data() + '/KongDash' + '/config.json';
-
-var {app, ipcMain, BrowserWindow, Menu} = electron;
-
+let absPath = path.dirname(__dirname), configFile = ospath.data() + '/' + APP_NAME + '/config.json';
+let {app, ipcMain, BrowserWindow, Menu} = electron;
 let mainWindow, appConfig = {kong: {}, app: {enableAnimation: true}};
 
-var startMainWindow = function () {
+let startMainWindow = function () {
     mainWindow = new BrowserWindow({
         backgroundColor: '#1A242D',
         width: 1100,
@@ -36,7 +34,7 @@ var startMainWindow = function () {
     });
 };
 
-app.setName('KongDash');
+app.setName(APP_NAME);
 
 app.on('ready', () => {
     try {
