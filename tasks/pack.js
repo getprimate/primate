@@ -7,8 +7,8 @@ module.exports = function (gulp, packageJson) { 'use strict';
         dir: '.',
         name: packageJson.name,
         out: 'release',
-        'app-version': packageJson.version,
-        'app-copyright': 'Copyright (c) 2016 ' + packageJson.author,
+        'appVersion': packageJson.version,
+        'appCopyright': 'Copyright (c) 2016 ' + packageJson.author,
         'version-string': {
             ProductName : packageJson.name,
             CompanyName: packageJson.author,
