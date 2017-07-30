@@ -4,7 +4,7 @@ License: MIT
 Vendor: Ajay Sreedhar
 Section: web
 Priority: extra
-Architecture: amd64 or i386
+Architecture: amd64 [or i386]
 Maintainer: Ajay Sreedhar <ajaysreedhar468@gmail.com>
 Homepage: https://ajaysreedhar.github.io/kongdash/
 Description: KongDash
