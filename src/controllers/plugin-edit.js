@@ -22,7 +22,7 @@
                             $scope.checkBoxes[key][value.enum[i]] = false;
                         }
                     } else if (typeof value.default !== 'undefined') {
-                        $scope.formInput.config[key] = value.default;
+                        $scope.formInput.config[key] = Object.keys(value.default).length === 0 ? '': value.default;
                     }
                 });
 
