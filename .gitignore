@@ -4,6 +4,7 @@ dist/
 releases/
 release/
 TODO.txt
+package-lock.json
 *.log
 *.xcf
 *.bak
