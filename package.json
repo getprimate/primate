@@ -1,5 +1,5 @@
 {
-  "name": "KongDash",
+  "name": "kongdash",
   "version": "0.3.0",
   "description": "An elegant desktop client for Kong Admin API",
   "main": "src/main.js",
