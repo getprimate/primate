@@ -4,6 +4,20 @@
     const controller = 'ApiListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
+    app.directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ngEnter);
+                    });
+    
+                    event.preventDefault();
+                }
+            });
+        };
+    });
+
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
         viewFactory.title = 'API List';
         viewFactory.prevUrl = null;
@@ -25,19 +39,67 @@
         };
 
         $scope.apiList = [];
-        $scope.fetchApiList = function (resource) {
+        $scope.fetchApiList = function (resource, k) {
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = (typeof response.data.next === 'string') ?
                     response.data.next.replace(new RegExp(viewFactory.host), '') : '';
 
+                $scope.apiList = [];
                 for (let index = 0; index < response.data.data.length; index++) {
-                    $scope.apiList.push(response.data.data[index]);
+                    if (k != undefined) {
+                        if (response.data.data[index].name.toLowerCase().includes(k.toLowerCase())) {
+                            $scope.apiList.push(response.data.data[index]);
+                        }
+                    }
+                    else {
+                        $scope.apiList.push(response.data.data[index]);
+                    }
                 }
 
             }, function () {
                 toast.error('Could not load list of APIs');
             });
         };
+
+        $scope.SearchAPIList = function () {
+            let SearchInputValue = document.getElementById('SearchKeyword').value;
+            if (SearchInputValue == '') {
+                $scope.fetchApiList('/apis', '');    
+            }
+            else {
+                $scope.fetchApiList('/apis?size=1000', SearchInputValue);
+            }
+        }
+
+        $scope.saveTextAsFile  = function (data, filename){
+
+                if(!data) {
+                    console.error('Console.save: No data')
+                    return;
+                }
+        
+                if(!filename) filename = 'console.json'
+        
+                var blob = new Blob([data], {type: 'text/plain'}),
+                    e    = document.createEvent('MouseEvents'),
+                    a    = document.createElement('a')
+        // FOR IE:
+        
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+        }
+        else{
+            var e = document.createEvent('MouseEvents'),
+                a = document.createElement('a');
+        
+            a.download = filename;
+            a.href = window.URL.createObjectURL(blob);
+            a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+            e.initEvent('click', true, false, window,
+                0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            a.dispatchEvent(e);
+        }
+        }
 
         let panelAdd = angular.element('div#panelAdd');
         let apiForm = panelAdd.children('div.panel__body').children('form');

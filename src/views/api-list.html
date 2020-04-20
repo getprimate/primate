@@ -1,84 +1,94 @@
 <div class="panel panel-border success" id="panelAdd">
-<div class="panel__heading pointer">Add new API</div>
-
-<div class="panel__body">
-    <form class="form hidden" method="post" action="#">
-        <div class="row">
-            <div class="col md-6"><input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" title="Unique name for the API" /></div>
-            <div class="col md-6"><input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" title="A comma-separated list of HTTP methods that points to the API" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12"><input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" title="A comma-separated list of domain names that points to the API" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12"><input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" title="A comma-separated list of URIs prefixes that points to the API" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12"><input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" title="The base target URL that points to the API server" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-3"><input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries (Optional)" title="Number of retries to execute upon failure to proxy (Default 5)" /></div>
-            <div class="col md-3"><input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout (Optional)" title="Upstream connect timeout (Default 60000)" /></div>
-            <div class="col md-3"><input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout (Optional)" title="Upstream send timeout (Default 60000)" /></div>
-            <div class="col md-3"><input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout (Optional)" title="Upstream read timeout (Default 60000)" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" /> Preserve Host</label>
+    <div class="panel__heading pointer">Add new API</div>
+    
+    <div class="panel__body">
+        <form class="form hidden" method="post" action="#">
+            <div class="row">
+                <div class="col md-6"><input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" title="Unique name for the API" /></div>
+                <div class="col md-6"><input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" title="A comma-separated list of HTTP methods that points to the API" /></div>
             </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripUri" name="stripUri" /> Strip URIs</label>
+    
+            <div class="row">
+                <div class="col md-12"><input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" title="A comma-separated list of domain names that points to the API" /></div>
             </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpsOnly" name="httpsOnly" /> HTTPS Only</label>
+    
+            <div class="row">
+                <div class="col md-12"><input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" title="A comma-separated list of URIs prefixes that points to the API" /></div>
             </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpIfTerminated" name="httpIfTerminated" /> HTTP if terminated</label>
+    
+            <div class="row">
+                <div class="col md-12"><input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" title="The base target URL that points to the API server" /></div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12">
-                <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
-                <button class="btn success" type="submit" name="action" value="add">Add API</button>
+    
+            <div class="row">
+                <div class="col md-3"><input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries (Optional)" title="Number of retries to execute upon failure to proxy (Default 5)" /></div>
+                <div class="col md-3"><input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout (Optional)" title="Upstream connect timeout (Default 60000)" /></div>
+                <div class="col md-3"><input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout (Optional)" title="Upstream send timeout (Default 60000)" /></div>
+                <div class="col md-3"><input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout (Optional)" title="Upstream read timeout (Default 60000)" /></div>
             </div>
-        </div>
-    </form>
-</div>
-</div>
-
-<div class="well">
-<div class="well__heading">List of APIs</div>
-<table id="apiTable" class="table" cellpadding="0" cellspacing="0">
-    <thead data-ng-if="apiList.length>0"><tr><th>Flags</th><th>Request Path</th><th>Upstream URL</th><th>Created</th><th>Actions</th></tr></thead>
-
-    <tbody>
-        <tr data-ng-repeat="api in apiList">
-            <td>
-            <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==true" class="material-icons success state-highlight">assignment_turned_in</i>
-            <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==false" class="material-icons default state-highlight">assignment_turned_in</i>
-            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==true" class="material-icons success state-highlight">spellcheck</i>
-            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==false" class="material-icons default state-highlight">spellcheck</i>
-            </td>
-
-            <td><a href="#!/api/{{api.id}}">{{api.name || api.id}}</a></td>
-            <td>{{api.upstream_url}}</td>
-            <td>{{api.created_at | date}}</td>
-            <td>
-                <div class="action-group">
-                    <a href="#!/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons danger delete" data-target="API" data-url="/apis/{{api.id}}">delete_forever</i>
+    
+            <div class="row">
+                <div class="col md-3">
+                    <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" /> Preserve Host</label>
                 </div>
-            </td>
-        </tr>
-    </tbody>
-    <tfoot data-ng-if="apiList.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
-</table>
-</div>
-
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchApiList(nextUrl)">Load Next</button></div>
+                <div class="col md-3">
+                    <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripUri" name="stripUri" /> Strip URIs</label>
+                </div>
+                <div class="col md-3">
+                    <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpsOnly" name="httpsOnly" /> HTTPS Only</label>
+                </div>
+                <div class="col md-3">
+                    <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpIfTerminated" name="httpIfTerminated" /> HTTP if terminated</label>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col md-12">
+                    <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
+                    <button class="btn success" type="submit" name="action" value="add">Add API</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+    
+    <div class="well">
+    <div class="well__heading">List of APIs</div>
+    
+    <div class="row" style="padding:10px;">
+        <div class="col md-10">
+            <input type="text" name="apiName" value="" id="SearchKeyword" placeholder="Search" title="Search API" ng-enter="SearchAPIList()" />
+        </div>
+        <div class="col md-2">
+            <button class="btn success" type="button" name="SearchAPI" value="Search" style="width:100%;" data-ng-click="SearchAPIList()">Search</button>
+        </div>
+    </div>
+    
+    <table id="apiTable" class="table" cellpadding="0" cellspacing="0">
+        <thead data-ng-if="apiList.length>0"><tr><th>Flags</th><th>Request Path</th><th>Upstream URL</th><th>Created</th><th>Actions</th></tr></thead>
+    
+        <tbody>
+            <tr data-ng-repeat="api in apiList">
+                <td>
+                <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==true" class="material-icons success state-highlight">assignment_turned_in</i>
+                <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==false" class="material-icons default state-highlight">assignment_turned_in</i>
+                <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==true" class="material-icons success state-highlight">spellcheck</i>
+                <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==false" class="material-icons default state-highlight">spellcheck</i>
+                </td>
+    
+                <td><a href="#!/api/{{api.id}}">{{api.name || api.id}}</a></td>
+                <td>{{api.upstream_url}}</td>
+                <td>{{api.created_at | date}}</td>
+                <td>
+                    <div class="action-group">
+                        <a href="#!/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
+                        <i class="material-icons danger delete" data-target="API" data-url="/apis/{{api.id}}">delete_forever</i>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot data-ng-if="apiList.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
+    </table>
+    </div>
+    
+    <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchApiList(nextUrl)">Load Next</button></div>
