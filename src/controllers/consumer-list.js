@@ -72,5 +72,19 @@
         });
 
         $scope.fetchConsumerList('/consumers');
+
+        let searchBox = angular.element('#search > .typeahead');
+
+        let origList = $scope.consumerList;
+        console.log(origList);
+
+        searchBox.on('keyup',(el)=>{
+            let reg = new RegExp(el.target.value);
+            $scope.consumerList = origList.filter((consumer) => {
+                return reg.test(consumer.custom_id);
+            });
+            $scope.$apply();
+        });
+
     }]);
 })(window.angular, app);
