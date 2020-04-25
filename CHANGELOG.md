@@ -1,3 +1,7 @@
+## v0.3.1
+
+- typeahead search for APIs, Plugins, and Consumers.
+
 ## v0.3.0
 
 - Support for Kong Admin API v0.10.x

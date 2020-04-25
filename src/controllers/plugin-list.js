@@ -43,5 +43,18 @@
         });
 
         $scope.fetchPluginList('/plugins' + ((filters.length > 0) ? ('?' + filters.join('&') ) : ''));
+
+        let searchBox = angular.element('#search > .typeahead');
+
+        let origList = $scope.pluginList;
+
+        searchBox.on('keyup',(el)=>{
+            let reg = new RegExp(el.target.value);
+            $scope.pluginList = origList.filter((plugin) => {
+                console.log(plugin);
+                return reg.test(plugin.api_id);
+            });
+            $scope.$apply();
+        });
     }]);
 })(window.angular, app);

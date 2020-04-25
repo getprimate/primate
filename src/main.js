@@ -1,7 +1,7 @@
 'use strict';
 
 const APP_NAME = 'KongDash';
-const VERSION = '0.3.0';
+const VERSION = '0.3.1';
 
 const electron  = require('electron');
 const path      = require('path');
@@ -25,7 +25,7 @@ let startMainWindow = function () {
     });
     mainWindow.loadURL('file://' + absPath + '/src/initialize.html');
 
-    /* Debugging
+    /* Debugging 
     mainWindow.webContents.openDevTools();
     //*/
 

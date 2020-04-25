@@ -150,6 +150,20 @@
         });
 
         $scope.fetchApiList('/apis');
+
+        let searchBox = angular.element('#search > .typeahead');
+
+        let origList = $scope.apiList;
+
+        searchBox.on('keyup',(el)=>{
+            let reg = new RegExp(el.target.value);
+            $scope.apiList = origList.filter((api) => {
+                return reg.test(api.name);
+            });
+            $scope.$apply();
+        });
     }]);
 
 })(window.angular, app);
+
+
