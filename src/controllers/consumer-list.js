@@ -71,7 +71,7 @@
             consumerForm.slideUp(300);
         });
 
-        $scope.fetchConsumerList('/consumers');
+        $scope.fetchConsumerList('/consumers?size=10000');
 
         let searchBox = angular.element('#search > .typeahead');
 

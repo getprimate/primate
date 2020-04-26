@@ -1,10 +1,10 @@
 <div class="well">
 <div class="well__heading">List of plugins</div>
 <div id="search">
-    <input type="text" class="typeahead" placeholder="search api id"/>
+    <input type="text" class="typeahead" placeholder="search api name"/>
 </div>
 <table id="pluginsTable" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead data-ng-if="pluginList.length>0"><tr><th>Enabled</th><th>Name</th><th>API id</th><th>Consumer</th><th>Created</th><th>Actions</th></tr></thead>
+    <thead data-ng-if="pluginList.length>0"><tr><th>Enabled</th><th>Name</th><th>API Name</th><th>Consumer</th><th>Created</th><th>Actions</th></tr></thead>
 
     <tbody>
         <tr data-ng-repeat="plugin in pluginList">
@@ -13,7 +13,9 @@
             </label></td>
 
             <td><a href="#!/plugins/{{plugin.id}}">{{plugin.name}}</a></td>
-            <td><a href="#!/api/{{plugin.api_id}}">{{plugin.api_id}}</a></td>
+            <td>
+                <a href="#!/api/{{plugin.api_id}}">{{plugin.api_name}}</a>
+            </td>
             <td>{{plugin.consumer_id || 'All Consumers'}}</td>
             <td>{{plugin.created_at | date}}</td>
             <td>
@@ -28,4 +30,4 @@
 </table>
 </div>
 
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextUrl)">Load Next</button></div>
+<!-- <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextUrl)">Load Next</button></div> -->

@@ -149,7 +149,7 @@
             apiForm.slideUp(300);
         });
 
-        $scope.fetchApiList('/apis?size=1000');
+        $scope.fetchApiList('/apis?size=10000');
 
         let searchBox = angular.element('#search > .typeahead');
 
