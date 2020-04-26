@@ -29,7 +29,7 @@
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = (typeof response.data.next === 'string') ?
                     response.data.next.replace(new RegExp(viewFactory.host), '') : '';
-
+                angular.element(document.querySelector(".spinner")).remove();
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.apiList.push(response.data.data[index]);
                 }
@@ -149,7 +149,21 @@
             apiForm.slideUp(300);
         });
 
-        $scope.fetchApiList('/apis');
+        $scope.fetchApiList('/apis?size=10000');
+
+        let searchBox = angular.element('#search > .typeahead');
+
+        let origList = $scope.apiList;
+
+        searchBox.on('keyup',(el)=>{
+            let reg = new RegExp(el.target.value);
+            $scope.apiList = origList.filter((api) => {
+                return reg.test(api.name);
+            });
+            $scope.$apply();
+        });
     }]);
 
 })(window.angular, app);
+
+

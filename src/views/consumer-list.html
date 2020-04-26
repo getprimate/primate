@@ -20,6 +20,9 @@
 
 <div class="well">
 <div class="well__heading">List of consumers</div>
+<div id="search">
+    <input type="text" class="typeahead" placeholder="search username"/>
+</div>
 <table id="consumersTable" class="table data-table" cellpadding="0" cellspacing="0">
     <thead data-ng-if="consumerList.length>0"><tr><th>Username</th><th>Custom Id</th><th>Created</th><th>Actions</th></tr></thead>
 
@@ -41,4 +44,4 @@
 </table>
 </div>
 
-<div data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchConsumerList(nextUrl)">Load Next</button></div>
+<!-- <div data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchConsumerList(nextUrl)">Load Next</button></div> -->
