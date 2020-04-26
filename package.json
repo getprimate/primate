@@ -30,12 +30,10 @@
   },
   "homepage": "https://ajaysreedhar.github.io/kongdash/",
   "dependencies": {
-    "graceful-fs": "4.2.3",
     "jsonfile": "^3.0.0",
     "ospath": "^1.2.2",
     "request": "^2.81.0",
     "semver": "^5.3.0",
-    "typeahead.js": "^0.11.1",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -56,8 +54,5 @@
     "gulp-rename": "^2.0.0",
     "gulp-task-list": "0.0.2",
     "gulp-uglify": "^3.0.2"
-  },
-  "resolutions": {
-    "graceful-fs": "4.2.3"
   }
 }
