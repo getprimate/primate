@@ -1,8 +1,8 @@
 .idea/
 node_modules/
 dist/
-#releases/
-#release/
+releases/
+release/
 TODO.txt
 package-lock.json
 *.log
