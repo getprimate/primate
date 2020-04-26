@@ -1,6 +1,6 @@
 'use strict';
 
-var gulp  = require('gulp'),
+const gulp  = require('gulp'),
     less  = require('gulp-less'),
     concat  = require('gulp-concat'),
     uglify  = require('gulp-uglify'),
@@ -9,7 +9,7 @@ var gulp  = require('gulp'),
     declare = require('gulp-declare'),
     cleanCSS = require('gulp-clean-css');
 
-var paths = {
+const paths = {
   styles: {
     src: 'src/less/*.less',
     dest: 'assets/css'
@@ -73,7 +73,7 @@ function watch() {
   gulp.watch(paths.styles.src, styles);
 }
 
-var build = gulp.parallel(styles, scripts, templates, watch);
+const build = gulp.parallel(styles, scripts, templates, watch);
 
 gulp.task(build);
 gulp.task('default', build);
