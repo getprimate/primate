@@ -4,7 +4,7 @@
 
 [![](screenshot.png)](https://raw.githubusercontent.com/ajaysreedhar/kongdash/master/screenshot.png)
 
-### How to Install
+<!--### How to Install
 
 #### On Linux
 _Ubuntu and other Debian distributions:_
@@ -31,16 +31,16 @@ Simply download the [latest](https://github.com/ajaysreedhar/kongdash/releases) 
 
 #### On Mac OS X
 Download and open the [latest](https://github.com/ajaysreedhar/kongdash/releases) .dmg image, move the app to /Applications to start using it.
-
+-->
 ### For Developers
 All kinds of contributions are welcome.
 
-- Requires NodeJs (v4.4.7 or higher) and npm (v2.15.8 or higher).
+- Requires NodeJs (v4.4.7 or higher but <= v11.5 for graceful compatibility) and npm (v2.15.8 or higher).
 - Built with [Electron](http://electron.atom.io/).
 
 Clone the repository
 ```shell
-git clone https://github.com/ajaysreedhar/kongdash
+git clone https://github.com/dcoli/kongdash
 ```
 
 Install dependencies
