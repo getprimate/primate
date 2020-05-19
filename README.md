@@ -55,6 +55,10 @@ npm start
 
 Run ESLint
 ```npm test``` or ```npm run lint```
+### Releases
+
+The [latest release](https://github.com/dcoli/kongdash/releases/tag/v0.3.1) is currently available for MacOS and Linux. No installers are available for Linux.
+
 
 ### Make a release
 
