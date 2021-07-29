@@ -71,19 +71,19 @@ app.on('browser-window-created', (e, window) => {
         submenu: [{
             label: 'GitHub Repository',
             click: () => {
-                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash');
+                electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash');
             }
         }, {
             label: 'Report Issues',
             click: () => {
-                electron.shell.openExternal('https://github.com/ajaysreedhar/kongdash/issues');
+                electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues');
             }
         }, {
             type: 'separator'
         }, {
             label: 'About KongDash',
             click: () => {
-                electron.shell.openExternal('https://ajaysreedhar.github.io/kongdash/');
+                electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/');
             }
         }]
     }];
