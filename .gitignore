@@ -1,11 +1,21 @@
+# IDEs and code editors
 .idea/
+.vscode/
+
+# Node.js dependencies
 node_modules/
+
+# Release binaries
 dist/
 releases/
 release/
-TODO.txt
-package-lock.json
+
+# Log and backup files
 *.log
 *.xcf
 *.bak
 *.old
+
+# Misc.
+TODO.txt
+package-lock.json
