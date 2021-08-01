@@ -58,11 +58,11 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-const {ipcRenderer} = require('electron');
+import { ipcRenderer } from 'electron';
 var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 </script>
 
-<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
 <script type="text/javascript" src="js/angular-route.min.js"></script>
 <script type="text/javascript" src="js/angular-animate.min.js"></script>
