@@ -58,7 +58,7 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-import { ipcRenderer } from 'electron';
+const { ipcRenderer } = require('electron');
 var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 </script>
 
