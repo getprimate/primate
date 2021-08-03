@@ -9,19 +9,20 @@
         viewFactory.prevUrl = null;
 
         $scope.formInput = {
-            name: '',
-            methods: '',
-            hosts: '',
-            uris: '',
-            upstreamUrl: '',
-            retries: '',
-            connectTimeout: '',
-            sendTimeout: '',
-            readTimeout: '',
-            preserveHost: false,
-            stripUri: true,
-            httpsOnly: false,
-            httpIfTerminated: true
+            name: '',//
+            retries: 5,//
+            protocol: 'http',//
+            host: '',//
+            port: 80,//
+            path: '/', //
+            connectTimeout: 60000,//
+            writeTimeout: 60000,//
+            readTimeOut: 60000,//
+            tags: '', //
+            clientCertificate: null,
+            tlsVerify: null, //
+            tlsVerifyDepth: null,
+            caCertificates: []
         };
 
         $scope.apiList = [];
@@ -82,61 +83,40 @@
                 payload.name = $scope.formInput.name;
 
             } else {
-                apiForm.find('input[name="apiName"]').focus();
+                apiForm.find('input[name="serviceName"]').focus();
                 return false;
             }
 
-            if ($scope.formInput.hosts.trim().length > 1) {
-                payload.hosts = $scope.formInput.hosts;
-            }
-
-            if ($scope.formInput.uris.trim().length > 1) {
-                payload.uris = $scope.formInput.uris;
-            }
-
-            if ($scope.formInput.methods.trim().length > 1) {
-                payload.methods = $scope.formInput.methods;
-            }
-
-            if (typeof payload.hosts === 'undefined'
-                && typeof payload.uris === 'undefined'
-                && typeof payload.methods === 'undefined') {
-                apiForm.find('input[name="hosts"]').focus();
-                return false;
-            }
-
-            if ($scope.formInput.upstreamUrl.trim().length > 1) {
-                payload.upstream_url = $scope.formInput.upstreamUrl;
+            if ($scope.formInput.host.trim().length > 1) {
+                payload.host = $scope.formInput.host;
 
             } else {
-                apiForm.find('input[name="upstreamUrl"]').focus();
+                apiForm.find('input[name="host"]').focus();
                 return false;
             }
 
             payload.retries = (isNaN($scope.formInput.retries) || !$scope.formInput.retries) ?
                 5 : parseInt($scope.formInput.retries);
 
-            payload.upstream_connect_timeout = (isNaN($scope.formInput.connectTimeout) || !$scope.formInput.connectTimeout) ?
+            payload.connect_timeout = (isNaN($scope.formInput.connectTimeout) || !$scope.formInput.connectTimeout) ?
                 60000 : parseInt($scope.formInput.connectTimeout);
 
-            payload.upstream_send_timeout = (isNaN($scope.formInput.sendTimeout) || !$scope.formInput.sendTimeout) ?
-                60000 : parseInt($scope.formInput.sendTimeout);
+            payload.write_timeout = (isNaN($scope.formInput.writeTimeout) || !$scope.formInput.writeTimeout) ?
+                60000 : parseInt($scope.formInput.writeTimeout);
 
-            payload.upstream_read_timeout = (isNaN($scope.formInput.readTimeout) || !$scope.formInput.readTimeout) ?
+            payload.read_timeout = (isNaN($scope.formInput.readTimeout) || !$scope.formInput.readTimeout) ?
                 60000 : parseInt($scope.formInput.readTimeout);
 
-            payload.strip_uri = $scope.formInput.stripUri;
-            payload.preserve_host = $scope.formInput.preserveHost;
-            payload.https_only = $scope.formInput.httpsOnly;
-            payload.http_if_terminated = $scope.formInput.httpIfTerminated;
+            payload.protocol = $scope.formInput.protocol;
+            payload.port = $scope.formInput.port;
 
             ajax.post({
-                resource: '/apis/',
+                resource: '/services',
                 data: payload
             }).then(function (response) {
                 $scope.apiList.push(response.data);
 
-                toast.success('New API \'' + payload.name + '\' added');
+                toast.success('New service \'' + payload.name + '\' added');
 
             }, function (response) {
                 toast.error(response.data);
@@ -149,7 +129,7 @@
             apiForm.slideUp(300);
         });
 
-        $scope.fetchApiList('/apis');
+        $scope.fetchApiList('/services');
     }]);
 
 })(window.angular, app);

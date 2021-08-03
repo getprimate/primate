@@ -16,7 +16,7 @@
     <div class="icon"><div>KongDash</div></div>
     <nav class="navigation">
         <a class="navigation__link active" data-ng-href="#!/"><p><i class="material-icons">view_quilt</i></p><p>Dashboard</p></a>
-        <a class="navigation__link" data-ng-href="#!/api"><p><i class="material-icons">settings_input_component</i></p> <p>APIs</p></a>
+        <a class="navigation__link" data-ng-href="#!/api"><p><i class="material-icons">settings_input_component</i></p> <p>Services</p></a>
         <a class="navigation__link" data-ng-href="#!/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
         <a class="navigation__link" data-ng-href="#!/certificates"><p><i class="material-icons">pages</i></p><p>Certificates</p></a>
         <a class="navigation__link" data-ng-href="#!/upstreams"><p><i class="material-icons">backup</i></p><p>Upstreams</p></a>
@@ -50,9 +50,7 @@ if (typeof module === 'object') {
     module = undefined;
 }
 
-import { ipcRenderer } from 'electron';
-
-//const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require('electron');
 var kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
 var appConfig     = ipcRenderer.sendSync('get-config', 'app');
 

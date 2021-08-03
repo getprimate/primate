@@ -4,48 +4,51 @@
 <div class="panel__body">
     <form class="form hidden" method="post" action="#">
         <div class="row">
-            <div class="col md-6"><input type="text" name="apiName" value="" data-ng-model="formInput.name" placeholder="API Name" title="Unique name for the API" /></div>
-            <div class="col md-6"><input type="text" name="methods" value="" data-ng-model="formInput.methods" placeholder="Request Methods" title="A comma-separated list of HTTP methods that points to the API" /></div>
+            <div class="col md-6"><input type="text" name="serviceName" value="" data-ng-model="formInput.name" placeholder="Service Name" title="Unique name for the service" /></div>
+            <div class="col md-6">
+                <select name="protocol" data-ng-model="formInput.protocol" title="Unique name for the service">
+                <option value="http">-- Protocol --</option>
+                <option value="http">http</option>
+                <option value="https">https</option>
+                <option value="grpc">grpc</option>
+                <option value="grpcs">grpcs</option>
+                <option value="tcp">tcp</option>
+                <option value="tls">tls</option>
+                <option value="udp">udp</option>
+                </select>                    
+            </div>
         </div>
 
         <div class="row">
-            <div class="col md-12"><input type="text" name="hosts" value="" data-ng-model="formInput.hosts" placeholder="Hosts" title="A comma-separated list of domain names that points to the API" /></div>
+            <div class="col md-6"><input type="text" name="host" value="" data-ng-model="formInput.host" placeholder="Host" title="The host of the upstream server" /></div>
+            <div class="col md-6"><input type="number" name="port" value="" data-ng-model="formInput.port" placeholder="Port" title="The upstream server port. Default: 80." /></div>
         </div>
 
         <div class="row">
-            <div class="col md-12"><input type="text" name="uris" value="" data-ng-model="formInput.uris" placeholder="Request URIs" title="A comma-separated list of URIs prefixes that points to the API" /></div>
+            <div class="col md-12"><input type="text" name="path" value="" data-ng-model="formInput.path" placeholder="Path" title="Path to be used in requests to the upstream server" /></div>
         </div>
 
         <div class="row">
-            <div class="col md-12"><input type="text" name="upstreamUrl" value="" data-ng-model="formInput.upstreamUrl" placeholder="Upstream URL" title="The base target URL that points to the API server" /></div>
+            <div class="col md-12"><input type="text" name="tags" value="" data-ng-model="formInput.tags" placeholder="Tags (optional)" title="Tags for grouping and filtering" /></div>
         </div>
 
         <div class="row">
             <div class="col md-3"><input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries (Optional)" title="Number of retries to execute upon failure to proxy (Default 5)" /></div>
             <div class="col md-3"><input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout (Optional)" title="Upstream connect timeout (Default 60000)" /></div>
-            <div class="col md-3"><input type="number" name="sendTimeout" value="" data-ng-model="formInput.sendTimeout" placeholder="Send timeout (Optional)" title="Upstream send timeout (Default 60000)" /></div>
             <div class="col md-3"><input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout (Optional)" title="Upstream read timeout (Default 60000)" /></div>
+            <div class="col md-3"><input type="number" name="writeTimeout" value="" data-ng-model="formInput.writeTimeout" placeholder="Write timeout (Optional)" title="Upstream write timeout (Default 60000)" /></div>
         </div>
 
         <div class="row">
             <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" /> Preserve Host</label>
-            </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.stripUri" name="stripUri" /> Strip URIs</label>
-            </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpsOnly" name="httpsOnly" /> HTTPS Only</label>
-            </div>
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.httpIfTerminated" name="httpIfTerminated" /> HTTP if terminated</label>
+                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" indeterminate="true" /> TLS Verify</label>
             </div>
         </div>
 
         <div class="row">
             <div class="col md-12">
                 <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
-                <button class="btn success" type="submit" name="action" value="add">Add API</button>
+                <button class="btn success" type="submit" name="action" value="add">Add Service</button>
             </div>
         </div>
     </form>
