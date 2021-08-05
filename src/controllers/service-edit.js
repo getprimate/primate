@@ -1,15 +1,15 @@
 /* global app:true */
 (function (angular, app) { 'use strict';
 
-    const controller = 'ApiEditController';
+    const controller = 'ServiceEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
         function ($window, $scope, $routeParams, ajax, toast, viewFactory) {
 
-        viewFactory.title = 'Edit API';
+        viewFactory.title = 'Edit Service';
 
-        $scope.apiId = $routeParams.apiId;
+        $scope.serviceId = $routeParams.serviceId;
         $scope.formInput = {};
         $scope.pluginList = [];
 
@@ -27,7 +27,7 @@
             });
         };
 
-        ajax.get({ resource: '/apis/' + $scope.apiId }).then(function (response) {
+        ajax.get({ resource: '/services/' + $scope.serviceId }).then(function (response) {
             $scope.formInput.name = response.data.name;
             $scope.formInput.methods = Array.isArray(response.data.methods) ? response.data.methods.join() : '';
             $scope.formInput.uris = Array.isArray(response.data.uris) ? response.data.uris.join() : '';
@@ -44,16 +44,16 @@
             $scope.formInput.preserveHost = response.data.preserve_host;
             $scope.formInput.stripUri = response.data.strip_uri;
 
-            viewFactory.deleteAction = {target: 'API', url: '/apis/' + $scope.apiId, redirect: '#!/api'};
+            viewFactory.deleteAction = {target: 'API', url: '/services/' + $scope.serviceId, redirect: '#!/services'};
 
         }, function () {
             toast.error('Could not load API details');
-            $window.location.href = '#!/api';
+            $window.location.href = '#!/services';
         });
 
-        let apiForm = angular.element('form#formEdit');
+        let serviceForm = angular.element('form#formEdit');
 
-        apiForm.on('submit', function (event) {
+        serviceForm.on('submit', function (event) {
             event.preventDefault();
 
             let payload = {};
@@ -62,7 +62,7 @@
                 payload.name = $scope.formInput.name;
 
             } else {
-                apiForm.find('input[name="apiName"]').focus();
+                serviceForm.find('input[name="serviceName"]').focus();
                 return false;
             }
 
@@ -74,7 +74,7 @@
                 && typeof payload.uris === 'undefined'
                 && typeof payload.methods === 'undefined') {
 
-                apiForm.find('input[name="hosts"]').focus();
+                serviceForm.find('input[name="hosts"]').focus();
                 return false;
             }
 
@@ -82,7 +82,7 @@
                 payload.upstream_url = $scope.formInput.upstreamUrl;
 
             } else {
-                apiForm.find('input[name="upstreamUrl"]').focus();
+                serviceForm.find('input[name="upstreamUrl"]').focus();
                 return false;
             }
 
@@ -104,7 +104,7 @@
             payload.http_if_terminated = $scope.formInput.httpIfTerminated;
 
             ajax.patch({
-                resource: '/apis/' + $scope.apiId,
+                resource: '/services/' + $scope.serviceId,
                 data: payload
             }).then(function () {
                 toast.success('API details updated');
@@ -120,7 +120,7 @@
             let state = (event.target.checked) ? 'enabled' : 'disabled';
 
             ajax.patch({
-                resource: '/apis/' + $scope.apiId + '/plugins/' + event.target.value,
+                resource: '/services/' + $scope.serviceId + '/plugins/' + event.target.value,
                 data: { enabled: (state === 'enabled') },
             }).then(function () {
                 toast.success('Plugin ' + event.target.dataset.name + ' ' + state);
@@ -130,7 +130,7 @@
             });
         });
 
-        $scope.fetchPluginList('/apis/' + $scope.apiId + '/plugins');
+        $scope.fetchPluginList('/services/' + $scope.serviceId + '/plugins');
     }]);
 
 })(window.angular, app);

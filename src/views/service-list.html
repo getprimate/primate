@@ -1,5 +1,5 @@
 <div class="panel panel-border success" id="panelAdd">
-<div class="panel__heading pointer">Add new API</div>
+<div class="panel__heading pointer">Add New Service</div>
 
 <div class="panel__body">
     <form class="form hidden" method="post" action="#">
@@ -56,32 +56,30 @@
 </div>
 
 <div class="well">
-<div class="well__heading">List of APIs</div>
-<table id="apiTable" class="table" cellpadding="0" cellspacing="0">
-    <thead data-ng-if="apiList.length>0"><tr><th>Flags</th><th>Request Path</th><th>Upstream URL</th><th>Created</th><th>Actions</th></tr></thead>
+<div class="well__heading">List of Services</div>
+<table id="serviceTable" class="table" cellpadding="0" cellspacing="0">
+    <thead data-ng-if="serviceList.length>0"><tr><th>Flags</th><th>Name</th><th>Created</th><th>Actions</th></tr></thead>
 
     <tbody>
-        <tr data-ng-repeat="api in apiList">
+        <tr data-ng-repeat="service in serviceList">
             <td>
-            <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==true" class="material-icons success state-highlight">assignment_turned_in</i>
-            <i data-attribute="https_only" data-api-id="{{api.id}}" title="HTTPS Only" data-ng-if="api.https_only==false" class="material-icons default state-highlight">assignment_turned_in</i>
-            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==true" class="material-icons success state-highlight">spellcheck</i>
-            <i data-attribute="preserve_host" data-api-id="{{api.id}}" title="Preserve Host" data-ng-if="api.preserve_host==false" class="material-icons default state-highlight">spellcheck</i>
+            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server TLS enabled" data-ng-if="service.tls_verify==true" class="material-icons success state-highlight">assignment_turned_in</i>
+            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server TLS disabled" data-ng-if="service.tls_verify==false" class="material-icons default state-highlight">assignment_turned_in</i>
+            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server Nginx default" data-ng-if="service.tls_verify==null" class="material-icons default state-highlight">assignment_turned_in</i>
             </td>
 
-            <td><a href="#!/api/{{api.id}}">{{api.name || api.id}}</a></td>
-            <td>{{api.upstream_url}}</td>
-            <td>{{api.created_at | date}}</td>
+            <td><a href="#!/services/{{service.id}}">{{service.name || service.id}}</a></td>
+            <td>{{service.created_at | date}}</td>
             <td>
                 <div class="action-group">
-                    <a href="#!/api/{{api.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons danger delete" data-target="API" data-url="/apis/{{api.id}}">delete_forever</i>
+                    <a href="#!/services/{{service.id}}"><i class="material-icons warning">edit</i></a>
+                    <i class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</i>
                 </div>
             </td>
         </tr>
     </tbody>
-    <tfoot data-ng-if="apiList.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
+    <tfoot data-ng-if="service.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
 </table>
 </div>
 
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchApiList(nextUrl)">Load Next</button></div>
+<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchServiceList(nextUrl)">Load Next</button></div>
