@@ -37,13 +37,13 @@
                 templateUrl: 'views/cluster-list.html',
                 controller: 'ClusterListController'
             })
-            .when('/api', {
-                templateUrl: 'views/api-list.html',
-                controller: 'ApiListController'
+            .when('/services', {
+                templateUrl: 'views/service-list.html',
+                controller: 'ServiceListController'
             })
-            .when('/api/:apiId', {
-                templateUrl: 'views/api-edit.html',
-                controller: 'ApiEditController'
+            .when('/services/:serviceId', {
+                templateUrl: 'views/service-edit.html',
+                controller: 'ServiceEditController'
             })
             .when('/api/:apiId/plugins', {
                 templateUrl: 'views/plugin-edit.html',
