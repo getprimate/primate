@@ -1,83 +1,94 @@
-/* global app:true */
-(function (angular, app) { 'use strict';
-    const controller = 'CertificateListController';
-    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+'use strict';
 
-    app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function ($scope, ajax, viewFactory, toast) {
-        viewFactory.title = 'Certificate List';
-        viewFactory.prevUrl = null;
+function _CertificateListController(window, scope, ajax, viewFactory, toast) {
+    const { angular } = window;
 
-        $scope.certList = [];
-        $scope.formInput = {
-            certificate: '',
-            privateKey: '',
-            snis: ''
-        };
+    viewFactory.title = 'Certificate List';
+    viewFactory.prevUrl = null;
 
-        $scope.fetchCertList = function (resource) {
-            ajax.get({ resource: resource }).then(function (response) {
-                $scope.nextUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+    scope.certList = [];
+    scope.formInput = {
+        primaryCert: '',
+        primaryKey: '',
+        alternateCert: '',
+        alternateKey: '',
+        tags: '',
+        snis: []
+    };
 
-                for (let index = 0; index < response.data.data.length; index++ ) {
-                    $scope.certList.push(response.data.data[index]);
-                }
+    scope.fetchCertList = (resource) => {
+        ajax.get({ resource: resource }).then((response) => {
+            const { data } = response;
+            const { data: certList } = data;
 
-            }, function () {
-                toast.error('Could not load certificates');
-            });
-        };
+            scope.nextUrl = (typeof data.next === 'string') ?
+                data.next.replace(new RegExp(viewFactory.host), '') : '';
 
-        let panelAdd = angular.element('div#panelAdd');
-        let certForm = panelAdd.children('div.panel__body').children('form');
+            for (let index = 0; index < certList.length; index++ ) {
+                scope.certList.push(certList[index]);
+            }
 
-        panelAdd.children('div.panel__heading').on('click', function () {
-            certForm.slideToggle(300);
+        }, () => {
+            toast.error('Could not load certificates');
         });
+    };
 
-        certForm.on('submit', function (event) {
-            event.preventDefault();
+    const panelAdd = angular.element('div#panelAdd');
+    const certForm = panelAdd.children('div.panel__body').children('form');
 
-            let payload = {};
+    panelAdd.children('div.panel__heading').on('click', () => {
+        certForm.slideToggle(300);
+    });
 
-            if ($scope.formInput.certificate.trim().length > 10) {
-                payload.cert = $scope.formInput.certificate;
+    certForm.on('submit', (event) => {
+        event.preventDefault();
 
-            } else {
-                certForm.find('textarea[name="certificate"]').focus();
-                return false;
-            }
+        let payload = {};
 
-            if ($scope.formInput.privateKey.trim().length > 10) {
-                payload.key = $scope.formInput.privateKey;
+        if (scope.formInput.certificate.trim().length > 10) {
+            payload.cert = scope.formInput.certificate;
 
-            } else {
-                certForm.find('textarea[name="privateKey"]').focus();
-                return false;
-            }
-
-            if ($scope.formInput.snis.trim().length > 0) {
-                payload.snis = $scope.formInput.snis;
-            }
-
-            ajax.post({
-                resource: '/certificates/',
-                data: payload
-            }).then(function (response) {
-                $scope.certList.push(response.data);
-                toast.success('Added new certificate');
-
-            }, function (response) {
-                toast.error(response.data);
-            });
-
+        } else {
+            certForm.find('textarea[name="certificate"]').focus();
             return false;
+        }
+
+        if (scope.formInput.privateKey.trim().length > 10) {
+            payload.key = scope.formInput.privateKey;
+
+        } else {
+            certForm.find('textarea[name="privateKey"]').focus();
+            return false;
+        }
+
+        if (scope.formInput.snis.trim().length > 0) {
+            payload.snis = scope.formInput.snis;
+        }
+
+        ajax.post({
+            resource: '/certificates/',
+            data: payload
+        }).then((response) => {
+            scope.certList.push(response.data);
+            toast.success('Added new certificate');
+
+        }, (response) => {
+            toast.error(response.data);
         });
 
-        certForm.on('click', 'button[name="actionCancel"]', function () {
-            certForm.slideUp(300);
-        });
+        return false;
+    });
 
-        $scope.fetchCertList('/certificates/');
-    }]);
-})(window.angular, app);
+    certForm.on('click', 'button[name="actionCancel"]', () => {
+        certForm.slideUp(300);
+    });
+
+    scope.fetchCertList('/certificates');
+}
+
+/* global app:true */
+(function (controller, app) {
+    if (typeof app === 'undefined') throw (`${controller}: app is undefined`);
+
+    app.controller(controller, ['$window', '$scope', 'ajax', 'viewFactory', 'toast', _CertificateListController]);
+})('CertificateListController', app);
