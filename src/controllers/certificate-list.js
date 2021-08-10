@@ -43,30 +43,42 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
     certForm.on('submit', (event) => {
         event.preventDefault();
 
-        let payload = {};
+        const primaryCert = scope.formInput.primaryCert.trim();
+        const primaryKey = scope.formInput.primaryKey.trim();
 
-        if (scope.formInput.certificate.trim().length > 10) {
-            payload.cert = scope.formInput.certificate;
-
-        } else {
-            certForm.find('textarea[name="certificate"]').focus();
+        if (primaryCert.length < 10) {
+            certForm.find('textarea#ce-ls__t01').focus();
             return false;
         }
 
-        if (scope.formInput.privateKey.trim().length > 10) {
-            payload.key = scope.formInput.privateKey;
-
-        } else {
-            certForm.find('textarea[name="privateKey"]').focus();
+        if (primaryKey.length < 10) {
+            certForm.find('textarea#ce-ls__t02').focus();
             return false;
         }
 
-        if (scope.formInput.snis.trim().length > 0) {
-            payload.snis = scope.formInput.snis;
+        const payload = {
+            cert: primaryCert,
+            key: primaryKey,
+            snis: []
+        };
+
+        if (scope.formInput.snis.length > 0) {
+            const sniList = scope.formInput.snis.split(',');
+
+            for (let sni of sniList) {
+                let sanitized = sni.trim();
+
+                if (sanitized.length > 0) {
+                    payload.snis.push(sni);
+                }
+            }
         }
+
+        if (scope.formInput.alternateCert.length > 10) payload.cert_alt = scope.formInput.alternateCert.trim();
+        if (scope.formInput.alternateKey.length > 10) payload.key_alt = scope.formInput.alternateKey.trim();
 
         ajax.post({
-            resource: '/certificates/',
+            resource: '/certificates',
             data: payload
         }).then((response) => {
             scope.certList.push(response.data);
@@ -79,7 +91,7 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
         return false;
     });
 
-    certForm.on('click', 'button[name="actionCancel"]', () => {
+    certForm.on('click', 'button#ce-ls__b01', () => {
         certForm.slideUp(300);
     });
 
