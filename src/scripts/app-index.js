@@ -45,7 +45,7 @@
                 templateUrl: 'views/service-edit.html',
                 controller: 'ServiceEditController'
             })
-            .when('/api/:apiId/plugins', {
+            .when('/services/:serviceId/plugins', {
                 templateUrl: 'views/plugin-edit.html',
                 controller: 'PluginEditController'
             })
