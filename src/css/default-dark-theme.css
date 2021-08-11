@@ -78,6 +78,8 @@ nav.navigation a.navigation__link { color: #B5BCCE; text-decoration: none; text-
 
 nav.navigation hr { border-color: #656B6F; }
 
+table.table { border-collapse: collapse; }
+
 table.table thead th { background: transparent none; color: #AAC5D4; }
 table.table tfoot th { background: transparent none; color: #c7d5dc; }
 
