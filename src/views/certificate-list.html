@@ -76,7 +76,6 @@
     <div class="well__heading">List of Certificates</div>
     <table id="certTable" class="table">
         <thead data-ng-if="certList.length>0"><tr><th>Certificate ID</th><th>Created At</th><th>Actions</th></tr></thead>
-
         <tbody>
         <tr data-ng-repeat="cert in certList">
             <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a></td>
