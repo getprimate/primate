@@ -33,10 +33,6 @@
                 templateUrl: 'views/dashboard.html',
                 controller: 'DashboardController'
             })
-            .when('/cluster', {
-                templateUrl: 'views/cluster-list.html',
-                controller: 'ClusterListController'
-            })
             .when('/services', {
                 templateUrl: 'views/service-list.html',
                 controller: 'ServiceListController'
