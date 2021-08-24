@@ -1,3 +1,7 @@
+/**
+ * @deprecated Will be removed in future
+ */
+
 /* eslint-disable no-console */
 module.exports = function (gulp) { 'use strict';
 

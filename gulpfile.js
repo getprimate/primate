@@ -1,3 +1,7 @@
+/**
+ * @deprecated Will be removed in future
+ */
+
 'use strict';
 
 const gulp = require('gulp');

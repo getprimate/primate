@@ -1,3 +1,6 @@
+/**
+ * @deprecated Will be removed in future
+ */
 module.exports = function (gulp, packageJson) { 'use strict';
     const _ = require('underscore');
     const electronPackager = require('electron-packager');
