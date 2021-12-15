@@ -36,13 +36,13 @@
             <button data-ng-if="viewFactory.deleteAction" data-target="{{viewFactory.deleteAction.target}}" data-url="{{viewFactory.deleteAction.url}}" data-redirect="{{viewFactory.deleteAction.redirect || viewFactory.prevUrl}}" type="button" class="btn danger delete">Delete</button>
         </div>
     </header>
-    <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Temp</section>
+    <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
     <footer class="footer" data-ng-controller="FooterController">
         <div id="staticMessage" class="pull-left hpadding-20"></div>
         <div class="pull-right hpadding-20">{{viewFactory.host | stripProtocol}}</div>
     </footer>
 </main>
-</div>
+</div><!-- .app-layout.hidden -->
 
 <script type="text/javascript">
 if (typeof module === 'object') {
