@@ -10,9 +10,11 @@
 
         $scope.upstreamList = [];
         $scope.formInput = {
-            hostname: '',
-            slots: '',
-            orderList: ''
+            name: '',
+            algorithm: 'round-robin',
+            hashInput: 'none',
+            hashFallback: 'none',
+            hashOnHeader: null
         };
 
         $scope.fetchUpstreamList = function (resource) {
