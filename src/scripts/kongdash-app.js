@@ -174,11 +174,29 @@ app.factory('toast', function () {
  */
 app.filter('pgname', function () {
     return function (input) {
-        if (typeof input !== 'string' || input === null) {
+        if (typeof input !== 'string') {
             return '';
         }
 
         return (input.charAt(0).toUpperCase() + input.substr(1).toLowerCase()).split('_').join(' ');
+    };
+});
+
+/**
+ * Converts first letter of a string to uppercase and
+ * replaces underscores and hyphens with whitespaces.
+ */
+app.filter('capitalise', function () {
+    return function (input) {
+        if (typeof input !== 'string') {
+            return '';
+        }
+
+        const words = input.split(/[_,-]+/);
+
+        return words.map((word) => {
+            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+        }).join(' ');
     };
 });
 
