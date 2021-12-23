@@ -5,6 +5,7 @@
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function ($scope, ajax, viewFactory, toast) {
+        viewFactory.createAction = { redirect: '#!/upstreams/create', displayText: 'New Upstream' };
         viewFactory.title = 'Upstreams';
         viewFactory.prevUrl = null;
 
