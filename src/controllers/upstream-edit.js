@@ -3,18 +3,72 @@
     const controller = 'UpstreamEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
-        viewFactory.title = 'Edit Upstream';
+    app.controller(controller, ['$window', '$scope', '$routeParams', '$http', 'viewFactory', 'toast', function ($window, scope, routeParams, http, viewFactory, toast) {
 
-        $scope.upstreamId = $routeParams.upstreamId;
-        $scope.targetList = [];
-        $scope.formInput = {
-            hostname: '',
-            slots: '',
-            orderList: ''
+        scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
+        scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
+
+        scope.targetList = [];
+        scope.upstreamModel = {
+            name: '',
+            algorithm: 'round-robin',
+            hash_on: 'none',
+            hash_fallback: 'none',
+            hash_on_cookie_path: '',
+            slots: 10000,
+            healthchecks: {
+                passive: {
+                    type: 'http',
+                    healthy: {
+                        successes: 0,
+                        http_statuses: [200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308]
+                    },
+                    unhealthy: {
+                        tcp_failures: 0,
+                        http_statuses: [429, 500, 503],
+                        http_failures: 0,
+                        timeouts: 0
+                    }
+                },
+                active: {
+                    http_path: '/',
+                    timeout: 1,
+                    concurrency: 10,
+                    https_sni: 'example.com',
+                    type: 'http',
+                    healthy: {
+                        interval: 0,
+                        http_statuses: [200, 302],
+                        successes: 0
+                    },
+                    https_verify_certificate: true,
+                    unhealthy: {
+                        tcp_failures: 0,
+                        http_statuses: [429, 404, 500, 501, 502, 503, 504, 505],
+                        http_failures: 0,
+                        interval: 0,
+                        timeouts: 0
+                    }
+                },
+                threshold: 0
+            },
+            tags: ['user-level', 'low-priority'],
+            host_header: 'example.com',
+            client_certificate: ''
         };
 
+        switch (routeParams.upstreamId) {
+            case 'create':
+                viewFactory.title = 'Create Upstream';
+                break;
+
+            default:
+                viewFactory.title = 'Edit Upstream';
+                scope.upstreamId = routeParams.upstreamId;
+                break;
+        }
+
+        /*
         $scope.fetchTargetList = function (url) {
             ajax.get({ resource: url }).then(function (response) {
                 $scope.nextTargetUrl = (typeof response.data.next === 'string') ?
@@ -28,7 +82,9 @@
                 toast.error('Could not load targets');
             });
         };
+        */
 
+        /*
         ajax.get({ resource: '/upstreams/' + $scope.upstreamId }).then(function (response) {
             $scope.formInput.hostname = response.data.name;
             $scope.formInput.slots = response.data.slots;
@@ -93,7 +149,9 @@
 
             return false;
         });
+        */
 
+        /*
         formTarget.on('submit', function (event) {
             event.preventDefault();
 
@@ -132,5 +190,6 @@
         });
 
         $scope.fetchTargetList('/upstreams/' + $scope.upstreamId + '/targets');
+        */
     }]);
 })(window.angular, app);

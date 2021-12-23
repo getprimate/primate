@@ -1,24 +1,88 @@
 <div class="container">
 <div class="row">
-<div class="col md-7">
+<div class="col md-8">
     <div class="panel panel-border info">
     <div class="panel__heading">Upstream Details</div>
     <div class="panel__body">
-        <form id="formEdit" class="form" method="post" action="#">
-            <div class="form__field">
-            <label class="field-label">Name</label>
-            <div class="field-input"><input type="text" name="hostname" data-ng-model="formInput.hostname" placeholder="Name" value="" title="A host name that can be referenced in an upstream_url" /></div>
-            </div>
+        <form id="us-edit__form" class="form" method="post" action="#">
+            <!-- Wraps upstream name -->
+            <div class="row">
+                <div class="col md-12">
+                    <div class="form__field">
+                        <label for="up-ed__txt01" class="field-label">Upstream Name</label>
+                        <div class="field-input"><input id="up-ed__txt01" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+            </div><!-- .row -->
 
-            <div class="form__field">
-            <label class="field-label">Slots</label>
-            <div class="field-input"><input type="text" name="slots" data-ng-model="formInput.slots" placeholder="Slots (Optional)" value="" title="The number of slots in the load balancer algorithm" /></div>
-            </div>
+            <!-- Wraps algorithm, host header and slots -->
+            <div class="row">
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__sel01" class="field-label">Algorithm</label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel01" name="algorithm" data-ng-model="upstreamModel.algorithm" data-ng-selected="upstreamModel.algorithm">
+                                <option data-ng-repeat="value in ENUM_ALGORITHMS" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel01 -->
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
 
-            <div class="form__field">
-            <label class="field-label">Order List</label>
-            <div class="field-input"><textarea class="tx-small" name="orderList" data-ng-model="formInput.orderList" title="A randomly ordered distribution of the slots in the load balancer"></textarea></div>
-            </div>
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__txt02" class="field-label">Host Header</label>
+                        <div class="field-input"><input id="up-ed__txt02" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__txt03" class="field-label">Slots</label>
+                        <div class="field-input"><input id="up-ed__txt03" type="number" name="slots" value="" data-ng-model="upstreamModel.slots" min="10" max="65536" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+
+            </div><!-- .row -->
+
+            <!-- Wraps primary hash input and attribute values -->
+            <div class="row">
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__sel02" class="field-label">Primary Hash Input</label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel02" name="hashInput" data-ng-model="upstreamModel.hash_on" data-ng-selected="upstreamModel.hash_on">
+                                <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel01 -->
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+                <div class="col md-8">
+                    <div class="form__field">
+                        <label for="up-ed__txt04" class="field-label">Input Attribute Value</label>
+                        <div class="field-input"><input id="up-ed__txt04" type="text" name="primaryHashValue" value="" data-ng-model="upstreamModel.hash_on_value" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+            </div><!-- .row -->
+
+            <!-- Wraps secondary hash input and attribute values -->
+            <div class="row">
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__sel03" class="field-label">Secondary Hash Input</label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel03" name="fallbackInput" data-ng-model="upstreamModel.hash_fallback" data-ng-selected="upstreamModel.hash_fallback">
+                                <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel01 -->
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+                <div class="col md-8">
+                    <div class="form__field">
+                        <label for="up-ed__txt05" class="field-label">Input Attribute Value</label>
+                        <div class="field-input"><input id="up-ed__txt05" type="text" name="secondaryHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+            </div><!-- .row -->
 
             <div class="form__field">
             <a class="btn default" href="#!/upstreams">Cancel</a>
@@ -27,9 +91,9 @@
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel__heading -->
-</div><!-- .col-md-7 -->
+</div><!-- .col-md-8 -->
 
-<div class="col md-5">
+<div class="col md-4">
     <div class="well">
         <div class="well__heading">Targets
             <div class="pull-right"><span id="btnAddTarget" class="btn mini success">+</span></div>
@@ -41,7 +105,7 @@
             </div>
         </form>
 
-        <table id="targetsTable" class="table" cellpadding="0" cellspacing="0">
+        <table id="targetsTable" class="table">
             <thead data-ng-if="targetList.length>0"><tr><th class="md-8">Target</th><th>Weight</th><th>Actions</th></tr> </thead>
 
             <tbody>
@@ -59,6 +123,6 @@
     </div>
 
     <div data-ng-if="nextTargetUrl" class="pagination"><button class="btn dark" data-ng-click="fetchTargetList(nextTargetUrl)">Load Next</button></div>
-</div>
-</div>
-</div>
+</div><!-- .col-md-4 -->
+</div><!-- .row -->
+</div><!-- .container -->
