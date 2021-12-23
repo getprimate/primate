@@ -155,4 +155,14 @@
         }
     });
 
+    /**
+     * Redirects to specified action page.
+     */
+    content.on('click', 'button.btn.create', (event) => {
+        event.preventDefault();
+
+        let target = angular.element(event.target);
+        window.location.href = target.data('redirect');
+    });
+
 })(window, window.angular, angular.element('main.content'), ipcRenderer);
