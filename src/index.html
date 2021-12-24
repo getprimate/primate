@@ -52,10 +52,10 @@ if (typeof module === 'object') {
 }
 
 const {ipcRenderer} = require('electron');
-var kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
-var appConfig     = ipcRenderer.sendSync('get-config', 'app');
+const kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
+const appConfig     = ipcRenderer.sendSync('get-config', 'app');
 
-var ngDependency  = ['ngRoute'];
+const ngDependency  = ['ngRoute'];
 </script>
 
 <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
