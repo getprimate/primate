@@ -7,6 +7,7 @@
 
         scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
         scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
+        scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp'];
 
         scope.targetList = [];
         scope.upstreamModel = {
@@ -20,14 +21,14 @@
                 passive: {
                     type: 'http',
                     healthy: {
-                        successes: 0,
+                        successes: 5,
                         http_statuses: [200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308]
                     },
                     unhealthy: {
-                        tcp_failures: 0,
+                        tcp_failures: 2,
                         http_statuses: [429, 500, 503],
-                        http_failures: 0,
-                        timeouts: 0
+                        http_failures: 2,
+                        timeouts: 5
                     }
                 },
                 active: {
@@ -185,11 +186,13 @@
             });
         });
 
+        $scope.fetchTargetList('/upstreams/' + $scope.upstreamId + '/targets');
+        */
+
+        const formEdit = angular.element('form#formEdit'), formTarget = angular.element('form#formTarget');
+
         angular.element('span#btnAddTarget').on('click', function () {
             formTarget.slideToggle(300);
         });
-
-        $scope.fetchTargetList('/upstreams/' + $scope.upstreamId + '/targets');
-        */
     }]);
 })(window.angular, app);

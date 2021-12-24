@@ -7,16 +7,6 @@
         <form id="us-edit__form" class="form" method="post" action="#">
             <!-- Wraps upstream name -->
             <div class="row">
-                <div class="col md-12">
-                    <div class="form__field">
-                        <label for="up-ed__txt01" class="field-label">Upstream Name</label>
-                        <div class="field-input"><input id="up-ed__txt01" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="" /></div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-8 -->
-            </div><!-- .row -->
-
-            <!-- Wraps algorithm, host header and slots -->
-            <div class="row">
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__sel01" class="field-label">Algorithm</label>
@@ -30,18 +20,38 @@
 
                 <div class="col md-4">
                     <div class="form__field">
+                        <label for="up-ed__txt01" class="field-label">Upstream Name <span title="This is a hostname, which must be equal to the host of a Service." class="tooltip material-icons">help_outline</span></label>
+                        <div class="field-input"><input id="up-ed__txt01" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="Required" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+
+                <div class="col md-4">
+                    <div class="form__field">
                         <label for="up-ed__txt02" class="field-label">Host Header</label>
                         <div class="field-input"><input id="up-ed__txt02" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col.md-8 -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
 
+            <!-- Wraps algorithm, host header and slots -->
+            <div class="row">
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__txt03" class="field-label">Slots</label>
                         <div class="field-input"><input id="up-ed__txt03" type="number" name="slots" value="" data-ng-model="upstreamModel.slots" min="10" max="65536" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col.md-8 -->
+                </div><!-- .col.md-4 -->
 
+                <div class="col md-8">
+                    <div class="form__field">
+                        <label for="up-ed__sel06" class="field-label">Client Certificate</label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
+                                <option data-ng-repeat="value in ENUM_ALGORITHMS" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel01 -->
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
             </div><!-- .row -->
 
             <!-- Wraps primary hash input and attribute values -->
@@ -54,40 +64,196 @@
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel01 -->
                         </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-4 -->
-                <div class="col md-8">
-                    <div class="form__field">
-                        <label for="up-ed__txt04" class="field-label">Input Attribute Value</label>
                         <div class="field-input"><input id="up-ed__txt04" type="text" name="primaryHashValue" value="" data-ng-model="upstreamModel.hash_on_value" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col.md-8 -->
-            </div><!-- .row -->
-
-            <!-- Wraps secondary hash input and attribute values -->
-            <div class="row">
+                </div><!-- .col.md-4 -->
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__sel03" class="field-label">Secondary Hash Input</label>
                         <div class="field-input">
                             <select class="stretch" id="up-ed__sel03" name="fallbackInput" data-ng-model="upstreamModel.hash_fallback" data-ng-selected="upstreamModel.hash_fallback">
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel03 -->
+                        </div><!-- .field-input -->
+                        <div class="field-input"><input id="up-ed__txt05" type="text" name="secondaryHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__txa05" class="field-label">Tags</label>
+                        <div class="field-input"><textarea id="up-ed__txa05" class="tx-small" name="tags" data-ng-model="upstreamModel.tags"></textarea></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
+
+            <!-- ==--==--==--==--==--==--==--==--==--== Active Health Checks ==--==--==--==--==--==--==--==--==--== -->
+            <div class="panel__split"><span>Active Health Checks</span></div>
+            <div class="row">
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__sel04" class="field-label">Connection Type <span class="material-icons">info</span></label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel04" name="hcaType" data-ng-model="upstreamModel.healthchecks.active.type" data-ng-selected="upstreamModel.healthchecks.active.type">
+                                <option data-ng-repeat="value in ENUM_PROTOCOL" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel01 -->
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
-                <div class="col md-8">
+
+                <div class="col md-4">
                     <div class="form__field">
-                        <label for="up-ed__txt05" class="field-label">Input Attribute Value</label>
-                        <div class="field-input"><input id="up-ed__txt05" type="text" name="secondaryHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
+                        <label for="up-ed__txt06" class="field-label">Timeout <span class="material-icons">info_outline</span></label>
+                        <div class="field-input"><input id="up-ed__txt06" type="number" name="hcaTimeout" value="" data-ng-model="upstreamModel.healthchecks.active.timeout" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col.md-8 -->
+                </div><!-- .col.md-4 -->
+
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="up-ed__chk01" class="field-label">Verify SSL Certificate <span class="material-icons">help</span></label>
+                        <div class="field-input"><input id="up-ed__chk01" type="checkbox" data-name="hcaVerifySSL" value="{{upstreamModel.healthchecks.active.https_verify_certificate}}" data-ng-checked="upstreamModel.healthchecks.active.https_verify_certificate===true" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
+
+            <div class="row">
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__rge01" class="field-label">Successful Responses <span class="tooltip material-icons">help_outline</span></label>
+                        <div class="field-input">
+                            <input id="up-ed__rge01" type="range" min="0" max="100" name="hcaHealthySuccess" value="" data-ng-model="upstreamModel.healthchecks.active.healthy.successes" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.healthy.successes}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge02" class="field-label">Healthy Interval</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge02" type="range" min="0" max="100" name="hcaHealthyInterval" value="" data-ng-model="upstreamModel.healthchecks.active.healthy.interval" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.healthy.interval}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txa01" class="field-label">Healthy HTTP Status Codes</label>
+                        <div class="field-input"><textarea id="up-ed__txa01" class="tx-small" name="hcaHealthyCodes" data-ng-model="upstreamModel.healthchecks.active.healthy.http_statuses" placeholder="Eg: 200, 201, 202"></textarea></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col --md-6 -->
+
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__rge03" class="field-label">TCP Failures</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge03" type="range" min="0" max="100" name="hcaUnhealthyTCP" value="" data-ng-model="upstreamModel.healthchecks.active.unhealthy.tcp_failures" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.unhealthy.tcp_failures}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge04" class="field-label">HTTP Failures</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge04" type="range" min="0" max="100" name="hcaUnhealthyHTTP" value="" data-ng-model="upstreamModel.healthchecks.active.unhealthy.http_failures" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.unhealthy.http_failures}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge10" class="field-label">Unhealthy Interval</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge10" type="range" min="0" max="100" name="hcaUnhealthyInterval" value="" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.interval" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.aassive.unhealthy.interval}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge05" class="field-label">Unhealthy Timeouts</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge05" type="range" min="0" max="100" name="hcaUnhealthyTimeout" value="" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.timeouts" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.aassive.unhealthy.timeouts}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txa02" class="field-label">Unhealthy HTTP Status Codes</label>
+                        <div class="field-input"><textarea id="up-ed__txa02" class="tx-small" name="hcaUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.http_statuses" placeholder="Eg: 00, 404, 500"></textarea></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col-md-6 -->
+            </div><!-- .row -->
+
+            <!-- ==--==--==--==--==--==--==--==--==--== Passive Health Checks ==--==--==--==--==--==--==--==--==--== -->
+            <div class="panel__split"><span>Passive Health Checks</span></div>
+            <div class="row">
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__sel05" class="field-label">Connection Type</label>
+                        <div class="field-input">
+                            <select class="stretch" id="up-ed__sel05" name="hcpType" data-ng-model="upstreamModel.healthchecks.passive.type" data-ng-selected="upstreamModel.healthchecks.passive.type">
+                                <option data-ng-repeat="value in ENUM_PROTOCOL" value="{{value}}">{{value | capitalise}}</option>
+                            </select><!-- #up-ed__sel01 -->
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__txt07" class="field-label">Threshold</label>
+                        <div class="field-input"><input id="up-ed__txt07" type="number" name="hcpThreshold" value="" data-ng-model="upstreamModel.healthchecks.passive.threshold" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
+
+            <div class="row">
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__rge06" class="field-label">Successful Responses</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge06" type="range" min="0" max="100" name="hcpHealthySuccess" value="" data-ng-model="upstreamModel.healthchecks.passive.healthy.successes" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.passive.healthy.successes}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txa03" class="field-label">Healthy HTTP Status Codes</label>
+                        <div class="field-input"><textarea id="up-ed__txa03" class="tx-small" name="hcpHealthyCodes" data-ng-model="upstreamModel.healthchecks.passive.healthy.http_statuses" placeholder="Eg: 200, 201, 202"></textarea></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col --md-6 -->
+
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="up-ed__rge07" class="field-label">TCP Failures</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge07" type="range" min="0" max="100" name="hcpUnhealthyTCP" value="" data-ng-model="upstreamModel.healthchecks.passive.unhealthy.tcp_failures" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.passive.unhealthy.tcp_failures}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge08" class="field-label">HTTP Failures</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge08" type="range" min="0" max="100" name="hcpUnhealthyHTTP" value="" data-ng-model="upstreamModel.healthchecks.passive.unhealthy.http_failures" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.passive.unhealthy.http_failures}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__rge09" class="field-label">Unhealthy Timeouts</label>
+                        <div class="field-input">
+                            <input id="up-ed__rge09" type="range" min="0" max="100" name="hcpUnhealthyTimeout" value="" data-ng-model="upstreamModel.healthchecks.passive.unhealthy.timeouts" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.passive.unhealthy.timeouts}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txa04" class="field-label">Unhealthy HTTP Status Codes</label>
+                        <div class="field-input"><textarea id="up-ed__txa04" class="tx-small" name="hcpUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.passive.unhealthy.http_statuses" placeholder="Eg: 00, 404, 500"></textarea></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col-md-6 -->
             </div><!-- .row -->
 
             <div class="form__field">
             <a class="btn default" href="#!/upstreams">Cancel</a>
             <button class="btn info" type="submit" name="action" value="update">Update</button>
-            </div>
+            </div><!-- .form__field -->
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel__heading -->
