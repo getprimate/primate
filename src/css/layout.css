@@ -186,7 +186,7 @@ form.form .form__field { margin-bottom: 20px; }
     form.form > .form__field:last-child { padding-bottom: 0 !important; margin-bottom: 10px !important; }
 
 form.form .form__field label.field-label { font-size: 0.9em; font-weight: 500; display: block; cursor: pointer; }
-form.form .form__field label.field-label span.material-icons { font-size: 1.1rem; float: right; position: relative; }
+form.form .form__field label.field-label span.material-icons { font-size: 1rem; vertical-align: middle; }
 
 form.form .form__field .field-input { margin: 5px 0 0 0; }
 
@@ -242,6 +242,7 @@ dl.horizontal > dd { width: 60%; font-size: 0.96rem; }
 
 .panel .panel__heading { padding: 10px 15px 10px 15px; border-radius: 5px; font-weight: 500; font-size: 0.97rem; }
 .panel .panel__body { border-radius: 0 0 3px 3px; padding-left: 15px; padding-right: 15px; }
+.panel .panel__split { margin: 15px -15px 15px -15px; padding: 10px 15px 10px 15px; border-bottom-width: 1px; border-bottom-style: dashed; font-size: 1.2rem; }
 
 /* Helpers */
 .subheading { margin: 0 0 10px 0; padding: 0 0 10px 0; }

@@ -106,6 +106,10 @@ textarea { background-color: #394C57; border-color: #4B5D67; color: #EFEFEF; }
 
 form.form label { color: #afbdc4; }
 
+form.form .form__field .field-input input[type="range"] + span.field-input__legend {
+    color: #999999;
+}
+
 label.checkbox:hover { color: #f6f6f6; }
 
 label.checkbox input[type="checkbox"] { background-color: rgba(0,0,0,0); border: 2px solid #cccccc; }
@@ -130,6 +134,8 @@ dl.horizontal > dd { color: #f1f1f1; }
 .panel { background-color: #2F3E47; }
 
 .panel .panel__heading { background-color: #2F3E47; color: rgba(255, 255, 255, 0.9); }
+
+.panel .panel__split { border-bottom-color: #1a242d; color: #B3C2CC; font-size: 0.97rem; font-weight: 500; }
 
 .panel.panel-border.primary { border-top-color: #188AE2; }
 .panel.panel-border.primary .panel__heading { color: #188AE2; }
