@@ -58,11 +58,6 @@ Run ESLint
 
 ### Make a release
 
-Linux 32-bit:
-```shell
-npm run pack:linux32
-```
-
 Linux 64-bit:
 ```shell
 npm run pack:linux64
@@ -71,11 +66,6 @@ npm run pack:linux64
 Mac OS X (64-bit only):
 ```shell
 npm run pack:osx
-```
-
-Windows 32-bit:
-```shell
-npm run pack:windows32
 ```
 
 Windows 64-bit:
