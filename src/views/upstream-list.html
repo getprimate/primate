@@ -1,11 +1,12 @@
 <div class="well">
     <div class="well__heading">List of Upstreams</div>
-    <table id="upstreamTable" class="table" cellpadding="0" cellspacing="0">
-        <thead data-ng-if="upstreamList.length>0"><tr><th>Name</th><th>Slots</th><th>Created At</th><th>Actions</th></tr></thead>
+    <table id="upstreamTable" class="table">
+        <thead data-ng-if="upstreamList.length>0"><tr><th>Name</th><th>Algorithm</th><th>Slots</th><th>Created At</th><th>Actions</th></tr></thead>
 
         <tbody>
         <tr data-ng-repeat="upstream in upstreamList">
             <td><a href="#!/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
+            <td>{{upstream.algorithm | capitalise}}</td>
             <td>{{upstream.slots}}</td>
             <td>{{upstream.created_at | date}}</td>
             <td>
