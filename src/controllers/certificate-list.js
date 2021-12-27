@@ -77,6 +77,8 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
         if (scope.formInput.alternateCert.length > 10) payload.cert_alt = scope.formInput.alternateCert.trim();
         if (scope.formInput.alternateKey.length > 10) payload.key_alt = scope.formInput.alternateKey.trim();
 
+        console.log('Payload: ' + JSON.stringify(payload, null, 4));
+
         ajax.post({
             resource: '/certificates',
             data: payload
@@ -85,6 +87,7 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
             toast.success('Added new certificate');
 
         }, (response) => {
+            console.error('Error: ', JSON.stringify(response.data, null, 4));
             toast.error(response.data);
         });
 
