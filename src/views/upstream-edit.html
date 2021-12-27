@@ -4,7 +4,7 @@
     <div class="panel panel-border info">
     <div class="panel__heading">Upstream Details</div>
     <div class="panel__body">
-        <form id="us-edit__form" class="form" method="post" action="#">
+        <form id="us-edit__form01" class="form" method="post" action="#">
             <!-- Wraps upstream name -->
             <div class="row">
                 <div class="col md-4">
@@ -21,14 +21,14 @@
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__txt01" class="field-label">Upstream Name <span title="This is a hostname, which must be equal to the host of a Service." class="tooltip material-icons">help_outline</span></label>
-                        <div class="field-input"><input id="up-ed__txt01" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="Required" /></div><!-- .field-input -->
+                        <div class="field-input"><input id="up-ed__txt01" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="Required" required="required" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__txt02" class="field-label">Host Header</label>
-                        <div class="field-input"><input id="up-ed__txt02" type="text" name="upstreamName" value="" data-ng-model="upstreamModel.name" placeholder="" /></div><!-- .field-input -->
+                        <div class="field-input"><input id="up-ed__txt02" type="text" name="upstreamHeader" value="" data-ng-model="upstreamModel.host_header" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
@@ -69,13 +69,13 @@
                 </div><!-- .col.md-4 -->
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="up-ed__sel03" class="field-label">Secondary Hash Input</label>
+                        <label for="up-ed__sel03" class="field-label">Fallback Hash Input</label>
                         <div class="field-input">
                             <select class="stretch" id="up-ed__sel03" name="fallbackInput" data-ng-model="upstreamModel.hash_fallback" data-ng-selected="upstreamModel.hash_fallback">
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel03 -->
                         </div><!-- .field-input -->
-                        <div class="field-input"><input id="up-ed__txt05" type="text" name="secondaryHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
+                        <div class="field-input"><input id="up-ed__txt05" type="text" name="fallbackHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
@@ -99,6 +99,11 @@
                             </select><!-- #up-ed__sel01 -->
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txt07" class="field-label">HTTP Path <span class="material-icons">info_outline</span></label>
+                        <div class="field-input"><input id="up-ed__txt07" type="text" name="hcaHttpPath" value="" data-ng-model="upstreamModel.healthchecks.active.http_path" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
@@ -106,12 +111,22 @@
                         <label for="up-ed__txt06" class="field-label">Timeout <span class="material-icons">info_outline</span></label>
                         <div class="field-input"><input id="up-ed__txt06" type="number" name="hcaTimeout" value="" data-ng-model="upstreamModel.healthchecks.active.timeout" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txt08" class="field-label">HTTPS SNI <span class="material-icons">info_outline</span></label>
+                        <div class="field-input"><input id="up-ed__txt08" type="text" name="hcaHttpsSni" value="" data-ng-model="upstreamModel.healthchecks.active.https_sni" placeholder="" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__chk01" class="field-label">Verify SSL Certificate <span class="material-icons">help</span></label>
                         <div class="field-input"><input id="up-ed__chk01" type="checkbox" data-name="hcaVerifySSL" value="{{upstreamModel.healthchecks.active.https_verify_certificate}}" data-ng-checked="upstreamModel.healthchecks.active.https_verify_certificate===true" /></div><!-- .field-input -->
+                    </div><!-- .form__field -->
+
+                    <div class="form__field">
+                        <label for="up-ed__txt09" class="field-label">Concurrency <span class="material-icons">info_outline</span></label>
+                        <div class="field-input"><input id="up-ed__txt09" type="number" name="hcaConcurrency" value="" data-ng-model="upstreamModel.healthchecks.active.concurrency" placeholder="" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
@@ -160,22 +175,22 @@
                     <div class="form__field">
                         <label for="up-ed__rge10" class="field-label">Unhealthy Interval</label>
                         <div class="field-input">
-                            <input id="up-ed__rge10" type="range" min="0" max="100" name="hcaUnhealthyInterval" value="" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.interval" />
-                            <span class="field-input__legend">{{upstreamModel.healthchecks.aassive.unhealthy.interval}}</span>
+                            <input id="up-ed__rge10" type="range" min="0" max="100" name="hcaUnhealthyInterval" value="" data-ng-model="upstreamModel.healthchecks.active.unhealthy.interval" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.unhealthy.interval}}</span>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label for="up-ed__rge05" class="field-label">Unhealthy Timeouts</label>
                         <div class="field-input">
-                            <input id="up-ed__rge05" type="range" min="0" max="100" name="hcaUnhealthyTimeout" value="" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.timeouts" />
-                            <span class="field-input__legend">{{upstreamModel.healthchecks.aassive.unhealthy.timeouts}}</span>
+                            <input id="up-ed__rge05" type="range" min="0" max="100" name="hcaUnhealthyTimeout" value="" data-ng-model="upstreamModel.healthchecks.active.unhealthy.timeouts" />
+                            <span class="field-input__legend">{{upstreamModel.healthchecks.active.unhealthy.timeouts}}</span>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label for="up-ed__txa02" class="field-label">Unhealthy HTTP Status Codes</label>
-                        <div class="field-input"><textarea id="up-ed__txa02" class="tx-small" name="hcaUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.aassive.unhealthy.http_statuses" placeholder="Eg: 00, 404, 500"></textarea></div><!-- .field-input -->
+                        <div class="field-input"><textarea id="up-ed__txa02" class="tx-small" name="hcaUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.active.unhealthy.http_statuses" placeholder="Eg: 00, 404, 500"></textarea></div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col-md-6 -->
             </div><!-- .row -->
@@ -183,7 +198,7 @@
             <!-- ==--==--==--==--==--==--==--==--==--== Passive Health Checks ==--==--==--==--==--==--==--==--==--== -->
             <div class="panel__split"><span>Passive Health Checks</span></div>
             <div class="row">
-                <div class="col md-6">
+                <div class="col md-4">
                     <div class="form__field">
                         <label for="up-ed__sel05" class="field-label">Connection Type</label>
                         <div class="field-input">
@@ -193,13 +208,8 @@
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
-
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="up-ed__txt07" class="field-label">Threshold</label>
-                        <div class="field-input"><input id="up-ed__txt07" type="number" name="hcpThreshold" value="" data-ng-model="upstreamModel.healthchecks.passive.threshold" placeholder="" /></div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-4 -->
+                <div class="col md-4">&nbsp;</div>
+                <div class="col md-4">&nbsp;</div>
             </div><!-- .row -->
 
             <div class="row">
@@ -216,7 +226,7 @@
                         <label for="up-ed__txa03" class="field-label">Healthy HTTP Status Codes</label>
                         <div class="field-input"><textarea id="up-ed__txa03" class="tx-small" name="hcpHealthyCodes" data-ng-model="upstreamModel.healthchecks.passive.healthy.http_statuses" placeholder="Eg: 200, 201, 202"></textarea></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col --md-6 -->
+                </div><!-- .col.md-4 -->
 
                 <div class="col md-6">
                     <div class="form__field">
@@ -247,12 +257,13 @@
                         <label for="up-ed__txa04" class="field-label">Unhealthy HTTP Status Codes</label>
                         <div class="field-input"><textarea id="up-ed__txa04" class="tx-small" name="hcpUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.passive.unhealthy.http_statuses" placeholder="Eg: 00, 404, 500"></textarea></div><!-- .field-input -->
                     </div><!-- .form__field -->
-                </div><!-- .col-md-6 -->
+                </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="form__field">
-            <a class="btn default" href="#!/upstreams">Cancel</a>
-            <button class="btn info" type="submit" name="action" value="update">Update</button>
+            <div class="form__field" data-ng-switch="upstreamId">
+                <a class="btn default" href="#!/upstreams">Cancel</a>
+                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
+                <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
             </div><!-- .form__field -->
         </form>
     </div><!-- .panel__body -->
@@ -265,10 +276,11 @@
             <div class="pull-right"><span id="btnAddTarget" class="btn mini success">+</span></div>
         </div>
 
-        <form id="formTarget" class="form no-margin hidden" method="post" action="#">
-            <div class="hpadding-10 pad-top-10">
-                <input type="text" name="target" placeholder="Type (target:port, weight) and press enter" title="Example: 127.0.0.1:8080, 15" />
-            </div>
+        <form id="us-edit__form02" class="form hidden no-margin hpadding-15 vpadding-10" method="post" action="#">
+            <div class="form__field">
+                <label for="up-ed__txt10" class="field-label">Target Details and Optional Tags <span title="Target host name, port, weight and optional tags in the format <host>:<port>, <weight>, [tags...]" class="tooltip material-icons">help_outline</span></label>
+                <div class="field-input"><input id="up-ed__txt10" type="text" name="target" placeholder="Eg: example.com:8080, 15, user-level, low-priority" data-ng-model="targetModel.properties" /></div>
+            </div><!-- .form__field -->
         </form>
 
         <table id="targetsTable" class="table">
@@ -279,16 +291,19 @@
                 <td>{{tg.target}}</td>
                 <td>{{tg.weight}}</td>
                 <td><div class="action-group ">
-                    <i class="material-icons warning delete disable" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Disable with weight 0">report_problem</i>
+                    <i class="material-icons danger delete" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Delete target">delete_forever</i>
                 </div></td>
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="targetList.length<=0"><tr><th colspan="3">No targets added for this upstream.</th></tr></tfoot>
+            <tfoot data-ng-if="targetList.length<=0"><tr data-ng-switch="upstreamId">
+                <th data-ng-switch-when="__none__" colspan="3">Targets can be added once upstream is created.</th>
+                <th data-ng-switch-default colspan="3">No targets added for this upstream.</th>
+            </tr></tfoot>
         </table>
     </div>
 
-    <div data-ng-if="nextTargetUrl" class="pagination"><button class="btn dark" data-ng-click="fetchTargetList(nextTargetUrl)">Load Next</button></div>
+    <div data-ng-if="targetNext" class="pagination"><button class="btn dark" data-ng-click="fetchTargetList(targetNext)">Load Next</button></div>
 </div><!-- .col-md-4 -->
 </div><!-- .row -->
 </div><!-- .container -->
