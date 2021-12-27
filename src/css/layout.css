@@ -185,8 +185,10 @@ form.form .form__field { margin-bottom: 20px; }
     form.form .form__field:last-child { padding-bottom: 20px !important; margin-bottom: 0 !important; }
     form.form > .form__field:last-child { padding-bottom: 0 !important; margin-bottom: 10px !important; }
 
+    form.form.no-margin .form__field { margin-bottom: 0 !important; }
+
 form.form .form__field label.field-label { font-size: 0.9em; font-weight: 500; display: block; cursor: pointer; }
-form.form .form__field label.field-label span.material-icons { font-size: 1rem; vertical-align: middle; }
+form.form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
 
 form.form .form__field .field-input { margin: 5px 0 0 0; }
 
@@ -267,6 +269,7 @@ dl.horizontal > dd { width: 60%; font-size: 0.96rem; }
 .padding-20 { padding: 20px !important; }
 
 .hpadding-10 { padding-left: 10px !important; padding-right: 10px !important; }
+.hpadding-15 { padding-left: 15px !important; padding-right: 15px !important; }
 .hpadding-20 { padding-left: 20px !important; padding-right: 20px !important; }
 
 .vpadding-10 { padding-top: 10px !important; padding-bottom: 10px !important; }
