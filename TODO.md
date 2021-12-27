@@ -1,7 +1,9 @@
-# Features
+# TODO List
 
-- Use a library for managing tag input text areas. 
+## Features
 
-# Patches
+- [ ] Use a library for managing tag input text areas. 
 
-- [ ] `upstream-list.html` : Enable primary hash input box only if `hash_on` is set to `cookie` or `header`.    
+## Patches
+
+- [ ] **upstream-list.html** : Enable primary hash input box only if `hash_on` is set to `cookie` or `header`.    
