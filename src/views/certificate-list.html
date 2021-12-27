@@ -1,95 +1,68 @@
-<div class="panel panel-border success" id="panelAdd">
-    <div class="panel__heading pointer">Add New Certificate</div>
+<div class="row">
 
-    <div class="panel__body">
-        <form class="form hidden" method="post" action="#">
-            <div class="row">
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__t01" class="field-label">Certificate</label>
-                        <div class="field-input">
-                            <textarea id="ce-ls__t01" name="primaryCert" data-ng-model="formInput.primaryCert" placeholder="-----BEGIN CERTIFICATE-----..." title="PEM-encoded public certificate of the SSL key pair"></textarea>
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
+    <div class="col md-4">
+        <div class="well">
+            <div class="well__heading">Public Certificates</div>
+            <table id="cf-list__tab01" class="board">
+                <tbody>
+                <tr data-ng-repeat="cert in certList">
+                    <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a><br /> {{cert.tags}}</td>
+                    <td>
+                        <div class="action-group">
+                            <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                            <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No certificates added yet.</th></tr></tfoot>
+            </table>
+        </div>
 
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__t02" class="field-label">Private Key</label>
-                        <div class="field-input">
-                            <textarea id="ce-ls__t02" name="primaryKey" data-ng-model="formInput.primaryKey" placeholder="-----BEGIN RSA PRIVATE KEY-----..." title="PEM-encoded private key of the SSL key pair"></textarea>
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
-            </div><!-- .row -->
+        <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchCertList(nextUrl)">Load Next</button></div>
+    </div><!-- .col.md-4 -->
 
-            <div class="row">
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__t03" class="field-label">Alternate Certificate (optional)</label>
-                        <div class="field-input">
-                            <textarea id="ce-ls__t03" name="alternateCert" data-ng-model="formInput.alternateCert" placeholder="-----BEGIN CERTIFICATE-----..." title="PEM-encoded public certificate chain of the alternate SSL key pair"></textarea>
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
+    <div class="col md-4">
+        <div class="well">
+            <div class="well__heading">CA Certificates</div>
+            <table id="cf-list__tab02" class="board">
+                <tbody>
+                <tr data-ng-repeat="cert in certList">
+                    <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a><br /> {{cert.tags}}</td>
+                    <td>
+                        <div class="action-group">
+                            <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                            <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No certificates added yet.</th></tr></tfoot>
+            </table>
+        </div>
 
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__t04" class="field-label">Alternate Private Key (optional)</label>
-                        <div class="field-input">
-                            <textarea id="ce-ls__t04" name="alternateKey" data-ng-model="formInput.alternateKey" placeholder="-----BEGIN EC PRIVATE KEY-----..." title="PEM-encoded private key of the alternate SSL key pair"></textarea>
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
-            </div><!-- .row -->
+        <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchCertList(nextUrl)">Load Next</button></div>
+    </div><!-- .col.md-4 -->
 
-            <div class="row">
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__i01" class="field-label">SNIs (optional)</label>
-                        <div class="field-input">
-                            <input id="ce-ls__i01" type="text" name="snis" value="" data-ng-model="formInput.snis" placeholder="Comma separated list of host names... " title="One or more host names to associate with this certificate as an SNI" />
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div>
-                <div class="col md-6">
-                    <div class="form__field">
-                        <label for="ce-ls__i02" class="field-label">Tags (optional)</label>
-                        <div class="field-input">
-                            <input id="ce-ls__i02" type="text" name="tags" value="" data-ng-model="formInput.tags" placeholder="Comma separated list of tags..." title="An optional set of strings associated with the Certificate for grouping and filtering" />
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
-                </div>
-            </div>
+    <div class="col md-4">
+        <div class="well">
+            <div class="well__heading">SNIs</div>
+            <table id="cf-list__tab03" class="table">
+                <tbody>
+                <tr data-ng-repeat="cert in certList">
+                    <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a><br /> {{cert.tags}}</td>
+                    <td>
+                        <div class="action-group">
+                            <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                            <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No certificates added yet.</th></tr></tfoot>
+            </table>
+        </div>
 
-            <div class="row">
-                <div class="col md-12">
-                    <button id="ce-ls__b01" class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
-                    <button id="ce-ls__b02" class="btn success" type="submit" name="actionSubmit" value="add">Add Certificate</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="well">
-    <div class="well__heading">List of Certificates</div>
-    <table id="certTable" class="table">
-        <thead data-ng-if="certList.length>0"><tr><th>Certificate ID</th><th>Created At</th><th>Actions</th></tr></thead>
-        <tbody>
-        <tr data-ng-repeat="cert in certList">
-            <td><a href="#!/certificates/{{cert.id}}">{{cert.id}}</a></td>
-            <td>{{cert.created_at | date}}</td>
-            <td>
-                <div class="action-group">
-                    <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons danger delete" data-target="Certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No certificates added yet.</th></tr></tfoot>
-    </table>
-</div>
-
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchCertList(nextUrl)">Load Next</button></div>
+        <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchCertList(nextUrl)">Load Next</button></div>
+    </div><!-- .col.md-4 -->
+</div><!-- .row -->

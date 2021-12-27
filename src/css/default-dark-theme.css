@@ -90,6 +90,9 @@ table.table td > a { color: #64bfe0; font-weight: 500; }
 table.table tr:nth-child(odd) td { background-color: #3B4B54; }
 table.table tr:nth-child(even) td { background-color: transparent; }
 
+table.board { border-spacing: 0 5px; }
+table.board tbody tr { background: #222d37 none; }
+
 input[type=text],
 input[type=number],
 input[type=password],
