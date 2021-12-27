@@ -7,13 +7,16 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaVersion": 2020
     },
     "rules": {
         "linebreak-style": ["warn", "unix"],
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "no-console": ["warn"],
-        "no-unused-vars": ["warn"]
+        "no-unused-vars": ["warn"],
+        "arrow-body-style": ["error", "as-needed"],
+        "require-await": ["error"]
     }
 }
