@@ -1,0 +1,48 @@
+{
+  "name": "",
+  "algorithm": "round-robin",
+  "hash_on": "none",
+  "hash_on_value": "",
+  "hash_fallback": "none",
+  "hash_fallback_value": "",
+  "slots": 10000,
+  "healthchecks": {
+    "passive": {
+      "type": "http",
+      "healthy": {
+        "successes": 0,
+        "http_statuses": "200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308"
+      },
+      "unhealthy": {
+        "tcp_failures": 0,
+        "http_statuses": "429, 500, 503",
+        "http_failures": 0,
+        "timeouts": 0
+      }
+    },
+    "active": {
+      "http_path": "/",
+      "timeout": 1,
+      "concurrency": 10,
+      "https_sni": "",
+      "type": "http",
+      "healthy": {
+        "interval": 0,
+        "http_statuses": "200, 302",
+        "successes": 0
+      },
+      "https_verify_certificate": true,
+      "unhealthy": {
+        "tcp_failures": 0,
+        "http_statuses": "429, 404, 500, 501, 502, 503, 504, 505",
+        "http_failures": 0,
+        "interval": 0,
+        "timeouts": 0
+      }
+    },
+    "threshold": 0
+  },
+  "tags": "",
+  "host_header": "",
+  "client_certificate": ""
+}
