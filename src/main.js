@@ -15,12 +15,12 @@ let mainWindow, appConfig = {kong: {}, app: {enableAnimation: true}};
 let startMainWindow = function () {
     mainWindow = new BrowserWindow({
         backgroundColor: '#1A242D',
-        width: 1100,
-        height: 580,
+        width: 1570,
+        height: 800,
         center: true,
         title: app.getName(),
-        minHeight: 500,
-        minWidth: 900,
+        minWidth: 1280,
+        minHeight: 800,
         icon: absPath + '/kongdash-256x256.png',
         webPreferences: {
             nodeIntegration: true,
