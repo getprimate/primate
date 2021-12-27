@@ -1,198 +1,321 @@
 /* global app:true */
+
+/**
+ * @typedef {Object} UpstreamBaseModel
+ * @property {string} name - Name
+ * @property {string} hash_on - Hash on
+ * @property {string} hash_on_value - Hash on value
+ * @property {string} hash_fallback_value - Hash fallback value
+ * @property {string} hash_fallback - Hash on
+ * @property {string} host_header - Hash on
+ * @property {string|Array} tags - Tags
+ * @property {{active: { healthy: Object, unhealthy: Object }, passive: { healthy: Object, unhealthy: Object }}} healthchecks - Health check options
+ */
+
+/**
+ * @typedef {UpstreamBaseModel} UpstreamScopeModel
+ * @property {string} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
+ */
+
+/**
+ * @typedef {UpstreamBaseModel} UpstreamPayload
+ * @property {string} hash_on_header - Hash on
+ * @property {string} hash_fallback_header - Hash on
+ * @property {string} hash_on_cookie - Hash on
+ * @property {string} hash_on_cookie_path - Hash on
+ * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
+ */
+
 (function (angular, app) { 'use strict';
     const controller = 'UpstreamEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', '$http', 'viewFactory', 'toast', function ($window, scope, routeParams, http, viewFactory, toast) {
+    /**
+     * @name UpstreamEditController
+     * @function
+     */
+    app.controller(controller, ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFactory', 'toast', function UpstreamEditController ($window, scope, location, routeParams, ajax, viewFactory, toast) {
+        const httpOptions = { method: 'POST', resource: '/upstreams' };
+        const formUpstream = angular.element('form#us-edit__form01'), formTarget = angular.element('form#us-edit__form02');
+
+        const buildFromResponse =(to = {}, from = {}) => {
+            for (let key of Object.keys(from)) {
+                if (typeof to[key] === 'undefined') {
+                    continue;
+                }
+
+                let current = from[key];
+
+                if (typeof current === 'string' || current === null) {
+                    to[key] =  (current === null) ? '' : `${current}`;
+                    continue;
+                }
+
+                if (typeof current === 'boolean' || typeof current === 'number') {
+                    to[key] = current;
+                    continue;
+                }
+
+                if (typeof current === 'object' && Array.isArray(current)) {
+                    to[key] = current.join(', ');
+
+                } else if (typeof current === 'object') {
+                    buildFromResponse(to[key], from[key]);
+                }
+            }
+
+            return to;
+        };
 
         scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
         scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
         scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp'];
 
+        /**
+         * @type UpstreamScopeModel
+         */
+        scope.upstreamModel = angular.copy(require(`${__dirname}/controllers/upstream-model.json`));
+        scope.upstreamId = '__none__';
+
+        scope.targetModel = { nextUrl: null, properties: '' };
         scope.targetList = [];
-        scope.upstreamModel = {
-            name: '',
-            algorithm: 'round-robin',
-            hash_on: 'none',
-            hash_fallback: 'none',
-            hash_on_cookie_path: '',
-            slots: 10000,
-            healthchecks: {
-                passive: {
-                    type: 'http',
-                    healthy: {
-                        successes: 5,
-                        http_statuses: [200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 300, 301, 302, 303, 304, 305, 306, 307, 308]
-                    },
-                    unhealthy: {
-                        tcp_failures: 2,
-                        http_statuses: [429, 500, 503],
-                        http_failures: 2,
-                        timeouts: 5
+        scope.targetNext = '';
+
+        scope.fetchTargetList = (url) => {
+            ajax
+                .get({resource: url})
+                .then(({ data: response }) => {
+                    scope.targetNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFactory.host), '') : '';
+
+                    for (let target of response.data) {
+                        scope.targetList.push(target);
                     }
-                },
-                active: {
-                    http_path: '/',
-                    timeout: 1,
-                    concurrency: 10,
-                    https_sni: 'example.com',
-                    type: 'http',
-                    healthy: {
-                        interval: 0,
-                        http_statuses: [200, 302],
-                        successes: 0
-                    },
-                    https_verify_certificate: true,
-                    unhealthy: {
-                        tcp_failures: 0,
-                        http_statuses: [429, 404, 500, 501, 502, 503, 504, 505],
-                        http_failures: 0,
-                        interval: 0,
-                        timeouts: 0
-                    }
-                },
-                threshold: 0
-            },
-            tags: ['user-level', 'low-priority'],
-            host_header: 'example.com',
-            client_certificate: ''
+                })
+                .catch(({ data: error }) => {
+                    toast.error(`Could not load targets. ${error.message}`);
+                });
         };
 
+        if (typeof routeParams.certificateId === 'string') {
+            httpOptions.resource = `/certificates/${routeParams.certificateId}/upstreams`;
+            scope.upstreamModel.client_certificate = routeParams.certificateId;
+        }
+
+        viewFactory.createAction = null;
+
         switch (routeParams.upstreamId) {
-            case 'create':
+            case '__create__':
                 viewFactory.title = 'Create Upstream';
                 break;
 
             default:
-                viewFactory.title = 'Edit Upstream';
+                httpOptions.method = 'PATCH';
+                httpOptions.resource = `${httpOptions.resource}/${routeParams.upstreamId}`;
+
                 scope.upstreamId = routeParams.upstreamId;
+
+                viewFactory.title = 'Edit Upstream';
                 break;
         }
 
-        /*
-        $scope.fetchTargetList = function (url) {
-            ajax.get({ resource: url }).then(function (response) {
-                $scope.nextTargetUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+        if (httpOptions.method === 'PATCH' && scope.upstreamId !== '__none__') {
+            ajax
+                .get({ resource: httpOptions.resource })
+                .then((response) => {
+                    buildFromResponse(scope.upstreamModel, response.data);
 
-                for (let index = 0; index < response.data.data.length; index++) {
-                    $scope.targetList.push(response.data.data[index]);
-                }
+                    if (response.data.hash_on === 'header') {
+                        scope.upstreamModel.hash_on_value = `${response.data.hash_on_header}`;
+                    }
 
-            }, function () {
-                toast.error('Could not load targets');
-            });
-        };
-        */
+                    if (response.data.hash_fallback === 'header') {
+                        scope.upstreamModel.hash_fallback_value = (response.data.hash_fallback_header === null) ? '' : `${response.data.hash_fallback_header}`;
+                    }
 
-        /*
-        ajax.get({ resource: '/upstreams/' + $scope.upstreamId }).then(function (response) {
-            $scope.formInput.hostname = response.data.name;
-            $scope.formInput.slots = response.data.slots;
+                    if (response.data.hash_on === 'cookie' || response.data.hash_fallback === 'cookie') {
+                        scope.upstreamModel.hash_fallback_value = `${response.data.hash_on_cookie}`;
+                    }
 
-            $scope.formInput.orderList = (typeof response.data.orderlist === 'object'
-                && Array.isArray(response.data.orderlist)) ? response.data.orderlist.join() : '';
+                    if (response.data.client_certificate !== null && typeof response.data.client_certificate.id === 'string') {
+                        scope.upstreamModel.client_certificate = response.data.client_certificate.id;
+                    }
 
-            viewFactory.deleteAction = {target: 'Upstream', url: '/upstreams/' + $scope.upstreamId, redirect: '#!/upstreams'};
+                    viewFactory.deleteAction = { target: 'Upstream', url: httpOptions.resource, redirect: '#!/upstreams' };
+                })
+                .catch(() => {
+                    toast.error('Could not load upstream details');
+                    $window.location.href = '#!/upstreams';
+                });
 
-        }, function () {
-            toast.error('Could not load upstream details');
-            $window.location.href = '#!/upstreams';
-        });
+            scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
+        }
 
-        let formEdit = angular.element('form#formEdit'), formTarget = angular.element('form#formTarget');
-
-        formEdit.on('submit', function (event) {
+        formUpstream.on('submit', (event) => {
             event.preventDefault();
 
-            let payload = {};
+            scope.upstreamModel.name = scope.upstreamModel.name.trim();
+            scope.upstreamModel.host_header = scope.upstreamModel.host_header.trim();
+            scope.upstreamModel.healthchecks.active.https_sni = scope.upstreamModel.healthchecks.active.https_sni.trim();
 
-            if ($scope.formInput.hostname.trim().length > 0) {
-                payload.name = $scope.formInput.hostname;
-
-            } else {
-                formEdit.find('input[name="hostname"]').focus();
+            if (scope.upstreamModel.name.length <= 0) {
+                formUpstream.find('input#up-ed__txt01').focus();
                 return false;
             }
 
-            payload.slots = (isNaN($scope.formInput.slots) || !$scope.formInput.slots) ?
-                1000 : parseInt($scope.formInput.slots);
+            /**
+             * @type {UpstreamPayload}
+             */
+            const payload = angular.copy(scope.upstreamModel);
 
-            if ($scope.formInput.orderList !== null && $scope.formInput.orderList.trim().length > 0) {
-                payload.orderlist = [];
+            switch (scope.upstreamModel.hash_on) {
+                case 'header':
+                    payload.hash_on_header = scope.upstreamModel.hash_on_value;
+                    break;
 
-                try {
-                    let split = $scope.formInput.orderList.split(','), e;
-                    for (let index in split) {
-                        e = parseInt(split[index].trim());
+                case 'cookie':
+                    payload.hash_on_cookie = scope.upstreamModel.hash_on_value;
+                    payload.hash_on_cookie_path = '/';
+                    break;
 
-                        if (isNaN(e)) {
-                            toast.error('Invalid number ' + split[index] + ' in order list');
-                            return false;
-                        }
-
-                        payload.orderlist.push(e);
-                    }
-                } catch (e) {
-                    toast.error('Invalid order list');
-                }
+                default:
+                    break;
             }
 
-            ajax.patch({
-                resource: '/upstreams/' + $scope.upstreamId,
-                data: payload
-            }).then(function () {
-                toast.success('Upstream updated');
+            switch (scope.upstreamModel.hash_fallback) {
+                case 'header':
+                    payload.hash_fallback_header = scope.upstreamModel.hash_fallback_value;
+                    break;
 
-            }, function (response) {
-                toast.error(response.data);
+                case 'cookie':
+                    payload.hash_on_cookie = scope.upstreamModel.hash_fallback_value;
+                    payload.hash_on_cookie_path = '/';
+                    break;
+
+                default:
+                    break;
+            }
+
+            /* Sanitise health check http statuses */
+            const statuses = [ ['active', 'healthy'], ['active', 'unhealthy'], ['passive', 'healthy'], ['passive', 'unhealthy'] ];
+
+            for (let child of statuses) {
+                let current = scope.upstreamModel.healthchecks[child[0]][child[1]]['http_statuses'];
+
+                payload.healthchecks[child[0]][child[1]]['http_statuses'] = current.split(',').reduce((codes, value) => {
+                    let code = parseInt(value.trim());
+
+                    if ((!isNaN(code)) && code >= 200 && code <= 999) {
+                        codes.push(code);
+                    }
+
+                    return codes;
+                }, []);
+            }
+
+            if (scope.upstreamModel.client_certificate.length > 5) {
+                payload.client_certificate = { id: scope.upstreamModel.client_certificate };
+
+            } else {
+                delete payload.client_certificate;
+            }
+
+            /* Split comma-separated list of tags into array and sanitise each tag. */
+            payload.tags = scope.upstreamModel.tags.split(',').reduce((tags, current) => {
+                current = current.trim();
+
+                if (current.length >= 1) {
+                    tags.push(`${current}`);
+                }
+
+                return tags;
+            }, []);
+
+            /* Delete optional fields if their values are empty. */
+            if (scope.upstreamModel.healthchecks.active.https_sni.length === 0) {
+                delete payload.healthchecks.active.https_sni;
+            }
+
+            if (scope.upstreamModel.host_header.length === 0) {
+                delete payload.host_header;
+            }
+
+            /* Delete the fields that are present in upstreamModel
+             * but not required to be sent in the request payload. */
+            delete payload.hash_on_value;
+            delete payload.hash_fallback_value;
+
+            console.log('Submit Payload: ', JSON.stringify(payload, null, 4));
+
+            ajax.request({
+                method: httpOptions.method,
+                resource: httpOptions.resource,
+                data: payload
+            }).then(({ data: response }) => {
+
+                switch (scope.upstreamId) {
+                    case '__none__':
+                        toast.success(`Created new upstream ${response.name}`);
+                        console.log('Redirect: ' + '#!' + location.path().replace('/__create__', `/${response.id}`));
+                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                        break;
+
+                    default:
+                        toast.info(`Updated upstream ${payload.name}.`);
+                }
+
+            }).catch(({ data: error }) => {
+                toast.error('Could not ' + ((scope.upstreamId === '__none__') ? 'create new' : 'update') + ` upstream. ${error.message}`);
             });
 
             return false;
         });
-        */
 
-        /*
-        formTarget.on('submit', function (event) {
+        formTarget.on('submit', (event) => {
             event.preventDefault();
+            const payload = { target: '', weight: 100, tags: [] };
 
-            let targetInput = formTarget.children('div.hpadding-10.pad-top-10').children('input[name="target"]');
-            let payload = {};
-
-            if (null === targetInput.val() || targetInput.val().trim().length <= 0) {
+            if (scope.targetModel.properties.trim().length <= 0) {
                 return false;
             }
 
-            let tgArray = targetInput.val().split(',');
+            const properties = scope.targetModel.properties.split(',');
+            payload.target = properties[0];
 
-            payload.target = tgArray[0] || '';
-            payload.weight = (!tgArray[1] || isNaN(tgArray[1])) ? 100 : parseInt(tgArray[1]);
+            for (let index = 1; index < properties.length; index++) {
+                let current = properties[index].trim();
+
+                if (index === 1) {
+                    let weight = parseInt(current);
+                    payload.weight = isNaN(weight) ? 100 : weight;
+                    continue;
+                }
+
+                payload.tags.push(current);
+            }
 
             ajax.post({
-                resource: '/upstreams/' + $scope.upstreamId + '/targets',
+                resource: `/upstreams/${scope.upstreamId}/targets`,
                 data: payload
-            }).then(function (response) {
-                toast.success('New target added');
-                $scope.targetList.push({
-                    target: payload.target,
-                    weight: payload.weight,
-                    id: response.data.id
-                });
+            }).then(({ data: response }) => {
 
-                targetInput.val('');
+                toast.success(`Added new target ${response.target}`);
+                scope.targetList.push(response);
 
-            }, function (response) {
-                toast.error(response.data);
+            }).catch(({ data: error }) => {
+                toast.error(error);
+
+            }).finally(() => {
+                scope.targetModel.properties = '';
             });
         });
 
-        $scope.fetchTargetList('/upstreams/' + $scope.upstreamId + '/targets');
-        */
+        angular.element('span#btnAddTarget').on('click', () => {
+            if (scope.upstreamId === '__none__') {
+                return false;
+            }
 
-        const formEdit = angular.element('form#formEdit'), formTarget = angular.element('form#formTarget');
-
-        angular.element('span#btnAddTarget').on('click', function () {
             formTarget.slideToggle(300);
+            return true;
         });
     }]);
 })(window.angular, app);
