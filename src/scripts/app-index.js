@@ -9,9 +9,7 @@
      * Holds current page title, current host URL and
      * URL of the previous page.
      */
-    app.factory('viewFactory', function () {
-        return { title: '', prevUrl: '', host: kongConfig.host };
-    });
+    app.factory('viewFactory', () => ({title: '', prevUrl: '', host: kongConfig.host}));
 
     /**
      * Configures route provider and ajax provider.
@@ -96,9 +94,9 @@
      * sidebar link upon location change.
      */
     app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
-        $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'slide-right' : '';
+        $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
 
-        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        $rootScope.$on('$locationChangeStart', (event, next, current) => {
             viewFactory.deleteAction = null;
             viewFactory.prevUrl = current;
 
@@ -117,7 +115,7 @@
 /* global angular:true ipcRenderer:true */
 (function (window, angular, content, ipcRenderer) {
 
-    ipcRenderer.on('open-settings-view', function () {
+    ipcRenderer.on('open-settings-view', () => {
         /* TODO: use $location */
         window.location.href = '#!/settings';
     });
@@ -125,7 +123,7 @@
     /**
      * Open all external links in default browser.
      */
-    content.on('click', 'a[href^="http"]', function (event) {
+    content.on('click', 'a[href^="http"]', (event) => {
         event.preventDefault();
         ipcRenderer.send('open-external', event.target.href);
     });
@@ -133,23 +131,23 @@
     /**
      * Deletes a resource when a delete button is pressed.
      */
-    content.on('click', '.delete', function (event) {
+    content.on('click', '.delete', (event) => {
         event.preventDefault();
 
-        let target = angular.element(event.target);
-        let action = target.hasClass('disable') ? 'Disable' : 'Delete';
+        const target = angular.element(event.target);
+        const action = target.hasClass('disable') ? 'Disable' : 'Delete';
 
         if (confirm (action + ' this ' + target.data('target') + '?')) {
             let ajax  = angular.element('html').injector().get('ajax');
             let toast = angular.element('body').injector().get('toast');
 
-            ajax.delete({ resource: target.data('url') }).then(function () {
+            ajax.delete({ resource: target.data('url') }).then(() => {
                 toast.success(target.data('target') + ' ' + action.toLowerCase() + 'd');
 
                 if ( event.target.nodeName === 'I' ) target.parents('tr').fadeOut(200);
                 else window.location.href = target.data('redirect');
 
-            }, function (response) {
+            }, (response) => {
                 toast.error(response.data);
             });
         }
