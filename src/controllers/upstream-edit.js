@@ -101,7 +101,7 @@
             scope.upstreamModel.client_certificate = routeParams.certificateId;
         }
 
-        viewFactory.createAction = null;
+        viewFactory.actionButtons.splice(0);
 
         switch (routeParams.upstreamId) {
             case '__create__':
@@ -140,7 +140,13 @@
                         scope.upstreamModel.client_certificate = response.data.client_certificate.id;
                     }
 
-                    viewFactory.deleteAction = { target: 'Upstream', url: httpOptions.resource, redirect: '#!/upstreams' };
+                    viewFactory.actionButtons.push({
+                        target: 'Upstream',
+                        url: httpOptions.resource,
+                        redirect: '#!/upstreams',
+                        styles: 'btn danger delete',
+                        displayText: 'Delete'
+                    });
                 })
                 .catch(() => {
                     toast.error('Could not load upstream details');
