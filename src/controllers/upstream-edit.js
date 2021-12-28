@@ -66,6 +66,7 @@ const _buildFromResponse =(to = {}, from = {}) => {
  *
  * @param {Object} window - the global window object
  * @param {{ENUM_ALGORITHMS: Array, ENUM_HASH_INPUTS: Array, ENUM_PROTOCOL: Array,
+ *          targetList: Array, targetModel: Object, targetNext: string,
  *          upstreamId: string, upstreamModel: UpstreamScopeModel, fetchTargetList: function}} scope - the injected scope object
  * @param {{path: function}} location - the angular location service
  * @param {{upstreamId: string, certificateId: string}} routeParams - the route parameters
