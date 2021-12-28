@@ -300,10 +300,12 @@
                 <th data-ng-switch-when="__none__" colspan="3">Targets can be added once upstream is created.</th>
                 <th data-ng-switch-default colspan="3">No targets added for this upstream.</th>
             </tr></tfoot>
+
+            <tfoot class="pagination" data-ng-if="targetNext.length>=5">
+                <tr><th colspan="3"><button class="btn pagination" data-ng-click="fetchTargetList(targetNext)">Load Next</button></th></tr>
+            </tfoot>
         </table>
     </div>
-
-    <div data-ng-if="targetNext" class="pagination"><button class="btn dark" data-ng-click="fetchTargetList(targetNext)">Load Next</button></div>
 </div><!-- .col-md-4 -->
 </div><!-- .row -->
 </div><!-- .container -->
