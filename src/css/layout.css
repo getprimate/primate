@@ -145,6 +145,10 @@ table.board .action-group i.material-icons {
     cursor: pointer;
 }
 
+table.board .action-group { text-align: right; }
+
+table.table tfoot button.btn.pagination { width: 100%; text-align: center; vertical-align: middle; background: transparent none; }
+
 /* Grid system */
 .container { display: block; position: relative; padding: 0; }
 
@@ -198,7 +202,7 @@ form.form .form__field { margin-bottom: 20px; }
 
     form.form.no-margin .form__field { margin-bottom: 0 !important; }
 
-form.form .form__field label.field-label { font-size: 0.9em; font-weight: 500; display: block; cursor: pointer; }
+form.form .form__field label.field-label { font-size: 0.95em; font-weight: 500; display: block; cursor: pointer; }
 form.form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
 
 form.form .form__field .field-input { margin: 5px 0 0 0; }

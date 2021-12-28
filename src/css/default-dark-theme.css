@@ -92,6 +92,10 @@ table.table tr:nth-child(even) td { background-color: transparent; }
 
 table.board { border-spacing: 0 5px; }
 table.board tbody tr { background: #222d37 none; }
+table.board tbody tr td { color: #afbdc4; font-size: 0.95rem; }
+table.board tbody tr td strong { color: #efefef; font-weight: 500; }
+
+table.table tfoot button.btn.pagination { background: #3b4b54 none; }
 
 input[type=text],
 input[type=number],
