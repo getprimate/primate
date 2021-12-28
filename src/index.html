@@ -76,15 +76,16 @@ const ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/consumer-list.js"></script>
 <script type="text/javascript" src="controllers/consumer-edit.js"></script>
 <script type="text/javascript" src="controllers/plugin-list.js"></script>
-<script type="text/javascript" src="controllers/certificate-edit.js"></script>
 <script type="text/javascript" src="controllers/settings.js"></script>
 
 <script type="module">
     import CertificateListController from './controllers/certificate-list.js';
+    import CertificateEditController from './controllers/certificate-edit.js';
     import UpstreamListController from './controllers/upstream-list.js';
     import UpstreamEditController from './controllers/upstream-edit.js';
 
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', CertificateListController]);
+    app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
     app.controller('UpstreamListController', ['$scope', 'ajax', 'viewFrame', 'toast', UpstreamListController]);
     app.controller('UpstreamEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', UpstreamEditController]);
 </script>
