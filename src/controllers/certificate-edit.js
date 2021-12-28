@@ -1,114 +1,163 @@
 'use strict';
 
-export default function CertificateEditController(window, scope, routeParams, ajax, viewFrame, toast) {
+import utils from '../lib/utils.js';
+
+export default function CertificateEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
+    const ajaxConfig = {method: 'POST', resource: '/certificates'};
 
-    const ajaxConfig = {method: 'POST', resource: '/upstreams'};
-}
+    const formCert = angular.element('form#cf-ed__frm01'), formSnis = angular.element('form#cf-ed__frm02');
 
+    scope.certId = '__none__';
+    scope.certModel = {cert: '', key: '', cert_alt: '', key_alt: '', tags: '', snis: ''};
 
-/* global app:true */
-(function (angular, app) { ;
+    scope.sniModel = {shorthand: ''};
+    scope.sniList = [];
+    scope.sniNext = '';
 
-    const controller = 'CertificateEditController';
-    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+    viewFrame.actionButtons.splice(0);
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
-        function ($window, scope, routeParams, ajax, viewFrame, toast) {
+    if (typeof routeParams.upstreamId === 'string') {
+        ajaxConfig.resource = `/upstreams/${routeParams.upstreamId}/client_certificate`;
+    }
 
-        viewFrame.title = 'Edit Certificate';
-        viewFrame.actionButtons.splice(0);
+    switch (routeParams.certificateId) {
+        case '__create__':
+            viewFrame.title = 'Add New Certificate';
+            break;
 
-        scope.certId = routeParams.certificateId;
-        scope.formInput = {};
-        scope.sniList = [];
+        default:
+            ajaxConfig.method = 'PATCH';
+            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.certificateId}`;
 
-        ajax.get({ resource: '/certificates/' + scope.certId }).then(function (response) {
-            scope.formInput.certificate = response.data.cert;
-            scope.formInput.privateKey = response.data.key;
+            scope.certId = routeParams.certificateId;
 
-            scope.sniList = (typeof response.data.snis === 'object'
-                && Array.isArray(response.data.snis)) ? response.data.snis : [];
+            viewFrame.title = 'Edit Certificate';
+            break;
+    }
 
-            viewFrame.actionButtons.push({
-                target: 'Certificate',
-                url: `/certificates/${scope.certId}`,
-                redirect: '#!/certificates',
-                styles: 'btn danger delete',
-                displayText: 'Delete'
+    scope.fetchSniList = (url) => {
+        ajax.get({resource: url})
+            .then(({ data: response }) => {
+                scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+
+                for (let sni of response.data) {
+                    sni.tags = (sni.tags.length >= 1) ? sni.tags.join(', ') : 'No tags added.';
+                    scope.sniList.push(sni);
+                }
+            })
+            .catch(({ data: error }) => {
+                toast.error(`Could not load SNIs. ${error.message}`);
             });
 
-        }, function () {
-            toast.error('Could not load certificate details');
-            $window.location.href = '#!/certificates';
-        });
+        return true;
+    };
 
-        let formEdit = angular.element('form#formEdit'), formSNIs = angular.element('form#formSNIs');
+    formCert.on('submit', (event) => {
+        event.preventDefault();
 
-        formEdit.on('submit', function (event) {
-            event.preventDefault();
-
-            let payload = {};
-
-            if (scope.formInput.certificate.trim().length > 10) {
-                payload.cert = scope.formInput.certificate;
-
-            } else {
-                formEdit.find('textarea[name="certificate"]').focus();
-                return false;
-            }
-
-            if (scope.formInput.privateKey.trim().length > 10) {
-                payload.key = scope.formInput.privateKey;
-
-            } else {
-                formEdit.find('textarea[name="privateKey"]').focus();
-                return false;
-            }
-
-            ajax.patch({
-                resource: '/certificates/' + scope.certId,
-                data: payload
-            }).then(function() {
-                toast.success('Certificate updated');
-
-            }, function (response) {
-                toast.error(response.data);
-            });
-
+        if (scope.certModel.cert.length <= 10) {
+            formCert.find('textarea#cf-ed__txa01').focus();
             return false;
-        });
+        }
 
-        formSNIs.on('submit', function (event) {
-            event.preventDefault();
+        if (scope.certModel.key.length <= 10) {
+            formCert.find('textarea#cf-ed__txa02').focus();
+            return false;
+        }
 
-            let hostInput = formSNIs.children('div.hpadding-10.pad-top-10').children('input[name="host"]');
-            let payload = {};
+        const payload = Object.assign({}, scope.certModel);
 
-            if (hostInput.val().trim().length <= 0) {
-                return false;
-            }
+        if (scope.certModel.tags.length > 0) {
+            payload.tags = utils.explode(scope.certModel.tags);
+        }
 
-            payload.name = hostInput.val();
-            payload.ssl_certificate_id = scope.certId;
+        if (ajaxConfig.method === 'PATCH') {
+            delete payload.snis;
 
-            ajax.post({
-                resource: '/snis/',
-                data: payload
-            }).then(function () {
-                toast.success('New host name added');
-                scope.sniList.push(hostInput.val());
+        } else {
+            payload.snis = utils.explode(scope.certModel.snis);
+        }
 
-                hostInput.val('');
+        ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload})
+            .then(({ data: response }) => {
+                switch (scope.certId) {
+                    case '__none__':
+                        toast.success('New certificate added');
+                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                        break;
 
-            }, function (response) {
+                    default:
+                        toast.info('Certificate details updated');
+                }
+            })
+            .catch(({ data: response }) => {
                 toast.error(response.data);
             });
-        });
 
-        angular.element('span#btnAddSNI').on('click', function () {
-            formSNIs.slideToggle(300);
-        });
+        return false;
+    });
 
-    }]);
-})(window.angular, app);
+    formSnis.on('submit', (event) => {
+       event.preventDefault();
+
+       const exploded = utils.explode(scope.sniModel.shorthand);
+
+       if (exploded.length <= 0) {
+           return false;
+       }
+
+       const payload = {name: exploded[0], certificate: {id: scope.certId}, tags: []};
+
+       for (let index = 1; index < exploded.length; index++) {
+           payload.tags.push(exploded[index]);
+       }
+
+       ajax.post({ resource: `/certificates/${scope.certId}/snis`, data: payload })
+           .then(({data: response}) => {
+               response.tags = (response.tags.length >= 1) ? response.tags.join(', ') : 'No tags added.';
+
+               scope.sniList.push(response);
+               toast.success(`Added new SNI ${response.name}`);
+           })
+           .catch(({ status, data: error }) => {
+               toast.error((status === 409) ? 'SNI already added to this certificate' : error);
+           })
+           .finally(() => {
+               scope.sniModel.shorthand = '';
+           });
+
+       return false;
+    });
+
+    angular.element('span#btnAddSNI').on('click', function () {
+        formSnis.slideToggle(300);
+    });
+
+    if (ajaxConfig.method === 'PATCH' && scope.certId !== '__none__') {
+        ajax.get({ resource: ajaxConfig.resource })
+            .then(({data: response}) => {
+                for (let key of Object.keys(response)) {
+                    if (typeof scope.certModel[key] === 'undefined') {
+                        continue;
+                    }
+
+                    scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
+                }
+
+                viewFrame.actionButtons.push({
+                    target: 'Certificate',
+                    url: `/certificates/${scope.certId}`,
+                    redirect: '#!/certificates',
+                    styles: 'btn danger delete',
+                    displayText: 'Delete'
+                });
+            })
+            .catch(() => {
+                toast.error('Could not load certificate details');
+                window.location.href = '#!/certificates';
+            });
+
+        scope.fetchSniList(`/certificates/${scope.certId}/snis`);
+    }
+}
