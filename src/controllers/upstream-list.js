@@ -1,32 +1,33 @@
 'use strict';
 
-/* global app:true */
-(function(app) {
-    const controller = 'UpstreamListController';
+/**
+ *
+ * @param scope
+ * @param ajax
+ * @param viewFrame
+ * @param toast
+ * @constructor
+ */
+export default function UpstreamListController(scope, ajax, viewFrame, toast) {
+    viewFrame.title = 'Upstreams';
+    viewFrame.prevUrl = null;
 
-    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+    scope.upstreamList = [];
 
-    app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function (scope, ajax, viewFactory, toast) {
-        viewFactory.title = 'Upstreams';
-        viewFactory.prevUrl = null;
+    scope.fetchUpstreamList = (resource) => {
+        ajax.get({ resource: resource }).then(({data: response}) => {
+            scope.nextUrl = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-        scope.upstreamList = [];
+            for (let upstream of response.data) {
+                scope.upstreamList.push(upstream);
+            }
+        }).catch(() => {
+            toast.error('Could not load upstreams');
+        });
+    };
 
-        scope.fetchUpstreamList = (resource) => {
-            ajax.get({ resource: resource }).then(({data: response}) => {
-                scope.nextUrl = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFactory.host), '') : '';
+    viewFrame.actionButtons.splice(0);
+    viewFrame.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn info create' });
 
-                for (let upstream of response.data) {
-                    scope.upstreamList.push(upstream);
-                }
-            }).catch(() => {
-                toast.error('Could not load upstreams');
-            });
-        };
-
-        viewFactory.actionButtons.splice(0);
-        viewFactory.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn info create' });
-
-        scope.fetchUpstreamList('/upstreams');
-    }]);
-})(app);
+    scope.fetchUpstreamList('/upstreams');
+}

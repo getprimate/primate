@@ -5,15 +5,15 @@
 (function (controller, app) {
     if (typeof app === 'undefined') throw (`${controller}: app is undefined`);
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'toast' ,'viewFactory',
-        function (window, scope, $routeParams, ajax, toast, viewFactory) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'toast' ,'viewFrame',
+        function (window, scope, $routeParams, ajax, toast, viewFrame) {
 
         const { angular } = window;
         const serviceForm = angular.element('form#formEdit');
 
         scope.PROTOCOL_ENUM = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'udp', 'tls'];
 
-        viewFactory.title = 'Edit Service';
+        viewFrame.title = 'Edit Service';
 
         scope.serviceId = $routeParams.serviceId;
         scope.formInput = {
@@ -37,7 +37,7 @@
         scope.fetchPluginList = function (url) {
             ajax.get({ resource: url }).then((response) => {
                 scope.nextPluginUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     scope.pluginList.push(response.data.data[index]);
@@ -65,7 +65,7 @@
             scope.formInput.tlsVerifyDeph = service.tls_verify_depth;
             scope.formInput.caCertificates = service.ca_certificates;
 
-            viewFactory.deleteAction = {target: 'service', url: `/services/${scope.serviceId}`, redirect: '#!/services'};
+            viewFrame.deleteAction = {target: 'service', url: `/services/${scope.serviceId}`, redirect: '#!/services'};
 
         }, () => {
             toast.error('Could not load service details');

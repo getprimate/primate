@@ -1,10 +1,16 @@
 'use strict';
 
-function _CertificateListController(window, scope, ajax, viewFactory, toast) {
+export default function CertificateListController (window, scope, ajax, viewFrame, toast) {
     const { angular } = window;
 
-    viewFactory.title = 'Certificate List';
-    viewFactory.prevUrl = null;
+    viewFrame.title = 'Certificate List';
+    viewFrame.prevUrl = null;
+
+    viewFrame.actionButtons.splice(0);
+    viewFrame.actionButtons.push(
+        { displayText: 'Create Certificate', target: '', url: '', redirect: '', styles: 'btn info' },
+        { displayText: 'Add Certificate', target: '', url: '', redirect: '', styles: 'btn info' }
+    );
 
     scope.certList = [];
     scope.formInput = {
@@ -22,7 +28,7 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
             const { data: certList } = data;
 
             scope.nextUrl = (typeof data.next === 'string') ?
-                data.next.replace(new RegExp(viewFactory.host), '') : '';
+                data.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let index = 0; index < certList.length; index++ ) {
                 scope.certList.push(certList[index]);
@@ -100,10 +106,3 @@ function _CertificateListController(window, scope, ajax, viewFactory, toast) {
 
     scope.fetchCertList('/certificates');
 }
-
-/* global app:true */
-(function (controller, app) {
-    if (typeof app === 'undefined') throw (`${controller}: app is undefined`);
-
-    app.controller(controller, ['$window', '$scope', 'ajax', 'viewFactory', 'toast', _CertificateListController]);
-})('CertificateListController', app);

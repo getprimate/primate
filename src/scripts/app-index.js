@@ -9,7 +9,7 @@
      * Holds current page title, current host URL and
      * URL of the previous page.
      */
-    app.factory('viewFactory', () => ({title: '', prevUrl: '', host: kongConfig.host, actionButtons: []}));
+    app.factory('viewFrame', () => ({title: '', prevUrl: '', host: kongConfig.host, actionButtons: []}));
 
     /**
      * Configures route provider and ajax provider.
@@ -93,12 +93,12 @@
      * Detects and highlights the correct
      * sidebar link upon location change.
      */
-    app.run(['$rootScope', 'viewFactory', function ($rootScope, viewFactory) {
+    app.run(['$rootScope', 'viewFrame', function ($rootScope, viewFrame) {
         $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
 
         $rootScope.$on('$locationChangeStart', (event, next, current) => {
-            viewFactory.deleteAction = null;
-            viewFactory.prevUrl = current;
+            viewFrame.deleteAction = null;
+            viewFrame.prevUrl = current;
 
             if (next.indexOf('#') > 1) {
                 let refArray = next.split('#!/')[1].split('/');

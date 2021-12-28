@@ -4,11 +4,11 @@
     const controller = 'ServiceListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', 'ajax', 'toast', 'viewFactory', function ($window, $scope, ajax, toast, viewFactory) {
+    app.controller(controller, ['$window', '$scope', 'ajax', 'toast', 'viewFrame', function ($window, $scope, ajax, toast, viewFrame) {
         const { angular } = $window;
 
-        viewFactory.title = 'Service List';
-        viewFactory.prevUrl = null;
+        viewFrame.title = 'Service List';
+        viewFrame.prevUrl = null;
 
         $scope.formInput = {
             name: '',
@@ -31,7 +31,7 @@
         $scope.fetchServiceList = function (resource) {
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.serviceList.push(response.data.data[index]);

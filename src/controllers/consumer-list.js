@@ -3,9 +3,9 @@
     const controller = 'ConsumerListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function ($scope, ajax, viewFactory, toast) {
-        viewFactory.title = 'Consumer List';
-        viewFactory.prevUrl = null;
+    app.controller(controller, ['$scope', 'ajax', 'viewFrame', 'toast', function ($scope, ajax, viewFrame, toast) {
+        viewFrame.title = 'Consumer List';
+        viewFrame.prevUrl = null;
 
         $scope.consumerList = [];
         $scope.formInput = {
@@ -16,7 +16,7 @@
         $scope.fetchConsumerList = function (resource) {
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.consumerList.push(response.data.data[index]);

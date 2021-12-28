@@ -3,8 +3,8 @@
     const controller = 'PluginEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFrame, toast) {
 
         let action = 'create';
 
@@ -156,8 +156,8 @@
                 });
 
 
-                viewFactory.title = 'Edit ' + response.data.name + ' Plugin';
-                viewFactory.deleteAction = { target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId };
+                viewFrame.title = 'Edit ' + response.data.name + ' Plugin';
+                viewFrame.deleteAction = { target: 'plugin', url: '/apis/' + $scope.apiId + '/plugins/' + $scope.pluginId };
 
             }, function () {
                 toast.error('Could not fetch plugin details');
@@ -167,8 +167,8 @@
         } else {
             action = 'create';
 
-            viewFactory.prevUrl = '#!/api/' + $scope.apiId;
-            viewFactory.title = 'Add New Plugin';
+            viewFrame.prevUrl = '#!/api/' + $scope.apiId;
+            viewFrame.title = 'Add New Plugin';
 
             pluginForm.on('change', 'select[name="name"]', function (event) {
                 $scope.formInput = { name: event.target.value, config:{} };
@@ -176,7 +176,7 @@
             });
         }
 
-        $scope.prevUrl = viewFactory.prevUrl;
+        $scope.prevUrl = viewFrame.prevUrl;
     }]);
 
 })(window.angular, app);

@@ -4,9 +4,9 @@
 
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$rootScope', '$scope', '$base64', 'ajax', 'viewFactory', 'toast', function ($rootScope, $scope, $base64, ajax, viewFactory, toast) {
-        viewFactory.prevUrl = null;
-        viewFactory.title = 'Settings';
+    app.controller(controller, ['$rootScope', '$scope', '$base64', 'ajax', 'viewFrame', 'toast', function ($rootScope, $scope, $base64, ajax, viewFrame, toast) {
+        viewFrame.prevUrl = null;
+        viewFrame.title = 'Settings';
 
         $scope.kongConfig = kongConfig;
         $scope.appConfig  = appConfig;
@@ -40,7 +40,7 @@
                         return;
                     }
 
-                    viewFactory.host = kongConfig.host = $scope.kongConfig.host;
+                    viewFrame.host = kongConfig.host = $scope.kongConfig.host;
                     kongConfig.username = $scope.kongConfig.username;
                     kongConfig.password = $scope.kongConfig.password;
 

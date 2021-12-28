@@ -3,10 +3,10 @@
     const controller = 'ConsumerEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($window, $scope, $routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
+        function ($window, $scope, $routeParams, ajax, viewFrame, toast) {
 
-        viewFactory.title = 'Edit Consumer';
+        viewFrame.title = 'Edit Consumer';
 
         $scope.consumerId = $routeParams.consumerId;
         $scope.formInput = {};
@@ -25,7 +25,7 @@
             $scope.formInput.username = response.data.username;
             $scope.formInput.custom_id = response.data.custom_id;
 
-            viewFactory.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#!/consumers' };
+            viewFrame.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#!/consumers' };
 
         }, function () {
             toast.error('Could not load consumer details');

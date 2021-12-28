@@ -3,20 +3,20 @@
     const controller = 'PluginListController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($scope, $routeParams, ajax, viewFactory, toast) {
-        viewFactory.title = 'Plugin List';
+    app.controller(controller, ['$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
+        function ($scope, $routeParams, ajax, viewFrame, toast) {
+        viewFrame.title = 'Plugin List';
 
         let filters = [];
 
         if ($routeParams.consumerId) filters.push('consumer_id=' + $routeParams.consumerId);
-        else viewFactory.prevUrl = null;
+        else viewFrame.prevUrl = null;
 
         $scope.pluginList = [];
         $scope.fetchPluginList = function(resource) {
             ajax.get({ resource: resource }).then(function (response) {
                 $scope.nextUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFactory.host), '') : '';
+                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
 
                 for (let index = 0; index < response.data.data.length; index++) {
                     $scope.pluginList.push(response.data.data[index]);

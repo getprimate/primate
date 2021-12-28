@@ -1,14 +1,23 @@
+'use strict';
+
+export default function CertificateEditController(window, scope, routeParams, ajax, viewFrame, toast) {
+    const {angular} = window;
+
+    const ajaxConfig = {method: 'POST', resource: '/upstreams'};
+}
+
+
 /* global app:true */
-(function (angular, app) { 'use strict';
+(function (angular, app) { ;
 
     const controller = 'CertificateEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFactory', 'toast',
-        function ($window, scope, routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
+        function ($window, scope, routeParams, ajax, viewFrame, toast) {
 
-        viewFactory.title = 'Edit Certificate';
-        viewFactory.actionButtons.splice(0);
+        viewFrame.title = 'Edit Certificate';
+        viewFrame.actionButtons.splice(0);
 
         scope.certId = routeParams.certificateId;
         scope.formInput = {};
@@ -21,7 +30,7 @@
             scope.sniList = (typeof response.data.snis === 'object'
                 && Array.isArray(response.data.snis)) ? response.data.snis : [];
 
-            viewFactory.actionButtons.push({
+            viewFrame.actionButtons.push({
                 target: 'Certificate',
                 url: `/certificates/${scope.certId}`,
                 redirect: '#!/certificates',

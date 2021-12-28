@@ -6,9 +6,9 @@
     const semver = require('semver');
     const version = ipcRenderer.sendSync('get-config', 'VERSION');
 
-    app.controller(controller, ['$scope', '$element', '$http', 'viewFactory', 'toast',
-        function ($scope, $element, $http, viewFactory, toast) {
-        $scope.viewFactory = viewFactory;
+    app.controller(controller, ['$scope', '$element', '$http', 'viewFrame', 'toast',
+        function ($scope, $element, $http, viewFrame, toast) {
+        $scope.viewFrame = viewFrame;
 
         $http({
             method: 'GET',

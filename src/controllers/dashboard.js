@@ -12,9 +12,9 @@
         return new Chart (angular.element(container)[0].getContext('2d'), data);
     };
 
-    app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFactory', function ($scope, ajax, toast, viewFactory) {
-        viewFactory.title = 'Dashboard';
-        viewFactory.prevUrl = null;
+    app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFrame', function ($scope, ajax, toast, viewFrame) {
+        viewFrame.title = 'Dashboard';
+        viewFrame.prevUrl = null;
 
         $scope.refreshTimer = function(master) {
             ajax.get({ resource: '/' }).then(function (response) {
