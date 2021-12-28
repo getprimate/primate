@@ -33,8 +33,9 @@
     /**
      * @name UpstreamEditController
      * @function
+     * @param {{upstreamId: string, certificateId: string}} routeParams - the URL route parameters
      */
-    app.controller(controller, ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFactory', 'toast', function UpstreamEditController ($window, scope, location, routeParams, ajax, viewFactory, toast) {
+    app.controller(controller, ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFactory', 'toast', function UpstreamEditController (window, scope, location, routeParams, ajax, viewFactory, toast) {
         const httpOptions = { method: 'POST', resource: '/upstreams' };
         const formUpstream = angular.element('form#us-edit__form01'), formTarget = angular.element('form#us-edit__form02');
 
@@ -150,7 +151,7 @@
                 })
                 .catch(() => {
                     toast.error('Could not load upstream details');
-                    $window.location.href = '#!/upstreams';
+                    window.location.href = '#!/upstreams';
                 });
 
             scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
@@ -250,8 +251,6 @@
             delete payload.hash_on_value;
             delete payload.hash_fallback_value;
 
-            console.log('Submit Payload: ', JSON.stringify(payload, null, 4));
-
             ajax.request({
                 method: httpOptions.method,
                 resource: httpOptions.resource,
@@ -261,7 +260,6 @@
                 switch (scope.upstreamId) {
                     case '__none__':
                         toast.success(`Created new upstream ${response.name}`);
-                        console.log('Redirect: ' + '#!' + location.path().replace('/__create__', `/${response.id}`));
                         window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
                         break;
 
