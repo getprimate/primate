@@ -7,7 +7,6 @@
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$scope', 'ajax', 'viewFactory', 'toast', function (scope, ajax, viewFactory, toast) {
-        viewFactory.createAction = {redirect: '#!/upstreams/__create__', displayText: 'New Upstream'};
         viewFactory.title = 'Upstreams';
         viewFactory.prevUrl = null;
 
@@ -24,6 +23,9 @@
                 toast.error('Could not load upstreams');
             });
         };
+
+        viewFactory.actionButtons.splice(0);
+        viewFactory.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn info create' });
 
         scope.fetchUpstreamList('/upstreams');
     }]);
