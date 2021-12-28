@@ -32,9 +32,8 @@
             <a href="{{viewFactory.prevUrl}}" title="Previous"><i class="material-icons">keyboard_arrow_left</i></a>
         </span>
         <span class="title">{{viewFactory.title}}</span>
-        <div class="actions">
-            <button data-ng-if="viewFactory.deleteAction" data-target="{{viewFactory.deleteAction.target}}" data-url="{{viewFactory.deleteAction.url}}" data-redirect="{{viewFactory.deleteAction.redirect || viewFactory.prevUrl}}" type="button" class="btn danger delete">Delete</button>
-            <button data-ng-if="viewFactory.createAction" data-redirect="{{viewFactory.createAction.redirect || viewFactory.prevUrl}}" type="button" class="btn info create">{{viewFactory.createAction.displayText}}</button>
+        <div class="actions" data-ng-if="viewFactory.actionButtons.length>=1">
+            <button data-ng-repeat="button in viewFactory.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFactory.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
     </header>
     <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
