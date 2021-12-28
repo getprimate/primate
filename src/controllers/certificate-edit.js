@@ -130,7 +130,7 @@ export default function CertificateEditController(window, scope, location, route
        return false;
     });
 
-    angular.element('span#btnAddSNI').on('click', function () {
+    angular.element('span#cf-ed__btn01').on('click', function () {
         formSnis.slideToggle(300);
     });
 
