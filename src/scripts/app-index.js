@@ -9,7 +9,7 @@
      * Holds current page title, current host URL and
      * URL of the previous page.
      */
-    app.factory('viewFactory', () => ({title: '', prevUrl: '', host: kongConfig.host}));
+    app.factory('viewFactory', () => ({title: '', prevUrl: '', host: kongConfig.host, actionButtons: []}));
 
     /**
      * Configures route provider and ajax provider.
