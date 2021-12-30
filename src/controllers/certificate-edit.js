@@ -104,21 +104,23 @@ export default function CertificateEditController(window, scope, location, route
             delete payload.key_alt;
         }
 
-        ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload})
-            .then(({ data: response }) => {
-                switch (scope.certId) {
-                    case '__none__':
-                        toast.success('New certificate added');
-                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                        break;
+        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
 
-                    default:
-                        toast.info('Certificate details updated');
-                }
-            })
-            .catch(({ data: response }) => {
-                toast.error(response.data);
-            });
+        request.then(({ data: response }) => {
+            switch (scope.certId) {
+                case '__none__':
+                    toast.success('New certificate added');
+                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                    break;
+
+                default:
+                    toast.info('Certificate details updated');
+            }
+        });
+
+        request.catch(({ data: response }) => {
+            toast.error(response.data);
+        });
 
         return false;
     });
@@ -138,19 +140,21 @@ export default function CertificateEditController(window, scope, location, route
            payload.tags.push(exploded[index]);
        }
 
-       ajax.post({ resource: `/certificates/${scope.certId}/snis`, data: payload })
-           .then(({data: response}) => {
-               response.tags = (response.tags.length >= 1) ? response.tags.join(', ') : 'No tags added.';
+       const request = ajax.post({ resource: `/certificates/${scope.certId}/snis`, data: payload });
+       request.then(({data: response}) => {
+           response.tags = (response.tags.length >= 1) ? response.tags.join(', ') : 'No tags added.';
 
-               scope.sniList.push(response);
-               toast.success(`Added new SNI ${response.name}`);
-           })
-           .catch(({ status, data: error }) => {
-               toast.error((status === 409) ? 'SNI already added to this certificate' : error);
-           })
-           .finally(() => {
-               scope.sniModel.shorthand = '';
-           });
+           scope.sniList.push(response);
+           toast.success(`Added new SNI ${response.name}`);
+       });
+
+       request.catch(({ status, data: error }) => {
+           toast.error((status === 409) ? 'SNI already added to this certificate' : error);
+       });
+
+       request.finally(() => {
+           scope.sniModel.shorthand = '';
+       });
 
        return false;
     });
