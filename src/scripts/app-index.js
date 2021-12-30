@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * @typedef {Object} ViewFrameFactory
+ * @property {string} prevUrl - previous template URL for navigation
+ * @property {string} title - current template title
+ * @property {string} host - current Kong API host
+ * @property {[Object]} actionButtons - array of action button objects
+ */
+
 /* global app:true kongConfig:true appConfig:true */
 (function (angular, app, kongConfig, appConfig) {
 
@@ -70,6 +78,10 @@
             .when('/certificates/:certificateId', {
                 templateUrl: 'views/certificate-edit.html',
                 controller: 'CertificateEditController'
+            })
+            .when('/trusted-cas/:caId', {
+                templateUrl: 'views/ca-edit.html',
+                controller: 'TrustedCAEditController'
             })
             .when('/upstreams', {
                 templateUrl: 'views/upstream-list.html',
