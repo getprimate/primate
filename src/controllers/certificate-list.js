@@ -111,7 +111,6 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     viewFrame.title = 'Certificate List';
     viewFrame.prevUrl = '';
 
-    viewFrame.actionButtons.splice(0);
     viewFrame.actionButtons.push(
         {displayText: 'Add Certificate', target: 'certificate', url: '/certificates', redirect: '#!/certificates/__create__', styles: 'btn success create'},
         {displayText: 'Add Trusted CA', target: 'CA', url: '/ca_certificates', redirect: '#!/trusted-cas/__create__', styles: 'btn success create'}

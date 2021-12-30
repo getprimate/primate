@@ -45,10 +45,11 @@
                 <div class="col md-8">
                     <div class="form__field">
                         <label for="up-ed__sel06" class="field-label">Client Certificate</label>
-                        <div class="field-input">
-                            <select class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
-                                <option data-ng-repeat="value in ENUM_ALGORITHMS" value="{{value}}">{{value | capitalise}}</option>
+                        <div class="field-input" data-ng-switch="certId">
+                            <select data-ng-switch-when="__none__" class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
+                                <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
                             </select><!-- #up-ed__sel01 -->
+                            <div data-ng-switch-default class="label default" >{{upstreamModel.client_certificate}}</div>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-8 -->

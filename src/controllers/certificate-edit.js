@@ -15,42 +15,62 @@ export default function CertificateEditController(window, scope, location, route
     scope.sniList = [];
     scope.sniNext = '';
 
-    viewFrame.actionButtons.splice(0);
+    scope.upstreamList = [];
+    scope.upstreamNext = '';
 
     if (typeof routeParams.upstreamId === 'string') {
         ajaxConfig.resource = `/upstreams/${routeParams.upstreamId}/client_certificate`;
     }
 
-    switch (routeParams.certificateId) {
+    switch (routeParams.certId) {
         case '__create__':
             viewFrame.title = 'Add New Certificate';
             break;
 
         default:
             ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.certificateId}`;
+            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.certId}`;
 
-            scope.certId = routeParams.certificateId;
+            scope.certId = routeParams.certId;
 
             viewFrame.title = 'Edit Certificate';
             break;
     }
 
-    scope.fetchSniList = (url) => {
-        ajax.get({resource: url})
-            .then(({ data: response }) => {
-                scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+    scope.fetchSniList = (resource) => {
+        const request = ajax.get({resource});
 
-                for (let sni of response.data) {
-                    sni.tags = (sni.tags.length >= 1) ? sni.tags.join(', ') : 'No tags added.';
-                    scope.sniList.push(sni);
-                }
-            })
-            .catch(({ data: error }) => {
-                toast.error(`Could not load SNIs. ${error.message}`);
-            });
+        request.then(({data: response}) => {
+            scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+
+            for (let sni of response.data) {
+                sni.tags = (sni.tags.length >= 1) ? sni.tags.join(', ') : 'No tags added.';
+
+                scope.sniList.push(sni);
+            }
+        });
+
+        request.catch((error) => {
+            toast.error('Could not load SNIs.');
+        });
 
         return true;
+    };
+
+    scope.fetchUpstreamList = (resource) => {
+        const request = ajax.get({ resource: resource });
+
+        request.then(({data: response}) => {
+            scope.upstreamNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+
+            for (let upstream of response.data) {
+                scope.upstreamList.push(upstream);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load upstreams.');
+        });
     };
 
     formCert.on('submit', (event) => {
@@ -79,6 +99,11 @@ export default function CertificateEditController(window, scope, location, route
             payload.snis = utils.explode(scope.certModel.snis);
         }
 
+        if (scope.certModel.cert_alt.length <= 0 || scope.certModel.key_alt.length <= 0) {
+            delete payload.cert_alt;
+            delete payload.key_alt;
+        }
+
         ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload})
             .then(({ data: response }) => {
                 switch (scope.certId) {
@@ -92,6 +117,8 @@ export default function CertificateEditController(window, scope, location, route
                 }
             })
             .catch(({ data: response }) => {
+                console.log(JSON.stringify(payload, null, 4));
+                console.log(JSON.stringify(response, null, 4));
                 toast.error(response.data);
             });
 
@@ -135,29 +162,37 @@ export default function CertificateEditController(window, scope, location, route
     });
 
     if (ajaxConfig.method === 'PATCH' && scope.certId !== '__none__') {
-        ajax.get({ resource: ajaxConfig.resource })
-            .then(({data: response}) => {
-                for (let key of Object.keys(response)) {
-                    if (typeof scope.certModel[key] === 'undefined') {
-                        continue;
-                    }
+        const request = ajax.get({ resource: ajaxConfig.resource });
 
-                    scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
+        request.then(({data: response}) => {
+            for (let key of Object.keys(response)) {
+                if (typeof scope.certModel[key] === 'undefined') {
+                    continue;
                 }
 
-                viewFrame.actionButtons.push({
-                    target: 'Certificate',
-                    url: `/certificates/${scope.certId}`,
-                    redirect: '#!/certificates',
-                    styles: 'btn danger delete',
-                    displayText: 'Delete'
-                });
-            })
-            .catch(() => {
-                toast.error('Could not load certificate details');
-                window.location.href = '#!/certificates';
+                if (response[key] === null) {
+                    scope.certModel[key] = '';
+                    continue;
+                }
+
+                scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
+            }
+
+            viewFrame.actionButtons.push({
+                target: 'Certificate',
+                url: `/certificates/${scope.certId}`,
+                redirect: '#!/certificates',
+                styles: 'btn danger delete',
+                displayText: 'Delete'
             });
+        });
+
+        request.catch(() => {
+            toast.error('Could not load certificate details');
+            window.location.href = '#!/certificates';
+        });
 
         scope.fetchSniList(`/certificates/${scope.certId}/snis`);
+        scope.fetchUpstreamList(`/certificates/${scope.certId}/upstreams`);
     }
 }

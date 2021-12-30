@@ -10,7 +10,7 @@
         let filters = [];
 
         if ($routeParams.consumerId) filters.push('consumer_id=' + $routeParams.consumerId);
-        else viewFrame.prevUrl = null;
+        else viewFrame.prevUrl = '';
 
         $scope.pluginList = [];
         $scope.fetchPluginList = function(resource) {

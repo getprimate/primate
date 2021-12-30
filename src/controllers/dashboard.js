@@ -14,7 +14,7 @@
 
     app.controller(controller, ['$scope', 'ajax', 'toast', 'viewFrame', function ($scope, ajax, toast, viewFrame) {
         viewFrame.title = 'Dashboard';
-        viewFrame.prevUrl = null;
+        viewFrame.prevUrl = '';
 
         $scope.refreshTimer = function(master) {
             ajax.get({ resource: '/' }).then(function (response) {

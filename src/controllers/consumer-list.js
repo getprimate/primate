@@ -5,7 +5,7 @@
 
     app.controller(controller, ['$scope', 'ajax', 'viewFrame', 'toast', function ($scope, ajax, viewFrame, toast) {
         viewFrame.title = 'Consumer List';
-        viewFrame.prevUrl = null;
+        viewFrame.prevUrl = '';
 
         $scope.consumerList = [];
         $scope.formInput = {

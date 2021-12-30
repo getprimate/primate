@@ -85,17 +85,23 @@ table.table tfoot th { background: transparent none; color: #c7d5dc; }
 
 table.table tbody td { color: #b1c0c7; }
 
-table.table td > a { color: #64bfe0; font-weight: 500; }
+table.table td > a,
+table.board td > a { color: #64bfe0; font-weight: 500; }
 
 table.table tr:nth-child(odd) td { background-color: #3B4B54; }
 table.table tr:nth-child(even) td { background-color: transparent; }
 
 table.board { border-spacing: 0 5px; }
-table.board tbody tr { background: #222d37 none; }
+table.board tbody tr,
+table.board tfoot tr { background: #222d37 none; }
 table.board tbody tr td { color: #afbdc4; font-size: 0.95rem; }
 table.board tbody tr td strong { color: #efefef; font-weight: 500; }
 
-table.table tfoot button.btn.pagination { background: #3b4b54 none; }
+table.table tfoot.pagination button.btn.pagination,
+table.board tfoot.pagination button.btn.pagination { background: #3b4b54 none; }
+
+table.board tfoot.pagination,
+table.board tfoot.pagination tr { background: transparent none; }
 
 input[type=text],
 input[type=number],

@@ -26,6 +26,8 @@
  * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
  */
 
+import utils from '../lib/utils.js';
+
 /**
  *
  * @param to
@@ -65,11 +67,14 @@ const _buildFromResponse =(to = {}, from = {}) => {
  * Controller for editing upstreams.
  *
  * @param {Object} window - the global window object
- * @param {{ENUM_ALGORITHMS: Array, ENUM_HASH_INPUTS: Array, ENUM_PROTOCOL: Array,
- *          targetList: Array, targetModel: Object, targetNext: string,
- *          upstreamId: string, upstreamModel: UpstreamScopeModel, fetchTargetList: function}} scope - the injected scope object
+ * @param {{
+ *      ENUM_ALGORITHMS: Array, ENUM_HASH_INPUTS: Array, ENUM_PROTOCOL: Array,
+ *      targetList: Array, targetModel: Object, targetNext: string,
+ *      upstreamId: string, upstreamModel: UpstreamScopeModel, fetchTargetList: function,
+ *      certId: string, certList: [Object], certNext: string, fetchCertList: function
+ *      }} scope - the injected scope object
  * @param {{path: function}} location - the angular location service
- * @param {{upstreamId: string, certificateId: string}} routeParams - the route parameters
+ * @param {{upstreamId: string, certId: string}} routeParams - the route parameters
  * @param ajax
  * @param viewFrame
  * @param toast
@@ -95,6 +100,10 @@ export default function UpstreamEditController(window, scope, location, routePar
     scope.targetList = [];
     scope.targetNext = '';
 
+    scope.certId = '__none__';
+    scope.certList = [{id: '', displayName: '- None -'}];
+    scope.certNext = '';
+
     scope.fetchTargetList = (url) => {
         ajax.get({
             resource: url
@@ -109,12 +118,27 @@ export default function UpstreamEditController(window, scope, location, routePar
         });
     };
 
-    if (typeof routeParams.certificateId === 'string') {
-        httpOptions.resource = `/certificates/${routeParams.certificateId}/upstreams`;
-        scope.upstreamModel.client_certificate = routeParams.certificateId;
-    }
+    if (typeof routeParams.certId === 'string') {
+        httpOptions.resource = `/certificates/${routeParams.certId}/upstreams`;
+        scope.certId = routeParams.certId;
+        scope.upstreamModel.client_certificate = routeParams.certId;
 
-    viewFrame.actionButtons.splice(0);
+    } else {
+        const request =ajax.get({resource: '/certificates'});
+
+        request.then(({data: response}) => {
+            scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+
+            for (let cert of response.data) {
+                cert.displayName = (utils.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
+                scope.certList.push(cert);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load certificates');
+        });
+    }
 
     switch (routeParams.upstreamId) {
         case '__create__':
@@ -132,9 +156,8 @@ export default function UpstreamEditController(window, scope, location, routePar
     }
 
     if (httpOptions.method === 'PATCH' && scope.upstreamId !== '__none__') {
-        ajax.get({
-            resource: httpOptions.resource
-        }).then((response) => {
+        const request = ajax.get({resource: httpOptions.resource});
+        request.then((response) => {
             _buildFromResponse(scope.upstreamModel, response.data);
 
             if (response.data.hash_on === 'header') {
@@ -160,7 +183,9 @@ export default function UpstreamEditController(window, scope, location, routePar
                 styles: 'btn danger delete',
                 displayText: 'Delete'
             });
-        }).catch(() => {
+        });
+
+        request.catch(() => {
             toast.error('Could not load upstream details');
             window.location.href = '#!/upstreams';
         });

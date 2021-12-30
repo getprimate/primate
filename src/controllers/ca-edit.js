@@ -82,8 +82,6 @@ export default function TrustedCAEditController(window, scope, location, routePa
         return false;
     });
 
-    viewFrame.actionButtons.splice(0);
-
     /* Load the CA certificate details if a valid certificate id is provided. */
     if (ajaxConfig.method === 'PATCH' && scope.caId !== '__none__') {
         ajax.get({ resource: ajaxConfig.resource })

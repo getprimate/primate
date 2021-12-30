@@ -75,7 +75,7 @@
                 templateUrl: 'views/certificate-list.html',
                 controller: 'CertificateListController'
             })
-            .when('/certificates/:certificateId', {
+            .when('/certificates/:certId', {
                 templateUrl: 'views/certificate-edit.html',
                 controller: 'CertificateEditController'
             })
@@ -88,6 +88,10 @@
                 controller: 'UpstreamListController'
             })
             .when('/upstreams/:upstreamId', {
+                templateUrl: 'views/upstream-edit.html',
+                controller: 'UpstreamEditController'
+            })
+            .when('/certificates/:certId/upstreams/:upstreamId', {
                 templateUrl: 'views/upstream-edit.html',
                 controller: 'UpstreamEditController'
             })
@@ -109,8 +113,8 @@
         $rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
 
         $rootScope.$on('$locationChangeStart', (event, next, current) => {
-            viewFrame.deleteAction = null;
             viewFrame.prevUrl = current;
+            viewFrame.actionButtons.splice(0);
 
             if (next.indexOf('#') > 1) {
                 let refArray = next.split('#!/')[1].split('/');

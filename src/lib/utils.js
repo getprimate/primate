@@ -12,5 +12,27 @@ export default {
 
             return exploded;
         }, []);
+    },
+
+    objectName(input) {
+        if (typeof input !== 'string' || input.length === 0) {
+            return 'None';
+        }
+
+        let position = input.length;
+
+        while (position >= 0) {
+            if (input.charAt(position) === '-') {
+                break;
+            }
+
+            position--;
+        }
+
+        if (position === 0 || position === input.length) {
+            return input;
+        }
+
+        return input.substr(position + 1).toUpperCase();
     }
 };

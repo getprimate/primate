@@ -1,6 +1,8 @@
 <div class="container">
 <div class="row">
-    <div class="col md-8">
+<div class="col md-8">
+
+    <!-- ==--==--==--==--==--==--==--==--==--== Certificate Details ==--==--==--==--==--==--==--==--==--== -->
     <div class="panel panel-border info">
     <div class="panel__heading">Certificate Details</div>
     <div class="panel__body">
@@ -8,26 +10,26 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa01" class="field-label">Main Certificate</label>
-                        <div class="field-input"><textarea id="cf-ed__txa01" name="mainCert" data-ng-model="certModel.cert" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
+                        <label for="cf-ed__txa01" class="field-label">Main Certificate <span title="PEM-encoded public certificate chain of the SSL key pair." class="tooltip material-icons">help_outline</span></label>
+                        <div class="field-input"><textarea id="cf-ed__txa01" name="mainCert" data-ng-model="certModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
 
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa02" class="field-label">Main Key</label>
-                        <div class="field-input"><textarea id="cf-ed__txa02" name="mainKey" data-ng-model="certModel.key" placeholder="-----BEGIN RSA PRIVATE KEY-----..."></textarea></div>
+                        <label for="cf-ed__txa02" class="field-label">Main Key <span title="PEM-encoded private key of the SSL key pair." class="tooltip material-icons">help_outline</span></label>
+                        <div class="field-input"><textarea id="cf-ed__txa02" name="mainKey" data-ng-model="certModel.key" required="required" placeholder="-----BEGIN RSA PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
             </div><!-- .row -->
 
-            <div data-ng-if="certificateId=='__none__'" class="form__field">
-                <label for="cf-ed__txa06" class="field-label">SNIs (optional)</label>
-                <div class="field-input"><textarea id="cf-ed__txa06" name="snis" data-ng-model="certModel.snis" placeholder=""></textarea></div>
+            <div data-ng-if="certId=='__none__'" class="form__field">
+                <label for="cf-ed__txa06" class="field-label">SNIs (optional) <span title="An array of zero or more hostnames to associate with this certificate as SNIs." class="tooltip material-icons">help_outline</span></label>
+                <div class="field-input"><textarea id="cf-ed__txa06" class="tx-small" name="snis" data-ng-model="certModel.snis" placeholder=""></textarea></div>
             </div>
 
             <div class="form__field">
-                <label for="cf-ed__txa05" class="field-label">Tags (Optional)</label>
+                <label for="cf-ed__txa05" class="field-label">Tags (optional)</label>
                 <div class="field-input"><textarea id="cf-ed__txa05" class="tx-small" name="tags" data-ng-model="certModel.tags" placeholder="Eg: user-level, low-priority"></textarea></div>
             </div>
 
@@ -35,13 +37,13 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa03" class="field-label">Alternate Certificate</label>
+                        <label for="cf-ed__txa03" class="field-label">Alternate Certificate <span title="PEM-encoded public certificate chain of the alternate SSL key pair. This should only be set if you have both RSA and ECDSA types of certificate available and would like Kong to prefer serving using ECDSA certs when client advertises support for it." class="tooltip material-icons">help_outline</span></label>
                         <div class="field-input"><textarea id="cf-ed__txa03" name="altCert" data-ng-model="certModel.cert_alt" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa04" class="field-label">Alternate Key</label>
+                        <label for="cf-ed__txa04" class="field-label">Alternate Key <span title="PEM-encoded private key of the alternate SSL key pair. This should only be set if you have both RSA and ECDSA types of certificate available and would like Kong to prefer serving using ECDSA certs when client advertises support for it." class="tooltip material-icons">help_outline</span></label>
                         <div class="field-input"><textarea id="cf-ed__txa04" name="altKey" data-ng-model="certModel.key_alt" placeholder="-----BEGIN EC PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
@@ -54,38 +56,62 @@
             </div><!-- .form__field -->
         </form>
     </div><!-- .panel__body -->
-    </div><!-- .panel__heading -->
-    </div><!-- .col-md-8 -->
+    </div><!-- .panel.panel-border.info -->
+</div><!-- .col-md-8 -->
 
-    <div class="col md-4">
-        <div class="well">
-            <div class="well__heading">SNIs
-                <div class="pull-right"><span id="cf-ed__btn01" class="btn mini success">+</span></div>
+<div class="col md-4">
+    <!-- ==--==--==--==--==--==--==--==--==--== SNI List ==--==--==--==--==--==--==--==--==--== -->
+    <div class="well">
+        <div class="well__heading">SNIs
+            <div class="pull-right"><span id="cf-ed__btn01" class="btn mini success">+</span></div>
+        </div>
+
+        <form id="cf-ed__frm02" class="form no-margin hidden" method="post" action="#">
+            <div class="hpadding-10 pad-top-10">
+                <input data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="Type host name and press enter..." />
             </div>
+        </form>
 
-            <form id="cf-ed__frm02" class="form no-margin hidden" method="post" action="#">
-                <div class="hpadding-10 pad-top-10">
-                    <input data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="Type host name and press enter..." />
-                </div>
-            </form>
+        <table id="sniListTable" class="board">
+            <tbody>
+            <tr data-ng-repeat="sni in sniList">
+                <td><strong>{{sni.name}}</strong><br />{{sni.tags}}</td>
+                <td><div class="action-group">
+                    <i class="material-icons danger delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
+                </div></td>
+            </tr>
+            </tbody>
 
-            <table id="sniListTable" class="board">
-                <tbody>
-                <tr data-ng-repeat="sni in sniList">
-                    <td><strong>{{sni.name}}</strong><br />{{sni.tags}}</td>
-                    <td><div class="action-group">
-                        <i class="material-icons danger delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
-                    </div></td>
-                </tr>
-                </tbody>
+            <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="2">No host names configured to use this certificate.</th></tr></tfoot>
 
-                <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="2">No host names configured to use this certificate.</th></tr></tfoot>
+            <tfoot class="pagination" data-ng-if="sniNext.length>=5">
+            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
+            </tfoot>
+        </table>
+    </div><!-- .well -->
 
-                <tfoot class="pagination" data-ng-if="sniNext.length>=5">
-                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
-                </tfoot>
-            </table>
-        </div><!-- .well -->
-    </div><!-- .col.md-4 -->
+    <!-- ==--==--==--==--==--==--==--==--==--== Upstream List ==--==--==--==--==--==--==--==--==--== -->
+    <div class="well">
+        <div class="well__heading">Upstreams</div>
+
+        <table id="cf-ed__tab02" class="table">
+            <tbody>
+            <tr data-ng-repeat="upstream in upstreamList">
+                <td><a href="#!/certificates/{{certId}}/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
+                <td><div class="action-group">
+                    <i class="material-icons danger delete" data-target="upstream" data-url="/certificates/{{certId}}/upstreams/{{upstream.id}}">delete_forever</i>
+                </div></td>
+            </tr>
+            </tbody>
+
+            <tfoot data-ng-if="upstreamList.length<=0"><tr><th colspan="2">No upstreams added yet.</th></tr></tfoot>
+
+            <tfoot class="pagination" data-ng-if="upstreamNext.length>=5">
+            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next</button></th></tr>
+            </tfoot>
+        </table>
+    </div><!-- .well -->
+</div><!-- .col.md-4 -->
+
 </div><!-- .row -->
 </div><!-- .container -->

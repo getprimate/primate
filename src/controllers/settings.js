@@ -5,7 +5,7 @@
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
 
     app.controller(controller, ['$rootScope', '$scope', '$base64', 'ajax', 'viewFrame', 'toast', function ($rootScope, $scope, $base64, ajax, viewFrame, toast) {
-        viewFrame.prevUrl = null;
+        viewFrame.prevUrl = '';
         viewFrame.title = 'Settings';
 
         $scope.kongConfig = kongConfig;

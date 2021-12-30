@@ -8,7 +8,7 @@
         const { angular } = $window;
 
         viewFrame.title = 'Service List';
-        viewFrame.prevUrl = null;
+        viewFrame.prevUrl = '';
 
         $scope.formInput = {
             name: '',

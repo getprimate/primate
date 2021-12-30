@@ -10,7 +10,7 @@
  */
 export default function UpstreamListController(scope, ajax, viewFrame, toast) {
     viewFrame.title = 'Upstreams';
-    viewFrame.prevUrl = null;
+    viewFrame.prevUrl = '';
 
     scope.upstreamList = [];
 
@@ -26,7 +26,6 @@ export default function UpstreamListController(scope, ajax, viewFrame, toast) {
         });
     };
 
-    viewFrame.actionButtons.splice(0);
     viewFrame.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn info create' });
 
     scope.fetchUpstreamList('/upstreams');
