@@ -32,20 +32,22 @@ export default function CertificateListController(window, scope, ajax, viewFrame
      * @returns {boolean} - true on success
      */
     scope.fetchCertList = (resource) => {
-        ajax.get({resource})
-            .then(({data: response}) => {
-                scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        const request = ajax.get({resource});
 
-                for (let certificate of response.data) {
-                    certificate.name = utils.objectName(certificate.id);
-                    certificate.tags = (certificate.tags.length >= 1) ? certificate.tags.join(', ') : 'No tags added';
+        request.then(({data: response}) => {
+            scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-                    scope.certList.push(certificate);
-                }
-            })
-            .catch(() => {
-                toast.error('Could not load certificates');
-            });
+            for (let certificate of response.data) {
+                certificate.name = utils.objectName(certificate.id);
+                certificate.tags = (certificate.tags.length >= 1) ? certificate.tags.join(', ') : 'No tags added';
+
+                scope.certList.push(certificate);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load certificates');
+        });
 
         return true;
     };
@@ -57,17 +59,22 @@ export default function CertificateListController(window, scope, ajax, viewFrame
      * @returns {boolean} - true on success
      */
     scope.fetchCaList = (resource) => {
-        ajax.get({resource})
-            .then(({data: response}) => {
-                scope.caNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        const request = ajax.get({resource});
 
-                for (let ca of response.data) {
-                    ca.name = utils.objectName(ca.id);
-                    ca.tags = (ca.tags.length >= 1) ? ca.tags.join(', ') : 'No tags added';
+        request.then(({data: response}) => {
+            scope.caNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-                    scope.caList.push(ca);
-                }
-            });
+            for (let ca of response.data) {
+                ca.name = utils.objectName(ca.id);
+                ca.tags = (ca.tags.length >= 1) ? ca.tags.join(', ') : 'No tags added';
+
+                scope.caList.push(ca);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load CA list.');
+        });
 
         return true;
     };
@@ -79,22 +86,24 @@ export default function CertificateListController(window, scope, ajax, viewFrame
      * @returns {boolean} - true on success
      */
     scope.fetchSniList = (resource) => {
-        ajax.get({resource})
-            .then(({data: response}) => {
-                scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        const request = ajax.get({resource});
 
-                for (let sni of response.data) {
-                    if (typeof sni.certificate !== 'object' || sni.certificate === null) {
-                        sni.certificate = {id: null};
-                    }
+        request.then(({data: response}) => {
+            scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-                    sni.certificate.name = utils.objectName(sni.certificate.id);
-                    scope.sniList.push(sni);
+            for (let sni of response.data) {
+                if (typeof sni.certificate !== 'object' || sni.certificate === null) {
+                    sni.certificate = {id: null};
                 }
-            })
-            .catch(({data: error}) => {
-                toast.error(`Could not load SNIs. ${error.message}`);
-            });
+
+                sni.certificate.name = utils.objectName(sni.certificate.id);
+                scope.sniList.push(sni);
+            }
+        });
+
+        request.catch(({data: error}) => {
+            toast.error(`Could not load SNIs. ${error.message}`);
+        });
 
         return true;
     };
