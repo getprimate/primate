@@ -2,7 +2,7 @@
 
 /**
  * @typedef {Object} ViewFrameFactory
- * @property {string} prevUrl - previous template URL for navigation
+ * @property {string|null} prevUrl - previous template URL for navigation
  * @property {string} title - current template title
  * @property {string} host - current Kong API host
  * @property {[Object]} actionButtons - array of action button objects
