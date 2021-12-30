@@ -1,5 +1,25 @@
 'use strict';
 
+/**
+ * @typedef {Object} AjaxProvider - custom AJAX provider
+ * @property {function} request - makes an HTTP request of the specified method
+ * @property {function} get - makes HTTP GET requests
+ * @property {function} post - makes HTTP POST requests with a payload
+ * @property {function} put - makes HTTP PUT requests with a payload
+ * @property {function} patch - makes HTTP PATCH requests with a payload
+ * @property {function} delete - makes HTTP DELETE requests
+ * @property {function} setHost - sets the HTTP host
+ * @property {function} basicAuth - sets authorisation headers for basic auth
+ */
+
+/**
+ * @typedef {Object} ToastFactory - toast message factory service
+ * @property {function} success - pops up a success toast message
+ * @property {function} info - pops up an information toast message
+ * @property {function} warning - pops up a warning toast message
+ * @property {function} error - pops up a success toast message
+ */
+
 /* global angular:true ngDependency:true */
 var app = angular.module('KongDash', ['ngAnimate', 'base64'].concat(typeof ngDependency === 'undefined' ? [] : ngDependency));
 
@@ -194,9 +214,7 @@ app.filter('capitalise', function () {
 
         const words = input.split(/[_,-]+/);
 
-        return words.map((word) => {
-            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-        }).join(' ');
+        return words.map(word => (word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())).join(' ');
     };
 });
 
