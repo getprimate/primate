@@ -50,7 +50,7 @@ export default function CertificateEditController(window, scope, location, route
             }
         });
 
-        request.catch((error) => {
+        request.catch(() => {
             toast.error('Could not load SNIs.');
         });
 
@@ -117,8 +117,6 @@ export default function CertificateEditController(window, scope, location, route
                 }
             })
             .catch(({ data: response }) => {
-                console.log(JSON.stringify(payload, null, 4));
-                console.log(JSON.stringify(response, null, 4));
                 toast.error(response.data);
             });
 
