@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="container">
+<div class="row">
+    <div class="col md-8">
+    <div class="panel panel-border info">
+        <div class="panel__heading">CA Certificate Details</div>
+        <div class="panel__body">
+            <form id="ca-ed__frm01" class="form" method="post" action="#">
+                <div class="row">
+                    <div class="col md-6">
+                        <div class="form__field">
+                            <label for="ca-ed__txa01" class="field-label">CA Certificate <span title="PEM-encoded public certificate of the CA." class="tooltip material-icons">help_outline</span></label>
+                            <div class="field-input"><textarea id="ca-ed__txa01" name="cert" data-ng-model="caModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
+                        </div>
+                    </div><!-- col.md-6 -->
+
+                    <div class="col md-6">
+                        <div class="form__field">
+                            <label for="ca-ed__txa02" class="field-label">SHA Digest (optional) <span title="SHA256 hex digest of the public certificate." class="tooltip material-icons">help_outline</span></label>
+                            <div class="field-input"><textarea id="ca-ed__txa02" name="digest" data-ng-model="caModel.cert_digest" placeholder="SHA256 hex digest of the public certificate"></textarea></div>
+                        </div>
+                    </div><!-- col.md-6 -->
+                </div><!-- .row -->
+
+                <div class="form__field">
+                    <label for="ca-ed__txa03" class="field-label">Tags (optional)</label>
+                    <div class="field-input"><textarea id="ca-ed__txa03" class="tx-small" name="tags" data-ng-model="caModel.tags" placeholder="Eg: user-level, low-priority"></textarea></div>
+                </div>
+
+                <div class="form__field" data-ng-switch="caId">
+                    <a class="btn default" href="#!/certificates">Cancel</a>
+                    <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
+                    <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                </div><!-- .form__field -->
+            </form>
+        </div><!-- .panel__body -->
+    </div><!-- .panel__heading -->
+    </div><!-- .col-md-8 -->
+
+    <div class="col md-4">&nbsp;</div><!-- .col.md-4 -->
+</div><!-- .row -->
+</div><!-- .container -->
