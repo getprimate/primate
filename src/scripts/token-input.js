@@ -49,6 +49,8 @@ export default function TokenInputDirective(window) {
         transclude: true,
         restrict: 'E',
         require: 'ngModel',
+        template: '<textarea class="token-input__text"></textarea><ul class="token-input__list"></ul>',
+        scope: {tokenList: '=ngModel'},
         controller: ['$scope', function (scope) { scope.isInitialised = false; }],
 
         /**
@@ -124,6 +126,8 @@ export default function TokenInputDirective(window) {
                     target.value = '';
                 }
             });
+
+            element.append
         }
     };
 }
