@@ -144,6 +144,15 @@ dl.horizontal > dt { color: #9db4be; }
 
 dl.horizontal > dd { color: #f1f1f1; }
 
+token-input.token-input { background: #394C57 none; border-color: #4B5D67; }
+
+token-input.token-input textarea.token-input__text,
+    token-input.token-input textarea.token-input__text:focus { background: transparent none; }
+
+token-input.token-input ul.token-input__list { border-color: #4B5D67; }
+
+token-input.token-input ul.token-input__list li { border-radius: 3px; background: #222d37 none; }
+
 .panel { background-color: #2F3E47; }
 
 .panel .panel__heading { background-color: #2F3E47; color: rgba(255, 255, 255, 0.9); }

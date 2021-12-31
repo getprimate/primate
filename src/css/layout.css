@@ -267,6 +267,12 @@ dl.horizontal > dt { width: 38%; font-weight: 500; font-size: 0.95rem; }
 
 dl.horizontal > dd { width: 60%; font-size: 0.96rem; }
 
+token-input.token-input { display: block; width: 100%; border-radius: 5px; border-width: 2px; border-style: solid; padding: 0; }
+token-input.token-input textarea.token-input__text { border: 0 solid transparent; padding: 8px; display: block; width: 100%; height: 35px; min-height: 20px; max-height: 35px; }
+token-input.token-input ul.token-input__list { display: block; margin: 5px 0 0 0; padding: 8px 3px 3px 8px; border-width: 1px 0 0 0; border-style: dashed; min-height: 48px; max-height: 115px; overflow-y: auto; }
+token-input.token-input ul.token-input__list li { display: inline-block; padding: 5px 8px 5px 8px; margin: 0 5px 5px 0; cursor: pointer; }
+token-input.token-input ul.token-input__list li span.material-icons { font-size: 1.15rem; vertical-align: middle; }
+
 /* Panels */
 .panel { margin-bottom: 20px; border-radius: 3px; }
 .panel:only-child { margin-bottom: 0; }
