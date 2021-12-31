@@ -2,7 +2,7 @@
 
 /**
  * Provides controller constructor for listing services.
- * 
+ *
  * @constructor
  *
  * @param {Window} window- window DOM object
