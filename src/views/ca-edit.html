@@ -22,8 +22,8 @@
                 </div><!-- .row -->
 
                 <div class="form__field">
-                    <label for="ca-ed__txa03" class="field-label">Tags (optional)</label>
-                    <div class="field-input"><textarea id="ca-ed__txa03" class="tx-small" name="tags" data-ng-model="caModel.tags" placeholder="Eg: user-level, low-priority"></textarea></div>
+                    <label class="field-label">Tags (optional)</label>
+                    <div class="field-input"><token-input data-ng-model="caModel.tags" data-dv-trigger="caId" data-placeholder="Type a tag and press enter key."></token-input></div>
                 </div>
 
                 <div class="form__field" data-ng-switch="caId">
