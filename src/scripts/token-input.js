@@ -6,25 +6,26 @@
  * @private
  *
  * @param {{element: function}} angular - the angular object
+ * @param {{tokenList: Array}} scope - the current scope
  * @param {{append: function}} element - the jqLite wrapped instance of the element
  * @param {Array|string} tokens - tokens to be appended
  * @return {{append: function}} the element object
  */
-const _attachNodes = (angular, element, tokens) => {
-    const tokenList = [];
-
-    if (Array.isArray(tokens)) {
-        tokenList.push(...tokens);
-
-    } else {
-        tokenList.push(tokens);
-    }
+const _attachListNodes = (angular, scope, element, tokens) => {
+    const shouldAppend = (typeof tokens === 'string');
+    const tokenList = (shouldAppend === true) ? tokens.split(',') : [...scope.tokenList];
 
     for (let token of tokenList) {
-        const li = angular.element(`<li data-token-value="${token}"></li>`);
+        token = token.trim();
 
+        let li = angular.element(`<li data-token-value="${token}"></li>`);
         li.html(`${token} <span class ="material-icons">highlight_off</span>`);
+
         element.append(li);
+
+        if (shouldAppend === true) {
+            scope.tokenList.push(token);
+        }
     }
 
     return element;
@@ -77,15 +78,21 @@ export default function TokenInputDirective(window) {
              */
             const itemNode = element.find('ul.token-input__list').first();
 
-            scope.$watch('tokenList.length', (current, previous) => {
+            scope.$watch('tokenList', (current, previous) => {
                 if (scope.isInitialised === true) {
-                    return true;
+                    return scope.isInitialised;
                 }
 
-                if (previous !== current) {
+                if (Array.isArray(previous)
+                    && Array.isArray(current)
+                    && previous.length !== current.length) {
+
                     scope.isInitialised = true;
-                    return _attachNodes(angular, itemNode, scope.tokenList);
+                    return _attachListNodes(angular, scope, itemNode, scope.tokenList);
                 }
+
+                return scope.isInitialised;
+
             }, false);
 
             element.addClass('token-input');
@@ -120,14 +127,12 @@ export default function TokenInputDirective(window) {
                     let value = target.value.trim();
 
                     if (value.length >= 1) {
-                        _attachNodes(angular, itemNode, target.value.trim());
+                        _attachListNodes(angular, scope, itemNode, target.value.trim());
                     }
 
                     target.value = '';
                 }
             });
-
-            element.append
         }
     };
 }
