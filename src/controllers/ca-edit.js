@@ -1,7 +1,5 @@
 'use strict';
 
-import utils from '../lib/utils.js';
-
 /**
  * Provides controller constructor for editing CA certificates.
  *
@@ -9,9 +7,8 @@ import utils from '../lib/utils.js';
  *
  * @param {Window} window- window DOM object
  * @param {{
- *      caModel: {cert: string, cert_digest: string, tags: string},
- *      caId: string,
- *      tags: [string]
+ *      caModel: {cert: string, cert_digest: string, tags: [string]},
+ *      caId: string
  *      }} scope - injected scope object
  * @param {{path: function}} location - injected location service
  * @param {{caId: string}} routeParams - injected route parameters service
@@ -26,7 +23,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
     const formCa = angular.element('form#ca-ed__frm01');
 
     scope.caId = '__none__';
-    scope.caModel = {cert: '', cert_digest: '', /* TODO : tag-input-directive - Declare as an array. */ tags: ''};
+    scope.caModel = {cert: '', cert_digest: '', tags: []};
 
     viewFrame.prevUrl = '#!/certificates';
 
@@ -55,9 +52,6 @@ export default function TrustedCAEditController(window, scope, location, routePa
         }
 
         const payload = Object.assign({}, scope.caModel);
-
-        /* TODO : tag-input-directive - No need to explode to array. */
-        payload.tags = utils.explode(scope.caModel.tags);
 
         if (scope.caModel.cert_digest.length <= 10) {
             delete payload.cert_digest;
@@ -96,8 +90,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
                         continue;
                     }
 
-                    /* TODO : tag-input-directive - No need to join array to string. */
-                    scope.caModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
+                    scope.caModel[key] = response[key];
                 }
 
                 viewFrame.actionButtons.push({
