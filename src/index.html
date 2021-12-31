@@ -77,6 +77,8 @@ const ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/settings.js"></script>
 
 <script type="module">
+    import TokenInputDirective from './scripts/token-input.js'
+
     import CertificateListController from './controllers/certificate-list.js';
     import CertificateEditController from './controllers/certificate-edit.js';
 
@@ -84,6 +86,8 @@ const ngDependency  = ['ngRoute'];
 
     import UpstreamListController from './controllers/upstream-list.js';
     import UpstreamEditController from './controllers/upstream-edit.js';
+
+    app.directive('tokenInput', ['$window', TokenInputDirective]);
 
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
