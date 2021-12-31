@@ -1,71 +1,15 @@
-<div class="panel panel-border success" id="panelAdd">
-<div class="panel__heading pointer">Add New Service</div>
-
-<div class="panel__body">
-    <form class="form hidden" method="post" action="#">
-        <div class="row">
-            <div class="col md-6"><input type="text" name="serviceName" value="" data-ng-model="formInput.name" placeholder="Service Name" title="Unique name for the service" /></div>
-            <div class="col md-6">
-                <select name="protocol" data-ng-model="formInput.protocol" title="Unique name for the service">
-                <option value="http">-- Protocol --</option>
-                <option value="http">http</option>
-                <option value="https">https</option>
-                <option value="grpc">grpc</option>
-                <option value="grpcs">grpcs</option>
-                <option value="tcp">tcp</option>
-                <option value="tls">tls</option>
-                <option value="udp">udp</option>
-                </select>                    
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col md-6"><input type="text" name="host" value="" data-ng-model="formInput.host" placeholder="Host" title="The host of the upstream server" /></div>
-            <div class="col md-6"><input type="number" name="port" value="" data-ng-model="formInput.port" placeholder="Port" title="The upstream server port. Default: 80." /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12"><input type="text" name="path" value="" data-ng-model="formInput.path" placeholder="Path" title="Path to be used in requests to the upstream server" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12"><input type="text" name="tags" value="" data-ng-model="formInput.tags" placeholder="Tags (optional)" title="Tags for grouping and filtering" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-3"><input type="number" name="retries" value="" data-ng-model="formInput.retries" placeholder="Retries (Optional)" title="Number of retries to execute upon failure to proxy (Default 5)" /></div>
-            <div class="col md-3"><input type="number" name="connectTimeout" value="" data-ng-model="formInput.connectTimeout" placeholder="Connect timeout (Optional)" title="Upstream connect timeout (Default 60000)" /></div>
-            <div class="col md-3"><input type="number" name="readTimeout" value="" data-ng-model="formInput.readTimeout" placeholder="Read timeout (Optional)" title="Upstream read timeout (Default 60000)" /></div>
-            <div class="col md-3"><input type="number" name="writeTimeout" value="" data-ng-model="formInput.writeTimeout" placeholder="Write timeout (Optional)" title="Upstream write timeout (Default 60000)" /></div>
-        </div>
-
-        <div class="row">
-            <div class="col md-3">
-                <label class="checkbox success"><input type="checkbox" data-ng-model="formInput.preserveHost" name="preserveHost" indeterminate="true" /> TLS Verify</label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col md-12">
-                <button class="btn default" type="button" name="actionCancel" value="cancel">Cancel</button>
-                <button class="btn success" type="submit" name="action" value="add">Add Service</button>
-            </div>
-        </div>
-    </form>
-</div>
-</div>
+<div class="container">
 
 <div class="well">
 <div class="well__heading">List of Services</div>
-<table id="serviceTable" class="table" cellpadding="0" cellspacing="0">
+<table id="sv-ls__tab01" class="table">
     <thead data-ng-if="serviceList.length>0"><tr><th>Flags</th><th>Name</th><th>Created</th><th>Actions</th></tr></thead>
 
     <tbody>
         <tr data-ng-repeat="service in serviceList">
-            <td>
-            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server TLS enabled" data-ng-if="service.tls_verify==true" class="material-icons success state-highlight">assignment_turned_in</i>
-            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server TLS disabled" data-ng-if="service.tls_verify==false" class="material-icons default state-highlight">assignment_turned_in</i>
-            <i data-attribute="tls_verify" data-service-id="{{service.id}}" title="Upstream server Nginx default" data-ng-if="service.tls_verify==null" class="material-icons default state-highlight">assignment_turned_in</i>
+            <td data-ng-switch="service.enabled">
+                <i data-ng-switch-when="true" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons success state-highlight">done</i>
+                <i data-ng-switch-default="" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons default state-highlight">done</i>
             </td>
 
             <td><a href="#!/services/{{service.id}}">{{service.name || service.id}}</a></td>
@@ -78,8 +22,9 @@
             </td>
         </tr>
     </tbody>
-    <tfoot data-ng-if="service.length<=0"><tr><th colspan="5">No APIs added yet.</th></tr></tfoot>
-</table>
-</div>
+    <tfoot data-ng-if="serviceList.length<=0"><tr><th colspan="5">No services added yet.</th></tr></tfoot>
+</table><!-- #sv-ls__tab01.table -->
+</div><!-- .well -->
 
 <div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchServiceList(nextUrl)">Load Next</button></div>
+</div><!-- .container -->
