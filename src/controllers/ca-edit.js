@@ -57,53 +57,57 @@ export default function TrustedCAEditController(window, scope, location, routePa
             delete payload.cert_digest;
         }
 
-        ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload})
-            .then(({ data: response }) => {
-                switch (scope.caId) {
-                    case '__none__':
-                        toast.success('New CA added');
-                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                        break;
+        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
 
-                    default:
-                        toast.info('CA details updated');
-                }
-            })
-            .catch(({ data: response }) => {
-                toast.error(response.data);
-            });
+        request.then(({ data: response }) => {
+            switch (scope.caId) {
+                case '__none__':
+                    toast.success('New CA added');
+                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                    break;
+
+                default:
+                    toast.info('CA details updated');
+            }
+        });
+
+        request.catch(({ data: response }) => {
+            toast.error(response.data);
+        });
 
         return false;
     });
 
     /* Load the CA certificate details if a valid certificate id is provided. */
     if (ajaxConfig.method === 'PATCH' && scope.caId !== '__none__') {
-        ajax.get({ resource: ajaxConfig.resource })
-            .then(({data: response}) => {
-                for (let key of Object.keys(response)) {
-                    if (typeof scope.caModel[key] === 'undefined') {
-                        continue;
-                    }
+        const request = ajax.get({ resource: ajaxConfig.resource });
 
-                    if (response[key] === null) {
-                        scope.caModel[key] = '';
-                        continue;
-                    }
-
-                    scope.caModel[key] = response[key];
+        request.then(({data: response}) => {
+            for (let key of Object.keys(response)) {
+                if (typeof scope.caModel[key] === 'undefined') {
+                    continue;
                 }
 
-                viewFrame.actionButtons.push({
-                    target: 'CA',
-                    url: `/ca_certificates/${scope.caId}`,
-                    redirect: '#!/certificates',
-                    styles: 'btn danger delete',
-                    displayText: 'Delete'
-                });
-            })
-            .catch(() => {
-                toast.error('Could not load CA details');
-                window.location.href = '#!/certificates';
+                if (response[key] === null) {
+                    scope.caModel[key] = '';
+                    continue;
+                }
+
+                scope.caModel[key] = response[key];
+            }
+
+            viewFrame.actionButtons.push({
+                target: 'CA',
+                url: `/ca_certificates/${scope.caId}`,
+                redirect: '#!/certificates',
+                styles: 'btn danger delete',
+                displayText: 'Delete'
             });
+        });
+
+        request.catch(() => {
+            toast.error('Could not load CA details');
+            window.location.href = '#!/certificates';
+        });
     }
 }
