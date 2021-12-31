@@ -39,7 +39,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
 
             for (let certificate of response.data) {
                 certificate.name = utils.objectName(certificate.id);
-                certificate.tags = (certificate.tags.length >= 1) ? certificate.tags.join(', ') : 'No tags added';
+                certificate.tags = (certificate.tags !== null && certificate.tags.length >= 1) ? certificate.tags.join(', ') : 'No tags added';
 
                 scope.certList.push(certificate);
             }
