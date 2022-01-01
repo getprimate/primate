@@ -34,5 +34,24 @@ export default {
         }
 
         return input.substr(position + 1).toUpperCase();
+    },
+
+    typeCast(input = '') {
+        switch (input) {
+            case 'true':
+                return true;
+
+            case 'false':
+                return false;
+
+            case 'null':
+                return null;
+
+            default:
+                break;
+        }
+
+        const numeric = parseInt(input);
+        return isNaN(numeric) ? input : numeric;
     }
 };

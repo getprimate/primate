@@ -1,6 +1,16 @@
 'use strict';
 
 /**
+ * @typedef {Object} AngularElement
+ * @property {function} hasClass - checks if the element has a specified CSS class
+ * @property {function} addClass - adds a CSS class to the element
+ * @property {function} removeClass - removes a specified CSS class from the element
+ * @property {function} data - sets or retrieves data set f an element
+ * @property {function} on - binds an event listener
+ * @property {function} find - returns an element matched by a selector
+ */
+
+/**
  * @typedef {Object} AjaxProvider - custom AJAX provider
  * @property {function} request - makes an HTTP request of the specified method
  * @property {function} get - makes HTTP GET requests
