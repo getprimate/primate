@@ -1,155 +1,185 @@
-/* global app:true */
-
 'use strict';
 
-(function (controller, app) {
-    if (typeof app === 'undefined') throw (`${controller}: app is undefined`);
+import utils from '../lib/utils.js';
+import ServiceModel from '../models/service-model.js';
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'toast' ,'viewFrame',
-        function (window, scope, $routeParams, ajax, toast, viewFrame) {
+const _buildServiceModel = (model, from = {}) => {
+    const keys = Object.keys(from);
 
-        const { angular } = window;
-        const serviceForm = angular.element('form#formEdit');
+    for (let key of keys) {
+        if ((typeof model[key] === 'undefined')
+            || (Array.isArray(model[key]) && from[key] === null)) {
+            continue;
+        }
 
-        scope.PROTOCOL_ENUM = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'udp', 'tls'];
+        switch (key) {
+            case 'tls_verify':
+            case 'tls_verify_depth':
+                model[key] = String(from[key]);
+                break;
 
-        viewFrame.title = 'Edit Service';
+            case 'client_certificate':
+                model[key] = (from[key] !== null && typeof from[key]['id'] === 'string') ? from[key]['id'] : '';
+                break;
 
-        scope.serviceId = $routeParams.serviceId;
-        scope.formInput = {
-            name: 'Loading...',
-            retries: 5,
-            protocol: 'Loading...',
-            host: 'Loading...',
-            port: 0,
-            path: 'Loading...',
-            connectTimeout: 60000,
-            readTimeout: 60000,
-            writeTimeout: 60000,
-            tags: '',
-            clientCertificate: null,
-            tlsVerifyFlag: null,
-            tlsVerifyDepth: null,
-            caCertificates: []
-        };
-        scope.pluginList = [];
+            case 'ca_certificates':
+            case 'tags':
+                model[key] = Array.isArray(from[key]) ? from[key] : [];
+                break;
 
-        scope.fetchPluginList = function (url) {
-            ajax.get({ resource: url }).then((response) => {
-                scope.nextPluginUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
+            default:
+                model[key] = from[key];
+                break;
+        }
+    }
+};
 
-                for (let index = 0; index < response.data.data.length; index++) {
-                    scope.pluginList.push(response.data.data[index]);
-                }
+export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
+    const {angular} = window;
+    const ajaxConfig = { method: 'POST', resource: '/services' };
 
-            }, function () {
-                toast.error('Could not load plugin list');
+    /** @type {AngularElement} */
+    const formService = angular.element('form#sv-ed__frm01');
+
+    scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'udp', 'tls'];
+
+    scope.serviceId = '__none__';
+    scope.serviceModel = angular.copy(ServiceModel);
+
+    scope.pbCertList = [];
+    scope.caCertList = [];
+
+    switch (routeParams.serviceId) {
+        case '__create__':
+            viewFrame.title = 'Create new Service';
+            break;
+
+        default:
+            ajaxConfig.method = 'PATCH';
+            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.serviceId}`;
+
+            scope.serviceId = routeParams.serviceId;
+            viewFrame.title = 'Edit Service';
+            break;
+    }
+
+    scope.fetchPublicCertificates= (resource = '/certificates')=> {
+        const request =ajax.get({resource});
+
+        request.then(({data: response}) => {
+            for (let current of response.data) {
+                current.displayName = (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64);
+                scope.pbCertList.push(current);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load public certificates');
+        });
+    };
+
+    scope.fetchCACertificates = (resource = '/ca_certificates') => {
+        const request =ajax.get({resource});
+
+        request.then(({data: response}) => {
+            for (let current of response.data) {
+                current.displayName = (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64);
+                scope.caCertList.push(current);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load CA certificates');
+        });
+    };
+
+    /**
+     * Handle service form submit event.
+     */
+    formService.on('submit', (event) => {
+        event.preventDefault();
+
+        Object.keys(scope.serviceModel).forEach((key) => {
+            if (typeof scope.serviceModel[key] === 'string') scope.serviceModel[key] = scope.serviceModel[key].trim();
+        });
+
+        if (scope.serviceModel.host.length === 0) {
+            formService.find('input#sv-ed__txt01').focus();
+            return false;
+        }
+
+        const payload = angular.copy(scope.serviceModel);
+        delete payload.client_certificate;
+
+        if (scope.serviceModel.client_certificate.length > 10) {
+            payload.client_certificate = {id: scope.serviceModel.client_certificate};
+        }
+
+        payload.tls_verify = utils.typeCast(scope.serviceModel.tls_verify);
+        payload.tls_verify_depth = utils.typeCast(scope.serviceModel.tls_verify_depth);
+
+        const request = ajax.request({
+            method: ajaxConfig.method,
+            resource: ajaxConfig.resource,
+            data: payload
+        });
+
+        request.then(({data: response}) => {
+            switch (scope.serviceId) {
+                case '__none__':
+                    toast.success(`Created new service ${response.name}`);
+                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                    break;
+
+                default:
+                    toast.info(`Updated service ${payload.name}.`);
+            }
+        });
+
+        request.catch(({data: error}) => {
+            toast.error('Could not ' + ((scope.serviceId === '__none__') ? 'create new' : 'update') + ` service. ${error.message}`);
+        });
+
+        return false;
+    });
+
+    if (ajaxConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
+        const request = ajax.get({resource: ajaxConfig.resource});
+
+        request.then(({ data: response }) => {
+            _buildServiceModel(scope.serviceModel, response);
+
+            viewFrame.actionButtons.push({
+                target: 'service',
+                url: ajaxConfig.resource,
+                redirect: '#!/services',
+                styles: 'btn danger delete',
+                displayText: 'Delete'
             });
-        };
+        });
 
-        ajax.get({ resource: `/services/${scope.serviceId}` }).then((response) => {
-            const { data: service } = response;
-
-            scope.formInput.name = service.name;
-            scope.formInput.protocol = service.protocol;
-            scope.formInput.host = service.host;
-            scope.formInput.port = service.port;
-            scope.formInput.path = service.path;
-            scope.formInput.retries = service.retries;
-            scope.formInput.connectTimeout = service.connect_timeout;
-            scope.formInput.readTimeout = service.read_timeout;
-            scope.formInput.writeTimeout = service.write_timeout;
-            scope.formInput.tags = service.tags;
-            scope.formInput.tlsVerifyFlag = service.tls_verify;
-            scope.formInput.tlsVerifyDeph = service.tls_verify_depth;
-            scope.formInput.caCertificates = service.ca_certificates;
-
-            viewFrame.deleteAction = {target: 'service', url: `/services/${scope.serviceId}`, redirect: '#!/services'};
-
-        }, () => {
+        request.catch(() => {
             toast.error('Could not load service details');
             window.location.href = '#!/services';
         });
+    }
 
-        serviceForm.on('submit', (event) => {
-            event.preventDefault();
+    scope.fetchPublicCertificates();
+    scope.fetchCACertificates();
+}
 
-            let payload = {};
+/*
+angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plugin-state', (event) => {
+    let state = (event.target.checked) ? 'enabled' : 'disabled';
 
-            if (scope.formInput.name.trim().length > 1) {
-                payload.name = scope.formInput.name;
+    ajax.patch({
+        resource: `/services/${scope.serviceId}/plugins/${event.target.value}`,
+        data: { enabled: (state === 'enabled') },
+    }).then(() => {
+        toast.success(`Plugin ${event.target.dataset.name} ${state}`);
 
-            } else {
-                serviceForm.find('input[name="serviceName"]').focus();
-                return false;
-            }
-
-            payload.hosts = Array.isArray(scope.formInput.hosts) ? scope.formInput.hosts.join() : scope.formInput.hosts;
-            payload.uris = Array.isArray(scope.formInput.uris) ? scope.formInput.uris.join() : scope.formInput.uris;
-            payload.methods = Array.isArray(scope.formInput.methods) ? scope.formInput.methods.join() : scope.formInput.methods;
-
-            if (typeof payload.hosts === 'undefined'
-                && typeof payload.uris === 'undefined'
-                && typeof payload.methods === 'undefined') {
-
-                serviceForm.find('input[name="hosts"]').focus();
-                return false;
-            }
-
-            if (scope.formInput.upstreamUrl.trim().length > 1) {
-                payload.upstream_url = scope.formInput.upstreamUrl;
-
-            } else {
-                serviceForm.find('input[name="upstreamUrl"]').focus();
-                return false;
-            }
-
-            payload.retries = (isNaN(scope.formInput.retries) || !scope.formInput.retries) ?
-                5 : parseInt(scope.formInput.retries);
-
-            payload.upstream_connect_timeout = (isNaN(scope.formInput.connectTimeout) || !scope.formInput.connectTimeout) ?
-                60000 : parseInt(scope.formInput.connectTimeout);
-
-            payload.upstream_send_timeout = (isNaN(scope.formInput.sendTimeout) || !scope.formInput.sendTimeout) ?
-                60000 : parseInt(scope.formInput.sendTimeout);
-
-            payload.upstream_read_timeout = (isNaN(scope.formInput.readTimeout) || !scope.formInput.readTimeout) ?
-                60000 : parseInt(scope.formInput.readTimeout);
-
-            payload.strip_uri = scope.formInput.stripUri;
-            payload.preserve_host = scope.formInput.preserveHost;
-            payload.https_only = scope.formInput.httpsOnly;
-            payload.http_if_terminated = scope.formInput.httpIfTerminated;
-
-            ajax.patch({
-                resource: `/services/${scope.serviceId}`,
-                data: payload
-            }).then(() => {
-                toast.success('Service details updated');
-
-            }, (response) => {
-                toast.error(response.data);
-            });
-
-            return false;
-        });
-
-        angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plugin-state', (event) => {
-            let state = (event.target.checked) ? 'enabled' : 'disabled';
-
-            ajax.patch({
-                resource: `/services/${scope.serviceId}/plugins/${event.target.value}`,
-                data: { enabled: (state === 'enabled') },
-            }).then(() => {
-                toast.success(`Plugin ${event.target.dataset.name} ${state}`);
-
-            }, () => {
-                toast.error('Status could not not be changed');
-            });
-        });
-
-        scope.fetchPluginList(`/services/${scope.serviceId}/plugins`);
-    }]);
-
-})('ServiceEditController', app);
+    }, () => {
+        toast.error('Status could not not be changed');
+    });
+});
+*/
