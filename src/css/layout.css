@@ -177,18 +177,18 @@ table.board tfoot.pagination th { text-align: center; padding: 5px 0 5px 0 !impo
 .row > .col:last-child { padding-right: 0; }
 .row > .col:only-child { padding-left: 0 !important; padding-right: 0 !important; }
 
-.md-1 { width: 8.333%; }
-.md-2 { width: 16.666%; }
-.md-3 { width: 25%; }
-.md-4 { width: 33.333%; }
-.md-5 { width: 41.666%; }
-.md-6 { width: 50%; }
-.md-7 { width: 58.333%; }
-.md-8 { width: 66.666%; }
-.md-9 { width: 75.018%; }
-.md-10 { width: 83.333%; }
-.md-11 { width: 91.666%; }
-.md-12 { width: 100%; }
+.md-1 { width: 8.333% !important; }
+.md-2 { width: 16.666% !important;; }
+.md-3 { width: 25% !important;; }
+.md-4 { width: 33.333% !important;; }
+.md-5 { width: 41.666% !important;; }
+.md-6 { width: 50% !important;; }
+.md-7 { width: 58.333% !important;; }
+.md-8 { width: 66.666% !important;; }
+.md-9 { width: 75.018% !important;; }
+.md-10 { width: 83.333% !important;; }
+.md-11 { width: 91.666% !important;; }
+.md-12 { width: 100% !important;; }
 
 /* Form and input fields */
 input[type=text],
@@ -237,6 +237,42 @@ form.form .form__field .field-input input[type="range"] {
 form.form .form__field .field-input input[type="range"] + span.field-input__legend {
     width: 100%; display: block; text-align: center;
 }
+
+form.form .form__field .field-input.linked { display: flex; flex-direction: row; flex-wrap: nowrap; }
+
+form.form select[multiple] { padding: 8px; }
+form.form select[multiple] option { margin: 0 0 2px 0; padding: 5px; background: transparent none; border: 0 solid transparent; }
+form.form select[multiple] option:hover { background: rgba(200, 200, 200, 0.3) none; }
+
+form.form .form__field .field-input.linked > input,
+form.form .form__field .field-input.linked > select {
+    box-sizing: border-box;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-radius: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+    form.form .form__field .field-input.linked input:first-child,
+    form.form .form__field .field-input.linked select:first-child {
+        border-left-width: 2px !important;
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
+    }
+
+    form.form .form__field .field-input.linked input:last-child,
+    form.form .form__field .field-input.linked select:last-child {
+        border-right-width: 2px !important;
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
+    }
+
+    form.form .form__field .field-input.linked input:last-child {
+        text-align: right;
+    }
+
+form.form article { display: block; border-width: 2px; border-style: dashed; border-radius: 4px; }
 
 textarea.tx-small { height: 100px !important; }
 

@@ -123,6 +123,9 @@ form.form .form__field .field-input input[type="range"] + span.field-input__lege
     color: #999999;
 }
 
+form.form h6 { font-size: 0.95em; font-weight: 500; display: block; color: #afbdc4; }
+form.form article { border-color: #4B5D67; color: #EFEFEF; }
+
 label.checkbox:hover { color: #f6f6f6; }
 
 label.checkbox input[type="checkbox"] { background-color: rgba(0,0,0,0); border: 2px solid #cccccc; }
