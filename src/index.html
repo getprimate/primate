@@ -68,8 +68,6 @@ const ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/header.js"></script>
 <script type="text/javascript" src="controllers/footer.js"></script>
 <script type="text/javascript" src="controllers/dashboard.js"></script>
-<script type="text/javascript" src="controllers/service-list.js"></script>
-<script type="text/javascript" src="controllers/service-edit.js"></script>
 <script type="text/javascript" src="controllers/plugin-edit.js"></script>
 <script type="text/javascript" src="controllers/consumer-list.js"></script>
 <script type="text/javascript" src="controllers/consumer-edit.js"></script>
@@ -78,6 +76,9 @@ const ngDependency  = ['ngRoute'];
 
 <script type="module">
     import TokenInputDirective from './scripts/token-input.js'
+
+    import ServiceListController from './controllers/service-list.js';
+    import ServiceEditController from './controllers/service-edit.js';
 
     import CertificateListController from './controllers/certificate-list.js';
     import CertificateEditController from './controllers/certificate-edit.js';
@@ -89,6 +90,8 @@ const ngDependency  = ['ngRoute'];
 
     app.directive('tokenInput', ['$window', TokenInputDirective]);
 
+    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', ServiceListController])
+    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController])
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
     app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', TrustedCAEditController])
