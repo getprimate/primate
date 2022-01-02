@@ -80,6 +80,8 @@ const ngDependency  = ['ngRoute'];
     import ServiceListController from './controllers/service-list.js';
     import ServiceEditController from './controllers/service-edit.js';
 
+    import RouteEditController from './controllers/route-edit.js';
+
     import CertificateListController from './controllers/certificate-list.js';
     import CertificateEditController from './controllers/certificate-edit.js';
 
@@ -90,11 +92,12 @@ const ngDependency  = ['ngRoute'];
 
     app.directive('tokenInput', ['$window', TokenInputDirective]);
 
-    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', ServiceListController])
-    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController])
+    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', ServiceListController]);
+    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController]);
+    app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', RouteEditController]);
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
-    app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', TrustedCAEditController])
+    app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', TrustedCAEditController]);
     app.controller('UpstreamListController', ['$scope', 'ajax', 'viewFrame', 'toast', UpstreamListController]);
     app.controller('UpstreamEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', UpstreamEditController]);
 </script>
