@@ -4,6 +4,9 @@ const _refresh = (angular, element, scope) => {
     const {available, selected} = scope;
     const ul = element.children().first();
 
+    /* Remove previously existing nodes */
+    ul.empty();
+
     for (let item of available) {
         let {nodeValue, displayText} = ((typeof item === 'object') ? item : {nodeValue: item, displayText: item});
 
@@ -41,6 +44,24 @@ export default function MultiCheckDirective(window) {
                 return false;
             }
 
+            _refresh(angular, element, scope);
+
+            scope.$watch('selected', (current, previous) => {
+                if (scope.isInitialised === true) {
+                    return scope.isInitialised;
+                }
+
+                if (Array.isArray(previous)
+                    && Array.isArray(current)
+                    && previous.length !== current.length) {
+
+                    scope.isInitialised = true;
+                    return _refresh(angular, element, scope);
+                }
+
+                return scope.isInitialised;
+            }, false);
+
             element.on('change', 'input.multi-check__input', (event) => {
                 const {currentTarget: target} = event;
                 if (target.nodeName !== 'INPUT') {
@@ -48,10 +69,15 @@ export default function MultiCheckDirective(window) {
                 }
 
                 const {nodeValue} = target.dataset;
-                console.log(target.checked ? `Checked ${nodeValue}`: `Unchecked ${nodeValue}`);
-            });
 
-            _refresh(angular, element, scope);
+                if (target.checked === true) {
+                    scope.selected.push(nodeValue);
+
+                } else {
+                    let position = scope.selected.indexOf(nodeValue);
+                    scope.selected.splice(position, 1);
+                }
+            });
         }
     };
 }
