@@ -98,11 +98,27 @@
             .when('/settings', {
                 templateUrl: 'views/settings.html',
                 controller: 'SettingsController'
-            })
-            .otherwise({
-                templateUrl: 'views/dashboard.html',
-                controller: 'DashboardController'
             });
+
+        /* Configure route for listing and editing Route objects. */
+        $routeProvider
+            .when('/routes', {
+                controller: 'RouteListController',
+                templateUrl: 'views/route-list.html'
+            })
+            .when('/routes/:routeId', {
+                controller: 'RouteEditController',
+                templateUrl: 'views/route-edit.html'
+            })
+            .when('/services/:serviceId/routes/:routeId', {
+                controller: 'RouteEditController',
+                templateUrl: 'views/route-edit.html'
+            });
+
+        $routeProvider.otherwise({
+            templateUrl: 'views/dashboard.html',
+            controller: 'DashboardController'
+        });
     }]);
 
     /**

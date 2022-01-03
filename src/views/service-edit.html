@@ -107,35 +107,63 @@
 </div>
 
 <div class="col md-4">
-<div class="well">
-<div class="well__heading">Applied Plugins
-    <div class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins" class="btn mini success">+</a></div>
-</div>
-
-<table id="pluginListTable" class="table">
-<thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
-
-<tbody>
-<tr data-ng-repeat="plugin in pluginList">
-    <td><label class="checkbox success">
-        <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
-    </label></td>
-
-    <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
-    <td>
-        <div class="action-group" data-service-id="{{service.id}}">
-            <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-            <i class="material-icons danger delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
+    <div class="well">
+        <div class="well__heading">Routes
+            <div class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__" class="btn mini success"><span class="text-small material-icons">launch</span></a></div>
         </div>
-    </td>
-</tr>
-</tbody>
 
-<tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this service.</th></tr></tfoot>
-</table>
-</div>
+        <div class="well__scroll-area">
+            <table id="sv-edit__tab01" class="table">
+                <thead data-ng-if="routeList.length>0"><tr><th>Name</th><th class="md-3">Actions</th></tr> </thead>
 
-<div class="pagination" data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
-</div>
-</div>
-</div>
+                <tbody>
+                <tr data-ng-repeat="route in routeList">
+                    <td><a href="#!/services/{{serviceId}}/routes/{{route.id}}"><b>{{route.name}}</b></a></td>
+                    <td>
+                        <div class="action-group" data-service-id="{{service.id}}">
+                            <a href="#!/services/{{serviceId}}/routes/{{route.id}}"><i class="material-icons warning">edit</i></a>
+                            <i class="material-icons danger delete" data-target="route" data-url="/services/{{serviceId}}/routes/{{route.id}}">delete_forever</i>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+
+                <tfoot data-ng-if="routeList.length===0"><tr><th colspan="3">No routes added under service.</th></tr></tfoot>
+            </table>
+        </div><!-- .well__scroll-area -->
+    </div><!-- .well -->
+
+    <div class="well">
+    <div class="well__heading">Applied Plugins
+        <div class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins" class="btn mini success">+</a></div>
+    </div>
+
+    <div class="well__scroll-area">
+        <table id="sv-edit__tab02" class="table">
+            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
+
+            <tbody>
+            <tr data-ng-repeat="plugin in pluginList">
+                <td><label class="checkbox success">
+                    <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
+                </label></td>
+
+                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td>
+                    <div class="action-group" data-service-id="{{service.id}}">
+                        <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
+                        <i class="material-icons danger delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+
+            <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this service.</th></tr></tfoot>
+        </table>
+    </div><!-- .well__scroll-area -->
+    </div><!-- .well -->
+
+    <div class="pagination" data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
+</div><!-- .col.md-4 -->
+</div><!-- .row -->
+</div><!-- .container -->
