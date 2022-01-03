@@ -65,8 +65,6 @@ const ngDependency  = ['ngRoute'];
 
 <script type="text/javascript" src="scripts/app-index.js"></script>
 
-<script type="text/javascript" src="controllers/header.js"></script>
-<script type="text/javascript" src="controllers/footer.js"></script>
 <script type="text/javascript" src="controllers/dashboard.js"></script>
 <script type="text/javascript" src="controllers/plugin-edit.js"></script>
 <script type="text/javascript" src="controllers/consumer-list.js"></script>
@@ -76,6 +74,10 @@ const ngDependency  = ['ngRoute'];
 
 <script type="module">
     import TokenInputDirective from './components/token-input-directive.js'
+    import MultiCheckDirective from './components/multi-check-directive.js';
+
+    import HeaderController from './controllers/header.js';
+    import FooterController from './controllers/footer.js';
 
     import ServiceListController from './controllers/service-list.js';
     import ServiceEditController from './controllers/service-edit.js';
@@ -91,6 +93,10 @@ const ngDependency  = ['ngRoute'];
     import UpstreamEditController from './controllers/upstream-edit.js';
 
     app.directive('tokenInput', ['$window', TokenInputDirective]);
+    app.directive('multiCheck', ['$window', MultiCheckDirective]);
+
+    app.controller('HeaderController', ['$scope', 'viewFrame', HeaderController]);
+    app.controller('FooterController', ['$window', '$scope', '$element', '$http', 'viewFrame', 'toast', FooterController]);
 
     app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', ServiceListController]);
     app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController]);
