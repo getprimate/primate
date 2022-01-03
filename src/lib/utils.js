@@ -1,6 +1,14 @@
 'use strict';
 
 export default {
+    get(object, path, defaultValue = null) {
+        if (object === null) {
+            return defaultValue;
+        }
+
+        return (typeof object[path] === 'undefined') ? defaultValue : object[path];
+    },
+
     explode(input = '', separator = ',') {
         const items = input.split(separator);
         return items.reduce((exploded, current) => {
