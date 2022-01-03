@@ -49,6 +49,8 @@ export default function ServiceEditController(window, scope, location, routePara
     scope.pbCertList = [];
     scope.caCertList = [];
 
+    scope.routeList = [];
+
     switch (routeParams.serviceId) {
         case '__create__':
             viewFrame.title = 'Create new Service';
@@ -90,6 +92,20 @@ export default function ServiceEditController(window, scope, location, routePara
 
         request.catch(() => {
             toast.error('Could not load CA certificates');
+        });
+    };
+
+    scope.fetchRoutes = (resource = '/routes')=> {
+        const request =ajax.get({resource});
+
+        request.then(({data: response}) => {
+            for (let current of response.data) {
+                scope.routeList.push(current);
+            }
+        });
+
+        request.catch(() => {
+            toast.warning('Could not load associated routes');
         });
     };
 
@@ -162,6 +178,8 @@ export default function ServiceEditController(window, scope, location, routePara
             toast.error('Could not load service details');
             window.location.href = '#!/services';
         });
+
+        scope.fetchRoutes(`/services/${scope.serviceId}/routes`);
     }
 
     scope.fetchPublicCertificates();
