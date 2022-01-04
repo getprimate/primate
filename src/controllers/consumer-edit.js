@@ -1,104 +1,136 @@
-/* global app:true */
-(function (angular, app) { 'use strict';
-    const controller = 'ConsumerEditController';
-    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+'use strict';
 
-    app.controller(controller, ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast',
-        function ($window, $scope, $routeParams, ajax, viewFrame, toast) {
+export default function ConsumerEditController(window, scope, routeParams, ajax, viewFrame, toast) {
+    const {angular} = window;
+    
+    viewFrame.title = 'Edit Consumer';
 
-        viewFrame.title = 'Edit Consumer';
+    scope.consumerId = routeParams.consumerId;
+    scope.formInput = {};
+    scope.authMethods = {};
 
-        $scope.consumerId = $routeParams.consumerId;
-        $scope.formInput = {};
-        $scope.authMethods = {};
+    scope.fetchAuthList = (authName, dataModel) => {
+        const request = ajax.get({resource: `/consumers/${scope.consumerId}/${authName}`});
 
-        $scope.fetchAuthList = function (authName, dataModel) {
-            ajax.get({ resource: '/consumers/' + $scope.consumerId + '/' + authName }).then(function (response) {
-                $scope.authMethods[dataModel]  = response.data.data;
-
-            }, function () {
-                toast.error('Could not load authentication details');
-            });
-        };
-
-        ajax.get({ resource: '/consumers/' + $scope.consumerId }).then(function (response) {
-            $scope.formInput.username = response.data.username;
-            $scope.formInput.custom_id = response.data.custom_id;
-
-            viewFrame.deleteAction = { target: 'consumer', url: '/consumers/' + $scope.consumerId, redirect: '#!/consumers' };
-
-        }, function () {
-            toast.error('Could not load consumer details');
-            $window.location.href = '#!/consumers';
+        request.then((response) => {
+            scope.authMethods[dataModel]  = response.data.data;
         });
 
-        let consumerEditForm = angular.element('form#consumerEditForm'),
-            authNotebook = angular.element('#authNotebook.notebook'),
-            authName = 'key-auth',
-            dataModel = 'keyAuthList';
+        request.catch(() => {
+            toast.error('Could not load authentication details');
+        });
 
-        consumerEditForm.on('submit', function (event) {
-            event.preventDefault();
+        return true;
+    };
 
-            ajax.patch({
-                resource: '/consumers/' + $scope.consumerId + '/',
-                data: $scope.formInput
-            }).then(function () {
-                toast.success('Consumer updated');
+    let consumerEditForm = angular.element('form#consumerEditForm'),
+        authNotebook = angular.element('#authNotebook.notebook'),
+        authName = 'key-auth',
+        dataModel = 'keyAuthList';
 
-            }, function (response) {
-                toast.error(response.data);
-            });
+    consumerEditForm.on('submit', function (event) {
+        event.preventDefault();
 
+        ajax.patch({
+            resource: '/consumers/' + scope.consumerId + '/',
+            data: scope.formInput
+        }).then(function () {
+            toast.success('Consumer updated');
+
+        }, function (response) {
+            toast.error(response.data);
+        });
+
+        return false;
+    });
+
+    const notebook = angular.element('#cs-ed__nbk01.well.notebook');
+    const tabsList = notebook.children().first();
+
+    tabsList.on('click', 'li', (event) => {
+        const {target} = event;
+        const {page} = target.dataset;
+
+        if (typeof page !== 'string') {
             return false;
+        }
+
+        angular.forEach(tabsList.children(), (child) => {
+            child.classList.remove('active');
         });
 
-        authNotebook.on('click', '.col.tab', function (event) {
-            let tab = angular.element(event.target);
-            let targetView = authNotebook.find(tab.data('target-view'));
+        target.classList.add('active');
 
-            authNotebook.children('.row').children('.tab').removeClass('active');
-            tab.addClass('active');
+        angular.forEach(notebook.children(), (child) => {
+            const {id} = child;
 
-            authNotebook.find('.auth-view:visible').hide({ duration:300, direction: 'left' });
-            targetView.show({ duration:300, direction:'right' });
-
-            dataModel = targetView.data('list-model');
-            authName  = targetView.data('auth-name');
-
-            if (typeof $scope.authMethods[dataModel] === 'undefined' || $scope.authMethods[dataModel].length <= 0) {
-                $scope.fetchAuthList(authName, dataModel);
+            if (child.nodeName === 'SECTION') {
+                child.classList.remove('active');
             }
-        }).on('click', 'button.btn.cancel', function (event) {
-            angular.element(event.target).parents('form.form-new-auth').slideUp(300);
 
-        }).on('click', '.toggle-form', function (event) {
-            angular.element(event.target).parents('.auth-view').find('form.form-new-auth').slideToggle(300);
+            if (typeof id === 'string'
+                && page === `#${id}`
+                && !child.classList.contains('active')) {
+                child.classList.add('active');
+            }
+        });
+    });
 
-        }).on('submit', 'form.form-new-auth', function (event) {
-            event.preventDefault();
+    authNotebook.on('click', '.col.tab', function (event) {
+        let tab = angular.element(event.target);
+        let targetView = authNotebook.find(tab.data('target-view'));
 
-            let form = angular.element(event.target), payload = {};
+        authNotebook.children('.row').children('.tab').removeClass('active');
+        tab.addClass('active');
 
-            form.find('input.param').each(function (index, element) {
-                payload[element.name] = element.value;
-            });
+        authNotebook.find('.auth-view:visible').hide({ duration:300, direction: 'left' });
+        targetView.show({ duration:300, direction:'right' });
 
-            ajax.post({
-                resource: '/consumers/' + $scope.consumerId + '/' + authName,
-                data: payload
-            }).then(function (response) {
-                $scope.authMethods[dataModel].push(response.data);
-                toast.success('Authentication saved');
+        dataModel = targetView.data('list-model');
+        authName  = targetView.data('auth-name');
 
-            }, function (response) {
-                toast.error(response.data);
-            });
+        if (typeof scope.authMethods[dataModel] === 'undefined' || scope.authMethods[dataModel].length <= 0) {
+            scope.fetchAuthList(authName, dataModel);
+        }
+    }).on('submit', 'form.form-new-auth', function (event) {
+        event.preventDefault();
 
-            return false;
+        let form = angular.element(event.target), payload = {};
+
+        form.find('input.param').each(function (index, element) {
+            payload[element.name] = element.value;
         });
 
-        $scope.fetchAuthList('key-auth', 'keyAuthList');
-    }]);
+        ajax.post({
+            resource: '/consumers/' + scope.consumerId + '/' + authName,
+            data: payload
+        }).then(function (response) {
+            scope.authMethods[dataModel].push(response.data);
+            toast.success('Authentication saved');
 
-})(window.angular, app);
+        }, function (response) {
+            toast.error(response.data);
+        });
+
+        return false;
+    });
+
+    if (scope.consumerId !== '__none__') {
+        const request = ajax.get({ resource: `/consumers/${scope.consumerId}`});
+
+        request.then(({data: response}) => {
+            scope.formInput.username = response.username;
+            scope.formInput.custom_id = response.custom_id;
+
+            viewFrame.deleteAction = { target: 'consumer', url: '/consumers/' + scope.consumerId, redirect: '#!/consumers' };
+        });
+
+        request.catch(() => {
+            toast.error('Could not load consumer details');
+            window.location.href = '#!/consumers';
+        });
+    }
+
+    scope.fetchAuthList('key-auth', 'keyAuthList');
+}
+    
