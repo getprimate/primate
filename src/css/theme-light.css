@@ -1,8 +1,7 @@
 :root {
-    --body__primary-bg: #1A242D;
-    --body__primary-fg: #efefef;
-    --main__primary-bg: #1A242D;
-    --label__primary-fg: #B3C2CC;
+    --body__primary-bg: #FAFAFA;
+    --body__primary-fg: #121212;
+    --label__primary-fg: #111111;
     --inset__primary_bg: #222d37;
 }
 
@@ -16,7 +15,7 @@ aside.drawer .icon { background-color: #3B4B54; }
 
 aside.drawer .icon { text-shadow: 1px 1px #1A242D; color: #D4DEF7; }
 
-main.content { background-color: var(--main__primary-bg); }
+main.content { background-color: #1A242D; }
 
 footer.footer { background-color: #222D37; border-top: 1px solid #2F3E47;
     color: #76868F; font-size: 0.85rem; font-weight: 500; }
