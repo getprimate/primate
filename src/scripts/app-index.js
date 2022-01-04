@@ -59,14 +59,6 @@
                 templateUrl: 'views/plugin-edit.html',
                 controller: 'PluginEditController'
             })
-            .when('/consumers', {
-                templateUrl: 'views/consumer-list.html',
-                controller: 'ConsumerListController'
-            })
-            .when('/consumers/:consumerId', {
-                templateUrl: 'views/consumer-edit.html',
-                controller: 'ConsumerEditController'
-            })
             .when('/consumers/:consumerId/plugins', {
                 templateUrl: 'views/plugin-list.html',
                 controller: 'PluginListController'
@@ -113,6 +105,17 @@
             .when('/services/:serviceId/routes/:routeId', {
                 controller: 'RouteEditController',
                 templateUrl: 'views/route-edit.html'
+            });
+
+        /* Configure route for listing and editing Consumer objects. */
+        $routeProvider
+            .when('/consumers', {
+                controller: 'ConsumerListController',
+                templateUrl: 'views/consumer-list.html'
+            })
+            .when('/consumers/:consumerId', {
+                controller: 'ConsumerEditController',
+                templateUrl: 'views/consumer-edit.html'
             });
 
         $routeProvider.otherwise({
