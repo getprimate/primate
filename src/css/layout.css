@@ -54,18 +54,28 @@ ul.list li { display: block; padding: 4px; border-radius: 4px; margin-bottom: 10
 .well { margin-bottom: 25px; padding: 0; border-radius: 5px; }
 
 .well .well__heading { border-radius: 5px 5px 0 0; padding: 10px 15px 10px 15px; font-size: 0.97rem; font-weight: 500; }
+.well .well__scrollable { max-height: 200px; width: 100%; margin: 0; padding: 0; overflow-y: auto; overflow-x: hidden; }
 
 /* Notebooks and tabs */
-.notebook .tab { cursor: pointer; padding: 5px 0 5px 0; }
-
 .notebook > .row:first-child { padding-top: 20px; border-radius: 5px 5px 0 0; margin-top: 0; margin-bottom: 0; }
 .notebook .tab.active { border-radius: 5px 5px 0 0 !important; }
 
-.well.notebook > ul.notebook__tab { display: block; }
-.well.notebook > ul.notebook__tab > li { display: inline-block; padding: 0 10px 0 0; }
-.well.notebook > ul.notebook__tab > li label { color: #FF0000; }
-.well.notebook > ul.notebook__tab > li label:focus { color: #00FF00; }
+.well.notebook > ul.notebook__tab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.well.notebook > ul.notebook__tab > li {
+    display: inline-block;
+    padding: 15px 10px 15px 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
 .well.notebook > .notebook__page { display: none; }
+.well.notebook > .notebook__page.active { display: block; }
+
 .well.notebook > input[type="radio"].notebook__check { display: none; }
 .well.notebook > input[type="radio"].notebook__check:checked + .notebook__page { display: block; }
 
@@ -209,7 +219,7 @@ textarea {
     max-width: 100%; min-width: 100%; max-height: 400px; min-height: 100px;
     width: 100%; height: 200px; font-family: 'Roboto', sans-serif; }
 
-form.form { padding-bottom: 10px; }
+form.form { display: block; padding-bottom: 10px; }
 
 form.form .form__field { margin-bottom: 20px; }
 

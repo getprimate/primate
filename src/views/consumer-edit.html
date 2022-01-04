@@ -1,3 +1,6 @@
+<div class="container">
+<div class="row">
+<div class="col md-8">
 <div class="panel panel-border info">
 <div class="panel__heading">Consumer Details</div>
 <div class="panel__body">
@@ -21,45 +24,43 @@
 </div>
 </div>
 
-<div id="authNotebook" class="well notebook">
-<div class="row align-center">
-    <div class="col md-3 align-left"><span class="hpadding-10">Authentication</span></div>
-    <div class="col md-2 tab active" data-target-view="#keyAuthView">Key Auth</div>
-    <div class="col md-2 tab" data-target-view="#basicAuthView">Basic Auth</div>
-    <div class="col md-1 tab" data-target-view="#oauthView">OAuth2</div>
-    <div class="col md-2 tab" data-target-view="#hmacAuthView">HMAC Auth</div>
-    <div class="col md-1 tab" data-target-view="#jwtAuthView">JWT</div>
-    <div class="col md-1 tab" data-target-view="#aclView">ACLs</div>
-</div>
+<div id="cs-ed__nbk01" class="well notebook">
+<ul class="notebook__tab">
+    <li class="active" data-page="#cs-ed__npg01">Key Auth</li>
+    <li data-page="#cs-ed__npg02">Basic Auth</li>
+    <li data-page="#cs-ed__npg03">OAuth2</li>
+    <li data-page="#cs-ed__npg04">HMAC Auth</li>
+    <li data-page="#cs-ed__npg05">JWT</li>
+    <li data-page="#cs-ed__npg06">ACLs</li>
+</ul><!-- .notebook__tab -->
 
-<div class="auth-view pad-top-20" data-auth-name="key-auth" data-list-model="keyAuthList" id="keyAuthView">
-    <hr class="no-margin" />
-    <div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new key</p>
-    <form class="form hpadding-10 form-new-auth hidden">
-        <div class="form__field"><input class="param" type="text" name="key" placeholder="Key (Leave blank to auto-generate)" value="" /></div>
-        <div class="form__field">
-            <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
-    </form>
+<section id="cs-ed__npg01" class="notebook__page active" data-auth-name="key-auth" data-list-model="keyAuthList">
+    <div class="row">
+    <div class="col md-6">
+        <form class="form hpadding-10 form-new-auth hidden">
+            <div class="form__field"><input class="param" type="text" name="key" placeholder="Key (Leave blank to auto-generate)" value="" /></div>
+            <div class="form__field">
+                <button type="button" class="btn default cancel">Cancel</button>
+                <button class="btn info" type="submit" name="action" value="add">Add</button>
+            </div>
+        </form>
     </div>
-    <hr class="no-margin" />
-    <table data-ng-if="authMethods.keyAuthList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-        <thead><tr><th>Key</th> <th>Created</th> <th>Actions</th></tr></thead>
-        <tbody>
+    <div class="col md-6">
+        <table data-ng-if="authMethods.keyAuthList.length>0" class="board data-table">
+            <tbody>
             <tr data-ng-repeat="keyAuth in authMethods.keyAuthList">
-                <td>{{keyAuth.key}}</td>
-                <td>{{keyAuth.created_at | date}}</td>
-                <td class="action-icons"><i class="material-icons danger delete" data-target="authentication key" data-url="/consumers/{{consumerId}}/key-auth/{{keyAuth.id}}">delete_forever</i></td>
+                <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
+                <td class="action-group"><i class="material-icons danger delete" data-target="authentication key" data-url="/consumers/{{consumerId}}/key-auth/{{keyAuth.id}}">delete_forever</i></td>
             </tr>
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
+    </div><!--.row -->
+</section><!-- #cs-ed__npg01.notebook__page -->
 
-<div class="auth-view pad-top-20 hidden" data-auth-name="basic-auth" data-list-model="basicAuthList" id="basicAuthView">
-    <hr class="no-margin" />
-    <div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new username</p>
+<section id="cs-ed__npg02" class="notebook__page" data-auth-name="basic-auth" data-list-model="basicAuthList">
+    <div class="row">
+    <div class="col md-7">
     <form class="form hpadding-10 form-new-auth hidden">
         <div class="row">
             <div class="col md-6"><input class="param" type="text" name="username" placeholder="Username" value="" /></div>
@@ -69,133 +70,136 @@
             <button type="button" class="btn default cancel">Cancel</button>
             <button class="btn info" type="submit" name="action" value="add">Add</button></div>
     </form>
-    </div>
-    <hr class="no-margin" />
+    </div><!-- col.md-7 -->
 
-    <table data-ng-if="authMethods.basicAuthList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-        <thead><tr><th>Username</th> <th>Created</th> <th>Actions</th></tr></thead>
+    <div class="col md-5">
+    <table data-ng-if="authMethods.basicAuthList.length>0" class="board data-table">
         <tbody>
         <tr data-ng-repeat="basicAuth in authMethods.basicAuthList">
-            <td>{{basicAuth.username}}</td>
-            <td>{{basicAuth.created_at | date}}</td>
-            <td class="action-icons"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</i></td>
+            <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
+            <td class="action-group"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</i></td>
         </tr>
         </tbody>
     </table>
-</div>
+    </div><!-- .col.md-5 -->
+    </div><!-- .row -->
+</section><!-- #cs-ed__npg02.notebook__page -->
 
-<div class="auth-view pad-top-20 hidden" data-auth-name="oauth2" data-list-model="oauthList" id="oauthView">
-<hr class="no-margin" />
-<div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new OAuth</p>
-    <form class="form hpadding-10 form-new-auth hidden">
-        <div class="row">
-            <div class="col md-6"><input class="param" type="text" name="name" placeholder="Username" value="" /></div>
-            <div class="col md-6"><input class="param" type="text" name="redirect_uri" placeholder="Redirect URI" value="" /></div>
-        </div>
-        <div class="row">
-            <div class="col md-6"><input class="param" type="text" name="client_id" placeholder="Client Id" value="" /></div>
-            <div class="col md-6"><input class="param" type="text" name="client_secret" placeholder="Client Secret" value="" /></div>
-        </div>
-        <div class="form__field">
-            <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
-    </form>
-</div>
-<hr class="no-margin" />
+<section id="cs-ed__npg03" class="notebook__page" data-auth-name="oauth2" data-list-model="oauthList">
+    <div class="row">
+    <div class="col md-7">
+        <form class="form hpadding-10 form-new-auth hidden">
+            <div class="row">
+                <div class="col md-6"><input class="param" type="text" name="name" placeholder="Username" value="" /></div>
+                <div class="col md-6"><input class="param" type="text" name="redirect_uri" placeholder="Redirect URI" value="" /></div>
+            </div>
+            <div class="row">
+                <div class="col md-6"><input class="param" type="text" name="client_id" placeholder="Client Id" value="" /></div>
+                <div class="col md-6"><input class="param" type="text" name="client_secret" placeholder="Client Secret" value="" /></div>
+            </div>
+            <div class="form__field">
+                <button type="button" class="btn default cancel">Cancel</button>
+                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+        </form>
+    </div><!-- .col.md-7 -->
 
-<table data-ng-if="authMethods.oauthList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead><tr><th>Username</th> <th>Client Id</th> <th>Redirect URI</th> <th>Created</th> <th>Actions</th></tr></thead>
-    <tbody>
-    <tr data-ng-repeat="oauth in authMethods.oauthList">
-        <td>{{oauth.name}}</td>
-        <td>{{oauth.client_id}}</td>
-        <td>{{oauth.redirect_uri}}</td>
-        <td>{{oauth.created_at | date}}</td>
-        <td class="action-icons"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/oauth2/{{basicAuth.id}}">delete_forever</i></td>
-    </tr>
-    </tbody>
-</table>
-</div>
+    <div class="col md-5">
+        <table data-ng-if="authMethods.oauthList.length>0" class="board data-table">
+            <tbody>
+            <tr data-ng-repeat="oauth in authMethods.oauthList">
+                <td><strong>{{oauth.name}}</strong> {{oauth.client_id}}<br />{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
+                <td class="action-group"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/oauth2/{{basicAuth.id}}">delete_forever</i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div><!-- .col.md-5 -->
+    </div><!-- .row -->
+</section><!-- #cs-ed__npg03.notebook__page -->
 
-<div class="auth-view pad-top-20 hidden" data-auth-name="hmac-auth" data-list-model="hmacAuthList" id="hmacAuthView">
-<hr class="no-margin" />
-<div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new username</p>
-    <form class="form hpadding-10 form-new-auth hidden">
-        <div class="row">
-            <div class="col md-6"><input class="param" type="text" name="username" placeholder="Username" value="" /></div>
-            <div class="col md-6"><input class="param" type="text" name="secret" placeholder="Secret" value="" /></div>
-        </div>
-        <div class="form__field">
-            <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
-    </form>
-</div>
-<hr class="no-margin" />
+<section id="cs-ed__npg04" class="notebook__page" data-auth-name="hmac-auth" data-list-model="hmacAuthList">
+    <div class="row">
+    <div class="col md-7">
+        <form class="form hpadding-10 form-new-auth hidden">
+            <div class="row">
+                <div class="col md-6"><input class="param" type="text" name="username" placeholder="Username" value="" /></div>
+                <div class="col md-6"><input class="param" type="text" name="secret" placeholder="Secret" value="" /></div>
+            </div>
+            <div class="form__field">
+                <button type="button" class="btn default cancel">Cancel</button>
+                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+        </form>
+    </div><!-- .col.md-7 -->
 
-<table data-ng-if="authMethods.hmacAuthList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead><tr><th>Username</th> <th>Created</th> <th>Actions</th></tr></thead>
-    <tbody>
-    <tr data-ng-repeat="hmacAuth in authMethods.hmacAuthList">
-        <td>{{hmacAuth.username}}</td>
-        <td>{{hmacAuth.created_at | date}}</td>
-        <td class="action-icons"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/hmac-auth/{{hmacAuth.id}}">delete_forever</i></td>
-    </tr>
-    </tbody>
-</table>
-</div>
+    <div class="col md-5">
+        <table data-ng-if="authMethods.hmacAuthList.length>0" class="board data-table">
+            <tbody>
+            <tr data-ng-repeat="hmacAuth in authMethods.hmacAuthList">
+                <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
+                <td class="action-group"><i class="material-icons danger delete" data-target="username" data-url="/consumers/{{consumerId}}/hmac-auth/{{hmacAuth.id}}">delete_forever</i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div><!-- .col.md-5 -->
+    </div><!-- .row -->
+</section><!-- #cs-ed__npg04.notebook__page -->
 
-<div class="auth-view pad-top-20 hidden" data-auth-name="jwt" data-list-model="jwtAuthList" id="jwtAuthView">
-<hr class="no-margin" />
-<div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new token</p>
-    <form class="form hpadding-10 form-new-auth hidden">
-        <div class="row">
-            <div class="col md-6"><input class="param" type="text" name="key" placeholder="Key" value="" /></div>
-            <div class="col md-6"><input class="param" type="text" name="secret" placeholder="Secret" value="" /></div>
-        </div>
-        <div class="form__field">
-            <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
-    </form>
-</div>
-<hr class="no-margin" />
+<section id="cs-ed__npg05" class="notebook__page" data-auth-name="jwt" data-list-model="jwtAuthList">
+    <div class="row">
+    <div class="col md-7">
+        <form class="form hpadding-10 form-new-auth hidden">
+            <div class="row">
+                <div class="col md-6"><input class="param" type="text" name="key" placeholder="Key" value="" /></div>
+                <div class="col md-6"><input class="param" type="text" name="secret" placeholder="Secret" value="" /></div>
+            </div>
+            <div class="form__field">
+                <button type="button" class="btn default cancel">Cancel</button>
+                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+        </form>
+    </div><!-- .col.md-7 -->
 
-<table data-ng-if="authMethods.jwtAuthList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead><tr><th>Key</th> <th>Created</th> <th>Actions</th></tr></thead>
-    <tbody>
-    <tr data-ng-repeat="jwtAuth in authMethods.jwtAuthList">
-        <td>{{jwtAuth.key}}</td>
-        <td>{{jwtAuth.created_at | date}}</td>
-        <td class="action-icons"><i class="material-icons danger delete" data-target="token" data-url="/consumers/{{consumerId}}/jwt/{{jwtAuth.id}}">delete_forever</i></td>
-    </tr>
-    </tbody>
-</table>
-</div>
+    <div class="col md-5">
+        <table data-ng-if="authMethods.jwtAuthList.length>0" class="table data-table">
+            <tbody>
+            <tr data-ng-repeat="jwtAuth in authMethods.jwtAuthList">
+                <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
+                <td class="action-group"><i class="material-icons danger delete" data-target="token" data-url="/consumers/{{consumerId}}/jwt/{{jwtAuth.id}}">delete_forever</i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div><!-- .col.md-5 -->
+    </div><!-- .row -->
+</section><!-- #cs-ed__npg05.notebook__page -->
 
-<div class="auth-view pad-top-20 hidden" data-auth-name="acls" data-list-model="aclList" id="aclView">
-<hr class="no-margin" />
-<div class="highlight hpadding-10">
-    <p class="toggle-form pointer no-margin padding-10">Add new group</p>
-    <form class="form hpadding-10 form-new-auth hidden">
-        <div class="form__field"><input class="param" type="text" name="group" placeholder="Group name" value="" /></div>
-        <div class="form__field">
-            <button type="button" class="btn default cancel">Cancel</button>
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
-    </form>
-</div>
-<hr class="no-margin" />
+<section id="cs-ed__npg06" class="notebook__page" data-auth-name="acls" data-list-model="aclList">
+    <div class="row">
+    <div class="col md-7">
+        <form class="form hpadding-10 form-new-auth hidden">
+            <div class="form__field"><input class="param" type="text" name="group" placeholder="Group name" value="" /></div>
+            <div class="form__field">
+                <button type="button" class="btn default cancel">Cancel</button>
+                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+        </form>
+    </div><!-- .col.md-7 -->
 
-<table data-ng-if="authMethods.aclList.length>0" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead><tr><th>Group</th> <th>Created</th> <th>Actions</th></tr></thead>
-    <tbody>
-    <tr data-ng-repeat="acl in authMethods.aclList">
-        <td>{{acl.group}}</td>
-        <td>{{acl.created_at | date}}</td>
-        <td class="action-icons"><i class="material-icons danger delete" data-target="group" data-url="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</i></td>
-    </tr>
-    </tbody>
-</table>
-</div>
-</div>
+    <div class="col md-5">
+        <table data-ng-if="authMethods.aclList.length>0" class="table data-table">
+            <thead><tr><th>Group</th> <th>Created</th> <th>Actions</th></tr></thead>
+            <tbody>
+            <tr data-ng-repeat="acl in authMethods.aclList">
+                <td>{{acl.group}}</td>
+                <td>{{acl.created_at | date}}</td>
+                <td class="action-icons"><i class="material-icons danger delete" data-target="group" data-url="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div><!-- .col.md-5 -->
+    </div><!-- .row -->
+</section><!-- #cs-ed__npg06.notebook__page -->
+</div><!-- .well.notebook -->
+</div><!-- .col.md-8 -->
+
+<div class="col md-4">
+
+</div><!-- .col.md-4 -->
+</div><!-- .row -->
+</div><!-- .container -->
