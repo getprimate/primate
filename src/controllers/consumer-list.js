@@ -1,76 +1,55 @@
-/* global app:true */
-(function (angular, app) { 'use strict';
-    const controller = 'ConsumerListController';
-    if (typeof app === 'undefined') throw (controller + ': app is undefined');
+'use strict';
 
-    app.controller(controller, ['$scope', 'ajax', 'viewFrame', 'toast', function ($scope, ajax, viewFrame, toast) {
-        viewFrame.title = 'Consumer List';
-        viewFrame.prevUrl = '';
+/**
+ * Provides controller constructor for editing CA certificates.
+ *
+ * @constructor
+ *
+ * @param {{consumerList: Object[],
+ *      consumerNext: string,
+ *      fetchConsumerList: function}} scope - injected scope object
+ * @param {AjaxProvider} ajax - custom AJAX provider
+ * @param {ViewFrameFactory} viewFrame - custom view frame factory
+ * @param {ToastFactory} toast - custom toast message factory
+ */
+export default function ConsumerListController(scope, ajax, viewFrame, toast) {
+    scope.consumerList = [];
+    scope.consumerNext = '';
 
-        $scope.consumerList = [];
-        $scope.formInput = {
-            userName: '',
-            custom_id: ''
-        };
+    /**
+     * Retrieves the consumer list.
+     *
+     * @param {string} resource - the consumer API endpoint
+     */
+    scope.fetchConsumerList = (resource = '/consumers') => {
+        const request = ajax.get({ resource: resource });
 
-        $scope.fetchConsumerList = function (resource) {
-            ajax.get({ resource: resource }).then(function (response) {
-                $scope.nextUrl = (typeof response.data.next === 'string') ?
-                    response.data.next.replace(new RegExp(viewFrame.host), '') : '';
+        request.then(({data: response}) => {
+            let {next} = response;
+            scope.consumerNext = (typeof next === 'string') ? next.replace(viewFrame.host, '') : '';
 
-                for (let index = 0; index < response.data.data.length; index++) {
-                    $scope.consumerList.push(response.data.data[index]);
-                }
-
-            }, function () {
-                toast.error('Could not load list of consumers');
-            });
-        };
-
-        let panelAdd = angular.element('div#panelAdd');
-        let consumerForm = panelAdd.children('div.panel__body').children('form');
-
-        panelAdd.children('div.panel__heading').on('click', function () {
-            consumerForm.slideToggle(300);
+            for (let index = 0; index < response.data.length; index++) {
+                scope.consumerList.push(response.data[index]);
+            }
         });
 
-        consumerForm.on('submit', function (event) {
-            event.preventDefault();
-
-            let payload = {};
-
-            if ($scope.formInput.userName.trim().length > 1) {
-                payload.username = $scope.formInput.userName;
-            }
-
-            if ($scope.formInput.custom_id.trim().length > 1) {
-                payload.custom_id = $scope.formInput.custom_id;
-            }
-
-            if (typeof payload.username === 'undefined' &&
-                typeof payload.custom_id === 'undefined') {
-                consumerForm.find('input[name="userName"]').focus();
-                return false;
-            }
-
-            ajax.post({
-                resource: '/consumers/',
-                data: payload
-            }).then(function(response) {
-                $scope.consumerList.push(response.data);
-                toast.success('Added new consumer');
-
-            }, function (response) {
-                toast.error(response.data);
-            });
-
-            return false;
+        request.catch(() => {
+            toast.error('Could not load list of consumers');
         });
 
-        consumerForm.on('click', 'button[name="actionCancel"]', function () {
-            consumerForm.slideUp(300);
-        });
+        return true;
+    };
 
-        $scope.fetchConsumerList('/consumers');
-    }]);
-})(window.angular, app);
+    viewFrame.title = 'Consumer List';
+    viewFrame.prevUrl = '';
+
+    scope.fetchConsumerList('/consumers');
+
+    viewFrame.actionButtons.push({
+        displayText: 'New Consumer',
+        target: 'consumer',
+        url: '/consumers',
+        redirect: '#!/consumers/__create__',
+        styles: 'btn info create'
+    });
+}
