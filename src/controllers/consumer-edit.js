@@ -2,18 +2,65 @@
 
 export default function ConsumerEditController(window, scope, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
+    const ajaxConfig = {method: 'POST', resource: '/consumers'};
+
+    const notebook = angular.element('#cs-ed__nbk01.well.notebook');
+    const tabsList = notebook.children().first();
     
     viewFrame.title = 'Edit Consumer';
 
-    scope.consumerId = routeParams.consumerId;
-    scope.formInput = {};
-    scope.authMethods = {};
+    scope.consumerId = '__none__';
+    scope.consumerModel = {};
 
-    scope.fetchAuthList = (authName, dataModel) => {
-        const request = ajax.get({resource: `/consumers/${scope.consumerId}/${authName}`});
+    viewFrame.prevUrl = '#!/consumers';
 
-        request.then((response) => {
-            scope.authMethods[dataModel]  = response.data.data;
+    switch (routeParams.consumerId) {
+        case '__create__':
+            viewFrame.title = 'Add New Consumer';
+            notebook.addClass('hidden');
+            break;
+
+        default:
+            ajaxConfig.method = 'PATCH';
+            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.consumerId}`;
+
+            scope.consumerId = routeParams.consumerId;
+
+            viewFrame.title = 'Edit Consumer';
+            break;
+    }
+
+    scope.authMethods = {
+        key_Res: `/consumers/${scope.consumerId}/key-auth`,
+        key_Model: {key: '', ttl: 0},
+        key_List: [],
+        basic_Res: `/consumers/${scope.consumerId}/basic-auth`,
+        basic_Model: {username: '', password: ''},
+        basic_List: [],
+        oauth_Res: `/consumers/${scope.consumerId}/oauth2`,
+        oauth_Model: {name: '', redirect_uris: [], client_id: '', client_secret: ''},
+        oauth_List: [],
+        hmac_Res: `/consumers/${scope.consumerId}/hmac-auth`,
+        hmac_Model: {username: '', secret: ''},
+        hmac_List: [],
+        jwt_Res: `/consumers/${scope.consumerId}/jwt`,
+        jwt_Model: {key: '', secret: ''},
+        jwt_List: [],
+        acl_Res: `/consumers/${scope.consumerId}/acls`,
+        acl_Model: {group: ''},
+        acl_List: []
+    };
+
+    scope.fetchAuthList = (method) => {
+        if (typeof scope.authMethods[`${method}_Res`] === 'undefined') {
+            return false;
+        }
+
+        const resource = scope.authMethods[`${method}_Res`];
+        const request = ajax.get({resource});
+
+        request.then(({data: response}) => {
+            scope.authMethods[`${method}_List`]  = response.data;
         });
 
         request.catch(() => {
@@ -23,104 +70,86 @@ export default function ConsumerEditController(window, scope, routeParams, ajax,
         return true;
     };
 
-    let consumerEditForm = angular.element('form#consumerEditForm'),
-        authNotebook = angular.element('#authNotebook.notebook'),
-        authName = 'key-auth',
-        dataModel = 'keyAuthList';
-
-    consumerEditForm.on('submit', function (event) {
-        event.preventDefault();
-
-        ajax.patch({
-            resource: '/consumers/' + scope.consumerId + '/',
-            data: scope.formInput
-        }).then(function () {
-            toast.success('Consumer updated');
-
-        }, function (response) {
-            toast.error(response.data);
-        });
-
-        return false;
-    });
-
-    const notebook = angular.element('#cs-ed__nbk01.well.notebook');
-    const tabsList = notebook.children().first();
-
     tabsList.on('click', 'li', (event) => {
-        const {target} = event;
-        const {page} = target.dataset;
+        const target = angular.element(event.target);
+        const page = target.data('page');
+        const method = target.data('auth-method');
 
         if (typeof page !== 'string') {
             return false;
         }
 
-        angular.forEach(tabsList.children(), (child) => {
-            child.classList.remove('active');
+        const section = notebook.children(`section${page}`);
+
+        tabsList.children().each((index, child)=> {
+            angular.element(child).removeClass('active');
         });
 
-        target.classList.add('active');
+        target.addClass('active');
 
-        angular.forEach(notebook.children(), (child) => {
-            const {id} = child;
+        notebook.children('section.notebook__page').removeClass('active');
+        section.addClass('active');
 
-            if (child.nodeName === 'SECTION') {
-                child.classList.remove('active');
-            }
+        if (Array.isArray(scope.authMethods[`${method}_List`])
+            &&  scope.authMethods[`${method}_List`].length === 0) {
+            return scope.fetchAuthList(method);
+        }
 
-            if (typeof id === 'string'
-                && page === `#${id}`
-                && !child.classList.contains('active')) {
-                child.classList.add('active');
-            }
-        });
+        return true;
     });
 
-    authNotebook.on('click', '.col.tab', function (event) {
-        let tab = angular.element(event.target);
-        let targetView = authNotebook.find(tab.data('target-view'));
+    notebook.on('submit', 'form.form.form-new-auth', (event) => {
+        const target = angular.element(event.target);
+        const method = target.data('auth-method');
 
-        authNotebook.children('.row').children('.tab').removeClass('active');
-        tab.addClass('active');
-
-        authNotebook.find('.auth-view:visible').hide({ duration:300, direction: 'left' });
-        targetView.show({ duration:300, direction:'right' });
-
-        dataModel = targetView.data('list-model');
-        authName  = targetView.data('auth-name');
-
-        if (typeof scope.authMethods[dataModel] === 'undefined' || scope.authMethods[dataModel].length <= 0) {
-            scope.fetchAuthList(authName, dataModel);
+        if (typeof method !== 'string'
+            || typeof scope.authMethods[`${method}_Model`] === 'undefined') {
+            return false;
         }
-    }).on('submit', 'form.form-new-auth', function (event) {
+
+        const resource = scope.authMethods[`${method}_Res`];
+        const payload = scope.authMethods[`${method}_Model`];
+        const request = ajax.post({resource, data: payload});
+
         event.preventDefault();
 
-        let form = angular.element(event.target), payload = {};
+        request.then(({data: response}) => {
+            scope.authMethods[`${method}_List`].push(response);
 
-        form.find('input.param').each(function (index, element) {
-            payload[element.name] = element.value;
+            for (let key of Object.keys(payload)) {
+                switch (typeof payload[key]) {
+                    case 'string':
+                    case 'number':
+                        payload[key] = (typeof payload[key] === 'string') ? '' : 0;
+                        break;
+
+                    case 'object':
+                        payload[key] = Array.isArray(payload[key]) ? [] : {};
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            toast.success('Added authentication method.');
+            return true;
         });
 
-        ajax.post({
-            resource: '/consumers/' + scope.consumerId + '/' + authName,
-            data: payload
-        }).then(function (response) {
-            scope.authMethods[dataModel].push(response.data);
-            toast.success('Authentication saved');
-
-        }, function (response) {
-            toast.error(response.data);
+        request.catch(() => {
+            toast.error('Unable to add authentication method.');
+            return false;
         });
 
         return false;
     });
 
-    if (scope.consumerId !== '__none__') {
+    if (ajaxConfig.method === 'PATCH' && scope.consumerId !== '__none__') {
         const request = ajax.get({ resource: `/consumers/${scope.consumerId}`});
 
         request.then(({data: response}) => {
-            scope.formInput.username = response.username;
-            scope.formInput.custom_id = response.custom_id;
+            scope.consumerModel.username = response.username;
+            scope.consumerModel.custom_id = response.custom_id;
 
             viewFrame.deleteAction = { target: 'consumer', url: '/consumers/' + scope.consumerId, redirect: '#!/consumers' };
         });
@@ -129,8 +158,8 @@ export default function ConsumerEditController(window, scope, routeParams, ajax,
             toast.error('Could not load consumer details');
             window.location.href = '#!/consumers';
         });
-    }
 
-    scope.fetchAuthList('key-auth', 'keyAuthList');
+        scope.fetchAuthList('key');
+    }
 }
     
