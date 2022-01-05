@@ -68,6 +68,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
 
                 default:
                     toast.info('CA details updated');
+                    break;
             }
         });
 
