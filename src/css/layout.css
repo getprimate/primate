@@ -73,7 +73,11 @@ ul.list li { display: block; padding: 4px; border-radius: 4px; margin-bottom: 10
     font-weight: 500;
 }
 
-.well.notebook > .notebook__page { display: none; }
+.well.notebook > .notebook__page {
+    display: none;
+    padding: 0 15px 0 15px;
+}
+
 .well.notebook > .notebook__page.active { display: block; }
 
 .well.notebook > input[type="radio"].notebook__check { display: none; }
@@ -147,6 +151,7 @@ table.table tr:last-child td:first-child { border-bottom-left-radius: 5px; }
 table.table tr:last-child td:last-child { border-bottom-right-radius: 5px; }
 
 table.board { padding: 0 10px 0 10px; border-collapse: separate; border-spacing: 0 15px; }
+.well.notebook .notebook__page table.board { padding: 0 !important; }
 
 table.board tbody tr,
 table.board tfoot tr { border-width:1px; border-style: solid; border-color: transparent; border-radius: 5px; }
@@ -173,7 +178,6 @@ table.table tfoot.pagination button.btn.pagination,
 table.board tfoot.pagination button.btn.pagination { width: 100%; text-align: center; vertical-align: middle; background: transparent none; }
 
 table.board tfoot.pagination th { text-align: center; padding: 5px 0 5px 0 !important; margin: 0 !important; }
-
 
 /* Grid system */
 .container { display: block; position: relative; padding: 0; }
