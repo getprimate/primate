@@ -1,22 +1,25 @@
 'use strict';
 
-export default function ConsumerEditController(window, scope, routeParams, ajax, viewFrame, toast) {
+export default function ConsumerEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
     const ajaxConfig = {method: 'POST', resource: '/consumers'};
 
+    const editForm = angular.element('form#cs-ed__frm01');
     const notebook = angular.element('#cs-ed__nbk01.well.notebook');
     const tabsList = notebook.children().first();
-    
-    viewFrame.title = 'Edit Consumer';
 
     scope.consumerId = '__none__';
     scope.consumerModel = {};
 
-    viewFrame.prevUrl = '#!/consumers';
+    if (typeof routeParams.pluginId === 'string') {
+        viewFrame.prevUrl = `#!/plugins/${routeParams.pluginId}`;
+    }
 
     switch (routeParams.consumerId) {
         case '__create__':
             viewFrame.title = 'Add New Consumer';
+            viewFrame.prevUrl = '#!/consumers';
+
             notebook.addClass('hidden');
             break;
 
@@ -69,6 +72,35 @@ export default function ConsumerEditController(window, scope, routeParams, ajax,
 
         return true;
     };
+
+    editForm.on('submit', (event) => {
+        const payload = angular.copy(scope.consumerModel);
+        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
+
+        event.preventDefault();
+
+        request.then(({data: response}) => {
+            switch (scope.consumerId) {
+                case '__none__':
+                    toast.success('Added new consumer');
+                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                    break;
+
+                default:
+                    toast.info('Consumer details updated');
+                    break;
+            }
+
+            return true;
+        });
+
+        request.catch(() => {
+            toast.error('Unable to save consumer details.');
+            return false;
+        });
+
+        return false;
+    });
 
     tabsList.on('click', 'li', (event) => {
         const target = angular.element(event.target);
@@ -151,12 +183,22 @@ export default function ConsumerEditController(window, scope, routeParams, ajax,
             scope.consumerModel.username = response.username;
             scope.consumerModel.custom_id = response.custom_id;
 
-            viewFrame.deleteAction = { target: 'consumer', url: '/consumers/' + scope.consumerId, redirect: '#!/consumers' };
+            viewFrame.actionButtons.push({
+                target: 'consumer',
+                url: `/ca_certificates/${scope.consumerId}`,
+                redirect: '#!/consumers',
+                styles: 'btn danger delete',
+                displayText: 'Delete'
+            });
+
+            return true;
         });
 
         request.catch(() => {
             toast.error('Could not load consumer details');
             window.location.href = '#!/consumers';
+
+            return false;
         });
 
         scope.fetchAuthList('key');
