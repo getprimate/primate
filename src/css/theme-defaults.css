@@ -1,0 +1,19 @@
+:root {
+    --std__default: #9db4be;
+    --std__success: #10C469;
+    --std__info: #35B8E0;
+    --std__danger: #FF5B5B;
+    --std__warning: #ff691a;
+
+    --body__primary-bg: #1A242D;
+    --body__primary-fg: #EFEFEF;
+    --main__primary-bg: #1A242D;
+    --label__primary-fg: #B3C2CC;
+    --inset__primary_bg: #222d37;
+
+    --widget__primary-bg: #2F3E47;
+    --widget__accent-bg: #3B4B54;
+
+    --input__primary_bg: #394C57;
+    --input__accent_bg: #394C57;
+}
