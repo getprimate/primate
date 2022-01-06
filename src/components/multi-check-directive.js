@@ -33,7 +33,7 @@ export default function MultiCheckDirective(window) {
     const {angular} = window;
 
     return {
-        transclude: true,
+        transclude: false,
         restrict: 'E',
         require: ['ngModel'],
         template: '<ul></ul>',

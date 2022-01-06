@@ -47,7 +47,7 @@ export default function TokenInputDirective(window) {
     const {angular} = window;
 
     return {
-        transclude: true,
+        transclude: false,
         restrict: 'E',
         require: 'ngModel',
         template: '<textarea class="token-input__text"></textarea><ul class="token-input__list"></ul>',
