@@ -1,4 +1,162 @@
-/* global app:true */
+'use strict';
+
+const _buildSchemaModel = (fields) => {
+    const model = {};
+
+    for (let field of fields) {
+        for (let name of Object.keys(field)) {
+            switch (field[name].type) {
+                case 'boolean':
+                    model[name] = (typeof field[name].default === 'boolean') ? field[name].default : false;
+                    break;
+
+                case 'number':
+                    model[name] = (typeof field[name].default === 'number') ? field[name].default : 0;
+                    break;
+
+                case 'array':
+                    model[name] = (Array.isArray(field[name].default)) ? field[name].default : [];
+                    break;
+
+                case 'string':
+                    model[name] = (typeof field[name].default === 'string') ? field[name].default : '';
+                    break;
+
+                case 'record':
+                    model[name] = _buildSchemaModel(field[name]['fields']);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    return model;
+};
+
+const _sanitiseSchema = (schema) => {
+
+    const {fields} = schema;
+
+    for (let field of fields) {
+        for (let name of Object.keys(field)) {
+            let attributes = field[name], checkEnum = true;
+
+            switch (attributes.type) {
+                case 'integer':
+                case 'number':
+                    attributes.nodeType = 'input__number';
+                    break;
+
+                case 'array':
+                    attributes.nodeType = 'token-input';
+                    if (typeof attributes.elements === 'object' && Array.isArray(attributes.elements.one_of)) {
+                        attributes.nodeType = 'multi-check';
+                        attributes.nodeList = attributes.elements.one_of;
+                    }
+                    checkEnum = false;
+                    break;
+
+                case 'boolean':
+                    attributes.nodeType = 'input__checkbox';
+                    checkEnum = false;
+                    break;
+
+                case 'string':
+                    attributes.nodeType = 'input__text';
+                    break;
+
+                case 'record':
+                    attributes.nodeType = 'record';
+                    _sanitiseSchema(attributes);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (checkEnum === true
+                && typeof attributes.one_of === 'object'
+                && Array.isArray(attributes.one_of)) {
+                attributes.nodeType = 'select';
+                attributes.nodeList = attributes.one_of;
+            }
+        }
+    }
+
+    return schema;
+};
+
+export default function PluginEditController(window, scope, routeParams, ajax, viewFrame, toast) {
+    const {angular} = window;
+    const pluginForm = angular.element('form#pg-ed__frm01');
+
+    scope.pluginId = '__none__';
+    scope.pluginModel = {name: ''};
+    scope.pluginList = [];
+
+    scope.jsonText = 'Test';
+
+    scope.schemaProps = {};
+    scope.schemaModel = {};
+
+    scope.fetchPluginList = (resource = '/plugins/enabled') => {
+        const request = ajax.get({resource});
+
+        request.then(({data: response}) => {
+            scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
+            return true;
+        });
+
+        request.catch(()=> {
+            toast.error('Could not fetch list of enabled plugins');
+            return false;
+        });
+    };
+
+    scope.fetchSchema = (plugin) => {
+        const request = ajax.get({ resource: `/plugins/schema/${plugin}`});
+
+        request.then(({data: response}) => {
+            if (!Array.isArray(response['fields'])) {
+                toast.warning('Malformed plugin schema object. Please check Admin API version.');
+                return false;
+            }
+
+            const {fields} = response;
+            scope.schemaModel = _buildSchemaModel(fields);
+            scope.schemaProps = _sanitiseSchema(response);
+
+            scope.jsonText = JSON.stringify(scope.schemaProps, null, 4);
+
+            return true;
+        });
+
+        request.catch(() => {
+            toast.error('Unable to load plugin schema.');
+            return false;
+        });
+
+        return true;
+    };
+
+    pluginForm.on('change', 'select#pg-ed__sel01', (event) => {
+        const {target} = event;
+        return scope.fetchSchema(target.value);
+    });
+
+    pluginForm.on('change', 'input[name="schema_Switcher"]', (event) => {
+        const {target} = event;
+        scope.jsonText = JSON.stringify((target.value === 'schema') ? scope.schemaProps : scope.schemaModel, null, 4);
+    });
+
+    viewFrame.title = 'Apply Plugin';
+
+    scope.fetchPluginList();
+}
+
+/*
 (function (angular, app) { 'use strict';
     const controller = 'PluginEditController';
     if (typeof app === 'undefined') throw (controller + ': app is undefined');
@@ -180,3 +338,4 @@
     }]);
 
 })(window.angular, app);
+*/

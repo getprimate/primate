@@ -1,17 +1,19 @@
 <div class="container">
-<form id="editPlugins" class="form" method="post" action="#">
-    <div class="panel panel-border info"><div class="panel__heading">Plugin Configuration</div>
-    <div class="panel__body">
     <div class="row">
-    <div class="col md-5">
+    <div class="col md-8">
+
+    <div class="panel panel-border info">
+    <div class="panel__heading">Plugin Details</div>
+    <div class="panel__body">
+        <form id="pg-ed__frm01" class="form" method="post" action="#">
         <div class="form__field">
             <label class="field-label">Plugin Name</label>
             <div class="field-input">
-            <select data-ng-disabled="{{pluginId!=null}}" class="stretch" name="name" data-ng-model="formInput.name">
-                <option data-ng-repeat="plugin in enabledPlugins" value="{{plugin}}">{{plugin}}</option>
+            <select id="pg-ed__sel01" class="stretch" name="name" data-ng-model="pluginModel.name">
+                <option data-ng-repeat="plugin in pluginList" value="{{plugin}}">{{plugin}}</option>
             </select>
-            </div>
-        </div>
+            </div><!-- .field-input -->
+        </div><!-- .form__field -->
 
         <div class="form__field" data-ng-if="!pluginSchema.no_consumer">
         <label class="field-label">Apply to</label>
@@ -20,66 +22,87 @@
                 <option value="">All Consumers</option>
                 <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.username}}</option>
             </select>
+        </div><!-- .field-input -->
+        </div><!-- .form__field -->
+
+        <div class="panel__split"><span>Configurations for {{pluginModel.name}} plugin</span></div>
+
+        <div class="row">
+        <div class="col md-6">
+        <div>&nbsp;</div>
+        <article class="mg-bottom-10" data-ng-repeat="fieldWrap in schemaProps.fields">
+            <div data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
+                <div data-ng-switch="fieldProp.nodeType">
+
+                    <div data-ng-switch-when="input__checkbox" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input"><input type="checkbox" data-ng-model="schemaModel[fieldName]" /></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="input__text" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input"><input type="text" data-ng-model="schemaModel[fieldName]" /></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="input__number" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input"><input type="number" data-ng-model="schemaModel[fieldName]" /></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="token-input" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input"><token-input data-ng-model="schemaModel[fieldName]" data-placeholder="Type the value and press enter."></token-input></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="multi-check" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input"><multi-check data-ng-model="schemaModel[fieldName]" data-dv-list="fieldProp.nodeList"></multi-check></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="select" class="form__field">
+                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <div class="field-input">
+                            <select data-ng-switch-when="" class="stretch" data-ng-model="schemaModel[fieldName]">
+                                <option data-ng-repeat="option in fieldProp.nodeList" value="{{option}}">{{option}}</option>
+                            </select>
+                        </div><!-- .field__input -->
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="record">
+                        <div><strong>{{fieldName | pgname}}</strong></div>
+                        <div data-ng-include="'views/plugin-static-record.html'"></div>
+                    </div>
+                </div><!-- data-ng-switch -->
+            </div><!-- data-ng-repeat -->
+        </article><!-- .mg-bottom-10 -->
         </div>
+
+        <div class="col md-6">
+            <div class="form__field">
+                <div class="field-input">
+                    <label>Schema <input type="radio" name="schema_Switcher" value="schema" checked="checked" /></label>
+                    <label>Payload <input type="radio" name="schema_Switcher" value="payload" /></label>
+                </div>
+            </div><!-- .form__field -->
+            <div class="form__field">
+                <div class="field-input">
+                    <textarea readonly="readonly" data-ng-model="jsonText"></textarea>
+                </div>
+            </div><!-- .form__field -->
         </div>
+        </div><!-- .row -->
 
         <div class="form__field">
             <a href="{{prevUrl}}" class="btn default cancel">Cancel</a>
             <button class="btn info" type="submit" name="action" value="save">{{pluginId==null ? 'Add Plugin' : 'Update'}}</button>
         </div>
-    </div><!-- .col.md-5 -->
-
-    <div class="col md-7">
-        <div data-ng-repeat="(fieldName, fieldParams) in pluginSchema.fields" data-ng-if="fieldName.charAt(0)!='_'" data-ng-switch data-on="fieldParams.type">
-            <div class="form__field" data-ng-switch-when="undefined">
-                <label class="field-label">{{fieldName | pgname}}</label>
-                <div class="field-input" data-ng-if="fieldParams.enum">
-                    <select class="stretch" data-ng-model="formInput.config[fieldName]">
-                        <option data-ng-repeat="option in fieldParams.enum" value="{{option}}">{{option}}</option>
-                    </select>
-                </div><!-- If enum is provided -->
-            </div>
-
-            <div class="form__field" data-ng-switch-when="boolean">
-                <label class="checkbox info"><input data-ng-model="formInput.config[fieldName]" type="checkbox" value="">{{fieldName | pgname}}</label>
-            </div>
-
-            <div class="form__field" data-ng-switch-when="array">
-                <label class="field-label">{{fieldName | pgname}}</label>
-                <div data-ng-if="fieldParams.enum" class="input-control checkbox-list">
-                    <label class="checkbox default" data-ng-repeat="enum in fieldParams.enum">
-                        <input data-ng-model="checkBoxes[fieldName][enum]" type="checkbox" value="{{enum}}">{{enum}}</label>
-                </div>
-
-                <div data-ng-if="!fieldParams.enum" class="field-input">
-                    <input data-ng-model="formInput.config[fieldName]" type="text" value="{{fieldParams.default | splice}}" />
-                </div>
-            </div>
-
-            <div data-ng-switch-when="table">
-                <div data-ng-if="!fieldParams.schema.flexible" data-ng-include="'views/plugin-static-table.html'"></div>
-                <div data-ng-if="fieldParams.schema.flexible">
-                    <div data-ng-repeat="(customFieldName, customFieldParams) in formInput.config[fieldName] track by $index" class="flex-table-container">
-                        <div data-ng-include="'views/plugin-flexible-table.html'"></div>
-                    </div>
-                    <div class="form__field">
-                        <div class="field-input input-group-button">
-                        <input data-ng-model="flexTableObj[fieldName]" type="text" value="" placeholder="{{fieldName | pgname}} object name" /><button type="button" class="btn info add-flex-table" data-ng-click="newCustomForm(fieldName, fieldParams.schema.fields)">Add</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form__field" data-ng-switch-default>
-                <label class="field-label">{{fieldName | pgname}}</label>
-                <div class="field-input">
-                    <input data-ng-model="formInput.config[fieldName]" type="text" value="{{fieldParams.default || ''}}" placeholder="" />
-                </div>
-            </div>
-        </div>
-    </div><!-- .col.md-7 -->
-    </div><!-- .row -->
+        </form><!-- .form -->
     </div><!-- .panel__body -->
     </div><!-- .panel.panel-border.info -->
-</form>
+    </div><!-- .col.md-5 -->
+
+    <div class="col md-4">
+
+    </div><!-- .col.md-4 -->
+    </div><!-- .row -->
 </div>
