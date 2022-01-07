@@ -1,19 +1,38 @@
 :root {
     --std__default: #9db4be;
+    --std__primary: #1F5EFF;
     --std__success: #10C469;
     --std__info: #35B8E0;
     --std__danger: #FF5B5B;
     --std__warning: #ff691a;
 
-    --body__primary-bg: #1A242D;
-    --body__primary-fg: #EFEFEF;
-    --main__primary-bg: #1A242D;
-    --label__primary-fg: #B3C2CC;
+    --theme__primary-fg : #EFEFEF;
+    --theme__accent-fg  : #7B849C;
+
+    --std__primary-bg: #1B1D22;
+    --std__accent-bg: #121318;
+
+    --body__primary-bg: #1B1D22;
+    --body__primary-fg: #FAFAFA;
+
+    --body__accent-bg: #121318;
+    --body__accent-fg: #BBBBFF;
+
+    --header__primary_bg: transparent;
+    --header__primary_fg: #FFFFFF;
+    --header__primary_bd: transparent;
+
+    --label__primary-fg: #7b849c;
     --inset__primary_bg: #222d37;
 
-    --widget__primary-bg: #2F3E47;
-    --widget__accent-bg: #3B4B54;
+    --widget__primary-bg: #22242A;
+    --widget__accent-bg: #323741;
 
-    --input__primary_bg: #394C57;
+    --input__primary-bg: #323741;
+    --input__focused-bg: #292F3A;
+
+    --input__primary-bd: #484D5A;
+    --input__focused-bd: #1F5EFF;
+
     --input__accent_bg: #394C57;
 }
