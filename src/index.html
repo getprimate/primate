@@ -12,23 +12,31 @@
 
 <div class="app-layout hidden">
 <aside class="drawer">
-    <div class="icon"><div>KongDash</div></div>
+    <div class="branding">KongDash</div><!-- .branding -->
     <nav class="navigation">
-        <a class="navigation__link active" data-ng-href="#!/"><p><i class="material-icons">view_quilt</i></p><p>Dashboard</p></a>
-        <a class="navigation__link" data-ng-href="#!/services"><p><i class="material-icons">settings_input_component</i></p> <p>Services</p></a>
-        <a class="navigation__link" data-ng-href="#!/plugins"><p><i class="material-icons">extension</i></p> <p>Plugins</p></a>
-        <a class="navigation__link" data-ng-href="#!/certificates"><p><i class="material-icons">verified_user</i></p><p>Certificates</p></a>
-        <a class="navigation__link" data-ng-href="#!/upstreams"><p><i class="material-icons">backup</i></p><p>Upstreams</p></a>
-        <a class="navigation__link" data-ng-href="#!/consumers"><p><i class="material-icons">person_pin</i></p> <p>Consumers</p></a>
+        <div class="navigation__title">Node</div><!-- .navigation__title -->
+        <ul class="navigation__menu">
+            <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Dashboard</span></a></li>
+            <li><a class="navigation__link active" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
+        </ul><!-- .navigation__menu -->
+        <hr />
+        <div class="navigation__title">Objects</div><!-- .navigation__title -->
+        <ul class="navigation__menu">
+            <li><a class="navigation__link" data-ng-href="#!/services"><span class="material-icons">settings_input_component</span><span>Services</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/plugins"><span class="material-icons">extension</span><span>Plugins</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/certificates"><span class="material-icons">verified_user</span><span>Certificates</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/upstreams"><span class="material-icons">backup</span><span>Upstreams</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/consumers"><span class="material-icons">person_pin</span><span>Consumers</span></a></li>
+        </ul><!-- .navigation__menu -->
     </nav><!-- .navigation -->
 </aside>
 
 <main class="content">
     <header class="content__header" data-ng-controller="HeaderController">
-        <span class="navigate" data-ng-if="viewFrame.prevUrl.length>=1">
-            <a href="{{viewFrame.prevUrl}}" title="Previous"><i class="material-icons">keyboard_arrow_left</i></a>
-        </span>
-        <span class="title">{{viewFrame.title}}</span>
+        <div class="navigate" data-ng-if="viewFrame.prevUrl.length>=1">
+            <a href="{{viewFrame.prevUrl}}" title="Previous page"><span class="material-icons">arrow_back</span></a>
+        </div>
+        <div class="title">{{viewFrame.title}}</div>
         <div class="actions" data-ng-if="viewFrame.actionButtons.length>=1">
             <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
