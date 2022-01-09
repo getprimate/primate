@@ -179,8 +179,13 @@
             ajax.delete({ resource: target.data('url') }).then(() => {
                 toast.success(target.data('target') + ' ' + action.toLowerCase() + 'd');
 
-                if ( event.target.nodeName === 'I' ) target.parents('tr').fadeOut(200);
-                else window.location.href = target.data('redirect');
+                if (event.target.nodeName === 'I' || event.target.nodeName === 'SPAN') {
+                    const tr = target.parents('tr');
+                    tr.remove();
+
+                } else {
+                    window.location.href = target.data('redirect');
+                }
 
             }, (response) => {
                 toast.error(response.data);
