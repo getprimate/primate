@@ -8,23 +8,31 @@
     <tbody>
         <tr data-ng-repeat="service in serviceList">
             <td data-ng-switch="service.enabled">
-                <i data-ng-switch-when="true" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons success state-highlight">done</i>
-                <i data-ng-switch-default="" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons default state-highlight">done</i>
+                <span data-ng-switch-when="true" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons success state-highlight">done</span>
+                <span data-ng-switch-default="" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons default state-highlight">done</span>
             </td>
 
             <td><a href="#!/services/{{service.id}}">{{service.name || service.id}}</a></td>
             <td>{{service.created_at | date}}</td>
             <td>
-                <div class="action-group">
-                    <a href="#!/services/{{service.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</i>
-                </div>
+                <span class="action-group">
+                    <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
+                    <span class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
+                </span>
             </td>
         </tr>
     </tbody>
-    <tfoot data-ng-if="serviceList.length<=0"><tr><th colspan="5">No services added yet.</th></tr></tfoot>
+
+    <!-- ==-==-==-==-== Display this footer if no service objects are added yet. ==-==-==-==-== -->
+    <tfoot data-ng-if="serviceList.length===0" class="align-center">
+        <tr><th colspan="4">&nbsp;</th></tr>
+        <tr><th colspan="4"><span class="material-icons hero">settings_input_component</span></th></tr>
+        <tr><th colspan="4">No service objects are created yet.</th></tr>
+        <tr><th colspan="4"><a href="#!/services/__create__" class="btn default">Create New Service</a></th></tr>
+        <tr><th colspan="4">&nbsp;</th></tr>
+    </tfoot>
 </table><!-- #sv-ls__tab01.table -->
 </div><!-- .well -->
 
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchServiceList(nextUrl)">Load Next</button></div>
+<div class="pagination" data-ng-if="serviceNext.length>=5"><button class="btn dark" data-ng-click="fetchServiceList(serviceNext)">Load Next</button></div>
 </div><!-- .container -->
