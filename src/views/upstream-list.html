@@ -17,7 +17,12 @@
             </td>
         </tr>
         </tbody>
-        <tfoot data-ng-if="upstream.length<=0"><tr><th colspan="5">No upstreams added yet.</th></tr></tfoot>
+        <tfoot data-ng-if="upstreamList.length===0" class="align-center">
+            <tr><th colspan="5"><span class="material-icons hero">backup</span></th></tr>
+            <tr><th colspan="5">No upstream objects are created yet.</th></tr>
+            <tr><th colspan="5"><a href="#!/upstreams/__create__" class="btn default">Create New Upstream</a></th></tr>
+            <tr><th colspan="5">&nbsp;</th></tr>
+        </tfoot>
     </table>
 </div>
 
