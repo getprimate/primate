@@ -26,7 +26,7 @@ export default function UpstreamListController(scope, ajax, viewFrame, toast) {
         });
     };
 
-    viewFrame.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn info create' });
+    viewFrame.actionButtons.push({ displayText: 'New Upstream', target: '', url: '', redirect: '#!/upstreams/__create__', styles: 'btn success create' });
 
     scope.fetchUpstreamList('/upstreams');
 }

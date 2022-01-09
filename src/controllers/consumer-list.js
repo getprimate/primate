@@ -50,6 +50,6 @@ export default function ConsumerListController(scope, ajax, viewFrame, toast) {
         target: 'consumer',
         url: '/consumers',
         redirect: '#!/consumers/__create__',
-        styles: 'btn info create'
+        styles: 'btn success create'
     });
 }

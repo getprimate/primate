@@ -51,6 +51,8 @@ export default function ServiceEditController(window, scope, location, routePara
 
     scope.routeList = [];
 
+    scope.pluginList = [];
+
     switch (routeParams.serviceId) {
         case '__create__':
             viewFrame.title = 'Create new Service';

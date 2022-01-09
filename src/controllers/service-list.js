@@ -24,6 +24,12 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
     scope.serviceList = [];
     scope.serviceNext = '';
 
+    /**
+     * Retrieves the list of services.
+     *
+     * @param {string} resource - the resource endpoint
+     * @return {boolean} true if request could be made, false otherwise
+     */
     scope.fetchServiceList = (resource) => {
         const request = ajax.get({resource});
 
@@ -33,10 +39,13 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
             for (let index = 0; index < response.data.length; index++) {
                 scope.serviceList.push(response.data[index]);
             }
+
+            return true;
         });
 
         request.catch(() => {
             toast.error('Could not load list of services');
+            return false;
         });
 
         return true;
@@ -62,15 +71,26 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
         });
 
         request.then(() => {
-            if (payload[attribute] === true) icon.removeClass('default').addClass('success');
-            else icon.removeClass('success').addClass('default');
+            let state = 'disabled';
 
-            toast.success('Attribute ' + attribute + ' set to ' + payload[attribute]);
+            if (payload[attribute] === true) {
+                icon.removeClass('default').addClass('success');
+                state = 'enabled';
+
+            } else {
+                icon.removeClass('success').addClass('default');
+            }
+
+            toast.success(`Service ${state}.`);
+            return true;
         });
 
         request.catch(() => {
-            toast.error('Unable to update ' + attribute);
+            toast.error('Could not update service state.');
+            return false;
         });
+
+        return true;
     });
 
     scope.fetchServiceList('/services');
