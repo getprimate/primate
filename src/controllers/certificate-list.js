@@ -16,8 +16,9 @@ import utils from '../lib/utils.js';
  * @param {AjaxProvider} ajax - custom AJAX provider
  * @param {ViewFrameFactory} viewFrame - custom view frame factory
  * @param {ToastFactory} toast - custom toast message service
+ * @param {LoggerFactory} logger - custom logger factory service
  */
-export default function CertificateListController(window, scope, ajax, viewFrame, toast) {
+export default function CertificateListController(window, scope, ajax, viewFrame, toast, logger) {
     scope.certList = [];
     scope.certNext = '';
     scope.caList = [];
@@ -34,7 +35,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     scope.fetchCertList = (resource) => {
         const request = ajax.get({resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let certificate of response.data) {
@@ -43,10 +44,13 @@ export default function CertificateListController(window, scope, ajax, viewFrame
 
                 scope.certList.push(certificate);
             }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
         });
 
-        request.catch(() => {
-            toast.error('Could not load certificates');
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not load certificates.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return true;
@@ -61,7 +65,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     scope.fetchCaList = (resource) => {
         const request = ajax.get({resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             scope.caNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let ca of response.data) {
@@ -70,10 +74,13 @@ export default function CertificateListController(window, scope, ajax, viewFrame
 
                 scope.caList.push(ca);
             }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
         });
 
-        request.catch(() => {
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
             toast.error('Could not load CA list.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return true;
@@ -88,7 +95,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     scope.fetchSniList = (resource) => {
         const request = ajax.get({resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let sni of response.data) {
@@ -99,10 +106,13 @@ export default function CertificateListController(window, scope, ajax, viewFrame
                 sni.certificate.name = utils.objectName(sni.certificate.id);
                 scope.sniList.push(sni);
             }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
         });
 
-        request.catch(({data: error}) => {
-            toast.error(`Could not load SNIs. ${error.message}`);
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not load SNIs.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return true;

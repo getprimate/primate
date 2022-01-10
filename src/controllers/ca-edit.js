@@ -15,8 +15,9 @@
  * @param {AjaxProvider} ajax - custom AJAX provider
  * @param {ViewFrameFactory} viewFrame - custom view frame factory
  * @param {ToastFactory} toast - custom toast message service
+ * @param {LoggerFactory} logger - custom logger factory service
  */
-export default function TrustedCAEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
+export default function TrustedCAEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
     const ajaxConfig = {method: 'POST', resource: '/ca_certificates'};
 
@@ -72,8 +73,9 @@ export default function TrustedCAEditController(window, scope, location, routePa
             }
         });
 
-        request.catch(({ data: response }) => {
-            toast.error(response.data);
+        request.catch(({ data: exception, config: httpConfig, status: statusCode, statusText }) => {
+            toast.error('Unable to save CA certificate details.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return false;

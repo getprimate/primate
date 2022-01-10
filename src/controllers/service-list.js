@@ -14,8 +14,9 @@
  * @param {AjaxProvider} ajax - custom AJAX provider
  * @param {ViewFrameFactory} viewFrame - custom view frame factory
  * @param {ToastFactory} toast - custom toast message service
+ * @param {LoggerFactory} logger - custom logger factory
  */
-export default function ServiceListController(window, scope, ajax, viewFrame, toast) {
+export default function ServiceListController(window, scope, ajax, viewFrame, toast, logger) {
     const {angular} = window;
 
     /** @type {AngularElement} */
@@ -32,6 +33,8 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
      */
     scope.fetchServiceList = (resource) => {
         const request = ajax.get({resource});
+
+
 
         request.then(({data: response}) => {
             scope.serviceNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
