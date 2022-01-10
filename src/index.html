@@ -41,10 +41,20 @@
             <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
     </header>
-    <section class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
+    <section id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
     <footer class="footer" data-ng-controller="FooterController">
-        <div id="staticMessage" class="pull-left hpadding-20"></div>
-        <div class="pull-right hpadding-20">{{viewFrame.host | stripProtocol}}</div>
+        <section class="footer__window">
+            <div class="activity-log">
+                <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="log-{{log.className}}">{{log.highlight}}</span> : <span>{{log.message}}</span></li></ul>
+            </div><!-- .activity-window -->
+        </section><!-- .footer__window -->
+
+        <section id="index__ftBase" class="footer__base"><form>
+            <ul class="footer__base-menu">
+                <li><label class="checkbox warning"><input type="checkbox" id="index__chk01" name="toggleLogger"> Show Activity Log</label> </li>
+                <li>version 0.6.0</li>
+            </ul>
+        </form></section>
     </footer>
 </main>
 </div><!-- .app-layout.hidden -->
@@ -77,6 +87,7 @@ const ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/settings.js"></script>
 
 <script type="module">
+    import LoggerFactory from './components/logger-factory.js';
     import TokenInputDirective from './components/token-input-directive.js'
     import MultiCheckDirective from './components/multi-check-directive.js';
 
@@ -101,18 +112,20 @@ const ngDependency  = ['ngRoute'];
 
     import PluginEditController from './controllers/plugin-edit.js';
 
+    app.factory('logger', LoggerFactory)
+
     app.directive('tokenInput', ['$window', TokenInputDirective]);
     app.directive('multiCheck', ['$window', MultiCheckDirective]);
 
     app.controller('HeaderController', ['$scope', 'viewFrame', HeaderController]);
-    app.controller('FooterController', ['$window', '$scope', '$element', '$http', 'viewFrame', 'toast', FooterController]);
+    app.controller('FooterController', ['$window', '$scope', '$element', '$http', 'logger', 'viewFrame', 'toast', FooterController]);
 
-    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', ServiceListController]);
+    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', ServiceListController]);
     app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController]);
     app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', RouteEditController]);
-    app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', CertificateListController]);
+    app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
-    app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', TrustedCAEditController]);
+    app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', TrustedCAEditController]);
     app.controller('UpstreamListController', ['$scope', 'ajax', 'viewFrame', 'toast', UpstreamListController]);
     app.controller('UpstreamEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', UpstreamEditController]);
     app.controller('ConsumerListController', ['$scope', 'ajax', 'viewFrame', 'toast', ConsumerListController]);
