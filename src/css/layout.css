@@ -266,18 +266,106 @@ main section.content__wrapper {
     overflow-y: auto;
 }
 
-main footer.footer {
+main section.content__wrapper.resized {
+    margin-bottom: 250px !important;
+}
+
+footer.footer {
     float: none;
     position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 25px;
-    padding: 4px 0 3px 0;
-    background-color: #222D37;
+    bottom: 25px;
+    width: calc(100% - 50px);
+    max-height: 250px;
+    height: 60px;
+    margin: min(1.041vw, 20px) min(1.041vw, 20px) 0 min(1.041vw, 20px);
+    padding: min(1.041vw, 20px);
+    border-radius: 12px;
+    background-color: var(--widget__primary-bg);
     border-top: 1px solid var(--widget__primary-bg);
     color: #76868F;
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+footer.footer.maximized {
+    height: 250px;
+}
+
+footer.footer .footer__window {
+    width: 100%;
+    max-height: 200px;
+    height: auto;
+}
+
+footer.footer .activity-log {
+    min-height: 0;
+    max-height: 250px;
+    height: 0;
+    padding: 0;
+    background: var(--input__primary-bg) none;
+    border: 0 solid var(--input__primary-bd);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+footer.footer.maximized .activity-log {
+    height: 200px !important;
+    padding: 12px;
+    border-width: 2px;
+}
+
+footer.footer .activity-log ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.footer__window .activity-log ul li {
+    display: block;
+    margin: 5px 0 5px 0;
+    color: var(--theme__primary-fg);
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.footer__window .activity-log ul li > span {
+    cursor: text;
+    -webkit-user-select: text;
+}
+
+.footer__window .activity-log ul li > span:first-child {
+    color: var(--theme__accent-fg);
+}
+
+.footer__window .activity-log ul li > span.log-info {
+    color: var(--std__info);
+    text-transform: uppercase;
+}
+
+.footer__window .activity-log ul li > span.log-warn {
+    color: var(--std__warning);
+    text-transform: uppercase;
+}
+
+.footer__window .activity-log ul li > span.log-error {
+    color: var(--std__danger);
+    text-transform: uppercase;
+}
+
+ul.footer__base-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+}
+
+ul.footer__base-menu li {
+    display: inline-block;
 }
 
 /**
@@ -398,7 +486,7 @@ input[type="number"],
 input[type="password"],
 textarea {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     border: 2px solid var(--input__primary-bd);
     border-radius: 10px;
     background-color: var(--input__primary-bg);
