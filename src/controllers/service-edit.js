@@ -34,7 +34,18 @@ const _buildServiceModel = (model, from = {}) => {
     }
 };
 
-export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
+/**
+ * 
+ * @param {*} window 
+ * @param {*} scope 
+ * @param {*} location 
+ * @param {*} routeParams 
+ * @param {*} ajax 
+ * @param {*} viewFrame 
+ * @param {ToastFactory} toast 
+ * @param {LoggerFactory} logger 
+ */
+export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
     const ajaxConfig = { method: 'POST', resource: '/services' };
 

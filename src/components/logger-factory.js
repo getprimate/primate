@@ -1,5 +1,6 @@
 /**
  * @typedef {Object} LoggerFactory
+ * @type {Object}
  * @property {function} getCache - returns the cache array
  * @property {function} write - writes into logger cache
  * @property {function} clear - clears logger cache
