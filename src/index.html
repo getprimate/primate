@@ -41,7 +41,6 @@
             <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
     </header>
-    <section id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
     <footer class="footer" data-ng-controller="FooterController">
         <section class="footer__window">
             <div class="activity-log">
@@ -50,12 +49,14 @@
         </section><!-- .footer__window -->
 
         <section id="index__ftBase" class="footer__base"><form>
-            <ul class="footer__base-menu">
-                <li><label class="checkbox warning"><input type="checkbox" id="index__chk01" name="toggleLogger"> Show Activity Log</label> </li>
+            <ul class="base-menu">
+                <li><label class="checkbox warning"><input type="checkbox" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
+                <li>localhost:8001</li>
                 <li>version 0.6.0</li>
             </ul>
         </form></section>
     </footer>
+    <section id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
 </main>
 </div><!-- .app-layout.hidden -->
 

@@ -104,13 +104,13 @@
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel__heading -->
-</div>
+</div><!-- .col.md-8 -->
 
 <div class="col md-4">
     <div class="well">
         <div class="well__heading">Routes
-            <div class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__"><span class="material-icons">launch</span> Add Route</a></div>
-        </div>
+            <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__"><span class="material-icons">launch</span> Add Route</a></div>
+        </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
             <table id="sv-edit__tab01" class="table">
@@ -128,14 +128,19 @@
                 </tr>
                 </tbody>
 
-                <tfoot data-ng-if="routeList.length===0"><tr><th colspan="3">No routes added under service.</th></tr></tfoot>
+                <tfoot data-ng-if="routeList.length===0">
+                    <tr data-ng-switch="serviceId">
+                        <th data-ng-switch-when="__none__" colspan="3">Routes can be added here after creating the service.</th>
+                        <th data-ng-switch-default="" colspan="3">No routes added under service.</th>
+                    </tr><!-- data-ng-switch -->
+                </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
     </div><!-- .well -->
 
     <div class="well">
     <div class="well__heading">Applied Plugins
-        <div class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins"><span class="material-icons">launch</span> Apply Plugin</a></div>
+        <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins"><span class="material-icons">launch</span> Apply Plugin</a></div>
     </div>
 
     <div class="well__scroll-area">
@@ -158,7 +163,12 @@
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this service.</th></tr></tfoot>
+            <tfoot data-ng-if="pluginList.length<=0">
+                <tr data-ng-switch="serviceId">
+                    <th data-ng-switch-when="__none__" colspan="3">Plugins can be applied after creating the service.</th>
+                    <th data-ng-switch-default="" colspan="3">No plugins applied on this service.</th>
+                </tr>
+            </tfoot>
         </table>
     </div><!-- .well__scroll-area -->
     </div><!-- .well -->

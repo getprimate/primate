@@ -177,33 +177,33 @@ nav.navigation hr {
 }
 
 /* Main section */
-main {
+main.content {
     height: 100%;
     overflow: hidden;
-}
-
-main.content {
     --widget__heading-sz: 1.1rem;
     background-color: var(--theme__primary-bg);
 }
 
-aside + main {
+aside.drawer + main.content {
     float: none;
     position: absolute;
     left: 250px;
     width: calc(100% - 250px);
+    padding: 0;
 }
 
 main header.content__header {
     float: none;
     position: absolute;
     max-height: 100px;
-    width: 100%;
+    width: calc(100% - 50px);
     height: 90px;
-    padding: 33px 30px 0 30px;
+    padding: 33px 0 0 0;
+    margin: 0 25px;
     border-bottom: 1px solid var(--theme__header-bd);
     background-color: var(--theme__header-bg);
     color: var(--theme__header-fg);
+    z-index: 100;
 }
 
     main header.content__header:after {
@@ -259,66 +259,96 @@ main header.content__header .title { padding: 0; font-size: 2rem; font-weight: 3
 main header.content__header .navigate ~ .title { padding-left: 0; }
 
 main section.content__wrapper {
-    width: calc(100% - 3px);
-    height: calc(100% - 110px);
-    margin: 90px 3px 30px 0;
-    padding: 20px 27px 20px 30px;
+    width: calc(100% - 25px);
+    height: calc(100% - 175px);
+    margin: 90px 0 0 25px;
+    padding: 20px 25px 0 0;
     overflow-y: auto;
+    border-radius: 12px;
+    z-index: 10;
 }
 
+footer.footer.maximized + section.content__wrapper,
 main section.content__wrapper.resized {
-    margin-bottom: 250px !important;
+    height: calc(100% - 380px) !important;
 }
 
 footer.footer {
     float: none;
     position: absolute;
-    bottom: 25px;
+    bottom: 15px;
     width: calc(100% - 50px);
-    max-height: 250px;
-    height: 60px;
-    margin: min(1.041vw, 20px) min(1.041vw, 20px) 0 min(1.041vw, 20px);
-    padding: min(1.041vw, 20px);
+    max-height: 500px;
+    margin: 0 25px;
     border-radius: 12px;
-    background-color: var(--widget__primary-bg);
+    background-color: var(--theme__accent-bg);
     border-top: 1px solid var(--widget__primary-bg);
     color: #76868F;
     font-size: 0.85rem;
     font-weight: 500;
+    z-index: 100;
 }
 
-footer.footer.maximized {
-    height: 250px;
+footer.footer .footer__base {
+    padding: 10px min(1.041vw, 20px) 10px min(1.041vw, 20px);
 }
 
-footer.footer .footer__window {
+.footer__base form {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.footer__base ul.base-menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+}
+
+.footer__base ul.base-menu > li {
+    display: inline-block;
+    padding: 0 0 0 25px;
+    line-height: 22px;
+    vertical-align: middle;
+}
+
+footer.footer .footer__window,
+footer.footer .footer__window.minimized {
     width: 100%;
-    max-height: 200px;
-    height: auto;
+    max-height: 500px;
+    height: 0;
+    overflow: hidden;
+}
+
+footer.footer .footer__window.minimized {
+    transition: height 0.2s linear;
+}
+
+footer.footer.maximized > .footer__window {
+    height: 200px !important;
+    padding: min(1.041vw, 20px);
+    border-width: 2px;
+    transition: height 0.2s linear;
 }
 
 footer.footer .activity-log {
     min-height: 0;
-    max-height: 250px;
-    height: 0;
-    padding: 0;
-    background: var(--input__primary-bg) none;
+    height: 100%;
+    padding: 12px;
+    background: var(--theme__accent-bg) none;
     border: 0 solid var(--input__primary-bd);
     border-radius: 10px;
     overflow: hidden;
 }
 
-footer.footer.maximized .activity-log {
-    height: 200px !important;
-    padding: 12px;
-    border-width: 2px;
-}
-
 footer.footer .activity-log ul {
     display: block;
+    height: 100%;
     margin: 0;
     padding: 0;
-    max-height: 150px;
     overflow-y: auto;
     overflow-x: auto;
 }
@@ -353,19 +383,6 @@ footer.footer .activity-log ul {
 .footer__window .activity-log ul li > span.log-error {
     color: var(--std__danger);
     text-transform: uppercase;
-}
-
-ul.footer__base-menu {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0;
-}
-
-ul.footer__base-menu li {
-    display: inline-block;
 }
 
 /**
