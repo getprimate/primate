@@ -28,6 +28,9 @@ body {
     -webkit-animation: fadein 1s;
 
     --overlay__dark-10: linear-gradient(to right, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.5));
+
+    --vw-min__p20: min(1.041vw, 20px);
+    --vw-max__n20: max(calc(0px - 1.041vw), -20px);
 }
 
 a {
@@ -206,7 +209,7 @@ main header.content__header {
     z-index: 100;
 }
 
-    main header.content__header:after {
+    main header.content__header::after {
         display: table;
         content: " ";
         clear: both;
@@ -501,7 +504,8 @@ table.board tfoot.pagination th { text-align: center; padding: 5px 0 5px 0 !impo
 input[type="text"],
 input[type="number"],
 input[type="password"],
-textarea {
+textarea,
+label.checkbox {
     width: 100%;
     padding: 10px;
     border: 2px solid var(--input__primary-bd);
@@ -568,6 +572,8 @@ input[type="checkbox"] {
     position:relative;
     width: 17px;
     height: 17px;
+    background-color: rgba(0,0,0,0);
+    border: 2px solid var(--input__primary-bd);
     border-radius: 4px;
     cursor:pointer;
     text-align: center;
@@ -575,15 +581,83 @@ input[type="checkbox"] {
     -webkit-transition: 0.5s;
 }
 
-    input[type="checkbox"]:after {
+    input[type="checkbox"]::after {
         display: block;
         margin: -1px 0 0 1px;
         content: '\00a0';
     }
 
-    input[type="checkbox"]:checked::after { content: '✔'; }
+    input[type="checkbox"]:checked::after {
+        content: '✔';
+        color: #FFFFFF;
+    }
 
-input[type="range"] { width: 100%; }
+    input[type="checkbox"].default:checked { background-color: #DAE6EC; border-color: #DAE6EC; color: #343434; }
+    input[type="checkbox"].default:checked::after { color: #343434; }
+    input[type="checkbox"].primary:checked { background-color: #188AE2; border-color: #188AE2; }
+    input[type="checkbox"].success:checked { background-color: var(--std__success); border-color: var(--std__success); }
+    input[type="checkbox"].info:checked { background-color: var(--std__info); border-color: var(--std__info); }
+    input[type="checkbox"].warning:checked { background-color: var(--std__warning); border-color: var(--std__warning); }
+    input[type="checkbox"].danger:checked { background-color: var(--std__danger); border-color: var(--std__danger); }
+
+input[type="radio"] {
+    position:relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    border: 2px solid var(--input__primary-bd);
+    cursor:pointer;
+    text-align: center;
+    -webkit-appearance:none;
+    -webkit-transition: 0.5s;
+}
+
+input[type="radio"].default:checked {
+    background-color: var(--std__default);
+    border-color: var(--std__default);
+}
+
+input[type="radio"].primary:checked {
+    background-color: var(--std__primary);
+    border-color: var(--std__primary);
+}
+
+input[type="radio"].success:checked {
+    background-color: var(--std__success);
+    border-color: var(--std__success);
+}
+
+input[type="radio"].info:checked {
+    background-color: var(--std__info);
+    border-color: var(--std__info);
+}
+
+input[type="radio"].warning:checked {
+    background-color: var(--std__warning);
+    border-color: var(--std__warning);
+}
+
+input[type="radio"].danger:checked {
+    background-color: var(--std__danger);
+    border-color: var(--std__danger);
+}
+
+    input[type="radio"]::after {
+        display: none;
+        margin: 2px 1px 1px 1px;
+        content: '\00a0';
+        background-color: transparent;
+        border-radius: 100%;
+        width: 12px;
+        height: 12px;
+    }
+
+    input[type="radio"]:checked::after {
+        display: inline-block;
+        background-color: #FFFFFF;
+    }
+
+label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
 
 select {
     padding: 12px;
@@ -609,6 +683,7 @@ multi-check {
     display: block;
     max-height: 235px;
     overflow-y: auto;
+    padding: 7px 4px ;
     background: var(--input__primary-bg) none;
     border: 2px solid var(--input__primary-bd);
     border-radius: 10px;
@@ -675,20 +750,6 @@ token-input ul.token-input__list li span.material-icons {
     vertical-align: middle;
 }
 
-label.checkbox { cursor: pointer; vertical-align: middle; }
-    label.checkbox:hover { color: #f6f6f6; }
-
-label.checkbox input[type="checkbox"] { background-color: rgba(0,0,0,0); border: 2px solid #cccccc; }
-    label.checkbox input[type="checkbox"]:checked::after { color: #FFFFFF; }
-
-    label.checkbox.primary input[type="checkbox"]:checked { background-color: #188AE2; border-color: #188AE2; }
-    label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
-    label.checkbox.default input[type="checkbox"]:checked { background-color: #DAE6EC; border-color: #DAE6EC; color: #343434; }
-    label.checkbox.default input[type="checkbox"]:checked::after { color: #343434; }
-    label.checkbox.danger input[type="checkbox"]:checked { background-color: var(--std__danger); border-color: var(--std__danger); }
-    label.checkbox.warning input[type="checkbox"]:checked { background-color: var(--std__warning); border-color: var(--std__warning); }
-    label.checkbox.info input[type="checkbox"]:checked { background-color: var(--std__info); border-color: var(--std__info); }
-
 form.form {
     display: block;
     padding-bottom: 10px;
@@ -711,7 +772,31 @@ form.form.no-margin .form__field { margin-bottom: 0 !important; }
 form.form .form__field label.field-label { font-size: 1rem; font-weight: 500; display: block; cursor: pointer; }
 form.form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
 
-form.form .form__field .field-input { margin: 5px 0 0 0; }
+form.form .form__field .field-input {
+    margin: 5px 0 0 0;
+}
+
+form.form .form__field ul.field-input {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 5px 0 0 0;
+    padding: 0;
+}
+
+form.form .form__field ul.field-input > li {
+    display: inline-block;
+    padding: 0 15px 0 0;
+}
+
+form.form .form__field ul.field-input > li > label {
+    display: inline-block;
+}
+
+form.form .form__field ul.field-input > li > label > input[type="checkbox"],
+form.form .form__field ul.field-input > li > label > input[type="radio"] {
+    vertical-align: text-bottom;
+}
 
 form.form .input-control {
     max-height: 150px; max-width: 900px; margin-top: 5px; padding: 5px;
@@ -789,6 +874,16 @@ form.form .checkbox-list label.checkbox:last-child { margin-bottom: 0 !important
 
 form.form label { color: var(--theme__accent-fg); }
 
+label.checkbox,
+form.form label.checkbox {
+    display: inline-block;
+    padding: 7px;
+    cursor: pointer;
+    color: var(--theme__primary-fg);
+    font-weight: normal;
+    vertical-align: middle;
+}
+
 form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--theme__primary-fg); }
 
 /**
@@ -823,8 +918,8 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
     border-radius: 0 0 10px 10px;
 }
 .panel .panel__split {
-    margin: 15px -25px 15px -25px;
-    padding: 10px 15px 10px 15px;
+    margin  : 15px var(--vw-max__n20);
+    padding : 10px var(--vw-min__p20);
     border-bottom: 2px dashed var(--theme__primary-bg);
     color: var(--theme__accent-fg);
     font-size: 1.1rem;
@@ -929,8 +1024,8 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
 .container { display: block; position: relative; padding: 0; }
 
 .row { margin-bottom: 20px; width: 100%; display: block; }
-.row:before { display: table; content: " "; }
-.row:after { display: table; content: " "; clear: both; }
+.row::before { display: table; content: " "; }
+.row::after { display: table; content: " "; clear: both; }
 
 .row >.col { display: block; float: left; position: relative; background: transparent; padding: 0 10px 0 10px; margin: 0; }
 .row > .col:first-child { padding-left: 0; }
