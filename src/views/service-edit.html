@@ -1,10 +1,10 @@
 <div class="container">
 <div class="row">
 <div class="col md-8">
-    <div class="panel panel-border info">
+    <div class="panel panel-border {{serviceId === '__none__' ? 'info' : 'success'}}">
     <div class="panel__heading">Service Details</div>
     <div class="panel__body">
-        <form id="sv-ed__frm01" class="form" method="post" action="#">
+        <form id="sv-ed__frm01" class="form" method="post" data-ng-submit="submitServiceForm($event)">
             <div class="row">
             <div class="col md-12">
                 <div class="form__field">
@@ -13,54 +13,68 @@
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                         </select>
                         <input id="sv-ed__txt01" type="text" class="md-8" name="serviceHost" value="" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" />
-                        <input id="sv-ed__txt02" type="number" class="md-2" name="servicePort" value="" data-ng-model="serviceModel.port" required="required" placeholder="Port" />
+                        <input id="sv-ed__txt02" type="number" class="md-2" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Port" />
                     </div><!-- .linked -->
                 </div>
             </div><!-- .col.md-12 -->
             </div><!-- .row -->
 
             <div class="row">
-                <div class="col md-4">
+                <div class="col md-8">
                     <div class="form__field">
                         <label for="sv-ed__txt03" class="field-label">Service Name (optional)</label>
                         <div class="field-input"><input id="sv-ed__txt03" type="text" name="serviceName" value="" data-ng-model="serviceModel.name" placeholder="Eg: my-service" /></div>
                     </div><!-- .form__field -->
-                </div><!-- .col-md-4 -->
+                </div><!-- .col-md-8 -->
+
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt04" class="field-label">Request Path (optional)</label>
-                        <div class="field-input"><input id="sv-ed__txt04" type="text" name="servicePath" value="" data-ng-model="serviceModel.path" placeholder="Eg: /upstream-path" /></div>
-                    </div><!-- .form__field -->
-                </div><!-- .col-md-4 -->
-                <div class="col md-4">
-                    <div class="form__field">
-                        <label for="sv-ed__rge01" class="field-label">Retries <span class="tooltip material-icons">help_outline</span></label>
+                        <label for="sv-ed__txt03" class="field-label">Enable Service</label>
                         <div class="field-input">
-                            <input id="sv-ed__rge01" type="range" min="0" max="100" name="retries" value="" data-ng-model="serviceModel.retries" />
-                            <span class="field-input__legend">{{serviceModel.retries}}</span>
-                        </div><!-- .field-input -->
+                            <label class="checkbox"><input type="checkbox" id="sv-ed__chk01" class="success" name="serviceEnabled" data-ng-model="serviceModel.enabled" checked /> Publish service</label>
+                        </div>
                     </div><!-- .form__field -->
                 </div><!-- .col-md-4 -->
             </div><!-- .row -->
 
             <div class="row">
+                <div class="col md-8">
+                    <div class="form__field">
+                        <label for="sv-ed__txt04" class="field-label">Request Path (optional)</label>
+                        <div class="field-input"><input id="sv-ed__txt04" type="text" name="servicePath" value="" data-ng-model="serviceModel.path" placeholder="Eg: /upstream-path" /></div>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+                <div class="col md-4">
+                    <div class="form__field">
+                        <label for="sv-ed__rge01" class="field-label">Retries <span class="tooltip material-icons">help_outline</span></label>
+                        <div class="field-input">
+                            <input id="sv-ed__rge01" type="range" min="0" max="100" name="retries" value="5" data-ng-model="serviceModel.retries" />
+                            <span class="field-input__legend">{{serviceModel.retries}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
+
+            <div class="panel__split"><span>Timeout</span></div>
+            <div class="row">
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt05" class="field-label">Connect Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt05" type="number" name="connectTimeout" value="" data-ng-model="serviceModel.connect_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt05" type="number" name="connectTimeout" value="60000" data-ng-model="serviceModel.connect_timeout" placeholder="Default: 60000 ms" /></div>
                     </div>
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt06" class="field-label">Read Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt06" type="number" name="readTimeout" value="" data-ng-model="serviceModel.read_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt06" type="number" name="readTimeout" value="60000" data-ng-model="serviceModel.read_timeout" placeholder="Default: 60000 ms" /></div>
                     </div>
                 </div><!-- .col.md-4 -->
+
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt07" class="field-label">Write Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt07" type="number" name="writeTimeout" value="" data-ng-model="serviceModel.write_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt07" type="number" name="writeTimeout" value="60000" data-ng-model="serviceModel.write_timeout" placeholder="Default: 60000 ms" /></div>
                     </div>
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
@@ -73,33 +87,53 @@
                         <div class="field-input">
                             <select id="sv-ed__sel02" class="stretch" name="clientCertificate" data-ng-model="serviceModel.client_certificate" data-ng-selected="serviceModel.client_certificate">
                                 <option value="">-- None --</option>
-                                <option data-ng-repeat="current in pbCertList" value="{{current.id}}">{{current.displayName}}</option>
+                                <option data-ng-repeat="current in pbCertList" value="{{current.nodeValue}}">{{current.displayText}}</option>
                             </select>
                         </div><!-- .field-input -->
                     </div>
-                </div>
+                </div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="sv-ed__s02" class="field-label">CA Certificates</label>
+                        <label class="field-label">CA Certificates</label>
                         <div class="field-input">
-                            <select id="sv-ed__s02" class="stretch" name="caCertificates" data-ng-model="serviceModel.ca_certificates" multiple="multiple">
-                                <option data-ng-if="caCertList.length<=0" value="">-- None --</option>
-                                <option data-ng-repeat="current in caCertList" value="{{current.id}}">{{current.displayName}}</option>
-                            </select>
+                            <multi-check data-ng-model="serviceModel.ca_certificates" data-dv-list="caCertList"></multi-check>
                         </div>
-                    </div>
-                </div>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
             </div><!-- .row -->
 
-            <div class="panel__split"></div>
+            <div class="row">
+                <div class="col md-6">
+                <div class="form__field">
+                    <label class="field-label">TLS Verification</label>
+                    <ul class="field-input">
+                        <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="default" checked /> Default</label></li>
+                        <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="true" />  On</label></li>
+                        <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="false"/> Off</label></li>
+                    </ul><!-- .field-input -->
+                </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+
+                <div class="col md-6">
+                <div class="form__field">
+                    <label for="sv-ed__rge02" class="field-label">TLS Chain Depth</label>
+                    <div class="field-input">
+                        <input id="sv-ed__rge02" type="range" min="-1" max="64" name="tlsVerifyDepth" value="-1" data-ng-model="serviceModel.tls_verify_depth" />
+                        <span class="field-input__legend">{{serviceModel.tls_verify_depth}}</span>
+                    </div><!-- .field-input -->
+                </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+            </div><!-- .row -->
+
+            <div class="panel__split">Service Tags</div>
             <div class="form__field">
-                <label class="field-label">Service Tags</label>
                 <div class="field-input"><token-input data-ng-model="serviceModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
             </div><!-- .form__field -->
 
-            <div class="form__field">
-                <a class="btn default" href="#!/services">Cancel</a>
-                <button class="btn info" type="submit" name="action" value="update">Update</button>
+            <div data-ng-switch="serviceId" class="form__field">
+                <button class="btn default" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
+                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Save</button>
+                <button data-ng-switch-default="" class="btn info" type="submit" name="action" value="update">Update</button>
             </div>
         </form>
     </div><!-- .panel__body -->
