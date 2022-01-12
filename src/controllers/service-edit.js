@@ -3,56 +3,74 @@
 import utils from '../lib/utils.js';
 import ServiceModel from '../models/service-model.js';
 
-const _buildServiceModel = (model, from = {}) => {
-    const keys = Object.keys(from);
+const ENUM_PROTOCOL = {
+    'http': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth']},
+    'grpc': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
+    'tcp': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
+    'udp': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
+    'tls': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
+    'tls_passthrough': {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth']}
+};
+
+const _buildServiceModel = (model, source = {}) => {
+    const keys = Object.keys(source);
 
     for (let key of keys) {
         if ((typeof model[key] === 'undefined')
-            || (Array.isArray(model[key]) && from[key] === null)) {
+            || (Array.isArray(model[key]) && source[key] === null)) {
             continue;
         }
 
         switch (key) {
             case 'tls_verify':
             case 'tls_verify_depth':
-                model[key] = String(from[key]);
+                model[key] = String(source[key]);
                 break;
 
             case 'client_certificate':
-                model[key] = (from[key] !== null && typeof from[key]['id'] === 'string') ? from[key]['id'] : '';
+                model[key] = (source[key] !== null && typeof source[key]['id'] === 'string') ? source[key]['id'] : '';
                 break;
 
             case 'ca_certificates':
             case 'tags':
-                model[key] = Array.isArray(from[key]) ? from[key] : [];
+                model[key] = Array.isArray(source[key]) ? source[key] : [];
                 break;
 
             default:
-                model[key] = from[key];
+                model[key] = source[key];
                 break;
         }
     }
+
+    return model;
 };
 
 /**
- * 
- * @param {*} window 
- * @param {*} scope 
- * @param {*} location 
- * @param {*} routeParams 
- * @param {*} ajax 
- * @param {*} viewFrame 
- * @param {ToastFactory} toast 
- * @param {LoggerFactory} logger 
+ * Provides controller constructor for editing CA certificates.
+ *
+ * @constructor
+ *
+ * @param {Window} window- window DOM object
+ * @param {{
+ *      ENUM_PROTOCOL: [string],
+ *      serviceId: string,
+ *      serviceModel: App_ServiceModel,
+ *      pbCertList: [Object], caCertList: [Object], routeList: [Object], pluginList: [Object],
+ *      fetchPublicCertificates: function, fetchCACertificates: function, fetchRoutes: function,
+ *      submitServiceForm: function, resetServiceForm: function,
+ *      }} scope - injected scope object
+ * @param {{path: function}} location - injected location service
+ * @param {{serviceId: string}} routeParams - injected route parameters service
+ * @param {AjaxProvider} ajax - custom AJAX provider
+ * @param {ViewFrameFactory} viewFrame - custom view frame factory
+ * @param {ToastFactory} toast - custom toast message service
+ * @param {LoggerFactory} logger - custom logger factory service
  */
 export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
     const ajaxConfig = { method: 'POST', resource: '/services' };
 
-    /** @type {AngularElement} */
-    const formService = angular.element('form#sv-ed__frm01');
-
-    scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'udp', 'tls'];
+    scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
     scope.serviceId = '__none__';
     scope.serviceModel = angular.copy(ServiceModel);
@@ -78,54 +96,99 @@ export default function ServiceEditController(window, scope, location, routePara
             break;
     }
 
+    /**
+     * Retrieves the public client certificates.
+     *
+     * @param {string} resource - The resource endpoint
+     * @return boolean - True if request could be made, false otherwise
+     */
     scope.fetchPublicCertificates= (resource = '/certificates')=> {
         const request =ajax.get({resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             for (let current of response.data) {
-                current.displayName = (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64);
-                scope.pbCertList.push(current);
+                scope.pbCertList.push({
+                    nodeValue: current.id,
+                    displayText: (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                });
             }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
         });
 
-        request.catch(() => {
-            toast.error('Could not load public certificates');
-        });
-    };
-
-    scope.fetchCACertificates = (resource = '/ca_certificates') => {
-        const request =ajax.get({resource});
-
-        request.then(({data: response}) => {
-            for (let current of response.data) {
-                current.displayName = (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64);
-                scope.caCertList.push(current);
-            }
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not load public certificates.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
-        request.catch(() => {
-            toast.error('Could not load CA certificates');
-        });
-    };
-
-    scope.fetchRoutes = (resource = '/routes')=> {
-        const request =ajax.get({resource});
-
-        request.then(({data: response}) => {
-            for (let current of response.data) {
-                scope.routeList.push(current);
-            }
-        });
-
-        request.catch(() => {
-            toast.warning('Could not load associated routes');
-        });
+        return true;
     };
 
     /**
-     * Handle service form submit event.
+     * Retrieves the CA certificates.
+     *
+     * @param {string} resource - The resource endpoint
+     * @return boolean - True if request could be made, false otherwise
      */
-    formService.on('submit', (event) => {
+    scope.fetchCACertificates = (resource = '/ca_certificates') => {
+        const request = ajax.get({resource});
+
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+            const certificates = [];
+
+            for (let current of response.data) {
+                certificates.push({
+                    nodeValue: current.id,
+                    displayText: (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                });
+
+                scope.caCertList = certificates;
+            }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+        });
+
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not load CA certificates.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        return true;
+    };
+
+    /**
+     * Retrieves the routes added under this service.
+     *
+     * @param {string} resource - The resource endpoint
+     * @return boolean - True if request could be made, false otherwise
+     */
+    scope.fetchRoutes = (resource = '/routes')=> {
+        const request =ajax.get({resource});
+
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+            for (let current of response.data) {
+                scope.routeList.push(current);
+            }
+
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+        });
+
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not load routes under the service.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        return true;
+    };
+
+    scope.submitServiceForm = (event) => {
+        if (typeof event ==='undefined') {
+            return false;
+        }
+
+        /** @type {AngularElement} */
+        const formService = angular.element(event.target);
+
         event.preventDefault();
 
         Object.keys(scope.serviceModel).forEach((key) => {
@@ -138,14 +201,19 @@ export default function ServiceEditController(window, scope, location, routePara
         }
 
         const payload = angular.copy(scope.serviceModel);
+        const {excluded} = ENUM_PROTOCOL[payload.protocol];
+
         delete payload.client_certificate;
 
         if (scope.serviceModel.client_certificate.length > 10) {
             payload.client_certificate = {id: scope.serviceModel.client_certificate};
         }
 
-        payload.tls_verify = utils.typeCast(scope.serviceModel.tls_verify);
-        payload.tls_verify_depth = utils.typeCast(scope.serviceModel.tls_verify_depth);
+        if (Array.isArray(excluded)) {
+            for (let field of excluded) {
+                delete payload[field];
+            }
+        }
 
         const request = ajax.request({
             method: ajaxConfig.method,
@@ -153,7 +221,9 @@ export default function ServiceEditController(window, scope, location, routePara
             data: payload
         });
 
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+
             switch (scope.serviceId) {
                 case '__none__':
                     toast.success(`Created new service ${response.name}`);
@@ -165,12 +235,32 @@ export default function ServiceEditController(window, scope, location, routePara
             }
         });
 
-        request.catch(({data: error}) => {
-            toast.error('Could not ' + ((scope.serviceId === '__none__') ? 'create new' : 'update') + ` service. ${error.message}`);
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not ' + ((scope.serviceId === '__none__') ? 'create new' : 'update') + ' service.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return false;
-    });
+    };
+
+    /**
+     * Handles form reset event.
+     *
+     * Displays confirmation dialog before clearing the form.
+     *
+     * @param {Object} event - The current event object
+     * @return boolean - True if reset confirmed, false otherwise
+     */
+    scope.resetServiceForm = (event) => {
+        if (confirm('This will clear the values from the form. Proceed?')) {
+
+            scope.serviceModel = angular.copy(ServiceModel);
+            return true;
+        }
+
+        event.preventDefault();
+        return false;
+    };
 
     if (ajaxConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
         const request = ajax.get({resource: ajaxConfig.resource});
