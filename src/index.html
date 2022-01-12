@@ -50,7 +50,7 @@
 
         <section id="index__ftBase" class="footer__base"><form>
             <ul class="base-menu">
-                <li><label class="checkbox warning"><input type="checkbox" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
+                <li><label><input type="checkbox" class="warning" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
                 <li>localhost:8001</li>
                 <li>version 0.6.0</li>
             </ul>
@@ -122,7 +122,7 @@ const ngDependency  = ['ngRoute'];
     app.controller('FooterController', ['$window', '$scope', '$element', '$http', 'logger', 'viewFrame', 'toast', FooterController]);
 
     app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', ServiceListController]);
-    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ServiceEditController]);
+    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', ServiceEditController]);
     app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', RouteEditController]);
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
