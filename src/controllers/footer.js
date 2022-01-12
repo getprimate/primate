@@ -29,14 +29,17 @@ export default function FooterController(window, scope, element, http, logger, v
     const footerBase = element.children('section#index__ftBase');
 
     footerBase.on('change', 'input#index__chk01', (event) => {
-        console.log('Check');
         const {target} = event;
 
         if (target.checked === true) {
+            logger.resume();
+
             element.addClass('maximized');
             document.getElementById('index__ngView').classList.add('resized');
 
         } else {
+            logger.pause();
+
             element.removeClass('maximized');
             document.getElementById('index__ngView').classList.remove('resized');
         }
