@@ -11,8 +11,8 @@ const _refresh = (angular, element, scope) => {
         let {nodeValue, displayText} = ((typeof item === 'object') ? item : {nodeValue: item, displayText: item});
 
         let li = angular.element('<li></li>');
-        let input = angular.element('<input type="checkbox">');
-        let label = angular.element('<label class="checkbox warning"></label>');
+        let input = angular.element('<input type="checkbox" class="warning">');
+        let label = angular.element('<label></label>');
 
         if (selected.indexOf(nodeValue) >=0) {
             input.attr('checked', 'checked');
@@ -39,7 +39,7 @@ export default function MultiCheckDirective(window) {
         template: '<ul></ul>',
         scope: {selected: '=ngModel', available: '=dvList'},
         controller: ['$scope', function (scope) { scope.isInitialised = false; }],
-        link(scope, element, attrs) {
+        link(scope, element,) {
             if (!Array.isArray(scope.selected) || !Array.isArray(scope.available)) {
                 return false;
             }
@@ -47,19 +47,22 @@ export default function MultiCheckDirective(window) {
             _refresh(angular, element, scope);
 
             scope.$watch('selected', (current, previous) => {
-                if (scope.isInitialised === true) {
-                    return scope.isInitialised;
-                }
-
                 if (Array.isArray(previous)
                     && Array.isArray(current)
                     && previous.length !== current.length) {
 
-                    scope.isInitialised = true;
                     return _refresh(angular, element, scope);
                 }
 
-                return scope.isInitialised;
+            }, false);
+
+            scope.$watch('available', (current, previous) => {
+                if (Array.isArray(previous)
+                    && Array.isArray(current)
+                    && previous.length !== current.length) {
+
+                    return _refresh(angular, element, scope);
+                }
             }, false);
 
             element.on('change', 'input.multi-check__input', (event) => {
@@ -78,6 +81,8 @@ export default function MultiCheckDirective(window) {
                     scope.selected.splice(position, 1);
                 }
             });
+
+            scope.isInitialised = true;
         }
     };
 }
