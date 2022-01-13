@@ -5,6 +5,8 @@
  * Please see LICENSE file located in the project root for more information.
  */
 
+'use strict';
+
 /**
  * @typedef {Object} App_ServiceModel - The service model object
  *
@@ -15,11 +17,11 @@
  * @property {number} port - The upstream server port.
  * @property {string} [path] - Optional: The path to be used in requests to the upstream server.
  * @property {string} [client_certificate] - Certificate to be used as client certificate while TLS handshaking to the upstream server.
+ * @property {string[]} [tags] - An optional set of strings associated with the Service for grouping and filtering.
  */
 
-'use strict';
-
 /**
+ * Defines the service object.
  *
  * @type App_ServiceModel
  */
