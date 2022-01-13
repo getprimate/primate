@@ -750,6 +750,31 @@ token-input ul.token-input__list li span.material-icons {
     vertical-align: middle;
 }
 
+/* Custom input elements */
+ul.range-slider {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 2px solid var(--input__primary-bd);
+    background-color: var(--input__primary-bg);
+}
+
+ul.range-slider > li {
+    display: inline-block;
+    width: calc(100% - 150px);
+    background-color: var(--input__accent-bg);
+}
+
+ul.range-slider > li:first-child,
+ul.range-slider > li:last-child {
+    width: 75px !important;
+    padding: 12px;
+    overflow: hidden;
+    background-color: var(--input__primary-bg);
+}
+
 form.form {
     display: block;
     padding-bottom: 10px;
@@ -805,8 +830,9 @@ form.form .input-control {
 form.form div.input-control label.field-label { margin-bottom: 5px; }
 form.form div.input-control label.field-label:last-child { margin-bottom: 0; }
 
-form.form .form__field .field-input input[type="range"] + span.field-input__legend {
-    width: 100%; display: block; text-align: center;
+form.form .form__field .field-input input[type="range"] + .field-input__legend {
+    width: 100%; display: inline-block; text-align: center;
+    color: var(--theme__primary-fg);
 }
 
 form.form select[multiple] { padding: 8px; }
@@ -858,10 +884,6 @@ form.form article {
 
 form.form multi-check ul li > span { display: inline-block; width: 40px; }
 form.form multi-check ul li > label { display: inline-block; }
-
-form.form .form__field .field-input input[type="range"] + span.field-input__legend {
-    color: #999999;
-}
 
 form.form .input-group-button input { vertical-align: top; display: inline-block; width: 80%; margin-right: 0;
     border-right-width: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; line-height: 5px; }
