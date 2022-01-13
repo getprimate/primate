@@ -48,6 +48,8 @@ hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
 /* Labels */
 .label { border-radius: 10px; display: inline-block; padding: 0 12px 0 12px; font-weight: 400; }
 
+.upper-case { text-transform: uppercase; }
+
 /* Notifications */
 .notification {
     float: none;

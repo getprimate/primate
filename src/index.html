@@ -44,7 +44,7 @@
     <footer class="footer" data-ng-controller="FooterController">
         <section class="footer__window">
             <div class="activity-log">
-                <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="log-{{log.className}}">{{log.highlight}}</span> : <span>{{log.message}}</span></li></ul>
+                <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>
             </div><!-- .activity-window -->
         </section><!-- .footer__window -->
 
