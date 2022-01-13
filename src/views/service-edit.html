@@ -10,6 +10,7 @@
                 <div class="form__field">
                     <div class="field-input linked">
                         <select id="sv-ed__sel01" class="md-2" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required">
+                            <option value="null">- Protocol -</option>
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                         </select>
                         <input id="sv-ed__txt01" type="text" class="md-8" name="serviceHost" value="" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" />
@@ -49,7 +50,7 @@
                         <label for="sv-ed__rge01" class="field-label">Retries <span class="tooltip material-icons">help_outline</span></label>
                         <div class="field-input">
                             <input id="sv-ed__rge01" type="range" min="0" max="100" name="retries" value="5" data-ng-model="serviceModel.retries" />
-                            <span class="field-input__legend">{{serviceModel.retries}}</span>
+                            <output class="field-input__legend">{{serviceModel.retries}}</output>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
@@ -119,7 +120,7 @@
                     <label for="sv-ed__rge02" class="field-label">TLS Chain Depth</label>
                     <div class="field-input">
                         <input id="sv-ed__rge02" type="range" min="-1" max="64" name="tlsVerifyDepth" value="-1" data-ng-model="serviceModel.tls_verify_depth" />
-                        <span class="field-input__legend">{{serviceModel.tls_verify_depth}}</span>
+                        <output class="field-input__legend">{{serviceModel.tls_verify_depth === -1 ? 'Default' : serviceModel.tls_verify_depth}}</output>
                     </div><!-- .field-input -->
                 </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->
