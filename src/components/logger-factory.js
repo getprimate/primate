@@ -73,7 +73,7 @@ const _fromHttpResponse = (response) => {
  *
  * @param {string} level - The log levels (INFO, WARN, ERROR)
  * @param {string|null|{source: string, exception: Object}} message - the message to be logged
- * @return {{highlight: string, level: string, message: string, timestamp: string}} - The formatted string
+ * @return {{level: string, message: string, timestamp: string}} - The formatted string
  */
 const _sanitise = (level, message)=> {
     const date = new Date();
@@ -95,12 +95,7 @@ const _sanitise = (level, message)=> {
         }
     }
 
-    return {
-        message: text,
-        level: level,
-        highlight: level.trim().toLowerCase(),
-        timestamp
-    };
+    return { message: text, level: level.trim().toLowerCase(), timestamp };
 };
 
 /**
