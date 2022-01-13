@@ -49,9 +49,19 @@ hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
 .label { border-radius: 10px; display: inline-block; padding: 0 12px 0 12px; font-weight: 400; }
 
 /* Notifications */
-.notification { float: none; position: fixed; bottom: 45px; right: 20px;
-    max-width: 400px; min-width: 350px; height: auto !important;
-    padding: 15px; border-radius: 4px; cursor: pointer; }
+.notification {
+    float: none;
+    position: fixed;
+    bottom: 45px;
+    right: 20px;
+    max-width: 400px;
+    min-width: 350px;
+    height: auto !important;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 150;
+}
 
 .btn.mini { height: auto; padding: 1px 10px 1px 10px; }
 .pagination { text-align: right; }
@@ -481,7 +491,7 @@ table .action-group .material-icons {
     cursor: pointer;
 }
 
-table.board .action-group { text-align: right; }
+table .action-group { text-align: right; }
 
 table.table tfoot.pagination button.btn.pagination,
 table.board tfoot.pagination button.btn.pagination {
