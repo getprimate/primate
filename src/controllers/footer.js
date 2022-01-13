@@ -39,6 +39,7 @@ export default function FooterController(window, scope, element, http, logger, v
 
         } else {
             logger.pause();
+            logger.clear();
 
             element.removeClass('maximized');
             document.getElementById('index__ngView').classList.remove('resized');

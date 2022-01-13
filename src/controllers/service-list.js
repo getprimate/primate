@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 /**
@@ -6,22 +13,15 @@
  * @constructor
  *
  * @param {Window} window- window DOM object
- * @param {{
- *      serviceList: Object[],
- *      serviceNext: string,
- *      fetchServiceList: function
- *      }} scope - injected scope object
+ * @param {Object} scope - injected scope object
  * @param {AjaxProvider} ajax - custom AJAX provider
  * @param {ViewFrameFactory} viewFrame - custom view frame factory
  * @param {ToastFactory} toast - custom toast message service
  * @param {LoggerFactory} logger - custom logger factory
+ *
+ * @property {function} scope.toggleServiceState - Handles click events on action buttons on table rows.
  */
 export default function ServiceListController(window, scope, ajax, viewFrame, toast, logger) {
-    const {angular} = window;
-
-    /** @type {AngularElement} */
-    const table = angular.element('table#sv-ls__tab01');
-
     scope.serviceList = [];
     scope.serviceNext = '';
 
@@ -34,21 +34,66 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
     scope.fetchServiceList = (resource) => {
         const request = ajax.get({resource});
 
-
-
-        request.then(({data: response}) => {
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             scope.serviceNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-            for (let index = 0; index < response.data.length; index++) {
-                scope.serviceList.push(response.data[index]);
+            for (let service of response.data) {
+                service.displayText = (typeof service.name === 'string') ? service.name : `${service.host}:${service.port}`;
+                scope.serviceList.push(service);
             }
 
-            return true;
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
         });
 
-        request.catch(() => {
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
             toast.error('Could not load list of services');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        return true;
+    };
+
+    /**
+     * Handles click events on action buttons on table rows.
+     *
+     * @param {Object} event - The event object
+     * @return {boolean} True if event handled, false otherwise
+     */
+    scope.toggleServiceState = (event) => {
+        if (typeof event === 'undefined') {
             return false;
+        }
+
+        const {target} = event;
+
+        if (target.nodeName !== 'SPAN'
+            || !target.classList.contains('state-highlight')) {
+            return false;
+        }
+
+        const {attribute, serviceId} = target.dataset;
+        const request = ajax.patch({
+            resource: `/services/${serviceId}`,
+            data: { [attribute]: !(target.classList.contains('success')) }
+        });
+
+        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+            if (response[attribute] === true) {
+                target.classList.remove('default');
+                target.classList.add('success');
+
+            } else {
+                target.classList.remove('success');
+                target.classList.add('default');
+            }
+
+            toast.info('Service state updated.');
+            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+        });
+
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+            toast.error('Could not update service state.');
+            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
         return true;
@@ -58,43 +103,6 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
     viewFrame.prevUrl = '';
 
     viewFrame.actionButtons.push({displayText: 'New Service', target: 'service', url: '/services', redirect: '#!/services/__create__', styles: 'btn success create'});
-
-    table.on('click', 'i.state-highlight', (event) => {
-
-        /** @type {AngularElement} */
-        const icon = angular.element(event.target);
-        const payload = {};
-        const attribute = icon.data('attribute');
-
-        payload[attribute] = !(icon.hasClass('success'));
-
-        const request = ajax.patch({
-            resource: '/services/' + icon.data('service-id'),
-            data: payload
-        });
-
-        request.then(() => {
-            let state = 'disabled';
-
-            if (payload[attribute] === true) {
-                icon.removeClass('default').addClass('success');
-                state = 'enabled';
-
-            } else {
-                icon.removeClass('success').addClass('default');
-            }
-
-            toast.success(`Service ${state}.`);
-            return true;
-        });
-
-        request.catch(() => {
-            toast.error('Could not update service state.');
-            return false;
-        });
-
-        return true;
-    });
 
     scope.fetchServiceList('/services');
 }
