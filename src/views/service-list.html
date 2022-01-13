@@ -2,8 +2,8 @@
 
 <div class="well">
 <div class="well__heading">List of Services</div>
-<table id="sv-ls__tab01" class="table">
-    <thead data-ng-if="serviceList.length>0"><tr><th>Flags</th><th>Name</th><th>Created</th><th>Actions</th></tr></thead>
+<table id="sv-ls__tab01" class="table" data-ng-click="toggleServiceState($event)">
+    <thead data-ng-if="serviceList.length>0"><tr><th>Enabled</th> <th>Name</th> <th>Protocol</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
 
     <tbody>
         <tr data-ng-repeat="service in serviceList">
@@ -12,13 +12,12 @@
                 <span data-ng-switch-default="" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons default state-highlight">done</span>
             </td>
 
-            <td><a href="#!/services/{{service.id}}">{{service.name || service.id}}</a></td>
-            <td>{{service.created_at | date}}</td>
-            <td>
-                <span class="action-group">
-                    <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
-                    <span class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
-                </span>
+            <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a></td>
+            <td>{{service.protocol}}</td>
+            <td>{{service.created_at | date: 'medium'}}</td>
+            <td class="align-right">
+                <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
+                <span class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
             </td>
         </tr>
     </tbody>
