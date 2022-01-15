@@ -16,7 +16,8 @@
         "semi": ["error", "always"],
         "no-console": ["warn"],
         "no-unused-vars": ["warn"],
-        "arrow-body-style": ["error", "as-needed"],
-        "require-await": ["error"]
+        "arrow-body-style": ["error", "always"],
+        "require-await": ["error"],
+        "eol-last": ["error", "always"]
     }
 }
