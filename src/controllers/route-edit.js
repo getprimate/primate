@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 import _ from '../lib/utils.js';
@@ -5,38 +12,42 @@ import RouteModel from '../models/route-model.js';
 
 const protocols = {
     _exclusive_: ['methods', 'hosts', 'headers', 'paths', 'sources', 'destinations'],
-    http: ['methods', 'hosts', 'headers', 'paths'],
-    https: ['methods', 'hosts', 'headers', 'paths', 'snis'],
-    tcp: ['sources', 'destinations'],
-    tls: ['sources', 'destinations', 'snis'],
-    tls_passthrough: ['snis'],
-    grpc: ['hosts', 'headers', 'paths'],
-    grpcs: ['hosts', 'headers', 'paths', 'snis']
+    http: {required: ['methods', 'hosts', 'headers', 'paths']},
+    https: {required: ['methods', 'hosts', 'headers', 'paths', 'snis']},
+    tcp: {required: ['sources', 'destinations']},
+    tls: {required: ['sources', 'destinations', 'snis']},
+    tls_passthrough: {required: ['snis']},
+    grpc: {required: ['hosts', 'headers', 'paths']},
+    grpcs: {required: ['hosts', 'headers', 'paths', 'snis']}
 };
 
-const _splitIPSources = (sources = []) => sources.reduce((collection, current) => {
-    let [ip, port = '-1'] = current.split(':');
-    let item = {ip: ip.trim(), port: parseInt(port)};
+function _splitIPSources(sources = []) {
+    return sources.reduce((collection, current) => {
+        let [ip, port = '-1'] = current.split(':');
+        let item = {ip: ip.trim(), port: parseInt(port)};
 
-    if (isNaN(item.port) || port <= -1 || port >= 65536) {
-        delete item.port;
-    }
+        if (isNaN(item.port) || port <= -1 || port >= 65536) {
+            delete item.port;
+        }
 
-    if (item.ip.length >= 1) {
-        collection.push(item);
-    }
+        if (item.ip.length >= 1) {
+            collection.push(item);
+        }
 
-    return collection;
-}, []);
+        return collection;
+    }, []);
+}
 
-const _mergeIPSources = ((sources = []) => sources.map((current) => {
-    let {ip, port} = current;
+function _mergeIPSources(sources = []) {
+    return sources.map((current) => {
+        let {ip, port} = current;
 
-    port = (port === null) ? '' : `${port}`;
-    return `${ip}:${port}`;
-}));
+        port = port === null ? '' : `${port}`;
+        return `${ip}:${port}`;
+    });
+}
 
-const _buildRoutePayload = (model) => {
+function _buildRoutePayload(model) {
     if (model.protocols.length === 0) {
         throw 'Please check at least one protocol from the list.';
     }
@@ -72,7 +83,7 @@ const _buildRoutePayload = (model) => {
     for (let current of model.protocols) {
         let isValidated = false;
 
-        for (let field of protocols[current]) {
+        for (let field of protocols[current]['required']) {
             if (Array.isArray(model[field]) && model[field].length >= 1) {
                 isValidated = true;
                 break;
@@ -80,7 +91,13 @@ const _buildRoutePayload = (model) => {
         }
 
         if (isValidated === false) {
-            throw 'At least one of <strong>' + protocols[current].join(', ') + '</strong> is required if ' + current.toUpperCase() + ' is selected.';
+            throw (
+                'At least one of <strong>' +
+                protocols[current]['required'].join(', ') +
+                '</strong> is required if ' +
+                current.toUpperCase() +
+                ' is selected.'
+            );
         }
 
         /* Remove the mutually exclusive fields depending on the protocols to avoid a validation error.
@@ -97,7 +114,9 @@ const _buildRoutePayload = (model) => {
                 break;
         }
 
-        const excluded = protocols._exclusive_.filter(item => !(protocols[current].includes(item)));
+        const excluded = protocols._exclusive_.filter((item) => {
+            return !protocols[current]['required'].includes(item);
+        });
 
         for (let field of excluded) {
             if (typeof payload[field] === 'undefined') continue;
@@ -106,9 +125,9 @@ const _buildRoutePayload = (model) => {
     }
 
     return payload;
-};
+}
 
-const _buildRouteModel = (input, model) => {
+function _buildRouteModel(input, model) {
     for (let key of Object.keys(input)) {
         if (typeof model[key] === 'undefined' || input[key] === null) {
             continue;
@@ -137,14 +156,11 @@ const _buildRouteModel = (input, model) => {
     console.log('Model ', JSON.stringify(model, null, 4));
 
     return model;
-};
+}
 
 export default function RouteEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
-    const ajaxConfig = { method: 'POST', resource: '/routes' };
-
-    /** @type {AngularElement} */
-    const routeForm = angular.element('form#rt-ed__frm01');
+    const ajaxConfig = {method: 'POST', resource: '/routes'};
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
     scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTION'];
@@ -154,6 +170,8 @@ export default function RouteEditController(window, scope, location, routeParams
     scope.routeModel = angular.copy(RouteModel);
 
     scope.serviceId = '__none__';
+
+    scope.pluginList = [];
 
     viewFrame.prevUrl = '#!/routes';
 
@@ -180,12 +198,16 @@ export default function RouteEditController(window, scope, location, routeParams
             break;
     }
 
-    routeForm.on('submit', (event) => {
+    scope.submitRouteForm = function (event) {
         event.preventDefault();
 
         try {
             const payload = _buildRoutePayload(scope.routeModel);
-            const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
+            const request = ajax.request({
+                method: ajaxConfig.method,
+                resource: ajaxConfig.resource,
+                data: payload
+            });
 
             request.then(({data: response}) => {
                 switch (scope.routeId) {
@@ -202,19 +224,21 @@ export default function RouteEditController(window, scope, location, routeParams
             request.catch(() => {
                 toast.error('Could not create new route.');
             });
-
         } catch (error) {
             toast.error(`${error}`);
         }
 
         return false;
-    });
+    };
+
+    scope.resetRouteForm = function (event) {
+        event.preventDefault();
+    };
 
     if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
         const request = ajax.get({resource: ajaxConfig.resource});
 
         request.then(({data: response}) => {
-
             _buildRouteModel(response, scope.routeModel);
 
             viewFrame.actionButtons.push({
