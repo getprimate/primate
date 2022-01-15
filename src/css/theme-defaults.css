@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 :root {
     --std__default: #9db4be;
     --std__primary: #1F5EFF;
@@ -32,27 +39,4 @@
 
     --theme__widget-corner: 12px;
     --theme__input-corner: 6px;
-
-    /*
-    --std__primary-bg: #1B1D22;
-    --std__accent-bg: #121318;
-
-    --body__primary-bg: #1B1D22;
-    --body__primary-fg: #FAFAFA;
-
-    --body__accent-bg: #121318;
-    --body__accent-fg: #BBBBFF;
-
-    --header__primary_bg: transparent;
-    --header__primary_fg: #FFFFFF;
-    --header__primary_bd: transparent;
-
-    --label__primary-fg: #7b849c;
-    --inset__primary_bg: #222d37;
-
-
-
-
-
-     */
 }
