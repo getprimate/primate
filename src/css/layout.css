@@ -517,11 +517,12 @@ input[type="text"],
 input[type="number"],
 input[type="password"],
 textarea,
+select,
 label.checkbox {
     width: 100%;
     padding: 10px;
     border: 2px solid var(--input__primary-bd);
-    border-radius: 10px;
+    border-radius: var(--theme__input-corner);
     background-color: var(--input__primary-bg);
     color: var(--theme__primary-fg);
     font-size: 1rem;
@@ -671,6 +672,7 @@ input[type="radio"].danger:checked {
 
 label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
 
+/*
 select {
     padding: 12px;
     border: 2px solid var(--input__primary-bd);
@@ -680,6 +682,7 @@ select {
     font-size: 1rem;
     font-weight: 500;
 }
+*/
 
 select option {
     color: var(--theme__primary-fg);
@@ -695,7 +698,7 @@ multi-check {
     display: block;
     max-height: 235px;
     overflow-y: auto;
-    padding: 7px 4px ;
+    padding: 0;
     background: var(--input__primary-bg) none;
     border: 2px solid var(--input__primary-bd);
     border-radius: 10px;
@@ -808,6 +811,19 @@ form.form.no-margin .form__field { margin-bottom: 0 !important; }
 
 form.form .form__field label.field-label { font-size: 1rem; font-weight: 500; display: block; cursor: pointer; }
 form.form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
+
+form.form .field-note {
+    display: block;
+    color: var(--theme__accent-fg);
+    font-weight: normal;
+    font-size: 0.9rem;
+    padding: 6px 12px 0 2px;
+}
+
+.panel__split + .field-note {
+    padding-left: 0 !important;
+    margin-bottom: 25px !important;
+}
 
 form.form .form__field .field-input {
     margin: 5px 0 0 0;
