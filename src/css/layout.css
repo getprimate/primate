@@ -17,8 +17,13 @@
 
 ::-webkit-input-placeholder { font-weight: normal; }
 
-:not(input):not(textarea), :not(input):not(textarea)::after, :not(input):not(textarea)::before { 
-    -webkit-user-select: none; user-select: none; cursor: default; }
+:not(input):not(textarea), 
+:not(input):not(textarea)::after, 
+:not(input):not(textarea)::before { 
+    -webkit-user-select: none; 
+    user-select: none; 
+    cursor: default; 
+}
 
 html { width: 100%; height: 100%; font-size: 15px; }
 
@@ -49,6 +54,11 @@ a {
 }
 
     a:hover { text-decoration: none; color: rgba(255, 255, 255, 0.9); }
+
+a > b,
+a > strong {
+    cursor: pointer !important;
+}
 
 hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
 
