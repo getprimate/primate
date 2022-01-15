@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "test": "npm run lint",
-    "lint": "eslint ./src/main.js ./src/scripts ./src/controllers ./src/components ./models",
+    "lint": "eslint ./src/main.js ./src/scripts ./src/controllers ./src/components ./src/models",
     "start": "electron .",
     "pack:linux32": "gulp pack-linux32",
     "pack:linux64": "gulp pack-linux64",
