@@ -1,7 +1,7 @@
 <div class="container">
 <div class="row">
 <div class="col md-8">
-    <div class="panel panel-border {{serviceId === '__none__' ? 'info' : 'success'}}">
+    <div class="panel panel-border {{serviceId === '__none__' ? 'success' : 'primary'}}">
     <div class="panel__heading">Service Details</div>
     <div class="panel__body">
         <form id="sv-ed__frm01" class="form" method="post" data-ng-submit="submitServiceForm($event)">
@@ -97,7 +97,7 @@
                     <div class="form__field">
                         <label class="field-label">CA Certificates</label>
                         <div class="field-input">
-                            <multi-check data-ng-model="serviceModel.ca_certificates" data-dv-list="caCertList"></multi-check>
+                            <multi-check data-ng-model="serviceModel.ca_certificates" data-option-list="caCertList"></multi-check>
                         </div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->

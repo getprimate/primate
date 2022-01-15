@@ -1,200 +1,213 @@
 <div class="container">
 <div class="row">
 <div class="col md-8">
-    <div class="panel panel-border info">
+    <div class="panel panel-border {{routeId==='__none__' ? 'success' : 'info'}}">
     <div class="panel__heading">Route Details</div>
     <div class="panel__body">
-        <form id="rt-ed__frm01" class="form" method="post" action="#">
+        <form id="rt-ed__frm01" class="form" method="post" data-ng-submit="submitRouteForm($event)">
 
         <div class="row">
-        <div class="col md-6">
+        <div class="col md-8">
             <div class="form__field">
                 <label for="rt-ed__txt01" class="field-label">Route Name (optional)</label>
                 <div class="field-input"><input id="rt-ed__txt01" type="text" name="serviceName" value="" data-ng-model="routeModel.name" placeholder="Eg: my-route" /></div>
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
 
-        <div class="col md-6" data-ng-switch="serviceId">
             <div class="form__field">
-            <label class="field-label">Service</label>
-            <div class="field-input">
-                <select data-ng-switch-when="__none__" class="stretch" id="rt-ed__sel02" name="service" data-ng-model="routeModel.serviceId" data-ng-selected="routeModel.serviceId">
-                    <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
-                </select><!-- #up-ed__sel01 -->
-                <article data-ng-switch-default>{{serviceId}}</article>
-            </div><!-- .field-input -->
+                <label class="field-label">Service</label>
+                <div data-ng-switch="serviceId" class="field-input">
+                    <select data-ng-switch-when="__none__" class="stretch" id="rt-ed__sel02" name="service" data-ng-model="routeModel.serviceId" data-ng-selected="routeModel.serviceId">
+                        <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
+                    </select><!-- #up-ed__sel01 -->
+                    <article data-ng-switch-default>{{serviceId}}</article>
+                </div><!-- .field-input -->
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
-        </div><!-- .row -->
 
-        <div class="row">
-        <div class="col md-4">
-            <article>
-                <div class="form__field">
-                <div class="field-input"><label class="checkbox success"><input type="checkbox" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
-                </div><!-- .form__field -->
-            </article>
-        </div><!-- .col.md-4 -->
+            <div class="row">
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label class="field-label">Upstream URL</label>
+                        <div class="field-input">
+                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label for="rt-ed__rge01" class="field-label">Regex Priority</label>
+                        <div class="field-input">
+                            <input id="rt-ed__rge01" type="range" min="0" max="100" name="regexPriority" data-ng-model="routeModel.regex_priority" />
+                            <span class="field-input__legend">{{routeModel.regex_priority}}</span>
+                        </div><!-- .field-input -->
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+            </div><!-- .row -->
+        </div><!-- .col.md-8 -->
 
-        <div class="col md-4">
-            <article>
-                <div class="form__field">
-                <div class="field-input"><label class="checkbox success"><input type="checkbox" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
-                </div><!-- .form__field -->
-            </article>
-        </div><!-- .col.md-4 -->
-
-        <div class="col md-4">
-            <article>
-                <div class="form__field">
-                <div class="field-input"><label class="checkbox success"><input type="checkbox" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
-                </div><!-- .form__field -->
-            </article>
-        </div><!-- .col.md-4 -->
-        </div><!-- .row -->
-
-        <div class="row">
         <div class="col md-4">
             <div class="form__field">
                 <label class="field-label">Protocols</label>
-                <div class="field-input"><multi-check data-ng-model="routeModel.protocols" data-dv-list="ENUM_PROTOCOL"></multi-check></div>
+                <div class="field-input"><multi-check data-ng-model="routeModel.protocols" data-option-list="ENUM_PROTOCOL" data-input-style="warning"></multi-check></div>
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
-
-        <div class="col md-4">
-
-        </div><!-- .col.md-6 -->
-
-        <div class="col md-4">
-
         </div><!-- .col.md-6 -->
         </div><!-- .row -->
 
-        <div class="panel__split"></div><!-- .panel__split -->
+        <div class="row">
+        <div class="col md-4">
+            <div class="form__field">
+                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
+            </div><!-- .form__field -->
+        </div><!-- .col.md-4 -->
+
+        <div class="col md-4">
+            <div class="form__field">
+                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
+            </div><!-- .form__field -->
+        </div><!-- .col.md-4 -->
+
+        <div class="col md-4">
+            <div class="form__field">
+                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
+            </div><!-- .form__field -->
+        </div><!-- .col.md-4 -->
+        </div><!-- .row -->
+
+        <div class="panel__split">Protocol Specific Options - A</div><!-- .panel__split -->
+        <div class="field-note">Fields in this section are required only if any of HTTP, HTTPS, GRPC or GRPCS protocols are checked.</div>
         <div class="row">
         <div class="col md-4">
             <div class="form__field">
                 <label class="field-label">Methods</label>
-                <div class="field-input"><multi-check data-ng-model="routeModel.methods" data-dv-list="ENUM_METHOD"></multi-check></div>
+                <div class="field-input"><multi-check data-ng-model="routeModel.methods" data-option-list="ENUM_METHOD" data-input-style="warning"></multi-check></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
-        <div class="col md-8">
-
+        <div class="col md-4">
             <div class="form__field">
                 <label for="rt-ed__sel01" class="field-label">HTTPS Redirect Status Code</label>
                 <div class="field-input">
-                    <select id="rt-ed__sel01" name="httpsRedirectCode" data-ng-model="routeModel.https_redirect_status_code" data-ng-selected="routeModel.https_redirect_status_code">
-                    <option data-ng-repeat="code in ENUM_REDIRECT_CODE" value="{{code}}">{{code}}</option>
+                    <select id="rt-ed__sel01" class="stretch" name="httpsRedirectCode" data-ng-model="routeModel.https_redirect_status_code" data-ng-selected="routeModel.https_redirect_status_code">
+                        <option data-ng-repeat="code in ENUM_REDIRECT_CODE" value="{{code}}">{{code}}</option>
                     </select>
                 </div><!-- .field-input -->
+                <div class="field-note">
+                    The status code Kong responds with when all properties of a Route match except the protocol.<br />
+                    Location header is injected by Kong if the field is set to 301, 302, 307 or 308.
+                </div><!-- .field-note -->
             </div><!-- .form__field -->
 
+        </div><!-- .col.md-4 -->
+
+        <div class="col md-4">
             <div class="form__field">
-                <label for="rt-ed__rge01" class="field-label">Regex Priority</label>
-                <div class="field-input">
-                    <input id="rt-ed__rge01" type="range" min="0" max="100" name="regexPriority" data-ng-model="routeModel.regex_priority" />
-                    <span class="field-input__legend">{{routeModel.regex_priority}}</span>
-                </div><!-- .field-input -->
+                <label class="field-label">Path Handling Algorithm</label>
+                <ul class="field-input">
+                    <li><label><input type="radio" class="warning" name="pathHandling" data-ng-model="routeModel.path_handling" value="v0"> V0</label></li>
+                    <li><label><input type="radio" class="warning" name="pathHandling" data-ng-model="routeModel.path_handling" value="v1"> V1</label></li>
+                </ul><!-- .field-input -->
+                <div class="field-note">Controls how the Service path, Route path and requested path are combined when sending a request to the upstream.</div><!-- .field-note -->
             </div><!-- .form__field -->
-
-            <div class="form__field">
-                <div class="field-input">
-                    <label class="radio"><input type="radio" name="pathHandling" data-ng-model="routeModel.path_handling" value="v0"> V0</label>
-                    <label class="radio"><input type="radio" name="pathHandling" data-ng-model="routeModel.path_handling" value="v1"> V1</label>
-                </div><!-- .field-input -->
-            </div><!-- .form__field -->
-
-        </div><!-- .col.md-8 -->
+        </div><!-- .col.md-4 -->
         </div><!-- .row -->
 
         <div class="row">
-        <div class="col md-6">
+        <div class="col md-12">
             <div class="form__field">
                 <label class="field-label">Hosts</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.hosts" data-placeholder="Type a host name and press enter key."></token-input></div>
+                <div class="field-note">
+                    A list of domain names that match this route.<br />
+                    * Note that the values are <b>case sensitive</b>.
+                </div><!-- .field-note -->
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
 
-        <div class="col md-6">
             <div class="form__field">
-            <label class="field-label">Paths</label>
-            <div class="field-input"><token-input data-ng-model="routeModel.paths" data-placeholder="Type a path and press enter key."></token-input></div>
+                <label class="field-label">Paths</label>
+                <div class="field-input"><token-input data-ng-model="routeModel.paths" data-placeholder="Type a path and press enter key."></token-input></div>
+                <div class="field-note">A list of paths that match this route.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <label class="field-label">Headers</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.headers" data-placeholder="Type header and press enter key."></token-input></div>
+                <div class="field-note">One or more lists of values indexed by header name that will cause this route to match if present in the request.<br />
+                    * Note that the host header <b>cannot</b> be specified here. Hosts should be specified in the hosts field instead.</div><!-- .field-note -->
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
         </div><!-- .row -->
 
-        <div class="panel__split"></div><!-- .panel__split -->
+        <div class="panel__split">Protocol Specific Options - B</div><!-- .panel__split -->
+        <div class="field-note">Fields in this section are required only if any of TCP, TLS, or TLS Passthrough protocols are checked.</div>
         <div class="row">
-        <div class="col md-6">
+        <div class="col md-12">
             <div class="form__field">
                 <label class="field-label">Sources</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.sources" data-placeholder="Type host:port and press enter key. Eg: localhost:8000."></token-input></div>
+                <div class="field-note">A list of IP sources of incoming connections that match this route when using stream routing.<br />
+                    * Values should be of format <b>IP Address:Port</b> (CIDR range notation are supported). Eg: 127.0.0.1:8001.
+                </div><!-- .field-note -->
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
 
-        <div class="col md-6">
             <div class="form__field">
                 <label class="field-label">Destinations</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.destinations" data-placeholder="Type host:port and press enter key. Eg: localhost:8000."></token-input></div>
+                <div class="field-note">A list of IP destinations of incoming connections that match this route when using stream routing.<br />
+                    * Values should be of format <b>IP Address:Port</b> (CIDR range notation are supported). Eg: 127.0.0.1:8001.
+                </div><!-- .field-note -->
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <label class="field-label">SNIs</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.snis" data-placeholder="Type SNI and press enter key."></token-input></div>
+                <div class="field-note">A list of SNIs that match this Route when using stream routing.</div><!-- .field-note -->
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
         </div><!-- .row -->
 
-        <div class="panel__split"></div>
+        <div class="panel__split">Route Tags</div>
         <div class="form__field">
-            <label class="field-label">Route Tags</label>
             <div class="field-input"><token-input data-ng-model="routeModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
         </div><!-- .form__field -->
 
-        <div class="form__field">
-            <a class="btn default" href="#!/services">Cancel</a>
-            <button class="btn info" type="submit" name="action" value="update">Update</button>
-        </div>
+        <div data-ng-switch="routeId" class="form__field">
+            <button class="btn default" type="button" data-ng-click="resetRouteForm($event)">Clear</button>
+            <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Save</button>
+            <button data-ng-switch-default="" class="btn info" type="submit" name="action" value="update">Update</button>
+        </div><!-- .form__field -->
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel.panel-border -->
 </div><!-- .col.md-8 -->
 
 <div class="col md-4">
-            <div class="well">
-                <div class="well__heading">Applied Plugins
-                    <div class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins" class="btn mini success">+</a></div>
-                </div>
+    <div class="well">
+        <div class="well__heading">Applied Plugins
+            <div data-ng-if="routeId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/routes/{{routeId}}/plugins"><span class="material-icons">launch</span> Apply Plugin</a></div>
+        </div><!-- .well__heading -->
 
-                <table id="pluginListTable" class="table">
-                    <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
+        <table id="pluginListTable" class="table">
+            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
 
-                    <tbody>
-                    <tr data-ng-repeat="plugin in pluginList">
-                        <td><label class="checkbox success">
-                            <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
-                        </label></td>
+            <tbody>
+            <tr data-ng-repeat="plugin in pluginList">
+                <td><label class="checkbox success">
+                    <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
+                </label></td>
 
-                        <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
-                        <td>
-                            <div class="action-group" data-service-id="{{service.id}}">
-                                <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                                <i class="material-icons danger delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
+                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td>
+                    <div class="action-group" data-service-id="{{service.id}}">
+                        <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
+                        <i class="material-icons danger delete" data-target="plugin" data-url="/routes/{{routeId}}/plugins/{{plugin.id}}">delete_forever</i>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
 
-                    <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this service.</th></tr></tfoot>
-                </table>
-            </div>
+            <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this route.</th></tr></tfoot>
+        </table>
+    </div>
 
-            <div class="pagination" data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
-        </div>
+    <div class="pagination" data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
+</div>
 </div><!-- .row -->
 </div><!-- .container -->
