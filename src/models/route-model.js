@@ -1,5 +1,23 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
+/**
+ * @typedef {Object} App_RouteModel - The route model to be attached to the scope.
+ *
+ * @property {string} name - The route name.
+ */
+
+/**
+ * Defines the route model with default values.
+ *
+ * @type {App_RouteModel}
+ */
 const RouteModel = {
     name: 'my-route',
     protocols: [],
