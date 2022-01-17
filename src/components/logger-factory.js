@@ -5,6 +5,8 @@
  * Please see LICENSE file located in the project root for more information.
  */
 
+'use strict';
+
 /**
  * @typedef {Object} LoggerFactory - Factory service to log activity
  *
@@ -20,14 +22,14 @@
  * @property {function} isPaused - Tells whether the write operations are paused or not
  */
 
-'use strict';
+import _ from '../lib/utils.js';
 
 /**
  * Holds the current state of the logger.
  *
  * @type {{isPaused: boolean, maxLength: number}}
  */
-const LOG_STATE = { maxLength: 100, isPaused: false };
+const LOG_STATE = {maxLength: 100, isPaused: false};
 
 /**
  * Holds the messages queued for logging.
@@ -48,7 +50,7 @@ const LOG_CACHE = [];
  * @return {string} The formatted string for logging
  */
 const _fromHttpResponse = (response) => {
-    const {httpConfig = {method: 'Unknown', 'url': 'unknown'}, statusText = 'Unknown', statusCode = 'Unknown'} = response;
+    const {httpConfig = {method: 'Unknown', url: 'unknown'}, statusText = 'Unknown', statusCode = 'Unknown'} = response;
 
     let message = `${statusCode} ${statusText} - ${httpConfig.method} ${httpConfig.url}`;
 
@@ -59,8 +61,11 @@ const _fromHttpResponse = (response) => {
     let {exception} = response;
 
     if (response.source === 'admin-error') {
-        message = (typeof exception.message === 'string') ? `${message} - ${exception.message}` : message;
-        message = ((typeof exception.fields === 'object') && (exception.fields !== null)) ? (`${message} - ` + JSON.stringify(exception.fields)) : message;
+        message = typeof exception.message === 'string' ? `${message} - ${exception.message}` : message;
+        message =
+            typeof exception.fields === 'object' && exception.fields !== null
+                ? `${message} - ` + JSON.stringify(exception.fields)
+                : message;
     }
 
     return message;
@@ -75,11 +80,11 @@ const _fromHttpResponse = (response) => {
  * @param {string|null|{source: string, exception: Object}} message - the message to be logged
  * @return {{level: string, message: string, timestamp: string}} - The formatted string
  */
-const _sanitise = (level, message)=> {
+const _sanitise = (level, message) => {
     const date = new Date();
     const timestamp = date.toJSON().substr(0, 19).replace('T', ' ');
 
-    let text = (typeof message === 'string') ? message : '';
+    let text = typeof message === 'string' ? message : '';
 
     if (typeof message === 'object') {
         switch (message.source) {
@@ -87,7 +92,7 @@ const _sanitise = (level, message)=> {
             case 'http-response':
             case 'http-error':
             case 'admin-error':
-                text =_fromHttpResponse(message);
+                text = _fromHttpResponse(message);
                 break;
 
             default:
@@ -95,7 +100,7 @@ const _sanitise = (level, message)=> {
         }
     }
 
-    return { message: text, level: level.trim().toLowerCase(), timestamp };
+    return {message: text, level: level.trim().toLowerCase(), timestamp};
 };
 
 /**
@@ -128,7 +133,6 @@ const _write = (level, message) => {
  *      clear(): Object[], error(*): *, pause(): void, info(*): *}} - The logger factory singleton
  */
 export default function LoggerFactory() {
-
     return {
         getCache() {
             return LOG_CACHE;
@@ -143,6 +147,18 @@ export default function LoggerFactory() {
         },
 
         error(message) {
+            return _write('ERROR', message);
+        },
+
+        exception(message, exception) {
+            if (_.isObject(exception)) {
+                message = typeof exception.message === 'string' ? `${message} - ${exception.message}` : message;
+
+                if (_.isObject(exception.fields)) {
+                    message = `${message} - ` + JSON.stringify(exception.fields);
+                }
+            }
+
             return _write('ERROR', message);
         },
 

@@ -16,9 +16,11 @@ import ServiceModel from '../models/service-model.js';
  * The configuration also specifies the array of fields to be removed from
  * the service object payload to avoid validation errors.
  *
- * @type {{tcp: {excluded: string[]}, udp: {excluded: string[]},
- * tls_passthrough: {excluded: string[]}, http: {excluded: string[]},
- * tls: {excluded: string[]}, https: {excluded: *[]}, grpc: {excluded: string[]}}}
+ * @type {{
+ *      tcp: {excluded: string[]}, udp: {excluded: string[]},
+ *      tls_passthrough: {excluded: string[]}, http: {excluded: string[]},
+ *      tls: {excluded: string[]}, https: {excluded: *[]}, grpc: {excluded: string[]}
+ * }}
  */
 const ENUM_PROTOCOL = {
     http: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth']},
@@ -42,22 +44,24 @@ const ENUM_PROTOCOL = {
  */
 const _populateServiceModel = (model, source = {}) => {
     for (let property in source) {
-        if ((typeof model[property] === 'undefined')
-            || (Array.isArray(model[property]) && source[property] === null)) {
+        if (typeof model[property] === 'undefined' || (Array.isArray(model[property]) && source[property] === null)) {
             continue;
         }
 
         switch (property) {
             case 'tls_verify':
-                model[property] = (source[property] === null) ? 'default' : String(source[property]);
+                model[property] = source[property] === null ? 'default' : String(source[property]);
                 break;
 
             case 'tls_verify_depth':
-                model[property] = (source[property] === null) ? -1 : source[property];
+                model[property] = source[property] === null ? -1 : source[property];
                 break;
 
             case 'client_certificate':
-                model[property] = (source[property] !== null && typeof source[property]['id'] === 'string') ? source[property]['id'] : '';
+                model[property] =
+                    source[property] !== null && typeof source[property]['id'] === 'string'
+                        ? source[property]['id']
+                        : '';
                 break;
 
             case 'ca_certificates':
@@ -104,14 +108,14 @@ const _prepareServiceObject = (model) => {
     switch (model.tls_verify) {
         case 'true':
         case 'false':
-            payload.tls_verify = (model.tls_verify === 'true');
+            payload.tls_verify = model.tls_verify === 'true';
             break;
 
         default:
             payload.tls_verify = null;
     }
 
-    payload.tls_verify_depth = (model.tls_verify_depth === -1) ? null : model.tls_verify_depth;
+    payload.tls_verify_depth = model.tls_verify_depth === -1 ? null : model.tls_verify_depth;
 
     if (Array.isArray(excluded)) {
         for (let field of excluded) {
@@ -123,14 +127,14 @@ const _prepareServiceObject = (model) => {
 };
 
 /**
- * Provides controller constructor for editing CA certificates.
+ * Provides controller constructor for editing service objects.
  *
  * @constructor
  *
- * @param {Window} window- The top level Window object
+ * @param {Window} window- The top level Window object.
  * @param {Object} scope - The injected scope object.
- * @param {Object} location - Injected location service
- * @param {function} location.path - Tells the current view path
+ * @param {Object} location - Injected location service.
+ * @param {function} location.path - Tells the current view path.
  * @param {Object} routeParams - Injected route parameters service.
  * @param {string} routeParams.serviceId - The service id in editing mode.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
@@ -144,7 +148,7 @@ const _prepareServiceObject = (model) => {
  */
 export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
-    const ajaxConfig = { method: 'POST', resource: '/services' };
+    const ajaxConfig = {method: 'POST', resource: '/services'};
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
@@ -178,8 +182,8 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {string} resource - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchPublicCertificates= (resource = '/certificates')=> {
-        const request =ajax.get({resource});
+    scope.fetchPublicCertificates = (resource = '/certificates') => {
+        const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             for (let current of response.data) {
@@ -189,7 +193,7 @@ export default function ServiceEditController(window, scope, location, routePara
                 });
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -221,7 +225,7 @@ export default function ServiceEditController(window, scope, location, routePara
                 scope.caCertList = certificates;
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -238,15 +242,15 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {string} resource - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchRoutes = (resource = '/routes')=> {
-        const request =ajax.get({resource});
+    scope.fetchRoutes = (resource = '/routes') => {
+        const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             for (let current of response.data) {
                 scope.routeList.push(current);
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -267,7 +271,7 @@ export default function ServiceEditController(window, scope, location, routePara
      * @return {boolean} True if the request could be made, false otherwise
      */
     scope.submitServiceForm = (event) => {
-        if (typeof event ==='undefined') {
+        if (typeof event === 'undefined') {
             return false;
         }
 
@@ -278,10 +282,10 @@ export default function ServiceEditController(window, scope, location, routePara
         });
 
         const payload = _prepareServiceObject(scope.serviceModel);
-        const request = ajax.request({ method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload });
+        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
 
             switch (scope.serviceId) {
                 case '__none__':
@@ -295,7 +299,7 @@ export default function ServiceEditController(window, scope, location, routePara
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
-            toast.error('Could not ' + ((scope.serviceId === '__none__') ? 'create new' : 'update') + ' service.');
+            toast.error('Could not ' + (scope.serviceId === '__none__' ? 'create new' : 'update') + ' service.');
             logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
 
@@ -323,7 +327,7 @@ export default function ServiceEditController(window, scope, location, routePara
     if (ajaxConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
         const request = ajax.get({resource: ajaxConfig.resource});
 
-        request.then(({ data: response }) => {
+        request.then(({data: response}) => {
             _populateServiceModel(scope.serviceModel, response);
 
             viewFrame.actionButtons.push({

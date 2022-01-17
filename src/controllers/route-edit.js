@@ -10,7 +10,21 @@
 import _ from '../lib/utils.js';
 import RouteModel from '../models/route-model.js';
 
-const protocols = {
+/**
+ * Holds the list of available protocols and their configuration.
+ *
+ * The configuration also specifies the array of fields that are required
+ * for a particiular protocol. Also, the fields required to be removed
+ * can be obtained from the _exlusive_ property, to avoid validation errors.
+ *
+ * @type {{
+ *      _exclusive_: string[], http: {required: string[]},
+ *      https: string[], tcp: {required: string[]},
+ *      tls: string[], tls_passthrough: {required: string[]},
+ *      grpc: string[], grpcs: {required: string[]}
+ * }}
+ */
+const PROTOCOL_CONFIG = {
     _exclusive_: ['methods', 'hosts', 'headers', 'paths', 'sources', 'destinations'],
     http: {required: ['methods', 'hosts', 'headers', 'paths']},
     https: {required: ['methods', 'hosts', 'headers', 'paths', 'snis']},
@@ -21,7 +35,16 @@ const protocols = {
     grpcs: {required: ['hosts', 'headers', 'paths', 'snis']}
 };
 
-function _splitIPSources(sources = []) {
+/**
+ * Explodes and sanitises internet addresses.
+ *
+ * If the input is ['192.168.1.1:8000'],
+ * the output will be [{ip: '192.168.1.1', port: 8000}].
+ *
+ * @param {string[]} sources - An array of IP addresses.
+ * @returns {[{ip: string, port: number}]} Array of exploded IP addresses.
+ */
+function _explodeAddress(sources = []) {
     return sources.reduce((collection, current) => {
         let [ip, port = '-1'] = current.split(':');
         let item = {ip: ip.trim(), port: parseInt(port)};
@@ -38,7 +61,15 @@ function _splitIPSources(sources = []) {
     }, []);
 }
 
-function _mergeIPSources(sources = []) {
+/**
+ * Implodes the internet addresses.
+ *
+ * This function reverses {@link _explodeAddress}.
+ *
+ * @param {string[]} sources - The input IP addresses.
+ * @returns {string[]} Array of imploded IP addresses.
+ */
+function _implodeAddress(sources = []) {
     return sources.map((current) => {
         let {ip, port} = current;
 
@@ -47,7 +78,59 @@ function _mergeIPSources(sources = []) {
     });
 }
 
-function _buildRoutePayload(model) {
+/**
+ * Populates the route model after sanitising values in the route object.
+ *
+ * @private
+ * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#route-object
+ *
+ * @param {Object} source - The route object from which route model is to be built.
+ * @param {App_RouteModel} model - The route model which needs to be populated.
+ * @returns {App_RouteModel} The populated route model.
+ */
+function _refreshRouteModel(source, model) {
+    for (let key of Object.keys(source)) {
+        if (typeof model[key] === 'undefined' || source[key] === null) {
+            continue;
+        }
+
+        switch (key) {
+            case 'sources':
+            case 'destinations':
+                model[key] = _implodeAddress(source[key]);
+                break;
+
+            case 'service':
+                model[key] = _.get(source[key], 'id', '');
+                break;
+
+            case 'https_redirect_status_code':
+                model[key] = `${source[key]}`;
+                break;
+
+            default:
+                model[key] = source[key];
+                break;
+        }
+    }
+
+    return model;
+}
+
+/**
+ * Builds route object after sanitising values in a specified route model.
+ *
+ * Technically, this function does the inverse of {@link _refreshRouteModel} function.
+ * The function validates route model before preparing the payload. Throws an error
+ * if the validation fails.
+ *
+ * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#route-object
+ * @private
+ *
+ * @param {App_RouteModel} model - The source route model.
+ * @returns {Object} The route object.
+ */
+function _buildRouteObject(model) {
     if (model.protocols.length === 0) {
         throw 'Please check at least one protocol from the list.';
     }
@@ -63,7 +146,7 @@ function _buildRoutePayload(model) {
             case 'sources':
             case 'destinations':
                 delete payload[key];
-                payload[key] = _splitIPSources(model[key]);
+                payload[key] = _explodeAddress(model[key]);
                 break;
 
             case 'https_redirect_status_code':
@@ -83,7 +166,7 @@ function _buildRoutePayload(model) {
     for (let current of model.protocols) {
         let isValidated = false;
 
-        for (let field of protocols[current]['required']) {
+        for (let field of PROTOCOL_CONFIG[current]['required']) {
             if (Array.isArray(model[field]) && model[field].length >= 1) {
                 isValidated = true;
                 break;
@@ -93,7 +176,7 @@ function _buildRoutePayload(model) {
         if (isValidated === false) {
             throw (
                 'At least one of <strong>' +
-                protocols[current]['required'].join(', ') +
+                PROTOCOL_CONFIG[current]['required'].join(', ') +
                 '</strong> is required if ' +
                 current.toUpperCase() +
                 ' is selected.'
@@ -114,8 +197,8 @@ function _buildRoutePayload(model) {
                 break;
         }
 
-        const excluded = protocols._exclusive_.filter((item) => {
-            return !protocols[current]['required'].includes(item);
+        const excluded = PROTOCOL_CONFIG._exclusive_.filter((item) => {
+            return !PROTOCOL_CONFIG[current]['required'].includes(item);
         });
 
         for (let field of excluded) {
@@ -127,39 +210,25 @@ function _buildRoutePayload(model) {
     return payload;
 }
 
-function _buildRouteModel(input, model) {
-    for (let key of Object.keys(input)) {
-        if (typeof model[key] === 'undefined' || input[key] === null) {
-            continue;
-        }
-
-        switch (key) {
-            case 'sources':
-            case 'destinations':
-                model[key] = _mergeIPSources(input[key]);
-                break;
-
-            case 'service':
-                model[key] = _.get(input[key], 'id', '');
-                break;
-
-            case 'https_redirect_status_code':
-                model[key] = `${input[key]}`;
-                break;
-
-            default:
-                model[key] = input[key];
-                break;
-        }
-    }
-
-    console.log('Model ', JSON.stringify(model, null, 4));
-
-    return model;
-}
-
-export default function RouteEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
-    const {angular} = window;
+/**
+ * Provides controller constructor for editing route objects.
+ *
+ * @constructor
+ *
+ * @param {Window} window- The top level Window object.
+ * @param {Object} scope - The injected scope object.
+ * @param {Object} location - Injected location service.
+ * @param {function} location.path - Tells the current view path.
+ * @param {Object} routeParams - Injected route parameters service.
+ * @param {string} routeParams.serviceId - The service id,
+ *                                          if attached to a service.
+ * @param {string} routeParams.routeId - The route id in editing mode.
+ * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
+ * @param {ToastFactory} toast - Custom toast message service.
+ * @param {LoggerFactory} logger - Custom logger factory service.
+ */
+export default function RouteEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const ajaxConfig = {method: 'POST', resource: '/routes'};
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
@@ -167,7 +236,7 @@ export default function RouteEditController(window, scope, location, routeParams
     scope.ENUM_REDIRECT_CODE = [426, 301, 302, 307, 308];
 
     scope.routeId = '__none__';
-    scope.routeModel = angular.copy(RouteModel);
+    scope.routeModel = _.deepClone(RouteModel);
 
     scope.serviceId = '__none__';
 
@@ -198,18 +267,33 @@ export default function RouteEditController(window, scope, location, routeParams
             break;
     }
 
+    /**
+     * Handles route form submit event.
+     *
+     * The route object payload is prepared and POST or PATCH requests
+     * are triggered according to create or edit mode respectively.
+     *
+     * @param {Object} event - The current event object.
+     * @returns {boolean} True if the form could be submitted, false otherwise.
+     */
     scope.submitRouteForm = function (event) {
+        if (typeof event === 'undefined') {
+            return false;
+        }
+
         event.preventDefault();
 
         try {
-            const payload = _buildRoutePayload(scope.routeModel);
+            const payload = _buildRouteObject(scope.routeModel);
             const request = ajax.request({
                 method: ajaxConfig.method,
                 resource: ajaxConfig.resource,
                 data: payload
             });
 
-            request.then(({data: response}) => {
+            request.then(({data: response, configText}) => {
+                logger.info(configText);
+
                 switch (scope.routeId) {
                     case '__none__':
                         toast.success('New route added.');
@@ -221,8 +305,9 @@ export default function RouteEditController(window, scope, location, routeParams
                 }
             });
 
-            request.catch(() => {
-                toast.error('Could not create new route.');
+            request.catch(({data: exception, statusText}) => {
+                toast.error('Could not save route details.');
+                logger.exception(statusText, exception);
             });
         } catch (error) {
             toast.error(`${error}`);
@@ -231,15 +316,29 @@ export default function RouteEditController(window, scope, location, routeParams
         return false;
     };
 
+    /**
+     * Handles route form reset event.
+     *
+     * Displays confirmation dialog before clearing the form.
+     *
+     * @param {Object} event - The current event object.
+     * @return boolean - True if reset confirmed, false otherwise.
+     */
     scope.resetRouteForm = function (event) {
+        if (confirm('Proceed to clear the form?')) {
+            scope.routeModel = _.deepClone(RouteModel);
+            return true;
+        }
+
         event.preventDefault();
+        return false;
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
         const request = ajax.get({resource: ajaxConfig.resource});
 
         request.then(({data: response}) => {
-            _buildRouteModel(response, scope.routeModel);
+            _refreshRouteModel(response, scope.routeModel);
 
             viewFrame.actionButtons.push({
                 target: 'route',
