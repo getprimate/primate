@@ -1,12 +1,25 @@
 'use strict';
 
+function _baseClone(source) {
+    const {angular} = window;
+
+    return angular.copy(source);
+}
+
+function _isObject(value) {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 export default {
+    deepClone: _baseClone,
+    isObject: _isObject,
+
     get(object, path, defaultValue = null) {
         if (object === null) {
             return defaultValue;
         }
 
-        return (typeof object[path] === 'undefined') ? defaultValue : object[path];
+        return typeof object[path] === 'undefined' ? defaultValue : object[path];
     },
 
     explode(input = '', separator = ',') {
