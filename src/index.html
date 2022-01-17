@@ -88,6 +88,8 @@ const ngDependency  = ['ngRoute'];
 <script type="text/javascript" src="controllers/settings.js"></script>
 
 <script type="module">
+    import HttpInterceptor from './components/http-interceptor.js'
+
     import LoggerFactory from './components/logger-factory.js';
     import TokenInputDirective from './components/token-input-directive.js'
     import MultiCheckDirective from './components/multi-check-directive.js';
@@ -112,6 +114,8 @@ const ngDependency  = ['ngRoute'];
     import ConsumerEditController from './controllers/consumer-edit.js';
 
     import PluginEditController from './controllers/plugin-edit.js';
+
+    app.config(['$httpProvider', HttpInterceptor]);
 
     app.factory('logger', LoggerFactory)
 
