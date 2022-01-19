@@ -250,7 +250,11 @@ app.filter('capitalise', function () {
 
         const words = input.split(/[_,-]+/);
 
-        return words.map((word) => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()).join(' ');
+        return words
+            .map((word) => {
+                return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+            })
+            .join(' ');
     };
 });
 
