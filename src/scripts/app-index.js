@@ -56,22 +56,6 @@
                     templateUrl: 'views/service-edit.html',
                     controller: 'ServiceEditController'
                 })
-                .when('/services/:serviceId/plugins', {
-                    templateUrl: 'views/plugin-edit.html',
-                    controller: 'PluginEditController'
-                })
-                .when('/plugins', {
-                    templateUrl: 'views/plugin-list.html',
-                    controller: 'PluginListController'
-                })
-                .when('/plugins/:pluginId', {
-                    templateUrl: 'views/plugin-edit.html',
-                    controller: 'PluginEditController'
-                })
-                .when('/consumers/:consumerId/plugins', {
-                    templateUrl: 'views/plugin-list.html',
-                    controller: 'PluginListController'
-                })
                 .when('/certificates', {
                     templateUrl: 'views/certificate-list.html',
                     controller: 'CertificateListController'
@@ -125,6 +109,32 @@
                 .when('/consumers/:consumerId', {
                     controller: 'ConsumerEditController',
                     templateUrl: 'views/consumer-edit.html'
+                });
+
+            $routeProvider
+                .when('/plugins', {
+                    templateUrl: 'views/plugin-list.html',
+                    controller: 'PluginListController'
+                })
+                .when('/plugins/:pluginId', {
+                    templateUrl: 'views/plugin-edit.html',
+                    controller: 'PluginEditController'
+                })
+                .when('/services/:serviceId/plugins/:pluginId', {
+                    templateUrl: 'views/plugin-edit.html',
+                    controller: 'PluginEditController'
+                })
+                .when('/routes/:routeId/plugins/:pluginId', {
+                    templateUrl: 'views/plugin-edit.html',
+                    controller: 'PluginEditController'
+                })
+                .when('/services/:serviceId/routes/:routeId/plugins/:pluginId', {
+                    templateUrl: 'views/plugin-edit.html',
+                    controller: 'PluginEditController'
+                })
+                .when('/consumers/:consumerId/plugins/:pluginId', {
+                    templateUrl: 'views/plugin-list.html',
+                    controller: 'PluginListController'
                 });
 
             $routeProvider.otherwise({
