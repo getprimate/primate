@@ -1,49 +1,71 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 /**
- * Provides controller constructor for editing CA certificates.
+ * Provides controller constructor for editing consumer objects.
  *
  * @constructor
  *
- * @param {{consumerList: Object[],
- *      consumerNext: string,
- *      fetchConsumerList: function}} scope - injected scope object
- * @param {AjaxProvider} ajax - custom AJAX provider
- * @param {ViewFrameFactory} viewFrame - custom view frame factory
- * @param {ToastFactory} toast - custom toast message factory
+ * @param {Object} scope - The injected scope object.
+ * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
+ * @param {ToastFactory} toast - Custom toast message service.
+ * @param {LoggerFactory} logger - Custom logger factory service.
+ *
+ *
+ * @property {Object[]} scope.consumerList - An array that holds the list of consumers.
+ * @property {string} scope.consumerNext - The resource endpoint with offset value for pagination.
  */
-export default function ConsumerListController(scope, ajax, viewFrame, toast) {
+export default function ConsumerListController(scope, ajax, viewFrame, toast, logger) {
     scope.consumerList = [];
     scope.consumerNext = '';
 
     /**
      * Retrieves the consumer list.
      *
-     * @param {string} resource - the consumer API endpoint
+     * @param {string} resource - The consumer API endpoint.
+     * @returns {boolean} True if th request could be made, false otherwise.
      */
-    scope.fetchConsumerList = (resource = '/consumers') => {
-        const request = ajax.get({ resource: resource });
+    scope.fetchConsumerList = function (resource = '/consumers') {
+        const request = ajax.get({resource: resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, httpText}) => {
             let {next} = response;
-            scope.consumerNext = (typeof next === 'string') ? next.replace(viewFrame.host, '') : '';
+            scope.consumerNext = typeof next === 'string' ? next.replace(viewFrame.host, '') : '';
 
-            for (let index = 0; index < response.data.length; index++) {
-                scope.consumerList.push(response.data[index]);
+            for (let consumer of response.data) {
+                let createdAt = new Date(consumer.created_at);
+
+                if (consumer.custom_id === null) {
+                    consumer.custom_id = 'Not Provided';
+                }
+
+                consumer.created_at = createdAt.toLocaleString();
+
+                scope.consumerList.push(consumer);
             }
+
+            logger.info(httpText);
         });
 
-        request.catch(() => {
-            toast.error('Could not load list of consumers');
+        request.catch(({data: error, httpText}) => {
+            toast.error('Could not load the list of consumers.');
+            logger.exception(httpText, error);
         });
 
         return true;
     };
 
-    viewFrame.title = 'Consumer List';
+    viewFrame.title = 'Consumers';
     viewFrame.prevUrl = '';
 
-    scope.fetchConsumerList('/consumers');
+    scope.fetchConsumerList();
 
     viewFrame.actionButtons.push({
         displayText: 'New Consumer',
