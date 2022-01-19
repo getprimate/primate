@@ -1014,6 +1014,8 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
     border-radius: 10px;
 }
 
+    .well:only-of-type { margin-bottom: 5px !important; }
+
 .well .well__heading {
     padding: min(1.041vw, 20px);
     border-bottom: 2px solid var(--widget__accent-bg);
@@ -1222,6 +1224,24 @@ a.btn.warning {
         background-image: linear-gradient(to right, var(--std__success), var(--std__success)), var(--overlay__dark-10);
     }
 
+button.text {
+    border: 0 solid transparent;
+    background: transparent none;
+    padding: 4px 20px;
+    font-weight: 500;
+    color: var(--theme__accent-fg);
+    cursor: pointer;
+}
+
+button.text > .material-icons { vertical-align: middle; }
+
+    button.text:hover { color: var(--theme__primary-fg); }
+
+.pagination > button.text { 
+    padding-left: 0; 
+    padding-right: 0;
+}   
+
 .notification { color: #FFFFFF; }
     .notification:hover { color: rgba(255,255,255,0.5); }
 
@@ -1302,6 +1322,15 @@ ul.list li { background-color: var(--input__primary-bg) }
 .left { float:left !important; }
 .right { float:right !important; }
 
-.material-icons.hero { font-size: 12rem; color: var(--theme__accent-bg); }
+.view-hero {
+    margin-top: calc(50vh - 270px);
+    text-align: center;
+}
+
+.view-hero > p:nth-child(2) {
+    color: var(--theme__accent-fg);
+}
+
+.material-icons.hero { font-size: 15rem; color: var(--theme__accent-bg); }
 
 #staticMessage a { color: #D2D2D2; }
