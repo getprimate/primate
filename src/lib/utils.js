@@ -10,9 +10,14 @@ function _isObject(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function _isNil(value) {
+    return typeof value === 'undefined' || value === null;
+}
+
 export default {
     deepClone: _baseClone,
     isObject: _isObject,
+    isNil: _isNil,
 
     get(object, path, defaultValue = null) {
         if (object === null) {
