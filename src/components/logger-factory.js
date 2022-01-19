@@ -150,12 +150,12 @@ export default function LoggerFactory() {
             return _write('ERROR', message);
         },
 
-        exception(message, exception) {
-            if (_.isObject(exception)) {
-                message = typeof exception.message === 'string' ? `${message} - ${exception.message}` : message;
+        exception(message, error) {
+            if (_.isObject(error)) {
+                message = typeof error.message === 'string' ? `${message} - ${error.message}` : message;
 
-                if (_.isObject(exception.fields)) {
-                    message = `${message} - ` + JSON.stringify(exception.fields);
+                if (_.isObject(error.fields)) {
+                    message = `${message} - ` + JSON.stringify(error.fields);
                 }
             }
 
