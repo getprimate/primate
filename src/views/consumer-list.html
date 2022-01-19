@@ -1,24 +1,33 @@
-<div class="well">
+<div class="container">
+
+<!-- ==-==-==-==-== Display this section if consumer list is empty. ==-==-==-==-== -->
+<div data-ng-if="consumerList.length===0" class="view-hero">
+    <p><span class="material-icons hero">person_pin</span></p>
+    <p>No consumers are added yet.</p>
+    <p><a href="#!/consumers/__create__" class="btn default">Add New Consumer</a></p>
+</div><!-- .view-hero -->
+
+<div data-ng-if="consumerList.length>=1" class="well">
 <div class="well__heading">List of consumers</div>
-<table id="consumersTable" class="table data-table">
-    <thead data-ng-if="consumerList.length>0"><tr><th>Username</th><th>Custom Id</th><th>Created</th><th>Actions</th></tr></thead>
+<table id="cs-ed__tab01" class="table data-table">
+    <thead><tr><th>Username</th><th>Custom Id</th><th>Created At</th><th class="align-right">Actions</th></tr></thead>
 
     <tbody>
     <tr data-ng-repeat="consumer in consumerList">
         <td><a href="#!/consumers/{{consumer.id}}">{{consumer.username}}</a></td>
         <td>{{consumer.custom_id}}</td>
-        <td>{{consumer.created_at | date}}</td>
-        <td>
-            <div class="action-group">
-                <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><i class="material-icons warning">edit</i></a>
-                <a title="Enabled Plugins" href="#!/consumers/{{consumer.id}}/plugins"><i class="material-icons info">extension</i></a>
-                <i title="Delete Consumer" class="material-icons danger delete" data-target="consumer" data-url="/consumers/{{consumer.id}}">delete_forever</i>
-            </div>
+        <td>{{consumer.created_at}}</td>
+        <td class="align-right">
+            <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><span class="material-icons warning">edit</span></a>
+            <span title="Delete Consumer" class="material-icons danger delete" data-target="consumer" data-url="/consumers/{{consumer.id}}">delete_forever</span>
         </td>
     </tr>
     </tbody>
-    <tfoot data-ng-if="consumerList.length<=0"><tr><th>Consumer list is empty.</th></tr></tfoot>
 </table>
-</div>
+</div><!-- .well -->
 
-<div data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchConsumerList(nextUrl)">Load Next</button></div>
+<div data-ng-if="consumerNext.length>=5" class="pagination">
+    <button class="text" data-ng-click="fetchConsumerList(consumerNext)">Load More<span class="material-icons">navigate_next</span></button>
+</div><!-- .pagination -->
+
+</div><!-- .container -->
