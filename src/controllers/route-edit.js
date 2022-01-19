@@ -235,6 +235,8 @@ export default function RouteEditController(window, scope, location, routeParams
     scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTION'];
     scope.ENUM_REDIRECT_CODE = [426, 301, 302, 307, 308];
 
+    scope.currentPath = location.path();
+
     scope.routeId = '__none__';
     scope.routeModel = _.deepClone(RouteModel);
 
@@ -291,8 +293,8 @@ export default function RouteEditController(window, scope, location, routeParams
                 data: payload
             });
 
-            request.then(({data: response, configText}) => {
-                logger.info(configText);
+            request.then(({data: response, headerText}) => {
+                logger.info(headerText);
 
                 switch (scope.routeId) {
                     case '__none__':
@@ -305,9 +307,9 @@ export default function RouteEditController(window, scope, location, routeParams
                 }
             });
 
-            request.catch(({data: exception, statusText}) => {
+            request.catch(({data: exception, headerText}) => {
                 toast.error('Could not save route details.');
-                logger.exception(statusText, exception);
+                logger.exception(headerText, exception);
             });
         } catch (error) {
             toast.error(`${error}`);
@@ -337,7 +339,7 @@ export default function RouteEditController(window, scope, location, routeParams
     if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
         const request = ajax.get({resource: ajaxConfig.resource});
 
-        request.then(({data: response}) => {
+        request.then(({data: response, headerText}) => {
             _refreshRouteModel(response, scope.routeModel);
 
             viewFrame.actionButtons.push({
@@ -348,14 +350,14 @@ export default function RouteEditController(window, scope, location, routeParams
                 displayText: 'Delete'
             });
 
-            return true;
+            logger.info(headerText);
         });
 
-        request.catch(() => {
+        request.catch(({data: error, headerText}) => {
             toast.error('Could not load route details.');
-            window.location.href = viewFrame.prevUrl;
+            logger.exception(headerText, error);
 
-            return false;
+            window.location.href = viewFrame.prevUrl;
         });
     }
 }
