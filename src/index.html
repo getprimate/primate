@@ -127,7 +127,7 @@ const ngDependency  = ['ngRoute'];
 
     app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', ServiceListController]);
     app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', ServiceEditController]);
-    app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', RouteEditController]);
+    app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', RouteEditController]);
     app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', CertificateListController]);
     app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
     app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', TrustedCAEditController]);
@@ -135,7 +135,7 @@ const ngDependency  = ['ngRoute'];
     app.controller('UpstreamEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', UpstreamEditController]);
     app.controller('ConsumerListController', ['$scope', 'ajax', 'viewFrame', 'toast', ConsumerListController]);
     app.controller('ConsumerEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', ConsumerEditController]);
-    app.controller('PluginEditController', ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast', PluginEditController]);
+    app.controller('PluginEditController', ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', PluginEditController]);
 </script>
 
 <script type="text/javascript">
