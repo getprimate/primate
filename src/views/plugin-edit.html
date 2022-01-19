@@ -5,38 +5,91 @@
     <div class="panel panel-border info">
     <div class="panel__heading">Plugin Details</div>
     <div class="panel__body">
-        <form id="pg-ed__frm01" class="form" method="post" action="#">
-        <div class="form__field">
-            <label class="field-label">Plugin Name</label>
-            <div class="field-input">
-            <select id="pg-ed__sel01" class="stretch" name="name" data-ng-model="pluginModel.name">
-                <option data-ng-repeat="plugin in pluginList" value="{{plugin}}">{{plugin}}</option>
-            </select>
-            </div><!-- .field-input -->
-        </div><!-- .form__field -->
+        <form id="pg-ed__frm01" class="form" method="post" data-ng-submit="submitPluginForm($event)">
+        <div class="row">
+        <div class="col md-8">
+            <div class="form__field">
+                <label class="field-label">Plugin Name</label>
+                <div class="field-input" data-ng-switch="pluginId">
+                <select data-ng-switch-when="__none__" id="pg-ed__sel01" name="name" data-ng-model="pluginModel.name" data-ng-change="changePlugin()">
+                    <option value="__none__">- Select a Plugin -</option>
+                    <option data-ng-repeat="plugin in pluginList" value="{{plugin}}">{{plugin}}</option>
+                </select>
+                <article data-ng-switch-default>{{pluginModel.name}}</article>
+                </div><!-- .field-input -->
+            </div><!-- .form__field -->
+        </div><!-- .col.md-8 -->
+        <div class="col md-4">
+            <div class="form__field">
+                <label for="sv-ed__txt03" class="field-label">Plugin State</label>
+                <div class="field-input">
+                    <label class="checkbox"><input type="checkbox" id="pg-ed__chk01" class="success" name="pluginEnabled" data-ng-model="pluginModel.enabled" checked /> Enable Plugin</label>
+                </div>
+            </div><!-- .form__field -->
+        </div><!-- .col.md-4 -->
+        </div><!-- .row -->
 
-        <div class="form__field" data-ng-if="!pluginSchema.no_consumer">
-        <label class="field-label">Apply to</label>
-        <div class="field-input">
-            <select data-ng-disabled="{{pluginId!=null}}" class="stretch" name="consumer" data-ng-model="formInput.consumer_id">
-                <option value="">All Consumers</option>
-                <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.username}}</option>
-            </select>
-        </div><!-- .field-input -->
-        </div><!-- .form__field -->
+        <div class="row">
+        <div class="col md-8">
+            <div class="form__field">
+                <label class="field-label">Route</label>
+                <div class="field-input" data-ng-switch="routeId">
+                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.route" data-ng-selected="pluginModel.route">
+                        <option value="__none__">- All Routes -</option>
+                        <option data-ng-repeat="route in routeList" value="{{consumer.id}}">{{route.displayText}}</option>
+                    </select>
+
+                    <article data-ng-switch-default>{{routeId}}</article>
+                </div><!-- .field-input -->
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <label class="field-label">Service</label>
+                <div class="field-input" data-ng-switch="serviceId">
+                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.service" data-ng-selected="pluginModel.service">
+                        <option value="__none__">- All Services -</option>
+                        <option data-ng-repeat="service in serviceList" value="{{service.id}}">{{service.displayText}}</option>
+                    </select>
+
+                    <article data-ng-switch-default>{{serviceId}}</article>
+                </div><!-- .field-input -->
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <label class="field-label">Consumer</label>
+                <div class="field-input" data-ng-switch="consumerId">
+                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.consumer" data-ng-selected="pluginModel.consumer">
+                        <option value="__none__">All Consumers</option>
+                        <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.username}}</option>
+                    </select>
+
+                    <article data-ng-switch-default>{{consumerId}}</article>
+                </div><!-- .field-input -->
+            </div><!-- .form__field -->
+        </div><!-- .col.md-8 -->
+
+        <div class="col md-4">
+            <div class="form__field">
+                <label class="field-label">Protocols</label>
+                <div class="field-input"><multi-check data-ng-model="pluginModel.protocols" data-option-list="ENUM_PROTOCOL" data-input-style="warning"></multi-check></div>
+            </div><!-- .form__field -->
+        </div><!-- .col.md-4 -->
+        </div><!-- .row -->
 
         <div class="panel__split"><span>Configurations for {{pluginModel.name}} plugin</span></div>
 
         <div class="row">
         <div class="col md-6">
         <div>&nbsp;</div>
-        <article class="mg-bottom-10" data-ng-repeat="fieldWrap in schemaProps.fields">
+        <div class="mg-bottom-10" data-ng-repeat="fieldWrap in schemaProps.fields">
             <div data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
                 <div data-ng-switch="fieldProp.nodeType">
 
                     <div data-ng-switch-when="input__checkbox" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
-                        <div class="field-input"><input type="checkbox" data-ng-model="schemaModel[fieldName]" /></div>
+                        <label class="field-label">Plugin Flag</label>
+                        <div class="field-input">
+                            <label class="checkbox"><input type="checkbox" class="warning" data-ng-model="schemaModel[fieldName]" /> {{fieldName | pgname}}</label>
+                        </div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="input__text" class="form__field">
@@ -62,7 +115,7 @@
                     <div data-ng-switch-when="select" class="form__field">
                         <label class="field-label">{{fieldName | pgname}}</label>
                         <div class="field-input">
-                            <select data-ng-switch-when="" class="stretch" data-ng-model="schemaModel[fieldName]">
+                            <select data-ng-selected="schemaModel[fieldName]" data-ng-model="schemaModel[fieldName]">
                                 <option data-ng-repeat="option in fieldProp.nodeList" value="{{option}}">{{option}}</option>
                             </select>
                         </div><!-- .field__input -->
@@ -74,7 +127,7 @@
                     </div>
                 </div><!-- data-ng-switch -->
             </div><!-- data-ng-repeat -->
-        </article><!-- .mg-bottom-10 -->
+        </div><!-- .mg-bottom-10 -->
         </div>
 
         <div class="col md-6">
@@ -91,6 +144,11 @@
             </div><!-- .form__field -->
         </div>
         </div><!-- .row -->
+
+        <div class="panel__split"><span>Plugin Tags</span></div>
+        <div class="form__field">
+            <div class="field-input"><token-input data-ng-model="pluginModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
+        </div><!-- .form__field -->
 
         <div class="form__field">
             <a href="{{prevUrl}}" class="btn default cancel">Cancel</a>
