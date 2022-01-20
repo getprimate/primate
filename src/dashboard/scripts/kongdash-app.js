@@ -22,14 +22,6 @@
  * @property {function} basicAuth - sets authorisation headers for basic auth
  */
 
-/**
- * @typedef {Object} ToastFactory - toast message factory service
- * @property {function} success - pops up a success toast message
- * @property {function} info - pops up an information toast message
- * @property {function} warning - pops up a warning toast message
- * @property {function} error - pops up a success toast message
- */
-
 /* global angular:true ngDependency:true */
 var app = angular.module(
     'KongDash',
