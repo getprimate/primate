@@ -79,5 +79,29 @@ export default {
 
         const numeric = parseInt(input);
         return isNaN(numeric) ? input : numeric;
+    },
+
+    editPath(current, id = '') {
+        let replaced = current.replace('/__create__', `/${id}`);
+
+        if (replaced.charAt(0) !== '/') {
+            replaced = `/${replaced}`;
+        }
+
+        return `#!${replaced}`;
+    },
+
+    /**
+     * Converts dashed string to camel case.
+     *
+     * For example, the text dash-to-camel becomes dashToCamel.
+     *
+     * @param {string} value - The input string to be converted
+     * @returns {string}. The converted text.
+     */
+    dashToCamel(value) {
+        return value.replace(/-([a-z])/g, (hyphen, char) => {
+            return char.toUpperCase();
+        });
     }
 };
