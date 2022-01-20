@@ -1245,7 +1245,7 @@ button.text > .material-icons { vertical-align: middle; }
 .pagination > button.text { 
     padding-left: 0; 
     padding-right: 0;
-}   
+}
 
 .notification { color: #FFFFFF; }
     .notification:hover { color: rgba(255,255,255,0.5); }
