@@ -3,10 +3,10 @@
 <meta name=viewport content="width=device-width, initial-scale=1"/>
 <title>KongDash</title>
 
-<link rel="stylesheet" type="text/css" href="css/roboto.css" />
-<link rel="stylesheet" type="text/css" href="css/material-icons.css" />
-    <link rel="stylesheet" type="text/css" href="css/theme-defaults.css" />
-<link rel="stylesheet" type="text/css" href="css/layout.css" />
+<link rel="stylesheet" type="text/css" href="static/css/roboto.css" />
+<link rel="stylesheet" type="text/css" href="static/css/material-icons.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
+<link rel="stylesheet" type="text/css" href="static/css/layout.css" />
 
 <style>
 main { padding-top: 10%; overflow: hidden; }
@@ -19,11 +19,19 @@ main { padding-top: 10%; overflow: hidden; }
 
 form.form { max-width: 400px; margin: 0 auto 0 auto;  }
 </style>
+
+<script type="text/javascript">
+window.jQuery = require('./framework/jquery-3.6.0.min.js');
+/*
+const { ipcRenderer } = require('electron');
+var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
+*/
+</script>
 </head>
 <body class="body">
-<main data-ng-controller="InitialSetupController">
+<main data-ng-controller="BootstrapController">
     <div class="icon">
-        <img src="images/logo-192x192.png" alt="KongDash" />
+        <img src="static/images/logo-192x192.png" alt="KongDash" />
         <p class="caption">KongDash</p>
         <p class="description">Version {{version}}</p>
     </div>
@@ -52,24 +60,14 @@ form.form { max-width: 400px; margin: 0 auto 0 auto;  }
     </footer>
 </main>
 
-<script type="text/javascript">
-if (typeof module === 'object') {
-    window.module = module;
-    module = undefined;
-}
+<script type="text/javascript" src="framework/angular.min.js"></script>
+<script type="text/javascript" src="framework/angular-route.min.js"></script>
+<script type="text/javascript" src="framework/angular-animate.min.js"></script>
+<script type="text/javascript" src="framework/angular-base64.min.js"></script>
 
-const { ipcRenderer } = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
-</script>
+<script type="module" src="bootstrap.js"></script>
 
-<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/angular-route.min.js"></script>
-<script type="text/javascript" src="js/angular-animate.min.js"></script>
-<script type="text/javascript" src="js/angular-base64.min.js"></script>
-<script type="text/javascript" src="scripts/kongdash-app.js"></script>
-
-<script type="text/javascript" src="scripts/app-initialize.js"></script>
-<script type="text/javascript" src="controllers/initial-setup.js"></script>
+<!-- script type="text/javascript" src="scripts/app-initialize.js"></script -->
+<!-- script type="text/javascript" src="controllers/initial-setup.js"></script-->
 </body>
 </html>
