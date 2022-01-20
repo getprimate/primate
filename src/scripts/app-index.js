@@ -133,8 +133,8 @@
                     controller: 'PluginEditController'
                 })
                 .when('/consumers/:consumerId/plugins/:pluginId', {
-                    templateUrl: 'views/plugin-list.html',
-                    controller: 'PluginListController'
+                    templateUrl: 'views/plugin-edit.html',
+                    controller: 'PluginEditController'
                 });
 
             $routeProvider.otherwise({

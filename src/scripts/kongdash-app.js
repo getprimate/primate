@@ -66,6 +66,18 @@ app.provider('ajax', [
                 });
             }
 
+            if (typeof config.query === 'object') {
+                const query = new URLSearchParams();
+
+                for (let param in config.query) {
+                    if (config.query[param] !== null) {
+                        query.append(param, config.query[param]);
+                    }
+                }
+
+                request.url = `${request.url}?` + query.toString();
+            }
+
             if (Object.keys(request.headers).length <= 0) delete request.headers;
 
             return request;

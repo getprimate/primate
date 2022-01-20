@@ -11,13 +11,13 @@
                 <label for="cs-ed__txt01" class="field-label">Username</label>
                 <div class="field-input"><input id="cs-ed__txt01" type="text" data-ng-model="consumerModel.username" name="username" /></div>
             </div><!-- .form__field -->
-        </div><!-- .col-md-6 -->
+        </div><!-- .col.md-6 -->
         <div class="col md-6">
             <div class="form__field">
                 <label for="cs-ed__txt02" class="field-label">Custom ID</label>
                 <div class="field-input"><input id="cs-ed__txt02" type="text" data-ng-model="consumerModel.custom_id" name="customId" /></div>
             </div><!-- .form__field -->
-        </div><!-- .col-md-6 -->
+        </div><!-- .col.md-6 -->
     </div><!-- .row -->
 
     <div class="panel__split"><span>Consumer Tags</span></div>
@@ -49,7 +49,7 @@
     <div class="row">
     <div class="col md-6">
         <article>
-        <form class="form form-new-auth" data-auth-method="key">
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="key-auth">
             <div class="form__field">
                 <label for="cs-ed__txt03" class="field-label">Authentication Key</label>
                 <div class="field-input"><input id="cs-ed__txt03" class="param" type="text" data-ng-model="userAuthModel.keyAuth.key" name="keyName" placeholder="Leave blank to auto-generate" value="" /></div>
@@ -58,9 +58,13 @@
                 <label for="cs-ed__txt04" class="field-label">Time to Leave</label>
                 <div class="field-input"><input id="cs-ed__txt04" class="param" type="number" data-ng-model="userAuthModel.keyAuth.ttl" name="keyTtl" placeholder="Leave blank to auto-generate" value="" /></div>
             </div><!-- .form__field -->
+
             <div class="form__field">
-                <button class="btn info" type="submit" name="action" value="add">Add</button>
-            </div>
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.keyAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+            </div><!-- .form__field -->
+
+            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
         </form>
         </article>
     </div>
@@ -70,7 +74,7 @@
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
-                <td class="action-group"><span class="material-icons danger delete" data-target="authentication key" data-url="{{userAuthList.key_Res}}/{{keyAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons danger delete" data-target="authentication key" data-url="{{userAuthList.key_Res}}/{{keyAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.keyAuth.length===0"><tr><th colspan="3">No keys added yet.</th></tr></tfoot>
@@ -79,22 +83,26 @@
     </div><!--.row -->
 </section><!-- #cs-ed__npg01.notebook__page -->
 
-<section id="cs-ed__npg02" class="notebook__page" data-auth-method="basic">
+<section id="cs-ed__npg02" class="notebook__page" data-auth-method="basic-auth">
     <div class="row">
     <div class="col md-6">
-    <form class="form form-new-auth" data-auth-method="basic">
+    <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
         <div class="form__field">
             <label for="cs-ed__txt05" class="field-label">Username</label>
-            <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="" value="" /></div>
+            <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="Example: Jane-Doe" required /></div>
         </div><!-- .form__field -->
 
         <div class="form__field">
             <label for="cs-ed__txt06" class="field-label">Password</label>
-            <div class="field-input"><input id="cs-ed__txt06" type="password" data-ng-model="userAuthModel.basicAuth.password" name="baicPassword" placeholder="" value="" /></div>
+            <div class="field-input"><input id="cs-ed__txt06" type="password" data-ng-model="userAuthModel.basicAuth.password" name="basicPassword" placeholder="Minimum 8 characters" minlength="8" required /></div>
         </div><!-- .form__field -->
 
         <div class="form__field">
-            <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+            <label class="field-label">Tags</label>
+            <div class="field-input"><token-input data-ng-model="userAuthModel.basicAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+        </div><!-- .form__field -->
+
+        <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div><!-- .form__field -->
     </form>
     </div><!-- col.md-7 -->
 
@@ -104,7 +112,7 @@
         <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
             <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
             <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
-            <td class="action-group"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.basic_Res}}/{{basicAuth.id}}">delete_forever</span></td>
+            <td class="row-actions"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.basic_Res}}/{{basicAuth.id}}">delete_forever</span></td>
         </tr>
         </tbody>
         <tfoot data-ng-if="userAuthList.basicAuth.length===0"><tr><th colspan="3">No Basic authentication methods added yet.</th></tr></tfoot>
@@ -113,13 +121,13 @@
     </div><!-- .row -->
 </section><!-- #cs-ed__npg02.notebook__page -->
 
-<section id="cs-ed__npg03" class="notebook__page" data-auth-method="oauth">
+<section id="cs-ed__npg03" class="notebook__page" data-auth-method="oauth2">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-auth-method="oauth">
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
             <div class="form__field">
-                <label for="cs-ed__txt07" class="field-label">Name</label>
-                <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="" value="" /></div>
+                <label for="cs-ed__txt07" class="field-label">Application Name</label>
+                <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="Example: demo-application" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
@@ -135,8 +143,10 @@
             </div><!-- .form__field -->
             </div><!-- .col.md-8 -->
             <div class="col md-4">
-                <label class="field-label">&nbsp;</label>
-                <div class="field-input"><label class="checkbox success"><input type="checkbox" data-ng-model="userAuthModel.oauth2.hash_secret" name="oauthHashSecret" />Hash Secret</label></div>
+                <div class="form__field">
+                    <label class="field-label">Security Option</label>
+                    <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="userAuthModel.oauth2.hash_secret" name="oauthHashSecret" /> Hash Secret</label></div>
+                </div><!-- .form__field -->
             </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
@@ -145,8 +155,12 @@
                 <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.redirect_uris" name="oauthRedirectURIs"></token-input></div>
             </div><!-- .form__field -->
 
-           <div class="form__field">
-                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+            <div class="form__field">
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+            </div><!-- .form__field -->
+            
+            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
         </form>
     </div><!-- .col.md-7 -->
 
@@ -155,8 +169,8 @@
             <tbody>
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
-                <td><strong>{{oauth.name}}</strong> {{oauth.client_id}}<br />{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
-                <td class="action-group"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.oauth_Res}}/{{oauth.id}}">delete_forever</span></td>
+                <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
+                <td class="row-actions"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.oauth_Res}}/{{oauth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.oauth2.length===0"><tr><th colspan="3">No OAuth2 methods added yet.</th></tr></tfoot>
@@ -165,30 +179,34 @@
     </div><!-- .row -->
 </section><!-- #cs-ed__npg03.notebook__page -->
 
-<section id="cs-ed__npg04" class="notebook__page" data-auth-method="hmac">
+<section id="cs-ed__npg04" class="notebook__page" data-auth-method="hmac-auth">
     <div class="row">
-    <div class="col md-7">
-        <form class="form form-new-auth" data-auth-method="hmac">
+    <div class="col md-6">
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
             <div class="form__field">
                 <label for="cs-ed__txt11" class="field-label">Username</label>
-                <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="" value="" /></div>
+                <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="Example: John-Doe" required /></div>
             </div><!-- .form__field -->
             <div class="form__field">
                 <label for="cs-ed__txt12" class="field-label">Secret</label>
-                <div class="field-input"><input id="cs-ed__txt12" type="text" data-ng-model="userAuthModel.hmacAuth.secret" name="hmacSecret" placeholder="" value="" /></div>
+                <div class="field-input"><input id="cs-ed__txt12" type="text" data-ng-model="userAuthModel.hmacAuth.secret" name="hmacSecret" placeholder="Leave blank to generate" value="" /></div>
             </div><!-- .form__field -->
+
             <div class="form__field">
-                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.hmacAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+            </div><!-- .form__field -->
+            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
         </form>
     </div><!-- .col.md-7 -->
 
-    <div class="col md-5">
+    <div class="col md-6">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
-                <td class="action-group"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.hmac_Res}}/{{hmacAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons danger delete" data-target="username" data-url="{{userAuthList.hmac_Res}}/{{hmacAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.hmacAuth.length===0"><tr><th colspan="3">No HMAC methods added yet.</th></tr></tfoot>
@@ -199,29 +217,49 @@
 
 <section id="cs-ed__npg05" class="notebook__page" data-auth-method="jwt">
     <div class="row">
-    <div class="col md-7">
-        <form class="form form-new-auth" data-auth-method="jwt">
+    <div class="col md-6">
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
             <div class="form__field">
-                <label for="cs-ed__txt13" class="field-label">JWT Key</label>
-                <div class="field-input"><input id="cs-ed__txt13" type="text" data-ng-model="userAuthModel.jwt.key" name="jwtKey" placeholder="" value="" /></div>
-            </div><!-- .form__field -->
-            <div class="form__field">
-                <label for="cs-ed__txt14" class="field-label">JWT Secret</label>
-                <div class="field-input"><input id="cs-ed__txt14" type="text" data-ng-model="userAuthModel.jwt.secret" name="jwtSecret" placeholder="" value="" /></div>
+                <label for="cs-ed__sel01" class="field-label">Signature Algorithm</label>
+                <div class="field-input">
+                    <select id="cs-ed__sel01" data-ng-model="userAuthModel.jwt.algorithm" data-ng-selected="userAuthModel.jwt.algorithm" name="jwtAlgorithm">
+                        <option data-ng-repeat="algo in ENUM_JWT_ALGO">{{algo}}</option>
+                    </select>
+                </div><!-- .field-input -->
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+                <label for="cs-ed__txt13" class="field-label">JWT Key</label>
+                <div class="field-input"><input id="cs-ed__txt13" type="text" data-ng-model="userAuthModel.jwt.key" name="jwtKey" placeholder="Leave blank to generate" value="" /></div>
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <label for="cs-ed__txt14" class="field-label">JWT Secret</label>
+                <div class="field-input"><input id="cs-ed__txt14" type="text" data-ng-model="userAuthModel.jwt.secret" name="jwtSecret" placeholder="Leave blank to generate" /></div>
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <label for="cs-ed__txa01" class="field-label">RSA Public PEM</label>
+                <div class="field-input"><textarea class="tx-small" id="cs-ed__txa01" data-ng-model="userAuthModel.jwt.rsa_public_key" name="rsaPublicKey" placeholder="Required only if algorithm is RS256 or ES256"></textarea></div>
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.jwt.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+            </div><!-- .form__field -->
+
+            <div class="form__field">
+                <button class="btn success" type="submit" name="action" value="add">Save</button></div>
         </form>
     </div><!-- .col.md-7 -->
 
-    <div class="col md-5">
+    <div class="col md-6">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
-                <td class="action-group"><span class="material-icons danger delete" data-target="token" data-url="{{userAuthList.jwt_Res}}/{{jwtAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons danger delete" data-target="token" data-url="{{userAuthList.jwt_Res}}/{{jwtAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.jwt.length===0"><tr><th colspan="3">No web tokens added yet.</th></tr></tfoot>
@@ -230,26 +268,30 @@
     </div><!-- .row -->
 </section><!-- #cs-ed__npg05.notebook__page -->
 
-<section id="cs-ed__npg06" class="notebook__page" data-auth-name="acl">
+<section id="cs-ed__npg06" class="notebook__page" data-auth-name="acls">
     <div class="row">
-    <div class="col md-7">
-        <form class="form form-new-auth" data-auth-method="acl">
+    <div class="col md-6">
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
             <div class="form__field">
                 <label for="cs-ed__txt15" class="field-label">Group Name</label>
-                <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="" value="" /></div>
+                <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="Example: admin-group" value="" required /></div>
             </div><!-- .form__field -->
+
             <div class="form__field">
-                <button class="btn info" type="submit" name="action" value="add">Add</button></div>
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.acls.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+            </div><!-- .form__field -->
+            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
         </form>
     </div><!-- .col.md-7 -->
 
-    <div class="col md-5">
+    <div class="col md-6">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="acl in userAuthList.acls">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
-                <td>{{acl.group}} <br>{{acl.created_at | date}}</td>
-                <td class="action-icons"><span class="material-icons danger delete" data-target="group" data-url="{{userAuthList.acl_Res}}/{{acl.id}}">delete_forever</span></td>
+                <td><strong>{{acl.group}}</strong><br>{{acl.created_at | date}}</td>
+                <td class="row-actions"><span class="material-icons danger delete" data-target="group" data-url="{{userAuthList.acl_Res}}/{{acl.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.acls.length===0"><tr><th colspan="3">No groups added yet.</th></tr></tfoot>
@@ -261,7 +303,36 @@
 </div><!-- .col.md-8 -->
 
 <div class="col md-4">
+    <div class="well">
+        <div class="well__heading">Consumer Plugins
+            <div data-ng-if="consumerId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
+        </div><!-- .well__heading -->
 
+        <table class="table">
+            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
+
+            <tbody>
+            <tr data-ng-repeat="plugin in pluginList">
+                <td><input type="checkbox success" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" /></td>
+
+                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td>
+                    <div class="action-group" data-service-id="{{service.id}}">
+                        <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
+                        <i class="material-icons danger delete" data-target="plugin" data-url="/consumers/{{consumerId}}/plugins/{{plugin.id}}">delete_forever</i>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+
+            <tfoot data-ng-if="pluginList.length === 0">
+                <tr data-ng-switch="consumerId">
+                    <th data-ng-switch-when="__none__" colspan="3">Plugins can be applied after creating the consumer.</th>
+                    <th data-ng-switch-default colspan="3">No plugins applied for this consumer.</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div><!-- .well -->
 </div><!-- .col.md-4 -->
 </div><!-- .row -->
 </div><!-- .container -->

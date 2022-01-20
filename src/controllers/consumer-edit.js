@@ -7,7 +7,9 @@
 
 'use strict';
 
-import _ from '../lib/utils.js';
+import _ from '../lib/common.js';
+import paths from '../lib/paths.js';
+
 import ConsumerModel from '../models/consumer-model.js';
 import UserAuthModel from '../models/user-auth-model.js';
 
@@ -26,12 +28,9 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {LoggerFactory} logger - Custom logger factory service.
  */
 export default function ConsumerEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
-    //const {angular} = window;
     const ajaxConfig = {method: 'POST', resource: '/consumers'};
 
-    //const editForm = angular.element('form#cs-ed__frm01');
-    //const notebook = angular.element('#cs-ed__nbk01.well.notebook');
-    //const tabsList = notebook.children().first();
+    scope.ENUM_JWT_ALGO = ['HS256', 'HS384', 'HS512', 'RS256', 'ES256'];
 
     scope.consumerId = '__none__';
     scope.consumerModel = _.deepClone(ConsumerModel);
@@ -45,6 +44,8 @@ export default function ConsumerEditController(window, scope, location, routePar
         jwt: [],
         acls: []
     };
+
+    scope.pluginList = [];
 
     if (typeof routeParams.pluginId === 'string') {
         viewFrame.prevUrl = `#!/plugins/${routeParams.pluginId}`;
@@ -103,6 +104,43 @@ export default function ConsumerEditController(window, scope, location, routePar
         return false;
     };
 
+    scope.submitAuthForm = function (event) {
+        const {target} = event;
+        const {authMethod} = target.dataset;
+
+        const authName = _.dashToCamel(authMethod);
+        const authWrap = scope.userAuthModel[authName];
+
+        const payload = _.deepClone(authWrap);
+
+        for (let field in authWrap) {
+            if (typeof authWrap[field] === 'string' && authWrap[field].length === 0) {
+                delete payload[field];
+            }
+        }
+
+        const request = ajax.post({resource: `/consumers/${scope.consumerId}/${authMethod}`, data: payload});
+
+        event.preventDefault();
+
+        request.then(({data: response, httpText}) => {
+            scope.userAuthList[authName].push(response);
+
+            /* Clear the form */
+            scope.userAuthModel[authName] = _.deepClone(UserAuthModel[authName]);
+
+            toast.success('Authentication method saved.');
+            logger.info(httpText);
+        });
+
+        request.catch(({data: error, httpText}) => {
+            toast.error('Could not save authentication method.');
+            logger.exception(httpText, error);
+        });
+
+        return false;
+    };
+
     scope.fetchAuthList = function (method) {
         const authName = _.dashToCamel(method);
 
@@ -124,6 +162,28 @@ export default function ConsumerEditController(window, scope, location, routePar
         });
 
         return true;
+    };
+
+    scope.fetchPluginList = function () {
+        const resource = `/consumers/${scope.consumerId}/plugins`;
+        const request = ajax.get({resource});
+
+        request.then(({data: response, httpText}) => {
+            for (let plugin of response.data) {
+                scope.pluginList.push({
+                    id: plugin.id,
+                    name: plugin.name,
+                    enabled: plugin.enabled
+                });
+            }
+
+            logger.info(httpText);
+        });
+
+        request.catch(({data: error, httpText}) => {
+            toast.warning('Could not fetch consumer plugins.');
+            logger.exception(httpText, error);
+        });
     };
 
     /**
@@ -187,6 +247,7 @@ export default function ConsumerEditController(window, scope, location, routePar
         });
 
         scope.fetchAuthList('key-auth');
+        scope.fetchPluginList(`/consumers/${scope.consumerId}/plugins`);
     }
 }
 
