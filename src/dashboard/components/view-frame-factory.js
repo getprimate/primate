@@ -7,13 +7,61 @@
 
 'use strict';
 
-const _viewFrame = {
-    title: '',
-    prevUrl: '',
-    host: '',
+/**
+ * @typedef {Object} K_ViewFrame - A factory service to share data between controllers.
+ *
+ * View frames are primarily consumed by header and footer controllers.
+ * Values could be set from any controller.
+ *
+ * @property {function} addHistory - Adds an entry to the navigation history.
+ * @property {function} setTitle - Sets the current view title.
+ * @property {function} addAction - Adds an action to be displayed on the header.
+ * @property {function} getState - Returns the view frame state.
+ */
+
+/**
+ * Holds the current view frame state.
+ *
+ * @type {Object}
+ * @property {string} frameTitle - The current frame title.
+ * @property {string[]} navHistory - An array containing the navigation history.
+ * @property {string} serverHost - The current server host.
+ * @property {object[]} actionButtons - Holds buttons to be displayed on the header
+ */
+const _frameState = {
+    frameTitle: '',
+    navHistory: [],
+    serverHost: '',
     actionButtons: []
 };
 
+/**
+ * Returns the {@link K_ViewFrame View frame} singleton.
+ *
+ * @returns {K_ViewFrame} The view frame singleton.
+ */
 export default function ViewFrameFactory() {
-    return _viewFrame;
+    return {
+        addHistory(path) {
+            _frameState.navHistory.push(path);
+        },
+
+        setTitle(title) {
+            _frameState.frameTitle = title;
+        },
+
+        addAction(displayText, endpoint, target = 'object', redirect = '!#/', styles = 'success create') {
+            _frameState.actionButtons.push({
+                displayText,
+                endpoint,
+                target,
+                redirect,
+                styles
+            });
+        },
+
+        getState() {
+            return _frameState;
+        }
+    };
 }
