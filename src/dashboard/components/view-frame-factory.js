@@ -15,6 +15,9 @@
  *
  * @typedef {Object} K_ViewFrame
  * @property {function} addHistory - Adds an entry to the navigation history.
+ * @property {function} clearHistory - Clears the history stack.
+ * @property {function} getHistory - Returns the history stack.
+ * @property {function} nextHistory - Pops the next history from stack.
  * @property {function} setTitle - Sets the current view title.
  * @property {function} addAction - Adds an action to be displayed on the header.
  * @property {function} getActions - Returns the action buttons.
@@ -26,13 +29,14 @@
  *
  * @type {Object}
  * @property {string} frameTitle - The current frame title.
- * @property {string[]} navHistory - An array containing the navigation history.
+ * @property {string[]} routeHistory - An array containing the navigation history.
  * @property {string} serverHost - The current server host.
  * @property {object[]} actionButtons - Holds buttons to be displayed on the header
  */
-const _frameState = {
+const frameState = {
     frameTitle: '',
-    navHistory: [],
+    routeNext: '',
+    routeHistory: [],
     serverHost: '',
     actionButtons: []
 };
@@ -44,30 +48,55 @@ const _frameState = {
  */
 export default function ViewFrameFactory() {
     return {
-        addHistory(path) {
-            _frameState.navHistory.push(path);
+        addHistory(route) {
+            frameState.routeNext = route;
+            frameState.routeHistory.push(route);
+        },
+
+        clearHistory() {
+            frameState.routeHistory.splice(0);
+            frameState.routeNext = '';
+        },
+
+        getHistory() {
+            return frameState.routeHistory;
+        },
+
+        hasNextRoute() {
+            return frameState.routeHistory.length >= 1;
+        },
+
+        getNextRoute() {
+            if (frameState.routeHistory.length === 0) frameState.routeNext = '';
+            else frameState.routeNext = frameState.routeHistory.pop();
+
+            return frameState.routeNext;
         },
 
         setTitle(title) {
-            _frameState.frameTitle = title;
+            frameState.frameTitle = title;
         },
 
-        addAction(displayText, endpoint, target = 'object', redirect = '!#/', styles = 'success create') {
-            _frameState.actionButtons.push({
+        addAction(displayText, redirect = '!#/', styles = 'success create', target = 'object', endpoint = '!#/') {
+            frameState.actionButtons.push({
+                styles: `btn ${styles}`,
                 displayText,
-                endpoint,
-                target,
                 redirect,
-                styles
+                target,
+                endpoint
             });
         },
 
         getActions() {
-            return _frameState.actionButtons;
+            return frameState.actionButtons;
+        },
+
+        clearActions() {
+            frameState.actionButtons.splice(0);
         },
 
         getState() {
-            return _frameState;
+            return frameState;
         }
     };
 }

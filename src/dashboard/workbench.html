@@ -39,12 +39,12 @@ if (typeof window.jQuery === 'undefined') {
 
 <main class="content">
     <header class="content__header" data-ng-controller="HeaderController">
-        <div class="navigate" data-ng-if="viewFrame.prevUrl.length>=1">
-            <a href="{{viewFrame.prevUrl}}" title="Previous page"><span class="material-icons">arrow_back</span></a>
+        <div class="navigate" data-ng-if="frameState.routeNext.length >= 1">
+            <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
         </div>
-        <div class="title">{{viewFrame.title}}</div>
-        <div class="actions" data-ng-if="viewFrame.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
-            <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
+        <div class="title">{{frameState.frameTitle}}</div>
+        <div class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
+            <button type="button" class="{{button.styles}}" data-ng-repeat="button in frameState.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button>
         </div>
     </header>
     <footer class="footer" data-ng-controller="FooterController">

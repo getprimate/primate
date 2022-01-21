@@ -8,16 +8,21 @@
 'use strict';
 
 /**
+ * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
+ * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
+ */
+
+/**
  * Provides controller constructor for editing consumer objects.
  *
  * @constructor
  *
  * @param {Object} scope - The injected scope object.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
- * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
- * @param {ToastFactory} toast - Custom toast message service.
- * @param {LoggerFactory} logger - Custom logger factory service.
- *
+ * @param {K_ViewFrame} viewFrame - Custom view frame factory.
+ * @param {K_Toast} toast - Custom toast message service.
+ * @param {K_Logger} logger - Custom logger factory service.
  *
  * @property {Object[]} scope.consumerList - An array that holds the list of consumers.
  * @property {string} scope.consumerNext - The resource endpoint with offset value for pagination.
@@ -62,16 +67,9 @@ export default function ConsumerListController(scope, ajax, viewFrame, toast, lo
         return true;
     };
 
-    viewFrame.title = 'Consumers';
-    viewFrame.prevUrl = '';
+    viewFrame.setTitle('Consumers');
+    viewFrame.clearHistory();
+    viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
     scope.fetchConsumerList();
-
-    viewFrame.actionButtons.push({
-        displayText: 'New Consumer',
-        target: 'consumer',
-        url: '/consumers',
-        redirect: '#!/consumers/__create__',
-        styles: 'btn success create'
-    });
 }

@@ -7,14 +7,21 @@
 
 'use strict';
 
+/**
+ * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
+ * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
+ */
+
 import _ from '../../lib/common.js';
-import paths from '../../lib/paths.js';
 
 import ConsumerModel from '../models/consumer-model.js';
 import UserAuthModel from '../models/user-auth-model.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
+ *
+ * @constructor
  *
  * @param {Window} window- The top level Window object.
  * @param {Object} scope - The injected scope object.
@@ -23,12 +30,12 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {Object} routeParams - Injected route parameters service.
  * @param {string} routeParams.consumerId - The consumer id in edit mode.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
- * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
- * @param {ToastFactory} toast - Custom toast message service.
- * @param {LoggerFactory} logger - Custom logger factory service.
+ * @param {K_ViewFrame} viewFrame - Custom view frame factory.
+ * @param {K_Toast} toast - Custom toast message service.
+ * @param {K_Logger} logger - Custom logger factory service.
  */
 export default function ConsumerEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
-    const ajaxConfig = {method: 'POST', resource: '/consumers'};
+    const ajaxConfig = {method: 'POST', endpoint: '/consumers'};
 
     scope.ENUM_JWT_ALGO = ['HS256', 'HS384', 'HS512', 'RS256', 'ES256'];
 
@@ -48,30 +55,30 @@ export default function ConsumerEditController(window, scope, location, routePar
     scope.pluginList = [];
 
     if (typeof routeParams.pluginId === 'string') {
-        viewFrame.prevUrl = `#!/plugins/${routeParams.pluginId}`;
+        viewFrame.addHistory(`#!/plugins/${routeParams.pluginId}`);
     }
 
     switch (routeParams.consumerId) {
         case '__create__':
-            viewFrame.title = 'Add New Consumer';
-            viewFrame.prevUrl = '#!/consumers';
+            viewFrame.setTitle('Add New Consumer');
+            viewFrame.addHistory('#!/consumers');
 
             // notebook.addClass('hidden');
             break;
 
         default:
             ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.consumerId}`;
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.consumerId}`;
 
             scope.consumerId = routeParams.consumerId;
 
-            viewFrame.title = 'Edit Consumer';
+            viewFrame.setTitle('Edit Consumer');
             break;
     }
 
     scope.submitConsumerForm = function (event) {
         const payload = _.deepClone(scope.consumerModel);
-        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
+        const request = ajax.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, data: payload});
 
         event.preventDefault();
 
@@ -119,7 +126,7 @@ export default function ConsumerEditController(window, scope, location, routePar
             }
         }
 
-        const request = ajax.post({resource: `/consumers/${scope.consumerId}/${authMethod}`, data: payload});
+        const request = ajax.post({endpoint: `/consumers/${scope.consumerId}/${authMethod}`, data: payload});
 
         event.preventDefault();
 
@@ -148,8 +155,8 @@ export default function ConsumerEditController(window, scope, location, routePar
             return false;
         }
 
-        const resource = `/consumers/${scope.consumerId}/${method}`;
-        const request = ajax.get({resource});
+        const endpoint = `/consumers/${scope.consumerId}/${method}`;
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, httpText}) => {
             scope.userAuthList[authName] = response.data;
@@ -165,8 +172,8 @@ export default function ConsumerEditController(window, scope, location, routePar
     };
 
     scope.fetchPluginList = function () {
-        const resource = `/consumers/${scope.consumerId}/plugins`;
-        const request = ajax.get({resource});
+        const endpoint = `/consumers/${scope.consumerId}/plugins`;
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, httpText}) => {
             for (let plugin of response.data) {
@@ -217,7 +224,7 @@ export default function ConsumerEditController(window, scope, location, routePar
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.consumerId !== '__none__') {
-        const request = ajax.get({resource: `/consumers/${scope.consumerId}`});
+        const request = ajax.get({endpoint: `/consumers/${scope.consumerId}`});
 
         request.then(({data: response, httpText}) => {
             for (let field in response) {
@@ -228,14 +235,13 @@ export default function ConsumerEditController(window, scope, location, routePar
                 scope.consumerModel[field] = response[field];
             }
 
-            viewFrame.actionButtons.push({
-                target: 'consumer',
-                url: `/ca_certificates/${scope.consumerId}`,
-                redirect: '#!/consumers',
-                styles: 'btn critical delete',
-                displayText: 'Delete'
-            });
-
+            viewFrame.addAction(
+                'Delete',
+                '#!/consumers',
+                'critical delete',
+                'consumer',
+                `/ca_certificates/${scope.consumerId}`
+            );
             logger.info(httpText);
         });
 
@@ -250,52 +256,3 @@ export default function ConsumerEditController(window, scope, location, routePar
         scope.fetchPluginList(`/consumers/${scope.consumerId}/plugins`);
     }
 }
-
-/*
-
-notebook.on('submit', 'form.form.form-new-auth', (event) => {
-    const target = angular.element(event.target);
-    const method = target.data('auth-method');
-
-    if (typeof method !== 'string' || typeof scope.authMethods[`${method}_Model`] === 'undefined') {
-        return false;
-    }
-
-    const resource = scope.authMethods[`${method}_Res`];
-    const payload = scope.authMethods[`${method}_Model`];
-    const request = ajax.post({resource, data: payload});
-
-    event.preventDefault();
-
-    request.then(({data: response}) => {
-        scope.authMethods[`${method}_List`].push(response);
-
-        for (let key of Object.keys(payload)) {
-            switch (typeof payload[key]) {
-                case 'string':
-                case 'number':
-                    payload[key] = typeof payload[key] === 'string' ? '' : 0;
-                    break;
-
-                case 'object':
-                    payload[key] = Array.isArray(payload[key]) ? [] : {};
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        toast.success('Added authentication method.');
-        return true;
-    });
-
-    request.catch(() => {
-        toast.error('Unable to add authentication method.');
-        return false;
-    });
-
-    return false;
-});
-
-*/
