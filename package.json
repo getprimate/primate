@@ -36,6 +36,7 @@
     "prettier": "^2.5.1"
   },
   "dependencies": {
+    "chart.js": "^3.7.0",
     "jsonfile": "^6.1.0",
     "ospath": "^1.2.2",
     "semver": "^7.3.5",
