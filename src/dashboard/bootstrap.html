@@ -1,11 +1,13 @@
+<!DOCTYPE html>
 <html data-ng-app="KongDash" lang="en">
-<head><meta charset="UTF-8" />
+<head>
+<meta charset="UTF-8" />
 <meta name=viewport content="width=device-width, initial-scale=1"/>
 <title>KongDash</title>
 
 <link rel="stylesheet" type="text/css" href="static/css/roboto.css" />
 <link rel="stylesheet" type="text/css" href="static/css/material-icons.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
+<link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
 <link rel="stylesheet" type="text/css" href="static/css/layout.css" />
 
 <style>
@@ -22,43 +24,53 @@ form.form { max-width: 400px; margin: 0 auto 0 auto;  }
 
 <script type="text/javascript">
 window.jQuery = require('./framework/jquery-3.6.0.min.js');
-/*
-const { ipcRenderer } = require('electron');
-var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
-*/
 </script>
 </head>
 <body class="body">
-<main data-ng-controller="BootstrapController">
-    <div class="icon">
-        <img src="static/images/logo-192x192.png" alt="KongDash" />
-        <p class="caption">KongDash</p>
-        <p class="description">Version {{version}}</p>
-    </div>
+<main class="content">
+    <section data-ng-controller="BootstrapController" id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}">
+        <div class="icon">
+            <img src="static/images/logo-192x192.png" alt="KongDash" />
+            <p class="caption">KongDash</p>
+            <p class="description">Version {{version}}</p>
+        </div>
 
-    <form method="POST" action="#" class="form hidden" id="configForm">
-    <div class="form__field">
-        <label class="field-label">Admin API URL</label>
-        <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
-    </div>
+        <form method="POST" action="#" class="form hidden" id="configForm">
+        <div class="form__field">
+            <label class="field-label">Admin API URL</label>
+            <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
+        </div>
 
-    <div class="form__field">
-        <label class="field-label">Username</label>
-        <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
-    </div>
+        <div class="form__field">
+            <label class="field-label">Username</label>
+            <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
+        </div>
 
-    <div class="form__field">
-        <label class="field-label">Password</label>
-        <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
-    </div>
+        <div class="form__field">
+            <label class="field-label">Password</label>
+            <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
+        </div>
 
-    <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
-    </form>
+        <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
+        </form>
+    </section><!-- .content__wrapper -->
 
-    <footer class="footer">
-        <span class="hpadding-20 pull-right" id="status"></span>
-    </footer>
-</main>
+    <footer data-ng-controller="FooterController" class="footer">
+        <section class="footer__window">
+            <div class="activity-log">
+                <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>
+            </div><!-- .activity-window -->
+        </section><!-- .footer__window -->
+
+        <section id="index__ftBase" class="footer__base"><form>
+            <ul class="base-menu">
+                <li><label><input type="checkbox" class="warning" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
+                <li>localhost:8001</li>
+                <li>version 0.6.0</li>
+            </ul>
+        </form></section>
+    </footer><!-- .footer -->
+</main><!-- .content -->
 
 <script type="text/javascript" src="framework/angular.min.js"></script>
 <script type="text/javascript" src="framework/angular-route.min.js"></script>
@@ -66,8 +78,5 @@ var kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 <script type="text/javascript" src="framework/angular-base64.min.js"></script>
 
 <script type="module" src="bootstrap.js"></script>
-
-<!-- script type="text/javascript" src="scripts/app-initialize.js"></script -->
-<!-- script type="text/javascript" src="controllers/initial-setup.js"></script-->
 </body>
 </html>
