@@ -413,7 +413,7 @@ footer.footer .activity-log ul {
 }
 
 .footer__window .activity-log ul li > span.log-error {
-    color: var(--std__danger);
+    color: var(--std__critical);
     text-transform: uppercase;
 }
 
@@ -630,7 +630,7 @@ input[type="checkbox"] {
     input[type="checkbox"].success:checked { background-color: var(--std__success); border-color: var(--std__success); }
     input[type="checkbox"].info:checked { background-color: var(--std__info); border-color: var(--std__info); }
     input[type="checkbox"].warning:checked { background-color: var(--std__warning); border-color: var(--std__warning); }
-    input[type="checkbox"].danger:checked { background-color: var(--std__danger); border-color: var(--std__danger); }
+    input[type="checkbox"].critical:checked { background-color: var(--std__critical); border-color: var(--std__critical); }
 
 input[type="radio"] {
     position:relative;
@@ -669,9 +669,9 @@ input[type="radio"].warning:checked {
     border-color: var(--std__warning);
 }
 
-input[type="radio"].danger:checked {
-    background-color: var(--std__danger);
-    border-color: var(--std__danger);
+input[type="radio"].critical:checked {
+    background-color: var(--std__critical);
+    border-color: var(--std__critical);
 }
 
     input[type="radio"]::after {
@@ -1126,7 +1126,7 @@ form.form .row { margin-bottom: 0 !important; }
 .material-icons.primary { color: #188AE2 !important; }
 .material-icons.success { color: var(--std__success) !important; }
 .material-icons.default { color: #545454 !important; }
-.material-icons.danger { color: var(--std__danger) !important; }
+.material-icons.critical { color: var(--std__critical) !important; }
 .material-icons.info { color: var(--std__info) !important; }
 .material-icons.warning { color: #F9C851 !important; }
 .material-icons.md-17 { font-size: 17px !important; }
@@ -1135,7 +1135,7 @@ form.form .row { margin-bottom: 0 !important; }
 .label.default { background-color: var(--std__default); }
 .label.success { background-color: var(--std__success); }
 .label.info { background-color: var(--std__info); }
-.label.danger { background-color: var(--std__danger); }
+.label.critical { background-color: var(--std__critical); }
 .label.warning { background-color: var(--std__warning); }
 
 
@@ -1159,7 +1159,7 @@ form.form .row { margin-bottom: 0 !important; }
     .btn:last-child { margin-right: 0 !important; }
 
 .btn.default,
-.btn.danger,
+.btn.critical,
 .btn.success,
 .btn.warning,
 .btn.primary,
@@ -1197,11 +1197,11 @@ form.form .row { margin-bottom: 0 !important; }
 }
     .btn.info:hover { background-color: #35AAD2; }
 
-.btn.danger {
-    background-color: var(--std__danger);
-    border-color: var(--std__danger);
+.btn.critical {
+    background-color: var(--std__critical);
+    border-color: var(--std__critical);
 }
-    .btn.danger:hover { background-color: #FA372E; }
+    .btn.critical:hover { background-color: #FA372E; }
 
 .btn.dark {
     background-color: var(--widget__accent-bg);
@@ -1253,8 +1253,8 @@ button.text > .material-icons { vertical-align: middle; }
 .notification.success { background-color: var(--std__success); }
     .notification.success:hover { background-color: rgba(16, 196, 105, 0.3); }
 
-.notification.danger { background-color: var(--std__danger); }
-    .notification.danger:hover { background-color: rgba(255, 91, 91, 0.3); }
+.notification.critical { background-color: var(--std__critical); }
+    .notification.critical:hover { background-color: rgba(255, 91, 91, 0.3); }
 
 .notification.info { background-color: var(--std__info); }
     .notification.info:hover { background-color: rgba(53, 184, 224, 0.3); }

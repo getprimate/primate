@@ -52,7 +52,7 @@ export default function ToastFactory(window) {
             switch (level) {
                 case 'ERROR':
                     popup.html(`<b>Error!</b> ${message}`);
-                    popup.addClass('danger');
+                    popup.addClass('critical');
                     break;
 
                 case 'SUCCESS':

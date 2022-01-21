@@ -162,7 +162,7 @@ app.factory('toast', function () {
             }
 
             switch (message.type) {
-                case 'danger':
+                case 'critical':
                     status = 'Error!';
                     break;
 
@@ -199,7 +199,7 @@ app.factory('toast', function () {
             return true;
         },
         error: function (message) {
-            this.displayMessage({type: 'danger', text: message});
+            this.displayMessage({type: 'critical', text: message});
         },
         warning: function (message) {
             this.displayMessage({type: 'warning', text: message});
@@ -213,7 +213,7 @@ app.factory('toast', function () {
         message: function (level, message) {
             switch (level) {
                 case 'ERROR':
-                    return this.displayMessage({type: 'danger', text: message});
+                    return this.displayMessage({type: 'critical', text: message});
 
                 case 'WARN':
                     return this.displayMessage({type: 'warning', text: message});

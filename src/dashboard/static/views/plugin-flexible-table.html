@@ -1,6 +1,6 @@
 <p class="subheading border-bottom-dashed">
     <span>{{customFieldName}}</span>
-    <span class="pull-right"><button type="button" data-ng-click="removeCustomForm(fieldName, customFieldName)" class="btn mini danger">-</button></span>
+    <span class="pull-right"><button type="button" data-ng-click="removeCustomForm(fieldName, customFieldName)" class="btn mini critical">-</button></span>
 </p>
 
 <div data-ng-repeat="(subFieldName, subFieldParams) in fieldParams.schema.fields" data-ng-if="subFieldName.charAt(0)!='_'" data-ng-switch data-on="subFieldParams.type">

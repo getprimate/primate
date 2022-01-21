@@ -7,8 +7,8 @@
 
 'use strict';
 
-import _ from '../lib/common.js';
-import paths from '../lib/paths.js';
+import _ from '../../lib/common.js';
+import paths from '../../lib/paths.js';
 
 import ConsumerModel from '../models/consumer-model.js';
 import UserAuthModel from '../models/user-auth-model.js';
@@ -232,7 +232,7 @@ export default function ConsumerEditController(window, scope, location, routePar
                 target: 'consumer',
                 url: `/ca_certificates/${scope.consumerId}`,
                 redirect: '#!/consumers',
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
 

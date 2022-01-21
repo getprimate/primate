@@ -1,12 +1,13 @@
 'use strict';
 
-import utils from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 
 export default function CertificateEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
     const ajaxConfig = {method: 'POST', resource: '/certificates'};
 
-    const formCert = angular.element('form#cf-ed__frm01'), formSnis = angular.element('form#cf-ed__frm02');
+    const formCert = angular.element('form#cf-ed__frm01'),
+        formSnis = angular.element('form#cf-ed__frm02');
 
     scope.certId = '__none__';
     scope.certModel = {cert: '', key: '', cert_alt: '', key_alt: '', tags: '', snis: ''};
@@ -41,10 +42,11 @@ export default function CertificateEditController(window, scope, location, route
         const request = ajax.get({resource});
 
         request.then(({data: response}) => {
-            scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.sniNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let sni of response.data) {
-                sni.tags = (sni.tags.length >= 1) ? sni.tags.join(', ') : 'No tags added.';
+                sni.tags = sni.tags.length >= 1 ? sni.tags.join(', ') : 'No tags added.';
 
                 scope.sniList.push(sni);
             }
@@ -58,10 +60,11 @@ export default function CertificateEditController(window, scope, location, route
     };
 
     scope.fetchUpstreamList = (resource) => {
-        const request = ajax.get({ resource: resource });
+        const request = ajax.get({resource: resource});
 
         request.then(({data: response}) => {
-            scope.upstreamNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.upstreamNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let upstream of response.data) {
                 scope.upstreamList.push(upstream);
@@ -89,14 +92,13 @@ export default function CertificateEditController(window, scope, location, route
         const payload = Object.assign({}, scope.certModel);
 
         if (scope.certModel.tags.length > 0) {
-            payload.tags = utils.explode(scope.certModel.tags);
+            payload.tags = _.explode(scope.certModel.tags);
         }
 
         if (ajaxConfig.method === 'PATCH') {
             delete payload.snis;
-
         } else {
-            payload.snis = utils.explode(scope.certModel.snis);
+            payload.snis = _.explode(scope.certModel.snis);
         }
 
         if (scope.certModel.cert_alt.length <= 0 || scope.certModel.key_alt.length <= 0) {
@@ -106,7 +108,7 @@ export default function CertificateEditController(window, scope, location, route
 
         const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
 
-        request.then(({ data: response }) => {
+        request.then(({data: response}) => {
             switch (scope.certId) {
                 case '__none__':
                     toast.success('New certificate added');
@@ -118,7 +120,7 @@ export default function CertificateEditController(window, scope, location, route
             }
         });
 
-        request.catch(({ data: response }) => {
+        request.catch(({data: response}) => {
             toast.error(response.data);
         });
 
@@ -126,37 +128,37 @@ export default function CertificateEditController(window, scope, location, route
     });
 
     formSnis.on('submit', (event) => {
-       event.preventDefault();
+        event.preventDefault();
 
-       const exploded = utils.explode(scope.sniModel.shorthand);
+        const exploded = _.explode(scope.sniModel.shorthand);
 
-       if (exploded.length <= 0) {
-           return false;
-       }
+        if (exploded.length <= 0) {
+            return false;
+        }
 
-       const payload = {name: exploded[0], certificate: {id: scope.certId}, tags: []};
+        const payload = {name: exploded[0], certificate: {id: scope.certId}, tags: []};
 
-       for (let index = 1; index < exploded.length; index++) {
-           payload.tags.push(exploded[index]);
-       }
+        for (let index = 1; index < exploded.length; index++) {
+            payload.tags.push(exploded[index]);
+        }
 
-       const request = ajax.post({ resource: `/certificates/${scope.certId}/snis`, data: payload });
-       request.then(({data: response}) => {
-           response.tags = (response.tags.length >= 1) ? response.tags.join(', ') : 'No tags added.';
+        const request = ajax.post({resource: `/certificates/${scope.certId}/snis`, data: payload});
+        request.then(({data: response}) => {
+            response.tags = response.tags.length >= 1 ? response.tags.join(', ') : 'No tags added.';
 
-           scope.sniList.push(response);
-           toast.success(`Added new SNI ${response.name}`);
-       });
+            scope.sniList.push(response);
+            toast.success(`Added new SNI ${response.name}`);
+        });
 
-       request.catch(({ status, data: error }) => {
-           toast.error((status === 409) ? 'SNI already added to this certificate' : error);
-       });
+        request.catch(({status, data: error}) => {
+            toast.error(status === 409 ? 'SNI already added to this certificate' : error);
+        });
 
-       request.finally(() => {
-           scope.sniModel.shorthand = '';
-       });
+        request.finally(() => {
+            scope.sniModel.shorthand = '';
+        });
 
-       return false;
+        return false;
     });
 
     angular.element('span#cf-ed__btn01').on('click', function () {
@@ -164,7 +166,7 @@ export default function CertificateEditController(window, scope, location, route
     });
 
     if (ajaxConfig.method === 'PATCH' && scope.certId !== '__none__') {
-        const request = ajax.get({ resource: ajaxConfig.resource });
+        const request = ajax.get({resource: ajaxConfig.resource});
 
         request.then(({data: response}) => {
             for (let key of Object.keys(response)) {
@@ -184,7 +186,7 @@ export default function CertificateEditController(window, scope, location, route
                 target: 'Certificate',
                 url: `/certificates/${scope.certId}`,
                 redirect: '#!/certificates',
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
         });

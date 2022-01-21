@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 import RouteModel from '../models/route-model.js';
 
 /**
@@ -346,7 +346,7 @@ export default function RouteEditController(window, scope, location, routeParams
                 target: 'route',
                 url: ajaxConfig.resource,
                 redirect: viewFrame.prevUrl,
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
 

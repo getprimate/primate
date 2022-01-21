@@ -26,7 +26,7 @@
  * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
  */
 
-import utils from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 
 /**
  *
@@ -34,7 +34,7 @@ import utils from '../lib/utils.js';
  * @param from
  * @returns {{}}
  */
-const _buildFromResponse =(to = {}, from = {}) => {
+const _buildFromResponse = (to = {}, from = {}) => {
     for (let key of Object.keys(from)) {
         if (typeof to[key] === 'undefined') {
             continue;
@@ -43,7 +43,7 @@ const _buildFromResponse =(to = {}, from = {}) => {
         let current = from[key];
 
         if (typeof current === 'string' || current === null) {
-            to[key] =  (current === null) ? '' : `${current}`;
+            to[key] = current === null ? '' : `${current}`;
             continue;
         }
 
@@ -54,7 +54,6 @@ const _buildFromResponse =(to = {}, from = {}) => {
 
         if (typeof current === 'object' && Array.isArray(current)) {
             to[key] = current.join(', ');
-
         } else if (typeof current === 'object') {
             _buildFromResponse(to[key], from[key]);
         }
@@ -83,8 +82,9 @@ const _buildFromResponse =(to = {}, from = {}) => {
 export default function UpstreamEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
 
-    const httpOptions = { method: 'POST', resource: '/upstreams' };
-    const formUpstream = angular.element('form#us-edit__form01'), formTarget = angular.element('form#us-edit__form02');
+    const httpOptions = {method: 'POST', resource: '/upstreams'};
+    const formUpstream = angular.element('form#us-edit__form01'),
+        formTarget = angular.element('form#us-edit__form02');
 
     scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
     scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
@@ -96,7 +96,7 @@ export default function UpstreamEditController(window, scope, location, routePar
     scope.upstreamModel = angular.copy(require(`${__dirname}/controllers/upstream-model.json`));
     scope.upstreamId = '__none__';
 
-    scope.targetModel = { nextUrl: null, properties: '' };
+    scope.targetModel = {nextUrl: null, properties: ''};
     scope.targetList = [];
     scope.targetNext = '';
 
@@ -107,30 +107,33 @@ export default function UpstreamEditController(window, scope, location, routePar
     scope.fetchTargetList = (url) => {
         ajax.get({
             resource: url
-        }).then(({ data: response }) => {
-            scope.targetNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        })
+            .then(({data: response}) => {
+                scope.targetNext =
+                    typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
-            for (let target of response.data) {
-                scope.targetList.push(target);
-            }
-        }).catch(({ data: error }) => {
-            toast.error(`Could not load targets. ${error.message}`);
-        });
+                for (let target of response.data) {
+                    scope.targetList.push(target);
+                }
+            })
+            .catch(({data: error}) => {
+                toast.error(`Could not load targets. ${error.message}`);
+            });
     };
 
     if (typeof routeParams.certId === 'string') {
         httpOptions.resource = `/certificates/${routeParams.certId}/upstreams`;
         scope.certId = routeParams.certId;
         scope.upstreamModel.client_certificate = routeParams.certId;
-
     } else {
-        const request =ajax.get({resource: '/certificates'});
+        const request = ajax.get({resource: '/certificates'});
 
         request.then(({data: response}) => {
-            scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.certNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let cert of response.data) {
-                cert.displayName = (utils.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
+                cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
                 scope.certList.push(cert);
             }
         });
@@ -165,7 +168,8 @@ export default function UpstreamEditController(window, scope, location, routePar
             }
 
             if (response.data.hash_fallback === 'header') {
-                scope.upstreamModel.hash_fallback_value = (response.data.hash_fallback_header === null) ? '' : `${response.data.hash_fallback_header}`;
+                scope.upstreamModel.hash_fallback_value =
+                    response.data.hash_fallback_header === null ? '' : `${response.data.hash_fallback_header}`;
             }
 
             if (response.data.hash_on === 'cookie' || response.data.hash_fallback === 'cookie') {
@@ -180,7 +184,7 @@ export default function UpstreamEditController(window, scope, location, routePar
                 target: 'Upstream',
                 url: httpOptions.resource,
                 redirect: '#!/upstreams',
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
         });
@@ -239,7 +243,12 @@ export default function UpstreamEditController(window, scope, location, routePar
         }
 
         /* Sanitise health check http statuses */
-        const statuses = [ ['active', 'healthy'], ['active', 'unhealthy'], ['passive', 'healthy'], ['passive', 'unhealthy'] ];
+        const statuses = [
+            ['active', 'healthy'],
+            ['active', 'unhealthy'],
+            ['passive', 'healthy'],
+            ['passive', 'unhealthy']
+        ];
 
         for (let child of statuses) {
             let current = scope.upstreamModel.healthchecks[child[0]][child[1]]['http_statuses'];
@@ -247,7 +256,7 @@ export default function UpstreamEditController(window, scope, location, routePar
             payload.healthchecks[child[0]][child[1]]['http_statuses'] = current.split(',').reduce((codes, value) => {
                 let code = parseInt(value.trim());
 
-                if ((!isNaN(code)) && code >= 200 && code <= 999) {
+                if (!isNaN(code) && code >= 200 && code <= 999) {
                     codes.push(code);
                 }
 
@@ -256,8 +265,7 @@ export default function UpstreamEditController(window, scope, location, routePar
         }
 
         if (scope.upstreamModel.client_certificate.length > 5) {
-            payload.client_certificate = { id: scope.upstreamModel.client_certificate };
-
+            payload.client_certificate = {id: scope.upstreamModel.client_certificate};
         } else {
             delete payload.client_certificate;
         }
@@ -291,28 +299,32 @@ export default function UpstreamEditController(window, scope, location, routePar
             method: httpOptions.method,
             resource: httpOptions.resource,
             data: payload
-        }).then(({ data: response }) => {
+        })
+            .then(({data: response}) => {
+                switch (scope.upstreamId) {
+                    case '__none__':
+                        toast.success(`Created new upstream ${response.name}`);
+                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                        break;
 
-            switch (scope.upstreamId) {
-                case '__none__':
-                    toast.success(`Created new upstream ${response.name}`);
-                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                    break;
-
-                default:
-                    toast.info(`Updated upstream ${payload.name}.`);
-            }
-
-        }).catch(({ data: error }) => {
-            toast.error('Could not ' + ((scope.upstreamId === '__none__') ? 'create new' : 'update') + ` upstream. ${error.message}`);
-        });
+                    default:
+                        toast.info(`Updated upstream ${payload.name}.`);
+                }
+            })
+            .catch(({data: error}) => {
+                toast.error(
+                    'Could not ' +
+                        (scope.upstreamId === '__none__' ? 'create new' : 'update') +
+                        ` upstream. ${error.message}`
+                );
+            });
 
         return false;
     });
 
     formTarget.on('submit', (event) => {
         event.preventDefault();
-        const payload = { target: '', weight: 100, tags: [] };
+        const payload = {target: '', weight: 100, tags: []};
 
         if (scope.targetModel.properties.trim().length <= 0) {
             return false;
@@ -336,17 +348,17 @@ export default function UpstreamEditController(window, scope, location, routePar
         ajax.post({
             resource: `/upstreams/${scope.upstreamId}/targets`,
             data: payload
-        }).then(({ data: response }) => {
-
-            toast.success(`Added new target ${response.target}`);
-            scope.targetList.push(response);
-
-        }).catch(({ data: error }) => {
-            toast.error(error);
-
-        }).finally(() => {
-            scope.targetModel.properties = '';
-        });
+        })
+            .then(({data: response}) => {
+                toast.success(`Added new target ${response.target}`);
+                scope.targetList.push(response);
+            })
+            .catch(({data: error}) => {
+                toast.error(error);
+            })
+            .finally(() => {
+                scope.targetModel.properties = '';
+            });
     });
 
     angular.element('span#btnAddTarget').on('click', () => {

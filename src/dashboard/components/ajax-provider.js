@@ -10,7 +10,9 @@
 /**
  * Stores system-wide HTTP configuration.
  */
-const HTTP_CONFIG = {};
+const HTTP_CONFIG = {
+    host: ''
+};
 
 function _configure(options) {
     const request = {

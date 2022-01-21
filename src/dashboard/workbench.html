@@ -2,10 +2,17 @@
 <head><meta charset="UTF-8" />
 <meta name=viewport content="width=device-width, initial-scale=1"/>
 <title>KongDash</title>
-<link rel="stylesheet" type="text/css" href="css/roboto.css" />
-<link rel="stylesheet" type="text/css" href="css/material-icons.css" />
-<link rel="stylesheet" type="text/css" href="css/theme-defaults.css" />
-<link rel="stylesheet" type="text/css" href="css/layout.css" />
+<link rel="stylesheet" type="text/css" href="static/css/roboto.css" />
+<link rel="stylesheet" type="text/css" href="static/css/material-icons.css" />
+<link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
+<link rel="stylesheet" type="text/css" href="static/css/layout.css" />
+
+<script type="text/javascript">
+if (typeof window.jQuery === 'undefined') {
+    window.jQuery = require('./static/jquery-3.6.0.min.js');
+}
+</script>
+
 </head>
 <body class="body">
 
@@ -15,8 +22,8 @@
     <nav class="navigation">
         <div class="navigation__title">Node</div><!-- .navigation__title -->
         <ul class="navigation__menu">
-            <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Dashboard</span></a></li>
-            <li><a class="navigation__link active" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
+            <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
         </ul><!-- .navigation__menu -->
         <hr />
         <div class="navigation__title">Objects</div><!-- .navigation__title -->
@@ -36,7 +43,7 @@
             <a href="{{viewFrame.prevUrl}}" title="Previous page"><span class="material-icons">arrow_back</span></a>
         </div>
         <div class="title">{{viewFrame.title}}</div>
-        <div class="actions" data-ng-if="viewFrame.actionButtons.length>=1">
+        <div class="actions" data-ng-if="viewFrame.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
             <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
     </header>
@@ -72,70 +79,12 @@ const appConfig     = ipcRenderer.sendSync('get-config', 'app');
 const ngDependency  = ['ngRoute'];
 </script>
 
-<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="js/angular.min.js"></script>
-<script type="text/javascript" src="js/angular-route.min.js"></script>
-<script type="text/javascript" src="js/angular-animate.min.js"></script>
-<script type="text/javascript" src="js/angular-base64.min.js"></script>
-<script type="text/javascript" src="scripts/kongdash-app.js"></script>
-<script type="text/javascript" src="js/Chart.bundle.min.js"></script>
+<script type="text/javascript" src="static/angular.min.js"></script>
+<script type="text/javascript" src="static/angular-route.min.js"></script>
+<script type="text/javascript" src="static/angular-animate.min.js"></script>
+<script type="text/javascript" src="static/angular-base64.min.js"></script>
 
-<script type="text/javascript" src="scripts/app-index.js"></script>
-
-<script type="text/javascript" src="controllers/dashboard.js"></script>
-<script type="text/javascript" src="controllers/plugin-list.js"></script>
-<script type="text/javascript" src="controllers/settings.js"></script>
-
-<script type="module">
-    import HttpInterceptor from './components/http-interceptor.js'
-
-    import LoggerFactory from './components/logger-factory.js';
-    import TokenInputDirective from './components/token-input-directive.js'
-    import MultiCheckDirective from './components/multi-check-directive.js';
-
-    import HeaderController from './controllers/header.js';
-    import FooterController from './controllers/footer.js';
-
-    import ServiceListController from './controllers/service-list.js';
-    import ServiceEditController from './controllers/service-edit.js';
-
-    import RouteEditController from './controllers/route-edit.js';
-
-    import CertificateListController from './controllers/certificate-list.js';
-    import CertificateEditController from './controllers/certificate-edit.js';
-
-    import TrustedCAEditController from './controllers/ca-edit.js';
-
-    import UpstreamListController from './controllers/upstream-list.js';
-    import UpstreamEditController from './controllers/upstream-edit.js';
-
-    import ConsumerListController from './controllers/consumer-list.js';
-    import ConsumerEditController from './controllers/consumer-edit.js';
-
-    import PluginEditController from './controllers/plugin-edit.js';
-
-    app.config(['$httpProvider', HttpInterceptor]);
-
-    app.factory('logger', LoggerFactory);
-
-    app.directive('tokenInput', ['$window', TokenInputDirective]);
-    app.directive('multiCheck', ['$window', MultiCheckDirective]);
-
-    app.controller('HeaderController', ['$scope', 'viewFrame', HeaderController]);
-    app.controller('FooterController', ['$window', '$scope', '$element', '$http', 'logger', 'viewFrame', 'toast', FooterController]);
-
-    app.controller('ServiceListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', ServiceListController]);
-    app.controller('ServiceEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', ServiceEditController]);
-    app.controller('RouteEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', RouteEditController]);
-    app.controller('CertificateListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', 'logger', CertificateListController]);
-    app.controller('CertificateEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', CertificateEditController]);
-    app.controller('TrustedCAEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', TrustedCAEditController]);
-    app.controller('UpstreamListController', ['$scope', 'ajax', 'viewFrame', 'toast', UpstreamListController]);
-    app.controller('UpstreamEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', UpstreamEditController]);
-    app.controller('ConsumerListController', ['$scope', 'ajax', 'viewFrame', 'toast', 'logger', ConsumerListController]);
-    app.controller('ConsumerEditController', ['$window', '$scope', '$location', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', ConsumerEditController]);
-    app.controller('PluginEditController', ['$window', '$scope', '$routeParams', 'ajax', 'viewFrame', 'toast', 'logger', PluginEditController]);
-</script>
+<script type="module" src="workbench.js"></script>
 
 <script type="text/javascript">
 (function (angular) {

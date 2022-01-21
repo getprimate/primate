@@ -60,7 +60,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
 
         const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
 
-        request.then(({ data: response }) => {
+        request.then(({data: response}) => {
             switch (scope.caId) {
                 case '__none__':
                     toast.success('New CA added');
@@ -73,7 +73,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
             }
         });
 
-        request.catch(({ data: exception, config: httpConfig, status: statusCode, statusText }) => {
+        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
             toast.error('Unable to save CA certificate details.');
             logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
         });
@@ -83,7 +83,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
 
     /* Load the CA certificate details if a valid certificate id is provided. */
     if (ajaxConfig.method === 'PATCH' && scope.caId !== '__none__') {
-        const request = ajax.get({ resource: ajaxConfig.resource });
+        const request = ajax.get({resource: ajaxConfig.resource});
 
         request.then(({data: response}) => {
             for (let key of Object.keys(response)) {
@@ -103,7 +103,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
                 target: 'CA',
                 url: `/ca_certificates/${scope.caId}`,
                 redirect: '#!/certificates',
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
         });

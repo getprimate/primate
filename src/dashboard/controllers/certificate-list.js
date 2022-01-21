@@ -1,6 +1,6 @@
 'use strict';
 
-import utils from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
@@ -36,16 +36,20 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.certNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.certNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let certificate of response.data) {
-                certificate.name = utils.objectName(certificate.id);
-                certificate.tags = (certificate.tags !== null && certificate.tags.length >= 1) ? certificate.tags.join(', ') : 'No tags added';
+                certificate.name = _.objectName(certificate.id);
+                certificate.tags =
+                    certificate.tags !== null && certificate.tags.length >= 1
+                        ? certificate.tags.join(', ')
+                        : 'No tags added';
 
                 scope.certList.push(certificate);
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -66,16 +70,17 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.caNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.caNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let ca of response.data) {
-                ca.name = utils.objectName(ca.id);
-                ca.tags = (ca.tags.length >= 1) ? ca.tags.join(', ') : 'No tags added';
+                ca.name = _.objectName(ca.id);
+                ca.tags = ca.tags.length >= 1 ? ca.tags.join(', ') : 'No tags added';
 
                 scope.caList.push(ca);
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -96,18 +101,19 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.sniNext = (typeof response.next === 'string') ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.sniNext =
+                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let sni of response.data) {
                 if (typeof sni.certificate !== 'object' || sni.certificate === null) {
                     sni.certificate = {id: null};
                 }
 
-                sni.certificate.name = utils.objectName(sni.certificate.id);
+                sni.certificate.name = _.objectName(sni.certificate.id);
                 scope.sniList.push(sni);
             }
 
-            logger.info({ source: 'http-response', httpConfig, statusCode, statusText });
+            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
         request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
@@ -122,8 +128,20 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     viewFrame.prevUrl = '';
 
     viewFrame.actionButtons.push(
-        {displayText: 'Add Certificate', target: 'certificate', url: '/certificates', redirect: '#!/certificates/__create__', styles: 'btn success create'},
-        {displayText: 'Add Trusted CA', target: 'CA', url: '/ca_certificates', redirect: '#!/trusted-cas/__create__', styles: 'btn success create'}
+        {
+            displayText: 'Add Certificate',
+            target: 'certificate',
+            url: '/certificates',
+            redirect: '#!/certificates/__create__',
+            styles: 'btn success create'
+        },
+        {
+            displayText: 'Add Trusted CA',
+            target: 'CA',
+            url: '/ca_certificates',
+            redirect: '#!/trusted-cas/__create__',
+            styles: 'btn success create'
+        }
     );
 
     scope.fetchCertList('/certificates');

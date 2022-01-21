@@ -7,7 +7,7 @@
 
 'use strict';
 
-import utils from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 import ServiceModel from '../models/service-model.js';
 
 /**
@@ -189,7 +189,7 @@ export default function ServiceEditController(window, scope, location, routePara
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
-                    displayText: (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: (_.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
                 });
             }
 
@@ -219,7 +219,7 @@ export default function ServiceEditController(window, scope, location, routePara
             for (let current of response.data) {
                 certificates.push({
                     nodeValue: current.id,
-                    displayText: (utils.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: (_.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
                 });
 
                 scope.caCertList = certificates;
@@ -334,7 +334,7 @@ export default function ServiceEditController(window, scope, location, routePara
                 target: 'service',
                 url: ajaxConfig.resource,
                 redirect: '#!/services',
-                styles: 'btn danger delete',
+                styles: 'btn critical delete',
                 displayText: 'Delete'
             });
         });

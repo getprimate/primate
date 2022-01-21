@@ -77,7 +77,7 @@
             <tr data-ng-repeat="sni in sniList">
                 <td><strong>{{sni.name}}</strong><br />{{sni.tags}}</td>
                 <td><div class="action-group">
-                    <i class="material-icons danger delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
+                    <i class="material-icons critical delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
                 </div></td>
             </tr>
             </tbody>
@@ -99,7 +99,7 @@
             <tr data-ng-repeat="upstream in upstreamList">
                 <td><a href="#!/certificates/{{certId}}/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
                 <td><div class="action-group">
-                    <i class="material-icons danger delete" data-target="upstream" data-url="/certificates/{{certId}}/upstreams/{{upstream.id}}">delete_forever</i>
+                    <i class="material-icons critical delete" data-target="upstream" data-url="/certificates/{{certId}}/upstreams/{{upstream.id}}">delete_forever</i>
                 </div></td>
             </tr>
             </tbody>

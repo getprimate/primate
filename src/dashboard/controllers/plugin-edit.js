@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../lib/utils.js';
+import _ from '../../lib/utils.js';
 import PluginModel from '../models/plugin-model.js';
 
 function _buildSchemaModel(fields) {

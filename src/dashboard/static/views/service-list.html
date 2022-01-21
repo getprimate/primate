@@ -17,7 +17,7 @@
             <td>{{service.created_at | date: 'medium'}}</td>
             <td class="align-right">
                 <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
-                <span class="material-icons danger delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
+                <span class="material-icons critical delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
             </td>
         </tr>
     </tbody>
