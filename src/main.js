@@ -29,7 +29,7 @@ let startMainWindow = function () {
             contextIsolation: false
         }
     });
-    mainWindow.loadFile(`${absPath}/src/dashboard/initialize.html`);
+    mainWindow.loadFile(`${absPath}/src/dashboard/bootstrap.html`);
 
     //* Debugging
     mainWindow.webContents.openDevTools();
