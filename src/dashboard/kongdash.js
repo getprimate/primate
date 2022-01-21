@@ -8,13 +8,18 @@
 'use strict';
 
 import AJAXProvider from './components/ajax-provider.js';
+import LoggerFactory from './components/logger-factory.js';
 import ToastFactory from './components/toast-factory.js';
+import ViewFrameFactory from './components/view-frame-factory.js';
 
 const {angular} = window;
 const KongDash = angular.module('KongDash', ['base64', 'ngRoute', 'ngAnimate']);
 
 KongDash.provider('ajax', ['$base64', AJAXProvider]);
+
 KongDash.factory('toast', ['$window', ToastFactory]);
+KongDash.factory('logger', LoggerFactory);
+KongDash.factory('viewFrame', ViewFrameFactory);
 
 /**
  * Converts first letter of a string to uppercase and
