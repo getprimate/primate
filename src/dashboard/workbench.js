@@ -7,6 +7,12 @@
 
 'use strict';
 
+/**
+ * @typedef {import('./components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('./components/toast-factory.js').K_ToastFactory} K_ToastFactory
+ * @typedef {import('./components/logger-factory.js').K_Logger} K_Logger
+ */
+
 import KongDash from './kongdash.js';
 
 import HttpInterceptor from './components/http-interceptor.js';
@@ -54,7 +60,16 @@ KongDash.factory('logger', LoggerFactory);
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
-KongDash.controller('HeaderController', ['$scope', 'viewFrame', HeaderController]);
+KongDash.controller('HeaderController', [
+    '$window',
+    '$scope',
+    'ajax',
+    'viewFrame',
+    'toast',
+    'logger',
+    HeaderController
+]);
+
 KongDash.controller('FooterController', [
     '$window',
     '$scope',
@@ -213,13 +228,22 @@ KongDash.run([
     '$window',
     '$rootScope',
     'viewFrame',
-    function (window, rootScope, viewFrame) {
+    'logger',
+
+    /**
+     *
+     * @param {Window} window
+     * @param {Object} rootScope
+     * @param {K_ViewFrame} viewFrame
+     * @param {K_Logger} logger
+     */
+    function (window, rootScope, viewFrame, logger) {
         const {angular} = window;
         rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
 
         rootScope.$on('$locationChangeStart', (event, next, current) => {
-            viewFrame.prevUrl = current;
-            viewFrame.actionButtons.splice(0);
+            viewFrame.addHistory(current);
+            viewFrame.getActions().splice(0);
 
             if (next.indexOf('#') > 1) {
                 let refArray = next.split('#!/')[1].split('/');
@@ -229,6 +253,23 @@ KongDash.run([
                 nav.find('a.navigation__link').removeClass('active');
                 nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
             }
+        });
+
+        window.document.querySelector('main.content').addEventListener('click', (event) => {
+            const {target: anchor} = event;
+
+            if (anchor.nodeName !== 'A') {
+                return true;
+            }
+
+            if (anchor.target === '_blank') {
+                event.preventDefault();
+                ipcRenderer.send('open-external', anchor.href);
+
+                logger.info(`Opening ${anchor.href}`);
+            }
+
+            return true;
         });
     }
 ]);

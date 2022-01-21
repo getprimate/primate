@@ -44,7 +44,7 @@ if (typeof window.jQuery === 'undefined') {
         </div>
         <div class="title">{{viewFrame.title}}</div>
         <div class="actions" data-ng-if="viewFrame.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
-            <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-url="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
+            <button data-ng-repeat="button in viewFrame.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.url}}" data-redirect="{{button.redirect || viewFrame.prevUrl}}" type="button" class="{{button.styles}}">{{button.displayText}}</button>
         </div>
     </header>
     <footer class="footer" data-ng-controller="FooterController">

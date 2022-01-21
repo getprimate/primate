@@ -8,14 +8,16 @@
 'use strict';
 
 /**
- * @typedef {Object} K_ViewFrame - A factory service to share data between controllers.
+ * A factory service to share data between controllers.
  *
  * View frames are primarily consumed by header and footer controllers.
  * Values could be set from any controller.
  *
+ * @typedef {Object} K_ViewFrame
  * @property {function} addHistory - Adds an entry to the navigation history.
  * @property {function} setTitle - Sets the current view title.
  * @property {function} addAction - Adds an action to be displayed on the header.
+ * @property {function} getActions - Returns the action buttons.
  * @property {function} getState - Returns the view frame state.
  */
 
@@ -58,6 +60,10 @@ export default function ViewFrameFactory() {
                 redirect,
                 styles
             });
+        },
+
+        getActions() {
+            return _frameState.actionButtons;
         },
 
         getState() {

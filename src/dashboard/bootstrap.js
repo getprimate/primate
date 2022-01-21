@@ -11,6 +11,22 @@ import KongDash from './kongdash.js';
 import FooterController from './controllers/footer.js';
 import BootstrapController from './controllers/bootstrap.js';
 
+const {ipcRenderer} = require('electron');
+
+KongDash.config([
+    'ajaxProvider',
+    function (ajaxProvider) {
+        const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
+
+        ajaxProvider.accept('application/json');
+        ajaxProvider.contentType('application/json');
+
+        if (typeof kongConfig.username === 'string') {
+            ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
+        }
+    }
+]);
+
 KongDash.controller('BootstrapController', [
     '$scope',
     '$element',

@@ -29,11 +29,11 @@ export default function ConsumerListController(scope, ajax, viewFrame, toast, lo
     /**
      * Retrieves the consumer list.
      *
-     * @param {string} resource - The consumer API endpoint.
+     * @param {string} endpoint - The consumer API endpoint.
      * @returns {boolean} True if th request could be made, false otherwise.
      */
-    scope.fetchConsumerList = function (resource = '/consumers') {
-        const request = ajax.get({resource: resource});
+    scope.fetchConsumerList = function (endpoint = '/consumers') {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, httpText}) => {
             let {next} = response;

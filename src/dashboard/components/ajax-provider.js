@@ -22,6 +22,12 @@ function _configure(options) {
         withCredentials: false
     };
 
+    if (typeof options.url === 'string') {
+        request.url = options.url;
+    } else {
+        request.url = HTTP_CONFIG.host + (typeof options.endpoint === 'string' ? options.endpoint : options.resource);
+    }
+
     if (typeof options.data === 'object') request.data = options.data;
 
     if (typeof HTTP_CONFIG.authorization === 'string') {

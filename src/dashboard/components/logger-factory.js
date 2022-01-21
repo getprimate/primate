@@ -8,7 +8,7 @@
 'use strict';
 
 /**
- * @typedef {Object} LoggerFactory - Factory service to log activity
+ * @typedef {Object} K_Logger - Factory service to log activity
  *
  * @property {function} _write - Private function to handle writes
  * @property {function} getCache - Returns the cache array
@@ -125,12 +125,11 @@ const _write = (level, message) => {
 };
 
 /**
- * Returns the [logger factory]{@link LoggerFactory} singleton.
+ * Returns the {@link K_Logger logger} singleton.
  *
  * @constructor
  *
- * @return {{resume(): void, warn(*): *, isPaused(): boolean, getCache(): Object[],
- *      clear(): Object[], error(*): *, pause(): void, info(*): *}} - The logger factory singleton
+ * @return {K_Logger} - The logger factory singleton.
  */
 export default function LoggerFactory() {
     return {

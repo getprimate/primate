@@ -313,7 +313,7 @@
 
             <tbody>
             <tr data-ng-repeat="plugin in pluginList">
-                <td><input type="checkbox success" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" /></td>
+                <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state success" data-ng-checked="plugin.enabled===true" /></td>
 
                 <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
                 <td>
