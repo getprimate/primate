@@ -37,7 +37,7 @@ export default function BootstrapController(scope, element, base64, ajax, viewFr
                     element.fadeOut({
                         duration: 300,
                         complete: function () {
-                            window.location.href = 'index.html';
+                            window.location.href = 'workbench.html';
                         }
                     });
                 }
