@@ -55,13 +55,13 @@ export default function ConsumerEditController(window, scope, location, routePar
     scope.pluginList = [];
 
     if (typeof routeParams.pluginId === 'string') {
-        viewFrame.addHistory(`#!/plugins/${routeParams.pluginId}`);
+        viewFrame.addRoute(`#!/plugins/${routeParams.pluginId}`);
     }
 
     switch (routeParams.consumerId) {
         case '__create__':
             viewFrame.setTitle('Add New Consumer');
-            viewFrame.addHistory('#!/consumers');
+            viewFrame.addRoute('#!/consumers');
 
             // notebook.addClass('hidden');
             break;

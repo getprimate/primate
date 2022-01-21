@@ -7,6 +7,12 @@
 
 'use strict';
 
+/**
+ * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
+ * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
+ */
+
 import _ from '../../lib/utils.js';
 import ServiceModel from '../models/service-model.js';
 
@@ -138,9 +144,9 @@ const _prepareServiceObject = (model) => {
  * @param {Object} routeParams - Injected route parameters service.
  * @param {string} routeParams.serviceId - The service id in editing mode.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
- * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
- * @param {ToastFactory} toast - Custom toast message service.
- * @param {LoggerFactory} logger - Custom logger factory service.
+ * @param {K_ViewFrame} viewFrame - Custom view frame factory.
+ * @param {K_Toast} toast - Custom toast message service.
+ * @param {K_Logger} logger - Custom logger factory service.
  *
  * @property {string[]} scope.ENUM_PROTOCOL - An array of protocols from {@link ENUM_PROTOCOL}.
  * @property {string} scope.serviceId - Holds the service object id in edit mode.
@@ -148,7 +154,7 @@ const _prepareServiceObject = (model) => {
  */
 export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
-    const ajaxConfig = {method: 'POST', resource: '/services'};
+    const ajaxConfig = {method: 'POST', endpoint: '/services'};
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
@@ -162,28 +168,30 @@ export default function ServiceEditController(window, scope, location, routePara
 
     scope.pluginList = [];
 
+    viewFrame.addRoute('#!/services');
+
     switch (routeParams.serviceId) {
         case '__create__':
-            viewFrame.title = 'Create new Service';
+            viewFrame.setTitle('Create Service');
             break;
 
         default:
             ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.serviceId}`;
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.serviceId}`;
 
             scope.serviceId = routeParams.serviceId;
-            viewFrame.title = 'Edit Service';
+            viewFrame.setTitle('Edit Service');
             break;
     }
 
     /**
      * Retrieves the public client certificates.
      *
-     * @param {string} resource - The resource endpoint
+     * @param {string} endpoint - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchPublicCertificates = (resource = '/certificates') => {
-        const request = ajax.get({resource});
+    scope.fetchPublicCertificates = (endpoint = '/certificates') => {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             for (let current of response.data) {
@@ -207,11 +215,11 @@ export default function ServiceEditController(window, scope, location, routePara
     /**
      * Retrieves the CA certificates.
      *
-     * @param {string} resource - The resource endpoint
+     * @param {string} endpoint - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchCACertificates = (resource = '/ca_certificates') => {
-        const request = ajax.get({resource});
+    scope.fetchCACertificates = (endpoint = '/ca_certificates') => {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             const certificates = [];
@@ -239,11 +247,11 @@ export default function ServiceEditController(window, scope, location, routePara
     /**
      * Retrieves the routes added under this service.
      *
-     * @param {string} resource - The resource endpoint
+     * @param {string} endpoint - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchRoutes = (resource = '/routes') => {
-        const request = ajax.get({resource});
+    scope.fetchRoutes = (endpoint = '/routes') => {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             for (let current of response.data) {
@@ -282,7 +290,7 @@ export default function ServiceEditController(window, scope, location, routePara
         });
 
         const payload = _prepareServiceObject(scope.serviceModel);
-        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
+        const request = ajax.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, data: payload});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
             logger.info({source: 'http-response', httpConfig, statusCode, statusText});
@@ -325,18 +333,11 @@ export default function ServiceEditController(window, scope, location, routePara
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
-        const request = ajax.get({resource: ajaxConfig.resource});
+        const request = ajax.get({endpoint: ajaxConfig.endpoint});
 
         request.then(({data: response}) => {
             _populateServiceModel(scope.serviceModel, response);
-
-            viewFrame.actionButtons.push({
-                target: 'service',
-                url: ajaxConfig.resource,
-                redirect: '#!/services',
-                styles: 'btn critical delete',
-                displayText: 'Delete'
-            });
+            viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', ajaxConfig.endpoint);
         });
 
         request.catch(() => {
@@ -356,7 +357,7 @@ angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plu
     let state = (event.target.checked) ? 'enabled' : 'disabled';
 
     ajax.patch({
-        resource: `/services/${scope.serviceId}/plugins/${event.target.value}`,
+        endpoint: `/services/${scope.serviceId}/plugins/${event.target.value}`,
         data: { enabled: (state === 'enabled') },
     }).then(() => {
         toast.success(`Plugin ${event.target.dataset.name} ${state}`);

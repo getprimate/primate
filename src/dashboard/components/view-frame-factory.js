@@ -14,10 +14,10 @@
  * Values could be set from any controller.
  *
  * @typedef {Object} K_ViewFrame
- * @property {function} addHistory - Adds an entry to the navigation history.
- * @property {function} clearHistory - Clears the history stack.
- * @property {function} getHistory - Returns the history stack.
- * @property {function} nextHistory - Pops the next history from stack.
+ * @property {function} addRoute - Adds an entry to the route history.
+ * @property {function} clearRoutes - Clears the route history stack.
+ * @property {function} getRoutes - Returns the route history stack.
+ * @property {function} getNextRoute - Pops the next route from history stack.
  * @property {function} setTitle - Sets the current view title.
  * @property {function} addAction - Adds an action to be displayed on the header.
  * @property {function} getActions - Returns the action buttons.
@@ -30,6 +30,7 @@
  * @type {Object}
  * @property {string} frameTitle - The current frame title.
  * @property {string[]} routeHistory - An array containing the navigation history.
+ * @property {string} routeNext - The next route in route history.
  * @property {string} serverHost - The current server host.
  * @property {object[]} actionButtons - Holds buttons to be displayed on the header
  */
@@ -48,17 +49,17 @@ const frameState = {
  */
 export default function ViewFrameFactory() {
     return {
-        addHistory(route) {
+        addRoute(route) {
             frameState.routeNext = route;
             frameState.routeHistory.push(route);
         },
 
-        clearHistory() {
+        clearRoutes() {
             frameState.routeHistory.splice(0);
             frameState.routeNext = '';
         },
 
-        getHistory() {
+        getRoutes() {
             return frameState.routeHistory;
         },
 
@@ -66,7 +67,9 @@ export default function ViewFrameFactory() {
             return frameState.routeHistory.length >= 1;
         },
 
-        getNextRoute() {
+        getNextRoute(shouldPop = true) {
+            if (shouldPop === false) return frameState.routeNext;
+
             if (frameState.routeHistory.length === 0) frameState.routeNext = '';
             else frameState.routeNext = frameState.routeHistory.pop();
 

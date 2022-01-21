@@ -241,8 +241,7 @@ KongDash.run([
         const {angular} = window;
         rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
 
-        rootScope.$on('$locationChangeStart', (event, next, current) => {
-            viewFrame.addHistory(current);
+        rootScope.$on('$locationChangeStart', (event, next) => {
             viewFrame.getActions().splice(0);
 
             if (next.indexOf('#') > 1) {

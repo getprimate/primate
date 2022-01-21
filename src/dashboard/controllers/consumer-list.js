@@ -67,8 +67,8 @@ export default function ConsumerListController(scope, ajax, viewFrame, toast, lo
         return true;
     };
 
+    viewFrame.clearRoutes();
     viewFrame.setTitle('Consumers');
-    viewFrame.clearHistory();
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
     scope.fetchConsumerList();

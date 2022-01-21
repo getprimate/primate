@@ -7,6 +7,12 @@
 
 'use strict';
 
+/**
+ * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
+ * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
+ */
+
 import _ from '../../lib/utils.js';
 import PluginModel from '../models/plugin-model.js';
 
@@ -160,15 +166,15 @@ function _refreshPluginModel(model, source) {
  * @param {string} routeParams.routeId - The route id, if attached to a service.
  * @param {string} routeParams.pluginId - The plugin object id in edit mode.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
- * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
- * @param {ToastFactory} toast - Custom toast message service.
- * @param {LoggerFactory} logger - Custom logger factory service.
+ * @param {K_ViewFrame} viewFrame - Custom view frame factory.
+ * @param {K_Toast} toast - Custom toast message service.
+ * @param {K_Logger} logger - Custom logger factory service.
  */
 export default function PluginEditController(window, scope, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;
     const pluginForm = angular.element('form#pg-ed__frm01');
 
-    const ajaxConfig = {method: 'POST', resource: '/plugins'};
+    const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
 
     scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {
         return {nodeValue: protocol, displayText: protocol.toUpperCase()};
@@ -178,16 +184,16 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
         case '__create__':
             scope.pluginId = '__none__';
 
-            viewFrame.title = 'Apply Plugin';
+            viewFrame.setTitle('Apply Plugin');
             break;
 
         default:
             ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.pluginId}`;
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.pluginId}`;
 
             scope.pluginId = routeParams.pluginId;
 
-            viewFrame.title = 'Edit Plugin';
+            viewFrame.setTitle('Edit Plugin');
             break;
     }
 
@@ -206,7 +212,7 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     /* Modify plugin resource endpoint according to the route parameters provided.
      * IMPORTANT: The order of these conditional statements needs to be maintained. */
     if (typeof routeParams.routeId === 'string') {
-        ajaxConfig.resource = `/routes/${routeParams.routeId}${ajaxConfig.resource}`;
+        ajaxConfig.endpoint = `/routes/${routeParams.routeId}${ajaxConfig.endpoint}`;
 
         scope.routeId = routeParams.routeId;
         scope.pluginModel.route = scope.routeId;
@@ -214,7 +220,7 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
 
     if (typeof routeParams.serviceId === 'string') {
         if (scope.routeId === '__none__') {
-            ajaxConfig.resource = `/services/${routeParams.serviceId}${ajaxConfig.resource}`;
+            ajaxConfig.endpoint = `/services/${routeParams.serviceId}${ajaxConfig.endpoint}`;
         }
 
         scope.serviceId = routeParams.serviceId;
@@ -222,7 +228,7 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     }
 
     if (typeof routeParams.consumerId === 'string') {
-        ajaxConfig.resource = `/consumers/${routeParams.consumerId}${ajaxConfig.resource}`;
+        ajaxConfig.endpoint = `/consumers/${routeParams.consumerId}${ajaxConfig.endpoint}`;
 
         scope.consumerId = routeParams.consumerId;
         scope.pluginModel.consumer = scope.consumerId;
@@ -232,8 +238,8 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     scope.routeList = [];
     scope.consumerList = [];
 
-    scope.fetchAvailablePlugins = (resource = '/plugins/enabled') => {
-        const request = ajax.get({resource});
+    scope.fetchAvailablePlugins = (endpoint = '/plugins/enabled') => {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, httpText}) => {
             scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
@@ -248,8 +254,8 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
         return true;
     };
 
-    scope.fetchServiceList = function (resource = '/services') {
-        const request = ajax.get({resource});
+    scope.fetchServiceList = function (endpoint = '/services') {
+        const request = ajax.get({endpoint});
 
         request.then(({data: response, httpText}) => {
             scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
@@ -265,7 +271,7 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     };
 
     scope.fetchSchema = (plugin, config = null) => {
-        const request = ajax.get({resource: `/plugins/schema/${plugin}`});
+        const request = ajax.get({endpoint: `/plugins/schema/${plugin}`});
 
         request.then(({data: response, httpText}) => {
             if (!Array.isArray(response['fields'])) {
@@ -323,7 +329,7 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
 
             const request = ajax.request({
                 method: ajaxConfig.method,
-                resource: ajaxConfig.resource,
+                endpoint: ajaxConfig.endpoint,
                 data: payload
             });
 
@@ -345,10 +351,10 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
         return false;
     };
 
-    viewFrame.title = 'Apply Plugin';
+    viewFrame.setTitle('Apply Plugin');
 
     if (ajaxConfig.method === 'PATCH' && scope.pluginId !== '__none__') {
-        const request = ajax.get({resource: `/plugins/${scope.pluginId}`});
+        const request = ajax.get({endpoint: `/plugins/${scope.pluginId}`});
 
         request.then(({data: response, httpText}) => {
             _refreshPluginModel(scope.pluginModel, response);

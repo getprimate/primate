@@ -7,6 +7,12 @@
 
 'use strict';
 
+/**
+ * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
+ * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
+ * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
+ */
+
 import _ from '../../lib/utils.js';
 import RouteModel from '../models/route-model.js';
 
@@ -224,12 +230,12 @@ function _buildRouteObject(model) {
  *                                          if attached to a service.
  * @param {string} routeParams.routeId - The route id in editing mode.
  * @param {AjaxProvider} ajax - Custom AJAX provider.
- * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
- * @param {ToastFactory} toast - Custom toast message service.
- * @param {LoggerFactory} logger - Custom logger factory service.
+ * @param {K_ViewFrame} viewFrame - Custom view frame factory.
+ * @param {K_Toast} toast - Custom toast message service.
+ * @param {K_Logger} logger - Custom logger factory service.
  */
 export default function RouteEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
-    const ajaxConfig = {method: 'POST', resource: '/routes'};
+    const ajaxConfig = {method: 'POST', endpoint: '/routes'};
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
     scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTION'];
@@ -244,28 +250,30 @@ export default function RouteEditController(window, scope, location, routeParams
 
     scope.pluginList = [];
 
-    viewFrame.prevUrl = '#!/routes';
-
     if (typeof routeParams.serviceId === 'string') {
-        ajaxConfig.resource = `/services/${routeParams.serviceId}/routes`;
+        ajaxConfig.endpoint = `/services/${routeParams.serviceId}/routes`;
 
         scope.serviceId = routeParams.serviceId;
         scope.routeModel.service = {id: routeParams.serviceId};
 
-        viewFrame.prevUrl = `#!/services/${routeParams.serviceId}`;
+        viewFrame.addRoute(`#!/services/${routeParams.serviceId}`);
+    } else if (typeof routeParams.pluginId === 'string') {
+        viewFrame.addRoute(`#!/plugins/${routeParams.pluginId}`);
+    } else {
+        viewFrame.addRoute('#!/services');
     }
 
     switch (routeParams.routeId) {
         case '__create__':
-            viewFrame.title = 'Create new Route';
+            viewFrame.setTitle('Create Route');
             break;
 
         default:
             ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.routeId}`;
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.routeId}`;
 
             scope.routeId = routeParams.routeId;
-            viewFrame.title = 'Edit Route';
+            viewFrame.setTitle('Edit Route');
             break;
     }
 
@@ -289,7 +297,7 @@ export default function RouteEditController(window, scope, location, routeParams
             const payload = _buildRouteObject(scope.routeModel);
             const request = ajax.request({
                 method: ajaxConfig.method,
-                resource: ajaxConfig.resource,
+                endpoint: ajaxConfig.endpoint,
                 data: payload
             });
 
@@ -337,18 +345,18 @@ export default function RouteEditController(window, scope, location, routeParams
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
-        const request = ajax.get({resource: ajaxConfig.resource});
+        const request = ajax.get({endpoint: ajaxConfig.endpoint});
 
         request.then(({data: response, headerText}) => {
             _refreshRouteModel(response, scope.routeModel);
 
-            viewFrame.actionButtons.push({
-                target: 'route',
-                url: ajaxConfig.resource,
-                redirect: viewFrame.prevUrl,
-                styles: 'btn critical delete',
-                displayText: 'Delete'
-            });
+            viewFrame.addAction(
+                'Delete',
+                viewFrame.getNextRoute(false),
+                'critical delete',
+                'route',
+                ajaxConfig.endpoint
+            );
 
             logger.info(headerText);
         });
@@ -357,7 +365,7 @@ export default function RouteEditController(window, scope, location, routeParams
             toast.error('Could not load route details.');
             logger.exception(headerText, error);
 
-            window.location.href = viewFrame.prevUrl;
+            window.location.href = viewFrame.getNextRoute();
         });
     }
 }
