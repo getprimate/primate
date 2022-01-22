@@ -7,7 +7,7 @@
 
 'use strict';
 
-import RestProvider from './components/rest-provider.js';
+import RestClientProvider from './components/rest-provider.js';
 import LoggerFactory from './components/logger-factory.js';
 import ToastFactory from './components/toast-factory.js';
 import ViewFrameFactory from './components/view-frame-factory.js';
@@ -15,7 +15,7 @@ import ViewFrameFactory from './components/view-frame-factory.js';
 const {angular} = window;
 const KongDash = angular.module('KongDash', ['base64', 'ngRoute', 'ngAnimate']);
 
-KongDash.provider('ajax', ['$base64', RestProvider]);
+KongDash.provider('restClient', ['$base64', RestClientProvider]);
 
 KongDash.factory('toast', ['$window', ToastFactory]);
 KongDash.factory('logger', LoggerFactory);
