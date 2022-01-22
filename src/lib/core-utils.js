@@ -22,12 +22,17 @@ function _isNone(value) {
     return typeof value === 'undefined' || value === null;
 }
 
+function isText(value) {
+    return typeof value === 'string';
+}
+
 export default {
     deepClone: _baseClone,
     isObject: _isObject,
     isNil: _isNil,
     isDefined: _isDefined,
     isNone: _isNone,
+    isText,
 
     get(object, path, defaultValue = null) {
         if (object === null) {
