@@ -10,7 +10,7 @@
 /**
  * Provides a REST wrapper over Angular $http service.
  *
- * The ajax service provides customisation options as per Kong admin API specifications.
+ * The REST service provides customisation options as per Kong admin API specifications.
  *
  * @typedef {Object} K_RESTFactory
  * @property {(function(options: Object): Promise)} request - Makes an HTTP request of specified method.
