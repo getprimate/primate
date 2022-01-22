@@ -3,20 +3,18 @@
 const {Chart} = require('chart.js');
 
 function _createChart(container, data) {
-    if (typeof data.options === 'undefined')
-        data.options = {responsive: true, scales: {x: {ticks: {beginAtZero: true}}}};
-
+    if (typeof data.options === 'undefined') data.options = {responsive: true, scales: {x: {ticks: {beginAtZero: true}}}};
     return new Chart(container.getContext('2d'), data);
 }
 
-export default function OverviewController(window, scope, ajax, toast, viewFrame) {
+export default function OverviewController(window, scope, restClient, toast, viewFrame) {
     const {document} = window;
 
-    viewFrame.title = 'Dashboard';
-    viewFrame.prevUrl = '';
+    viewFrame.setTitle('Overview');
+    viewFrame.clearRoutes();
 
     scope.refreshTimer = function (master) {
-        ajax.get({resource: '/'}).then(
+        restClient.get('/').then(
             function (response) {
                 scope.kongStat = response.data;
 
@@ -43,7 +41,7 @@ export default function OverviewController(window, scope, ajax, toast, viewFrame
     };
 
     scope.refreshStatus = function (master) {
-        ajax.get({resource: '/status'}).then(
+        restClient.get('/status').then(
             function (response) {
                 let server = response.data.server;
 

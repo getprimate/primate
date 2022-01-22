@@ -7,12 +7,6 @@
 
 'use strict';
 
-/**
- * @typedef {import('./components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
- * @typedef {import('./components/toast-factory.js').K_Toast} K_Toast
- * @typedef {import('./components/logger-factory.js').K_Logger} K_Logger
- */
-
 import KongDash from './kongdash.js';
 
 import HttpInterceptor from './components/http-interceptor.js';
@@ -53,51 +47,45 @@ const {ipcRenderer} = require('electron');
 const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 const appConfig = ipcRenderer.sendSync('get-config', 'app');
 
+/**
+ *
+ * @param {RESTClientProvider} provider
+ */
+function initRESTClient(provider) {
+    const options = {host: kongConfig.host};
+
+    /* Add a basic authorization header
+     * if username and password are provided in the settings. */
+    if (typeof kongConfig.username === 'string' && kongConfig.username) {
+        options.authorization = `${kongConfig.username}:` + (kongConfig.password || '');
+    }
+
+    provider.initialize(options);
+}
+
 KongDash.config(['$httpProvider', HttpInterceptor]);
+
+KongDash.config(['restClientProvider', initRESTClient]);
 
 KongDash.factory('logger', LoggerFactory);
 
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
-KongDash.controller('HeaderController', [
-    '$window',
-    '$scope',
-    'ajax',
-    'viewFrame',
-    'toast',
-    'logger',
-    HeaderController
-]);
+KongDash.controller('HeaderController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
 
-KongDash.controller('FooterController', [
-    '$window',
-    '$scope',
-    '$http',
-    'viewFrame',
-    'toast',
-    'logger',
-    FooterController
-]);
+KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
 
-KongDash.controller('OverviewController', ['$window', '$scope', 'ajax', 'toast', 'viewFrame', OverviewController]);
+KongDash.controller('OverviewController', ['$window', '$scope', 'restClient', 'toast', 'viewFrame', OverviewController]);
 
-KongDash.controller('ServiceListController', [
-    '$window',
-    '$scope',
-    'ajax',
-    'viewFrame',
-    'toast',
-    'logger',
-    ServiceListController
-]);
+KongDash.controller('ServiceListController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', 'logger', ServiceListController]);
 
 KongDash.controller('ServiceEditController', [
     '$window',
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
@@ -109,7 +97,7 @@ KongDash.controller('RouteEditController', [
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
@@ -119,7 +107,7 @@ KongDash.controller('RouteEditController', [
 KongDash.controller('CertificateListController', [
     '$window',
     '$scope',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
@@ -131,7 +119,7 @@ KongDash.controller('CertificateEditController', [
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     CertificateEditController
@@ -142,54 +130,47 @@ KongDash.controller('TrustedCAEditController', [
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
     TrustedCAEditController
 ]);
 
-KongDash.controller('UpstreamListController', ['$scope', 'ajax', 'viewFrame', 'toast', UpstreamListController]);
+KongDash.controller('UpstreamListController', ['$scope', 'restClient', 'viewFrame', 'toast', UpstreamListController]);
 
 KongDash.controller('UpstreamEditController', [
     '$window',
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     UpstreamEditController
 ]);
 
-KongDash.controller('ConsumerListController', [
-    '$scope',
-    'ajax',
-    'viewFrame',
-    'toast',
-    'logger',
-    ConsumerListController
-]);
+KongDash.controller('ConsumerListController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', ConsumerListController]);
 
 KongDash.controller('ConsumerEditController', [
     '$window',
     '$scope',
     '$location',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
     ConsumerEditController
 ]);
 
-KongDash.controller('PluginListController', ['$window', '$scope', 'ajax', 'viewFrame', 'toast', PluginListController]);
+KongDash.controller('PluginListController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', PluginListController]);
 
 KongDash.controller('PluginEditController', [
     '$window',
     '$scope',
     '$routeParams',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     'logger',
@@ -201,28 +182,13 @@ KongDash.controller('SettingsController', [
     '$rootScope',
     '$scope',
     '$base64',
-    'ajax',
+    'restClient',
     'viewFrame',
     'toast',
     SettingsController
 ]);
 
 KongDash.config(['$routeProvider', Templates]);
-
-KongDash.config([
-    'ajaxProvider',
-    function (ajaxProvider) {
-        ajaxProvider.setHost(kongConfig.host);
-        ajaxProvider.contentType('application/json; charset=utf-8');
-        ajaxProvider.accept('application/json');
-
-        /* Add a basic authorization header
-         if username and password are provided in the settings. */
-        if (typeof kongConfig.username === 'string' && kongConfig.username) {
-            ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
-        }
-    }
-]);
 
 KongDash.run([
     '$window',
