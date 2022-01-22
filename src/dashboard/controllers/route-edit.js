@@ -13,7 +13,7 @@
  * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
  */
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 import RouteModel from '../models/route-model.js';
 
 /**
@@ -229,7 +229,7 @@ function _buildRouteObject(model) {
  * @param {string} routeParams.serviceId - The service id,
  *                                          if attached to a service.
  * @param {string} routeParams.routeId - The route id in editing mode.
- * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {K_Ajax} ajax - Custom AJAX provider.
  * @param {K_ViewFrame} viewFrame - Custom view frame factory.
  * @param {K_Toast} toast - Custom toast message service.
  * @param {K_Logger} logger - Custom logger factory service.
@@ -350,13 +350,7 @@ export default function RouteEditController(window, scope, location, routeParams
         request.then(({data: response, headerText}) => {
             _refreshRouteModel(response, scope.routeModel);
 
-            viewFrame.addAction(
-                'Delete',
-                viewFrame.getNextRoute(false),
-                'critical delete',
-                'route',
-                ajaxConfig.endpoint
-            );
+            viewFrame.addAction('Delete', viewFrame.getNextRoute(false), 'critical delete', 'route', ajaxConfig.endpoint);
 
             logger.info(headerText);
         });

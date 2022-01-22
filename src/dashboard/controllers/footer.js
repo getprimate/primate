@@ -13,9 +13,9 @@ const version = ipcRenderer.sendSync('get-config', 'VERSION');
  * @param {Window} window- window DOM object
  * @param {{eventLogs: Array}} scope - injected scope object
  * @param {function} http - angular http provider
- * @param {ViewFrameFactory} viewFrame - custom view frame factory
- * @param {ToastFactory} toast - custom toast message service
- * @param {LoggerFactory} logger - custom logger factory
+ * @param {K_ViewFrame} viewFrame - custom view frame factory
+ * @param {K_Toast} toast - custom toast message service
+ * @param {K_Logger} logger - custom logger factory
  */
 export default function FooterController(window, scope, http, viewFrame, toast, logger) {
     const {angular, document} = window;

@@ -26,7 +26,7 @@
  * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
  */
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 
 /**
  *
@@ -109,8 +109,7 @@ export default function UpstreamEditController(window, scope, location, routePar
             resource: url
         })
             .then(({data: response}) => {
-                scope.targetNext =
-                    typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+                scope.targetNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
                 for (let target of response.data) {
                     scope.targetList.push(target);
@@ -129,8 +128,7 @@ export default function UpstreamEditController(window, scope, location, routePar
         const request = ajax.get({resource: '/certificates'});
 
         request.then(({data: response}) => {
-            scope.certNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.certNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let cert of response.data) {
                 cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
@@ -312,11 +310,7 @@ export default function UpstreamEditController(window, scope, location, routePar
                 }
             })
             .catch(({data: error}) => {
-                toast.error(
-                    'Could not ' +
-                        (scope.upstreamId === '__none__' ? 'create new' : 'update') +
-                        ` upstream. ${error.message}`
-                );
+                toast.error('Could not ' + (scope.upstreamId === '__none__' ? 'create new' : 'update') + ` upstream. ${error.message}`);
             });
 
         return false;

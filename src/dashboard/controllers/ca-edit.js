@@ -12,10 +12,10 @@
  *      }} scope - injected scope object
  * @param {{path: function}} location - injected location service
  * @param {{caId: string}} routeParams - injected route parameters service
- * @param {AjaxProvider} ajax - custom AJAX provider
- * @param {ViewFrameFactory} viewFrame - custom view frame factory
- * @param {ToastFactory} toast - custom toast message service
- * @param {LoggerFactory} logger - custom logger factory service
+ * @param {K_Ajax} ajax - custom AJAX provider
+ * @param {K_ViewFrame} viewFrame - custom view frame factory
+ * @param {K_Toast} toast - custom toast message service
+ * @param {K_Logger} logger - custom logger factory service
  */
 export default function TrustedCAEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
     const {angular} = window;

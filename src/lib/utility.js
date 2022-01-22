@@ -6,6 +6,10 @@ function _baseClone(source) {
     return angular.copy(source);
 }
 
+function _isDefined(value) {
+    return !(value === undefined);
+}
+
 function _isObject(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -14,10 +18,16 @@ function _isNil(value) {
     return typeof value === 'undefined' || value === null;
 }
 
+function _isNone(value) {
+    return typeof value === 'undefined' || value === null;
+}
+
 export default {
     deepClone: _baseClone,
     isObject: _isObject,
     isNil: _isNil,
+    isDefined: _isDefined,
+    isNone: _isNone,
 
     get(object, path, defaultValue = null) {
         if (object === null) {

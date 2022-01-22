@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
@@ -13,10 +13,10 @@ import _ from '../../lib/utils.js';
  *      certNext: string, caNext: string, sniNext: string,
  *      fetchCertList: function, fetchCaList: function, fetchSniList: function
  *      }} scope
- * @param {AjaxProvider} ajax - custom AJAX provider
- * @param {ViewFrameFactory} viewFrame - custom view frame factory
- * @param {ToastFactory} toast - custom toast message service
- * @param {LoggerFactory} logger - custom logger factory service
+ * @param {K_Ajax} ajax - custom AJAX provider
+ * @param {K_ViewFrame} viewFrame - custom view frame factory
+ * @param {K_Toast} toast - custom toast message service
+ * @param {K_Logger} logger - custom logger factory service
  */
 export default function CertificateListController(window, scope, ajax, viewFrame, toast, logger) {
     scope.certList = [];
@@ -36,15 +36,12 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.certNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.certNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let certificate of response.data) {
                 certificate.name = _.objectName(certificate.id);
                 certificate.tags =
-                    certificate.tags !== null && certificate.tags.length >= 1
-                        ? certificate.tags.join(', ')
-                        : 'No tags added';
+                    certificate.tags !== null && certificate.tags.length >= 1 ? certificate.tags.join(', ') : 'No tags added';
 
                 scope.certList.push(certificate);
             }
@@ -70,8 +67,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.caNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.caNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let ca of response.data) {
                 ca.name = _.objectName(ca.id);
@@ -101,8 +97,7 @@ export default function CertificateListController(window, scope, ajax, viewFrame
         const request = ajax.get({resource});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.sniNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.sniNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let sni of response.data) {
                 if (typeof sni.certificate !== 'object' || sni.certificate === null) {

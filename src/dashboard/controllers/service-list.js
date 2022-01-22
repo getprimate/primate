@@ -20,7 +20,7 @@
  *
  * @param {Window} window- window DOM object
  * @param {Object} scope - injected scope object
- * @param {AjaxProvider} ajax - custom AJAX provider
+ * @param {K_Ajax} ajax - custom AJAX provider
  * @param {K_ViewFrame} viewFrame - custom view frame factory
  * @param {K_Toast} toast - custom toast message service
  * @param {K_Logger} logger - custom logger factory
@@ -41,12 +41,10 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
         const request = ajax.get({endpoint});
 
         request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.serviceNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.serviceNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let service of response.data) {
-                service.displayText =
-                    typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
+                service.displayText = typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
                 scope.serviceList.push(service);
             }
 

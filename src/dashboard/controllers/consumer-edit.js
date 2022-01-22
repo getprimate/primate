@@ -13,7 +13,7 @@
  * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
  */
 
-import _ from '../../lib/common.js';
+import _ from '../../lib/utility.js';
 
 import ConsumerModel from '../models/consumer-model.js';
 import UserAuthModel from '../models/user-auth-model.js';
@@ -29,7 +29,7 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {function} location.path - Tells the current view path.
  * @param {Object} routeParams - Injected route parameters service.
  * @param {string} routeParams.consumerId - The consumer id in edit mode.
- * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {K_Ajax} ajax - Custom AJAX provider.
  * @param {K_ViewFrame} viewFrame - Custom view frame factory.
  * @param {K_Toast} toast - Custom toast message service.
  * @param {K_Logger} logger - Custom logger factory service.
@@ -235,13 +235,7 @@ export default function ConsumerEditController(window, scope, location, routePar
                 scope.consumerModel[field] = response[field];
             }
 
-            viewFrame.addAction(
-                'Delete',
-                '#!/consumers',
-                'critical delete',
-                'consumer',
-                `/ca_certificates/${scope.consumerId}`
-            );
+            viewFrame.addAction('Delete', '#!/consumers', 'critical delete', 'consumer', `/ca_certificates/${scope.consumerId}`);
             logger.info(httpText);
         });
 

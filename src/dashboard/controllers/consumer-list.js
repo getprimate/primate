@@ -19,7 +19,7 @@
  * @constructor
  *
  * @param {Object} scope - The injected scope object.
- * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {K_Ajax} ajax - Custom AJAX provider.
  * @param {K_ViewFrame} viewFrame - Custom view frame factory.
  * @param {K_Toast} toast - Custom toast message service.
  * @param {K_Logger} logger - Custom logger factory service.

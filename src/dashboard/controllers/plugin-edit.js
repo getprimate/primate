@@ -13,7 +13,7 @@
  * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
  */
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 import PluginModel from '../models/plugin-model.js';
 
 function _buildSchemaModel(fields) {
@@ -165,7 +165,7 @@ function _refreshPluginModel(model, source) {
  * @param {string} routeParams.serviceId - The service id, if attached to a service.
  * @param {string} routeParams.routeId - The route id, if attached to a service.
  * @param {string} routeParams.pluginId - The plugin object id in edit mode.
- * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {K_Ajax} ajax - Custom AJAX provider.
  * @param {K_ViewFrame} viewFrame - Custom view frame factory.
  * @param {K_Toast} toast - Custom toast message service.
  * @param {K_Logger} logger - Custom logger factory service.

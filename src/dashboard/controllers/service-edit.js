@@ -13,7 +13,7 @@
  * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
  */
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 import ServiceModel from '../models/service-model.js';
 
 /**
@@ -64,10 +64,7 @@ const _populateServiceModel = (model, source = {}) => {
                 break;
 
             case 'client_certificate':
-                model[property] =
-                    source[property] !== null && typeof source[property]['id'] === 'string'
-                        ? source[property]['id']
-                        : '';
+                model[property] = source[property] !== null && typeof source[property]['id'] === 'string' ? source[property]['id'] : '';
                 break;
 
             case 'ca_certificates':
@@ -143,7 +140,7 @@ const _prepareServiceObject = (model) => {
  * @param {function} location.path - Tells the current view path.
  * @param {Object} routeParams - Injected route parameters service.
  * @param {string} routeParams.serviceId - The service id in editing mode.
- * @param {AjaxProvider} ajax - Custom AJAX provider.
+ * @param {K_Ajax} ajax - Custom AJAX provider.
  * @param {K_ViewFrame} viewFrame - Custom view frame factory.
  * @param {K_Toast} toast - Custom toast message service.
  * @param {K_Logger} logger - Custom logger factory service.

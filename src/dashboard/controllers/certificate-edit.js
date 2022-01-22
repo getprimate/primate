@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from '../../lib/utils.js';
+import _ from '../../lib/utility.js';
 
 export default function CertificateEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;
@@ -42,8 +42,7 @@ export default function CertificateEditController(window, scope, location, route
         const request = ajax.get({resource});
 
         request.then(({data: response}) => {
-            scope.sniNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.sniNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let sni of response.data) {
                 sni.tags = sni.tags.length >= 1 ? sni.tags.join(', ') : 'No tags added.';
@@ -63,8 +62,7 @@ export default function CertificateEditController(window, scope, location, route
         const request = ajax.get({resource: resource});
 
         request.then(({data: response}) => {
-            scope.upstreamNext =
-                typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.upstreamNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
 
             for (let upstream of response.data) {
                 scope.upstreamList.push(upstream);
