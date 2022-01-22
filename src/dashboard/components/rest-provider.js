@@ -12,7 +12,7 @@
  *
  * The REST service provides customisation options as per Kong admin API specifications.
  *
- * @typedef {Object} K_RESTFactory
+ * @typedef {Object} KRESTFactory
  * @property {(function(options: Object): Promise)} request - Makes an HTTP request of specified method.
  * @property {(function(endpoint: string): Promise)} get - Makes an HTTP GET request.
  * @property {(function(endpoint: string, payload: Object): Promise)} post - Makes an HTTP POST request.
@@ -23,9 +23,9 @@
  */
 
 /**
- * Implements the provider for {@link K_RESTFactory REST factory}.
+ * Implements the provider for {@link KRESTFactory REST factory}.
  *
- * @typedef {Object} K_RESTProvider
+ * @typedef {Object} KRESTProvider
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
  * @property {(function(username: string,
  *      password: string): void)} setBasicAuth - Sets basic authorization header.
@@ -101,7 +101,7 @@ function configure(options) {
  * Builds and returns the REST factory singleton.
  *
  * @param {(function(Object): Promise)} http - The Angular $http service.
- * @returns {K_RESTFactory} REST factory.
+ * @returns {KRESTFactory} REST factory.
  */
 function buildRESTFactory(http) {
     return {
@@ -136,10 +136,10 @@ function buildRESTFactory(http) {
 }
 
 /**
- * Implements the provider for {@link K_RESTFactory REST factory service}.
+ * Implements the provider for {@link KRESTFactory REST factory service}.
  *
  * @constructor
- * @type {K_RESTProvider}
+ * @type {KRESTProvider}
  */
 export default function RestProvider() {
     this.initialize = (options) => {
