@@ -28,5 +28,5 @@ function initRESTProvider(restProvider) {
 
 KongDash.config(['restProvider', initRESTProvider]);
 
-KongDash.controller('BootstrapController', ['$scope', '$element', '$base64', 'ajax', 'viewFrame', 'toast', BootstrapController]);
+KongDash.controller('BootstrapController', ['$scope', '$element', 'rest', 'viewFrame', 'toast', BootstrapController]);
 KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
