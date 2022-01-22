@@ -10,7 +10,7 @@
 /**
  * An injectable toast message factory service.
  *
- * @typedef {Object} K_ToastFactory
+ * @typedef {Object} KToastFactory
  * @property {function} message - Displays a toast message of specified level.
  * @property {function} success - Displays a success toast message.
  * @property {function} info - Displays an information toast message.

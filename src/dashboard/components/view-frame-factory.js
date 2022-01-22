@@ -8,12 +8,12 @@
 'use strict';
 
 /**
- * A factory service to share data between controllers.
+ * An injectable factory service to share data between controllers.
  *
  * View frames are primarily consumed by header and footer controllers.
  * Values could be set from any controller.
  *
- * @typedef {Object} K_ViewFrame
+ * @typedef {Object} KViewFrameFactory
  * @property {function} addRoute - Adds an entry to the route history.
  * @property {function} clearRoutes - Clears the route history stack.
  * @property {function} getRoutes - Returns the route history stack.

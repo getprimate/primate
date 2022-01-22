@@ -10,7 +10,7 @@
 /**
  * An injectable factory service to log activity.
  *
- * @typedef {Object} K_LoggerFactory
+ * @typedef {Object} KLoggerFactory
  * @property {function} _write - Private function to handle writes
  * @property {function} getCache - Returns the cache array
  * @property {function} write - Writes into logger cache
