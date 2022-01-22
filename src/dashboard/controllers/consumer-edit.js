@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 
 import ConsumerModel from '../models/consumer-model.js';
 import UserAuthModel from '../models/user-auth-model.js';

@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 import ServiceModel from '../models/service-model.js';
 
 /**

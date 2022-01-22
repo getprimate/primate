@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.

@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 
 export default function CertificateEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
     const {angular} = window;

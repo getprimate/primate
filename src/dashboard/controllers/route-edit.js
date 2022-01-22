@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 import RouteModel from '../models/route-model.js';
 
 /**

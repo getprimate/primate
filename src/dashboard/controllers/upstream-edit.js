@@ -26,7 +26,7 @@
  * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
  */
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 
 /**
  *
