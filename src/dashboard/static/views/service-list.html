@@ -33,5 +33,8 @@
 </table><!-- #sv-ls__tab01.table -->
 </div><!-- .well -->
 
-<div class="pagination" data-ng-if="serviceNext.length>=5"><button class="btn dark" data-ng-click="fetchServiceList(serviceNext)">Load Next</button></div>
+<div data-ng-if="serviceNext.offset.length>=5" class="pagination">
+    <button class="text" data-ng-click="fetchServiceList(serviceNext)">Load More<span class="material-icons">navigate_next</span></button>
+</div><!-- .pagination -->
+
 </div><!-- .container -->

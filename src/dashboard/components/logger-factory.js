@@ -25,7 +25,7 @@
  * @property {function} isPaused - Tells whether the write operations are paused or not
  */
 
-import _ from '../../lib/utility.js';
+import _ from '../../lib/core-utils.js';
 
 /**
  * Holds the current state of the logger.

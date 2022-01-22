@@ -7,47 +7,49 @@
 
 'use strict';
 
+import restUtils from '../../lib/rest-utils.js';
+
 /**
  * Provides controller constructor for listing services.
  *
  * @constructor
  *
- * @param {Window} window- window DOM object
- * @param {Object} scope - injected scope object
- * @param {K_Ajax} ajax - custom AJAX provider
- * @param {K_ViewFrame} viewFrame - custom view frame factory
- * @param {K_Toast} toast - custom toast message service
- * @param {K_Logger} logger - custom logger factory
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
+ * @param {LoggerFactory} logger - Factory for logging activities.
  *
  * @property {function} scope.toggleServiceState - Handles click events on action buttons on table rows.
  */
-export default function ServiceListController(window, scope, ajax, viewFrame, toast, logger) {
+export default function ServiceListController(window, scope, restClient, viewFrame, toast, logger) {
     scope.serviceList = [];
-    scope.serviceNext = '';
+    scope.serviceNext = {offset: ''};
 
     /**
      * Retrieves the list of services.
      *
-     * @param {string} endpoint - The resource endpoint.
-     * @return {boolean} true if request could be made, false otherwise
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchServiceList = (endpoint) => {
-        const request = ajax.get({endpoint});
+    scope.fetchServiceList = function (filters = null) {
+        const request = restClient.get('/services' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.serviceNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        request.then(({data: response, httpText}) => {
+            scope.serviceNext.offset = restUtils.urlOffset(response.next);
 
             for (let service of response.data) {
                 service.displayText = typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
                 scope.serviceList.push(service);
             }
 
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+            logger.info(httpText);
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not load list of services');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.exception(httpText, error);
         });
 
         return true;
@@ -59,7 +61,7 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
      * @param {Object} event - The event object
      * @return {boolean} True if event handled, false otherwise
      */
-    scope.toggleServiceState = (event) => {
+    scope.toggleServiceState = function (event) {
         if (typeof event === 'undefined') {
             return false;
         }
@@ -71,12 +73,11 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
         }
 
         const {attribute, serviceId} = target.dataset;
-        const request = ajax.patch({
-            endpoint: `/services/${serviceId}`,
-            data: {[attribute]: !target.classList.contains('success')}
-        });
+        const payload = {[attribute]: !target.classList.contains('success')};
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+        const request = restClient.patch(`/services/${serviceId}`, payload);
+
+        request.then(({data: response, httpText}) => {
             if (response[attribute] === true) {
                 target.classList.remove('default');
                 target.classList.add('success');
@@ -86,12 +87,12 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
             }
 
             toast.info('Service state updated.');
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+            logger.info(httpText);
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not update service state.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.error(httpText, error);
         });
 
         return true;
@@ -101,5 +102,5 @@ export default function ServiceListController(window, scope, ajax, viewFrame, to
     viewFrame.setTitle('Services');
     viewFrame.addAction('New Service', '#!/services/__create__');
 
-    scope.fetchServiceList('/services');
+    scope.fetchServiceList();
 }
