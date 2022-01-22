@@ -16,7 +16,7 @@ const {ipcRenderer} = require('electron');
 /**
  * Initializes the REST provider.
  *
- * @param {K_RESTProvider} restProvider - An instance of REST provider constructor.
+ * @param {KRESTProvider} restProvider - An instance of REST provider constructor.
  */
 function initRESTProvider(restProvider) {
     const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
