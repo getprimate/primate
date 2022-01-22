@@ -13,36 +13,20 @@ import BootstrapController from './controllers/bootstrap.js';
 
 const {ipcRenderer} = require('electron');
 
-KongDash.config([
-    'ajaxProvider',
-    function (ajaxProvider) {
-        const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
+/**
+ * Initializes the REST provider.
+ *
+ * @param {K_RESTProvider} restProvider - An instance of REST provider constructor.
+ */
+function initRESTProvider(restProvider) {
+    const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
-        ajaxProvider.accept('application/json');
-        ajaxProvider.contentType('application/json');
-
-        if (typeof kongConfig.username === 'string') {
-            ajaxProvider.basicAuth(kongConfig.username, kongConfig.password || '');
-        }
+    if (typeof kongConfig.username === 'string') {
+        restProvider.setBasicAuth(kongConfig.username, kongConfig.password || '');
     }
-]);
+}
 
-KongDash.controller('BootstrapController', [
-    '$scope',
-    '$element',
-    '$base64',
-    'ajax',
-    'viewFrame',
-    'toast',
-    BootstrapController
-]);
+KongDash.config(['restProvider', initRESTProvider]);
 
-KongDash.controller('FooterController', [
-    '$window',
-    '$scope',
-    '$http',
-    'viewFrame',
-    'toast',
-    'logger',
-    FooterController
-]);
+KongDash.controller('BootstrapController', ['$scope', '$element', '$base64', 'ajax', 'viewFrame', 'toast', BootstrapController]);
+KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);

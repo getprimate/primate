@@ -19,12 +19,18 @@
  * @property {(function(endpoint: string, payload: Object): Promise)} put - Makes an HTTP PUT request.
  * @property {(function(endpoint: string, payload: Object): Promise)} patch - Makes an HTTP PATCH request.
  * @property {(function(endpoint: string): Promise)} delete - Makes an HTTP DELETE request.
- * @property {(function(host: string): undefined)} setHost - Sets the host name.
+ * @property {(function(host: string): void)} setHost - Sets the host name.
  */
 
 /**
- * @typedef {function} K_RESTProvider
- * @property {function} initialize - Initializes with the provided configuration.
+ * Implements the provider for {@link K_RESTFactory REST factory}.
+ *
+ * @typedef {Object} K_RESTProvider
+ * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
+ * @property {(function(username: string,
+ *      password: string): void)} setBasicAuth - Sets basic authorization header.
+ * @property {(function(type: string): void)} setAcceptType - Sets accept header.
+ * @property {(function(type: string): void)} setContentType - Sets contentType header.
  */
 
 import _ from '../../lib/utility.js';
@@ -91,32 +97,39 @@ function configure(options) {
     return request;
 }
 
-function restFactory(http) {
+/**
+ * Builds and returns the REST factory singleton.
+ *
+ * @param {(function(Object): Promise)} http - The Angular $http service.
+ * @returns {K_RESTFactory} REST factory.
+ */
+function buildRESTFactory(http) {
     return {
-        request: function (options) {
+        request(options) {
             return http(configure(options));
         },
-        get: function (options) {
-            options.method = 'GET';
-            return http(configure(options));
+
+        get(endpoint) {
+            return http(configure({method: 'GET', endpoint}));
         },
-        post: function (options) {
-            options.method = 'POST';
-            return http(configure(options));
+
+        post(endpoint, payload) {
+            return http(configure({method: 'POST', data: payload, endpoint}));
         },
-        put: function (options) {
-            options.method = 'PUT';
-            return http(configure(options));
+
+        put(endpoint, payload) {
+            return http(configure({method: 'PUT', data: payload, endpoint}));
         },
-        patch: function (options) {
-            options.method = 'PATCH';
-            return http(configure(options));
+
+        patch(endpoint, payload) {
+            return http(configure({method: 'PATCH', data: payload, endpoint}));
         },
-        delete: function (options) {
-            options.method = 'DELETE';
-            return http(configure(options));
+
+        delete(endpoint) {
+            return http(configure({method: 'DELETE', endpoint}));
         },
-        setHost: function (host) {
+
+        setHost(host) {
             REST_CONFIG.host = host;
         }
     };
@@ -163,5 +176,5 @@ export default function RestProvider() {
         REST_CONFIG.contentType = type;
     };
 
-    this.$get = ['$http', restFactory];
+    this.$get = ['$http', buildRESTFactory];
 }
