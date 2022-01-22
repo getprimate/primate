@@ -91,7 +91,7 @@ function configure(options) {
     return request;
 }
 
-function ajaxFactory(http) {
+function restFactory(http) {
     return {
         request: function (options) {
             return http(configure(options));
@@ -163,5 +163,5 @@ export default function RestProvider() {
         REST_CONFIG.contentType = type;
     };
 
-    this.$get = ['$http', ajaxFactory];
+    this.$get = ['$http', restFactory];
 }
