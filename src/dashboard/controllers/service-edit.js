@@ -38,11 +38,11 @@ const ENUM_PROTOCOL = {
  * @private
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#service-object
  *
- * @param {App_ServiceModel} model - A service model object.
+ * @param {ServiceModel} model - A service model object.
  * @param {Object} source - A service object.
- * @return {App_ServiceModel} The populated service model.
+ * @return {ServiceModel} The populated service model.
  */
-const _populateServiceModel = (model, source = {}) => {
+function populateServiceModel(model, source = {}) {
     for (let property in source) {
         if (typeof model[property] === 'undefined' || (Array.isArray(model[property]) && source[property] === null)) {
             continue;
@@ -73,27 +73,27 @@ const _populateServiceModel = (model, source = {}) => {
     }
 
     return model;
-};
+}
 
 /**
  * Prepares service object after sanitising values in a specified service model.
  *
- * Technically, this function does the inverse of {@link _populateServiceModel} function.
+ * Technically, this function does the inverse of {@link populateServiceModel} function.
  * The function validates service model before preparing the payload. Throws an error
  * if the validation fails.
  *
  * @private
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#service-object
  *
- * @param {App_ServiceModel} model - The source service model
+ * @param {ServiceModel} model - The source service model
  * @return {Object} The prepared service object
  */
-const _prepareServiceObject = (model) => {
+function prepareServiceObject(model) {
     if (model.host.length === 0) {
         throw new Error('Please provide a valid host');
     }
 
-    const payload = Object.assign({}, model);
+    const payload = _.deepClone(model);
     const {excluded} = ENUM_PROTOCOL[payload.protocol];
 
     delete payload.client_certificate;
@@ -121,36 +121,35 @@ const _prepareServiceObject = (model) => {
     }
 
     return payload;
-};
+}
 
 /**
  * Provides controller constructor for editing service objects.
  *
  * @constructor
  *
- * @param {Window} window- The top level Window object.
- * @param {Object} scope - The injected scope object.
- * @param {Object} location - Injected location service.
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {Object} location - Injected Angular location service.
  * @param {function} location.path - Tells the current view path.
- * @param {Object} routeParams - Injected route parameters service.
+ * @param {Object} routeParams - Object containing route parameters.
  * @param {string} routeParams.serviceId - The service id in editing mode.
- * @param {K_Ajax} ajax - Custom AJAX provider.
- * @param {K_ViewFrame} viewFrame - Custom view frame factory.
- * @param {K_Toast} toast - Custom toast message service.
- * @param {K_Logger} logger - Custom logger factory service.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
+ * @param {LoggerFactory} logger - Factory for logging activities.
  *
  * @property {string[]} scope.ENUM_PROTOCOL - An array of protocols from {@link ENUM_PROTOCOL}.
  * @property {string} scope.serviceId - Holds the service object id in edit mode.
- * @property {App_ServiceModel} scope.serviceModel - Holds the service model object.
+ * @property {ServiceModel} scope.serviceModel - Holds the service model object.
  */
-export default function ServiceEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
-    const {angular} = window;
-    const ajaxConfig = {method: 'POST', endpoint: '/services'};
+export default function ServiceEditController(window, scope, location, routeParams, restClient, viewFrame, toast, logger) {
+    const restConfig = {method: 'POST', endpoint: '/services'};
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
     scope.serviceId = '__none__';
-    scope.serviceModel = angular.copy(ServiceModel);
+    scope.serviceModel = _.deepClone(ServiceModel);
 
     scope.pbCertList = [];
     scope.caCertList = [];
@@ -167,8 +166,8 @@ export default function ServiceEditController(window, scope, location, routePara
             break;
 
         default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.serviceId}`;
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.serviceId}`;
 
             scope.serviceId = routeParams.serviceId;
             viewFrame.setTitle('Edit Service');
@@ -181,10 +180,10 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {string} endpoint - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchPublicCertificates = (endpoint = '/certificates') => {
-        const request = ajax.get({endpoint});
+    scope.fetchPublicCertificates = function (endpoint = '/certificates') {
+        const request = restClient.get(endpoint);
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+        request.then(({data: response, httpText}) => {
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
@@ -192,12 +191,12 @@ export default function ServiceEditController(window, scope, location, routePara
                 });
             }
 
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+            logger.info(httpText);
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not load public certificates.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.exception(httpText, error);
         });
 
         return true;
@@ -210,9 +209,9 @@ export default function ServiceEditController(window, scope, location, routePara
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchCACertificates = (endpoint = '/ca_certificates') => {
-        const request = ajax.get({endpoint});
+        const request = restClient.get(endpoint);
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+        request.then(({data: response, httpText}) => {
             const certificates = [];
 
             for (let current of response.data) {
@@ -224,12 +223,12 @@ export default function ServiceEditController(window, scope, location, routePara
                 scope.caCertList = certificates;
             }
 
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+            logger.info(httpText);
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not load CA certificates.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.exception(httpText, error);
         });
 
         return true;
@@ -241,20 +240,20 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {string} endpoint - The resource endpoint
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchRoutes = (endpoint = '/routes') => {
-        const request = ajax.get({endpoint});
+    scope.fetchRoutes = function (endpoint = '/routes') {
+        const request = restClient.get(endpoint);
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
+        request.then(({data: response, httpText}) => {
             for (let current of response.data) {
                 scope.routeList.push(current);
             }
 
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+            logger.info(httpText);
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not load routes under the service.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.exception(httpText, error);
         });
 
         return true;
@@ -269,7 +268,7 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {Object} event - The current event object.
      * @return {boolean} True if the request could be made, false otherwise
      */
-    scope.submitServiceForm = (event) => {
+    scope.submitServiceForm = function (event) {
         if (typeof event === 'undefined') {
             return false;
         }
@@ -280,11 +279,11 @@ export default function ServiceEditController(window, scope, location, routePara
             if (typeof scope.serviceModel[key] === 'string') scope.serviceModel[key] = scope.serviceModel[key].trim();
         });
 
-        const payload = _prepareServiceObject(scope.serviceModel);
-        const request = ajax.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, data: payload});
+        const payload = prepareServiceObject(scope.serviceModel);
+        const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
+        request.then(({data: response, httpText}) => {
+            logger.info(httpText);
 
             switch (scope.serviceId) {
                 case '__none__':
@@ -297,9 +296,9 @@ export default function ServiceEditController(window, scope, location, routePara
             }
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not ' + (scope.serviceId === '__none__' ? 'create new' : 'update') + ' service.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+            logger.exception(httpText, error);
         });
 
         return false;
@@ -313,9 +312,9 @@ export default function ServiceEditController(window, scope, location, routePara
      * @param {Object} event - The current event object
      * @return boolean - True if reset confirmed, false otherwise
      */
-    scope.resetServiceForm = (event) => {
+    scope.resetServiceForm = function (event) {
         if (confirm('Proceed to clear the form?')) {
-            scope.serviceModel = angular.copy(ServiceModel);
+            scope.serviceModel = _.deepClone(ServiceModel);
             return true;
         }
 
@@ -323,16 +322,20 @@ export default function ServiceEditController(window, scope, location, routePara
         return false;
     };
 
-    if (ajaxConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
-        const request = ajax.get({endpoint: ajaxConfig.endpoint});
+    if (restConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
+        const request = restClient.get(restConfig.endpoint);
 
-        request.then(({data: response}) => {
-            _populateServiceModel(scope.serviceModel, response);
-            viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', ajaxConfig.endpoint);
+        request.then(({data: response, httpText}) => {
+            populateServiceModel(scope.serviceModel, response);
+            viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
+
+            logger.info(httpText);
         });
 
-        request.catch(() => {
+        request.catch(({data: error, httpText}) => {
             toast.error('Could not load service details');
+            logger.exception(httpText, error);
+
             window.location.href = '#!/services';
         });
 

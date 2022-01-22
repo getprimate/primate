@@ -8,7 +8,7 @@
 'use strict';
 
 /**
- * @typedef {Object} App_ServiceModel - The service model object
+ * @typedef {Object} ServiceModel - The service model object
  *
  * @property {string} host - The host of the upstream server. Note that the host value is case-sensitive.
  * @property {number} port - The upstream server port.
@@ -21,15 +21,15 @@
  * @property {number} write_timeout - The timeout in milliseconds between two successive write operations for transmitting a request to the upstream server.
  * @property {number} read_timeout - The timeout in milliseconds between two successive read operations for transmitting a request to the upstream server.
  * @property {string} client_certificate - Certificate to be used as client certificate while TLS handshaking to the upstream server.
- * @property {string} tls_verify - Whether to enable verification of upstream server TLS certificate.
- * @property {number} tls_verify_depth - Maximum depth of chain while verifying Upstream server’s TLS certificate.
+ * @property {string|null|boolean} tls_verify - Whether to enable verification of upstream server TLS certificate.
+ * @property {number|null} tls_verify_depth - Maximum depth of chain while verifying Upstream server’s TLS certificate.
  * @property {string[]} tags - An optional set of strings associated with the Service for grouping and filtering.
  */
 
 /**
  * Defines the service object with default values.
  *
- * @type App_ServiceModel
+ * @type ServiceModel
  */
 const ServiceModel = {
     name: '',
@@ -46,7 +46,7 @@ const ServiceModel = {
     tls_verify: 'nginx',
     tls_verify_depth: -1,
     ca_certificates: [],
-    tags: [],
+    tags: []
 };
 
 export default ServiceModel;

@@ -63,7 +63,8 @@ function configure(options) {
         request.url = CLIENT_CONFIG.host + (typeof options.endpoint === 'string' ? options.endpoint : options.resource);
     }
 
-    if (typeof options.data === 'object') request.data = options.data;
+    if (typeof options.payload === 'object') request.data = options.payload;
+    else if (typeof options.data === 'object') request.data = options.data;
 
     if (typeof CLIENT_CONFIG.authorization === 'string') {
         request.withCredentials = true;
