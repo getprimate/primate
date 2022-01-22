@@ -10,7 +10,7 @@
 /**
  * An injectable toast message factory service.
  *
- * @typedef {Object} KToastFactory
+ * @typedef {Object} ToastFactory
  * @property {function} message - Displays a toast message of specified level.
  * @property {function} success - Displays a success toast message.
  * @property {function} info - Displays an information toast message.
@@ -28,10 +28,10 @@ const TOAST_STATE = {
 };
 
 /**
- * Returns the {@link K_Toast toast factory} singleton.
+ * Returns the {@link ToastFactory toast factory} singleton.
  *
  * @param {Window} window - The top level window object.
- * @returns {K_Toast} The toast factory service.
+ * @returns {ToastFactory} The toast factory service.
  */
 export default function ToastFactory(window) {
     const {angular, document} = window;

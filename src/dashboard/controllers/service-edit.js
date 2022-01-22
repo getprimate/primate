@@ -7,12 +7,6 @@
 
 'use strict';
 
-/**
- * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
- * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
- * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
- */
-
 import _ from '../../lib/utility.js';
 import ServiceModel from '../models/service-model.js';
 

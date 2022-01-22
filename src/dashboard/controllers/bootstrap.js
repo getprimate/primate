@@ -15,11 +15,11 @@ const {ipcRenderer} = require('electron');
  * @constructor
  * @param {Object} scope - Injected scope object.
  * @param {Object} element - HTML Element to which controller is assigned.
- * @param {KRESTFactory} rest - Customised HTTP REST client factory.
- * @param {KViewFrameFactory} viewFrame - View frame factory.
- * @param {KToastFactory} toast - Toast message factory.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI attributes.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function BootstrapController(scope, element, rest, viewFrame, toast) {
+export default function BootstrapController(scope, element, restClient, viewFrame, toast) {
     const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
     let statusBar = element.find('footer.footer').children('span');
@@ -34,7 +34,7 @@ export default function BootstrapController(scope, element, rest, viewFrame, toa
             scope.kongConfig.host = scope.kongConfig.host.substring(0, scope.kongConfig.host.length - 1);
         }
 
-        rest.get(config).then(
+        restClient.request({method: 'GET', ...config}).then(
             function (response) {
                 try {
                     if (typeof response.data !== 'object' || typeof response.data.version === 'undefined') {

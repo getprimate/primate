@@ -8,23 +8,25 @@
 'use strict';
 
 /**
- * @typedef {import('../components/view-frame-factory.js').K_ViewFrame} K_ViewFrame
- * @typedef {import('../components/toast-factory.js').K_Toast} K_Toast
- * @typedef {import('../components/logger-factory.js').K_Logger} K_Logger
- */
-
-/**
+ * Provides controller constructor for handling the header bar.
  *
- * @param {Window} window
- * @param {Object} scope
- * @param {*} ajax
- * @param {K_ViewFrame} viewFrame
- * @param {K_Toast} toast
- * @param {K_Logger} logger
+ * @constructor
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
+ * @param {LoggerFactory} logger - Factory for logging activities.
  */
-export default function HeaderController(window, scope, ajax, viewFrame, toast, logger) {
+export default function HeaderController(window, scope, restClient, viewFrame, toast, logger) {
     scope.frameState = viewFrame.getState();
 
+    /**
+     * Handles click events navigation button.
+     *
+     * @param {Event} event - Current DOM event object.
+     * @returns {boolean} False if redirect did not happen.
+     */
     scope.redirectRoute = function (event) {
         const {currentTarget: button} = event;
         const {redirect} = button.dataset;
@@ -39,6 +41,12 @@ export default function HeaderController(window, scope, ajax, viewFrame, toast, 
         return true;
     };
 
+    /**
+     * Handles click events on header action buttons appropriately.
+     *
+     * @param {Event} event - Current DOM event object.
+     * @returns {boolean} False if redirect did not happen.
+     */
     scope.handleButtonAction = function (event) {
         const {target: button} = event;
 
@@ -57,7 +65,7 @@ export default function HeaderController(window, scope, ajax, viewFrame, toast, 
                 return false;
             }
 
-            const request = ajax.delete({endpoint});
+            const request = restClient.delete(endpoint);
 
             request.then(({httpText}) => {
                 toast.success(`${target} deleted.`);

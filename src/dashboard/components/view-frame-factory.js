@@ -13,7 +13,7 @@
  * View frames are primarily consumed by header and footer controllers.
  * Values could be set from any controller.
  *
- * @typedef {Object} KViewFrameFactory
+ * @typedef {Object} ViewFrameFactory
  * @property {function} addRoute - Adds an entry to the route history.
  * @property {function} clearRoutes - Clears the route history stack.
  * @property {function} getRoutes - Returns the route history stack.
@@ -43,9 +43,9 @@ const frameState = {
 };
 
 /**
- * Returns the {@link K_ViewFrame View frame} singleton.
+ * Returns the {@link ViewFrameFactory View frame} singleton.
  *
- * @returns {K_ViewFrame} The view frame singleton.
+ * @returns {ViewFrameFactory} The view frame singleton.
  */
 export default function ViewFrameFactory() {
     return {

@@ -42,7 +42,7 @@ import _ from '../../lib/utility.js';
  * @property {string} host - The server host
  * @property {authorization} -
  */
-const REST_CONFIG = {
+const CLIENT_CONFIG = {
     host: '',
     authorization: null,
     accept: 'application/json',
@@ -52,7 +52,7 @@ const REST_CONFIG = {
 function configure(options) {
     const request = {
         method: options.method,
-        url: options.url || REST_CONFIG.host + options.resource,
+        url: options.url || CLIENT_CONFIG.host + options.resource,
         headers: {},
         withCredentials: false
     };
@@ -60,19 +60,19 @@ function configure(options) {
     if (typeof options.url === 'string') {
         request.url = options.url;
     } else {
-        request.url = REST_CONFIG.host + (typeof options.endpoint === 'string' ? options.endpoint : options.resource);
+        request.url = CLIENT_CONFIG.host + (typeof options.endpoint === 'string' ? options.endpoint : options.resource);
     }
 
     if (typeof options.data === 'object') request.data = options.data;
 
-    if (typeof REST_CONFIG.authorization === 'string') {
+    if (typeof CLIENT_CONFIG.authorization === 'string') {
         request.withCredentials = true;
-        request.headers['Authorization'] = REST_CONFIG.authorization;
+        request.headers['Authorization'] = CLIENT_CONFIG.authorization;
     }
 
-    if (typeof REST_CONFIG.accept === 'string') request.headers['Accept'] = REST_CONFIG.accept;
+    if (typeof CLIENT_CONFIG.accept === 'string') request.headers['Accept'] = CLIENT_CONFIG.accept;
 
-    if (typeof REST_CONFIG.contentType === 'string') request.headers['Content-Type'] = REST_CONFIG.contentType;
+    if (typeof CLIENT_CONFIG.contentType === 'string') request.headers['Content-Type'] = CLIENT_CONFIG.contentType;
 
     if (typeof options.headers === 'object') {
         Object.keys(options.headers).forEach(function (item) {
@@ -103,7 +103,7 @@ function configure(options) {
  * @param {(function(Object): Promise)} http - The Angular $http service.
  * @returns {RESTClientFactory} REST factory.
  */
-function buildRESTFactory(http) {
+function buildRESTClientFactory(http) {
     return {
         request(options) {
             return http(configure(options));
@@ -130,7 +130,7 @@ function buildRESTFactory(http) {
         },
 
         setHost(host) {
-            REST_CONFIG.host = host;
+            CLIENT_CONFIG.host = host;
         }
     };
 }
@@ -141,40 +141,40 @@ function buildRESTFactory(http) {
  * @constructor
  * @type {RESTClientProvider}
  */
-export default function RestProvider() {
+export default function RestClientProvider() {
     this.initialize = (options) => {
         for (let name in options) {
-            if (!_.isDefined(REST_CONFIG[name])) {
+            if (!_.isDefined(CLIENT_CONFIG[name])) {
                 continue;
             }
 
             switch (name) {
                 case 'authorization':
-                    REST_CONFIG[name] = 'Basic ' + btoa(options[name]);
+                    CLIENT_CONFIG[name] = 'Basic ' + btoa(options[name]);
                     break;
 
                 default:
-                    REST_CONFIG[name] = options[name];
+                    CLIENT_CONFIG[name] = options[name];
                     break;
             }
         }
     };
 
     this.setHost = (host) => {
-        REST_CONFIG.host = host;
+        CLIENT_CONFIG.host = host;
     };
 
     this.setBasicAuth = (username, password) => {
-        REST_CONFIG.authorization = 'Basic ' + btoa(username + ':' + (password || ''));
+        CLIENT_CONFIG.authorization = 'Basic ' + btoa(username + ':' + (password || ''));
     };
 
     this.setAcceptType = (type) => {
-        REST_CONFIG.accept = type;
+        CLIENT_CONFIG.accept = type;
     };
 
     this.setContentType = (type) => {
-        REST_CONFIG.contentType = type;
+        CLIENT_CONFIG.contentType = type;
     };
 
-    this.$get = ['$http', buildRESTFactory];
+    this.$get = ['$http', buildRESTClientFactory];
 }

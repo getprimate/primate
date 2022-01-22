@@ -16,17 +16,17 @@ const {ipcRenderer} = require('electron');
 /**
  * Initializes the REST provider.
  *
- * @param {KRESTProvider} restProvider - An instance of REST provider constructor.
+ * @param {RESTClientProvider} provider - An instance of REST client provider constructor.
  */
-function initRESTProvider(restProvider) {
+function initRESTClient(provider) {
     const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
     if (typeof kongConfig.username === 'string') {
-        restProvider.setBasicAuth(kongConfig.username, kongConfig.password || '');
+        provider.setBasicAuth(kongConfig.username, kongConfig.password || '');
     }
 }
 
-KongDash.config(['restProvider', initRESTProvider]);
+KongDash.config(['restClientProvider', initRESTClient]);
 
-KongDash.controller('BootstrapController', ['$scope', '$element', 'rest', 'viewFrame', 'toast', BootstrapController]);
+KongDash.controller('BootstrapController', ['$scope', '$element', 'restClient', 'viewFrame', 'toast', BootstrapController]);
 KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);

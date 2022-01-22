@@ -10,7 +10,7 @@
 /**
  * An injectable factory service to log activity.
  *
- * @typedef {Object} KLoggerFactory
+ * @typedef {Object} LoggerFactory
  * @property {function} _write - Private function to handle writes
  * @property {function} getCache - Returns the cache array
  * @property {function} write - Writes into logger cache
@@ -18,6 +18,8 @@
  * @property {function} error - Formats error message and writes into logger cache
  * @property {function} info - Formats info message and writes into logger cache
  * @property {function} warn - Formats warn message and writes into logger cache
+ * @property {(function(message: string,
+ *      error: Object): number)} exception - Formats an exception and writes into logger cache.
  * @property {function} pause - Temporarily suspends write operations
  * @property {function} resume - Resumes write operations
  * @property {function} isPaused - Tells whether the write operations are paused or not
