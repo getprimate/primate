@@ -1,8 +1,25 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 const {ipcRenderer} = require('electron');
 
-export default function BootstrapController(scope, element, base64, ajax, viewFrame, toast) {
+/**
+ * Provides controller constructor for setting up the application.
+ *
+ * @constructor
+ * @param {Object} scope - Injected scope object.
+ * @param {Object} element - HTML Element to which controller is assigned.
+ * @param {KRESTFactory} rest - Customised HTTP REST client factory.
+ * @param {KViewFrameFactory} viewFrame - View frame factory.
+ * @param {KToastFactory} toast - Toast message factory.
+ */
+export default function BootstrapController(scope, element, rest, viewFrame, toast) {
     const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 
     let statusBar = element.find('footer.footer').children('span');
@@ -17,7 +34,7 @@ export default function BootstrapController(scope, element, base64, ajax, viewFr
             scope.kongConfig.host = scope.kongConfig.host.substring(0, scope.kongConfig.host.length - 1);
         }
 
-        ajax.get(config).then(
+        rest.get(config).then(
             function (response) {
                 try {
                     if (typeof response.data !== 'object' || typeof response.data.version === 'undefined') {
@@ -78,8 +95,7 @@ export default function BootstrapController(scope, element, base64, ajax, viewFr
         let config = {url: scope.kongConfig.host, headers: {}};
 
         if (scope.kongConfig.username) {
-            config.headers['Authorization'] =
-                'Basic ' + base64.encode(scope.kongConfig.username + ':' + (scope.kongConfig.password || ''));
+            config.headers['Authorization'] = 'Basic ' + btoa(scope.kongConfig.username + ':' + (scope.kongConfig.password || ''));
         }
 
         connect(config, true);
