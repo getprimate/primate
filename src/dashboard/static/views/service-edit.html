@@ -148,9 +148,7 @@
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
-            <table id="sv-edit__tab01" class="table">
-                <thead data-ng-if="routeList.length>0"><tr><th>Name</th><th class="md-3">Actions</th></tr> </thead>
-
+            <table id="sv-edit__tab01" class="board">
                 <tbody>
                 <tr data-ng-repeat="route in routeList">
                     <td><a href="#!/services/{{serviceId}}/routes/{{route.id}}"><b>{{route.name}}</b></a></td>
@@ -169,6 +167,10 @@
                         <th data-ng-switch-default="" colspan="3">No routes added under service.</th>
                     </tr><!-- data-ng-switch -->
                 </tfoot>
+
+                <tfoot data-ng-if="routeNext.offset.length<=5" class="pagination">
+                    <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchMappedRoutes()">Load Next</button></th></tr>
+                </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
     </div><!-- .well -->
@@ -179,16 +181,12 @@
     </div><!-- .well__heading -->
 
     <div class="well__scroll-area">
-        <table id="sv-edit__tab02" class="table">
-            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
-
+        <table id="sv-edit__tab02" class="board" data-ng-click="togglePluginState($event)">
             <tbody>
             <tr data-ng-repeat="plugin in pluginList">
-                <td><label class="checkbox success">
-                    <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
-                </label></td>
+                <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="success plugin-state" data-ng-checked="plugin.enabled===true" title="Enable or disable plugin." /></td>
 
-                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td><a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
                 <td>
                     <div class="action-group" data-service-id="{{service.id}}">
                         <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
