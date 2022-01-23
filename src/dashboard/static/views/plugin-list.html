@@ -1,28 +1,36 @@
+<div class="container">
 <div class="well">
 <div class="well__heading">List of plugins</div>
-<table id="pluginsTable" class="table data-table" cellpadding="0" cellspacing="0">
-    <thead data-ng-if="pluginList.length>0"><tr><th>Enabled</th><th>Name</th><th>API id</th><th>Consumer</th><th>Created</th><th>Actions</th></tr></thead>
+<table id="pluginsTable" class="table data-table" data-ng-click="togglePluginState($event)">
+    <thead data-ng-if="pluginList.length>=1"><tr><th>Enabled</th><th>Plugin Name</th><th>Configured Objects</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 
     <tbody>
         <tr data-ng-repeat="plugin in pluginList">
-            <td><label class="checkbox success">
-                <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
-            </label></td>
+            <td><input type="checkbox" class="success" data-name="{{plugin.name}}" value="{{plugin.id}}" data-ng-checked="plugin.enabled===true" /></td>
 
             <td><a href="#!/plugins/{{plugin.id}}">{{plugin.name}}</a></td>
-            <td><a href="#!/api/{{plugin.api_id}}">{{plugin.api_id}}</a></td>
-            <td>{{plugin.consumer_id || 'All Consumers'}}</td>
+            <td>{{plugin.objectNames}}</td>
             <td>{{plugin.created_at | date}}</td>
-            <td>
-                <div class="action-group">
-                    <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons critical delete" data-target="plugin" data-url="/plugins/{{plugin.id}}">delete_forever</i>
-                </div>
+            <td class="row-actions">
+                <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
+                <i class="material-icons critical delete" data-target="plugin" data-url="/plugins/{{plugin.id}}">delete_forever</i>
             </td>
         </tr>
     </tbody>
-    <tfoot data-ng-if="pluginList.length<=0"><tr><th>Plugin list is empty.</th></tr></tfoot>
-</table>
-</div>
 
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextUrl)">Load Next</button></div>
+    <!-- ==-==-==-==-== Display this footer if no plugin objects are added yet. ==-==-==-==-== -->
+    <tfoot data-ng-if="pluginList.length===0" class="align-center">
+    <tr><th colspan="4">&nbsp;</th></tr>
+    <tr><th colspan="4"><span class="material-icons hero">extension</span></th></tr>
+    <tr><th colspan="4">No plugins are configured on any objects yet!</th></tr>
+    <tr><th colspan="4"><a href="#!/plugins/__create__" class="btn default">Apply Plugin</a></th></tr>
+    <tr><th colspan="4">&nbsp;</th></tr>
+    </tfoot>
+</table>
+</div><!-- .well -->
+
+<div data-ng-if="pluginNext.offset.length>=5" class="pagination">
+    <button class="text" data-ng-click="fetchPluginList(pluginNext)">Load Next<span class="material-icons">navigate_next</span></button>
+</div><!-- .pagination -->
+
+</div><!.. container -->

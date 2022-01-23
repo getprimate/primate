@@ -46,6 +46,7 @@ if (typeof window.jQuery === 'undefined') {
         <div class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
             <button type="button" class="{{button.styles}}" data-ng-repeat="button in frameState.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button>
         </div>
+        <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
     </header>
     <footer class="footer" data-ng-controller="FooterController">
         <section class="footer__window">

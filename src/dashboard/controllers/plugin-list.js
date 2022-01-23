@@ -7,49 +7,92 @@
 
 'use strict';
 
-export default function PluginListController(window, scope, ajax, viewFrame, toast) {
-    const {angular} = window;
+import _ from '../../lib/core-utils.js';
+import restUtils from '../../lib/rest-utils.js';
 
-    viewFrame.title = 'Plugin List';
-
-    let filters = [];
-
+/**
+ * @constructor
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
+ */
+export default function PluginListController(window, scope, restClient, viewFrame, toast) {
     scope.pluginList = [];
-    scope.fetchPluginList = function (resource) {
-        ajax.get({resource: resource}).then(
-            function (response) {
-                scope.nextUrl =
-                    typeof response.data.next === 'string'
-                        ? response.data.next.replace(new RegExp(viewFrame.host), '')
-                        : '';
+    scope.pluginNext = {offset: ''};
 
-                for (let index = 0; index < response.data.data.length; index++) {
-                    scope.pluginList.push(response.data.data[index]);
-                }
-            },
-            function () {
-                toast.error('Could not load list of plugins');
+    /**
+     * Retrieves the list of plugins enabled for various objects.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
+     */
+    scope.fetchPluginList = function (filters = null) {
+        const request = restClient.get('/plugins' + restUtils.urlQuery(filters));
+
+        viewFrame.setLoaderStep(100);
+
+        request.then(({data: response}) => {
+            scope.pluginNext.offset = restUtils.urlOffset(response.next);
+
+            for (let plugin of response.data) {
+                let objectNames = [];
+
+                if (_.isObject(plugin.service)) objectNames.push('Service');
+                if (_.isObject(plugin.route)) objectNames.push('Route');
+                if (_.isObject(plugin.consumer)) objectNames.push('Consumer');
+
+                scope.pluginList.push({
+                    id: plugin.id,
+                    enabled: plugin.enabled,
+                    name: plugin.name,
+                    protocols: Array.isArray(plugin.protocols) ? plugin.protocols.join(', ') : 'None',
+                    created_at: plugin.created_at,
+                    objectNames: objectNames.length === 0 ? 'None' : objectNames.join(', ')
+                });
             }
-        );
+        });
+
+        request.catch(() => {
+            toast.error('Could not load list of plugins');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
     };
 
-    angular.element('#pluginsTable').on('click', 'input[type="checkbox"].plugin-state', function (event) {
-        let checkbox = angular.element(event.target),
-            payload = {};
-        payload.enabled = checkbox.is(':checked');
+    /**
+     * Toggles plugin state to enabled or disabled.
+     *
+     * The event listener is attached to plugin list table.
+     *
+     * @param {HTMLInputElement} target - The target checkbox element.
+     * @returns {boolean} True if action completed, false otherwise.
+     */
+    scope.togglePluginState = function ({target}) {
+        if (target.nodeName !== 'INPUT' || target.type !== 'checkbox') {
+            return false;
+        }
 
-        ajax.patch({
-            resource: '/plugins/' + checkbox.val(),
-            data: payload
-        }).then(
-            function () {
-                toast.success('Plugin ' + (payload.enabled ? 'enabled' : 'disabled'));
-            },
-            function () {
-                toast.error('Could not ' + (payload.enabled ? 'enable' : 'disable') + ' this plugin');
-            }
-        );
-    });
+        const endpoint = `/plugins/${target.value}`;
+        const request = restClient.patch(endpoint, {enabled: target.checked});
 
-    scope.fetchPluginList('/plugins' + (filters.length > 0 ? '?' + filters.join('&') : ''));
+        request.then(() => {
+            toast.success('Plugin ' + (target.checked ? 'enabled.' : 'disabled.'));
+        });
+
+        request.catch(() => {
+            toast.error('Unable to change plugin state.');
+        });
+
+        return true;
+    };
+
+    viewFrame.clearRoutes();
+    viewFrame.setTitle('Plugins');
+    viewFrame.addAction('Apply Plugin', '#!/plugins/__create__');
+
+    scope.fetchPluginList();
 }
