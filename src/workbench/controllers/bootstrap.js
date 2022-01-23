@@ -54,7 +54,7 @@ export default function BootstrapController(scope, element, restClient, viewFram
                     element.fadeOut({
                         duration: 300,
                         complete: function () {
-                            window.location.href = 'workbench.html';
+                            window.location.href = 'dashboard.html';
                         }
                     });
                 }

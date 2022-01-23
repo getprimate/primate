@@ -29,11 +29,11 @@ let startMainWindow = function () {
             contextIsolation: false
         }
     });
-    mainWindow.loadFile(`${absPath}/src/dashboard/bootstrap.html`);
-
-    //* Debugging
-    mainWindow.webContents.openDevTools();
-    //*/
+    mainWindow.loadFile(`${absPath}/src/workbench/bootstrap.html`).then(() => {
+        //* Debugging
+        mainWindow.webContents.openDevTools();
+        //*/
+    });
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -73,14 +73,7 @@ app.on('browser-window-created', (e, window) => {
         },
         {
             label: 'Edit',
-            submenu: [
-                {role: 'undo'},
-                {role: 'redo'},
-                {type: 'separator'},
-                {role: 'cut'},
-                {role: 'copy'},
-                {role: 'paste'}
-            ]
+            submenu: [{role: 'undo'}, {role: 'redo'}, {type: 'separator'}, {role: 'cut'}, {role: 'copy'}, {role: 'paste'}]
         },
         {
             label: 'Window',
