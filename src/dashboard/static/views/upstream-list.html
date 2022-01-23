@@ -1,7 +1,8 @@
+<div class="container">
 <div class="well">
     <div class="well__heading">List of Upstreams</div>
     <table id="upstreamTable" class="table">
-        <thead data-ng-if="upstreamList.length>0"><tr><th>Name</th><th>Algorithm</th><th>Slots</th><th>Created At</th><th>Actions</th></tr></thead>
+        <thead data-ng-if="upstreamList.length>=1"><tr><th>Name</th><th>Algorithm</th><th>Slots</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 
         <tbody>
         <tr data-ng-repeat="upstream in upstreamList">
@@ -9,11 +10,9 @@
             <td>{{upstream.algorithm | capitalise}}</td>
             <td>{{upstream.slots}}</td>
             <td>{{upstream.created_at | date}}</td>
-            <td>
-                <div class="action-group">
-                    <a href="#!/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons critical delete" data-target="Upstream" data-url="/upstreams/{{upstream.id}}">delete_forever</i>
-                </div>
+            <td class="row-actions">
+                <a href="#!/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
+                <i class="material-icons critical delete" data-target="Upstream" data-url="/upstreams/{{upstream.id}}">delete_forever</i>
             </td>
         </tr>
         </tbody>
@@ -24,6 +23,9 @@
             <tr><th colspan="5">&nbsp;</th></tr>
         </tfoot>
     </table>
-</div>
+</div><!-- .well -->
 
-<div class="pagination" data-ng-if="nextUrl"><button class="btn dark" data-ng-click="fetchUpstreamList(nextUrl)">Load Next</button></div>
+<div data-ng-if="upstreamNext.offset.length>=5" class="pagination">
+    <button class="text" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next<span class="material-icons">navigate_next</span></button>
+</div><!-- .pagination -->
+</div><!-- .container -->
