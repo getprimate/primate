@@ -19,11 +19,10 @@ import restUtils from '../../lib/rest-utils.js';
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
- * @param {LoggerFactory} logger - Factory for logging activities.
  *
  * @property {function} scope.toggleServiceState - Handles click events on action buttons on table rows.
  */
-export default function ServiceListController(window, scope, restClient, viewFrame, toast, logger) {
+export default function ServiceListController(window, scope, restClient, viewFrame, toast) {
     scope.serviceList = [];
     scope.serviceNext = {offset: ''};
 
@@ -43,13 +42,14 @@ export default function ServiceListController(window, scope, restClient, viewFra
                 service.displayText = typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
                 scope.serviceList.push(service);
             }
-
-            logger.info(httpText);
         });
 
         request.catch(({data: error, httpText}) => {
             toast.error('Could not load list of services');
-            logger.exception(httpText, error);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -77,7 +77,7 @@ export default function ServiceListController(window, scope, restClient, viewFra
 
         const request = restClient.patch(`/services/${serviceId}`, payload);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             if (response[attribute] === true) {
                 target.classList.remove('default');
                 target.classList.add('success');
@@ -87,12 +87,10 @@ export default function ServiceListController(window, scope, restClient, viewFra
             }
 
             toast.info('Service state updated.');
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not update service state.');
-            logger.error(httpText, error);
         });
 
         return true;
