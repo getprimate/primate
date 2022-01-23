@@ -35,7 +35,9 @@ export default function ServiceListController(window, scope, restClient, viewFra
     scope.fetchServiceList = function (filters = null) {
         const request = restClient.get('/services' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, httpText}) => {
+        viewFrame.setLoaderStep(100);
+
+        request.then(({data: response}) => {
             scope.serviceNext.offset = restUtils.urlOffset(response.next);
 
             for (let service of response.data) {
@@ -44,7 +46,7 @@ export default function ServiceListController(window, scope, restClient, viewFra
             }
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load list of services');
         });
 
