@@ -8,6 +8,8 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
+import restUtils from '../../lib/rest-utils.js';
+
 import ServiceModel from '../models/service-model.js';
 
 /**
@@ -137,13 +139,12 @@ function prepareServiceObject(model) {
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
- * @param {LoggerFactory} logger - Factory for logging activities.
  *
  * @property {string[]} scope.ENUM_PROTOCOL - An array of protocols from {@link ENUM_PROTOCOL}.
  * @property {string} scope.serviceId - Holds the service object id in edit mode.
  * @property {ServiceModel} scope.serviceModel - Holds the service model object.
  */
-export default function ServiceEditController(window, scope, location, routeParams, restClient, viewFrame, toast, logger) {
+export default function ServiceEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/services'};
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
@@ -155,8 +156,10 @@ export default function ServiceEditController(window, scope, location, routePara
     scope.caCertList = [];
 
     scope.routeList = [];
+    scope.routeNext = {offset: ''};
 
     scope.pluginList = [];
+    scope.pluginNext = {offset: ''};
 
     viewFrame.addRoute('#!/services');
 
@@ -183,20 +186,21 @@ export default function ServiceEditController(window, scope, location, routePara
     scope.fetchPublicCertificates = function (endpoint = '/certificates') {
         const request = restClient.get(endpoint);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
                     displayText: (_.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
                 });
             }
-
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load public certificates.');
-            logger.exception(httpText, error);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -211,7 +215,7 @@ export default function ServiceEditController(window, scope, location, routePara
     scope.fetchCACertificates = (endpoint = '/ca_certificates') => {
         const request = restClient.get(endpoint);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             const certificates = [];
 
             for (let current of response.data) {
@@ -222,45 +226,81 @@ export default function ServiceEditController(window, scope, location, routePara
 
                 scope.caCertList = certificates;
             }
-
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load CA certificates.');
-            logger.exception(httpText, error);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
     };
 
     /**
-     * Retrieves the routes added under this service.
+     * Retrieves the routes associated with the current service.
      *
-     * @param {string} endpoint - The resource endpoint
+     * @param {string|object|null} filters - Filters to the Admin API endpoint.
      * @return boolean - True if request could be made, false otherwise
      */
-    scope.fetchRoutes = function (endpoint = '/routes') {
-        const request = restClient.get(endpoint);
+    scope.fetchMappedRoutes = function (filters = null) {
+        const request = restClient.get(`/services/${scope.serviceId}/routes` + restUtils.urlQuery(filters));
 
-        request.then(({data: response, httpText}) => {
+        viewFrame.setLoaderStep(100);
+
+        request.then(({data: response}) => {
+            scope.routeNext.offset = restUtils.urlOffset(response.next);
+
             for (let current of response.data) {
                 scope.routeList.push(current);
             }
-
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load routes under the service.');
-            logger.exception(httpText, error);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
     };
 
     /**
-     * Handles form submit event.
+     * Retrieves the plugins applied on the current service.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API endpoint.
+     * @return boolean - True if request could be made, false otherwise
+     */
+    scope.fetchAppliedPlugins = function (filters = null) {
+        const request = restClient.get(`/services/${scope.serviceId}/plugins` + restUtils.urlQuery(filters));
+
+        viewFrame.setLoaderStep(100);
+
+        request.then(({data: response}) => {
+            scope.pluginNext.offset = restUtils.urlOffset(response.next);
+
+            for (let plugin of response.data) {
+                scope.pluginList.push({id: plugin.id, name: plugin.name, enabled: plugin.enabled});
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load applied plugins.');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
+        return true;
+    };
+
+    /**
+     * Submit changes made on the service form.
      *
      * The service object payload is prepared and POST or PATCH
      * requests are triggered create or edit mode respectively.
@@ -282,9 +322,7 @@ export default function ServiceEditController(window, scope, location, routePara
         const payload = prepareServiceObject(scope.serviceModel);
         const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
 
-        request.then(({data: response, httpText}) => {
-            logger.info(httpText);
-
+        request.then(({data: response}) => {
             switch (scope.serviceId) {
                 case '__none__':
                     toast.success(`Created new service ${response.name}`);
@@ -296,9 +334,8 @@ export default function ServiceEditController(window, scope, location, routePara
             }
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not ' + (scope.serviceId === '__none__' ? 'create new' : 'update') + ' service.');
-            logger.exception(httpText, error);
         });
 
         return false;
@@ -322,42 +359,61 @@ export default function ServiceEditController(window, scope, location, routePara
         return false;
     };
 
+    /**
+     * Toggles plugin state to enabled or disabled.
+     *
+     * The event listener is attached to plugin list table.
+     *
+     * @param {HTMLInputElement} target - The target checkbox element.
+     * @returns {boolean} True if action completed, false otherwise.
+     */
+    scope.togglePluginState = function ({target}) {
+        if (target.nodeName !== 'INPUT' || target.type !== 'checkbox') {
+            return false;
+        }
+
+        const endpoint = `/services/${scope.serviceId}/plugins/${target.value}`;
+        const request = restClient.patch(endpoint, {enabled: target.checked});
+
+        request.then(() => {
+            toast.success('Plugin ' + (target.checked ? 'enabled.' : 'disabled.'));
+        });
+
+        request.catch(() => {
+            toast.error('Unable to change plugin state.');
+        });
+
+        return true;
+    };
+
     if (restConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
         const request = restClient.get(restConfig.endpoint);
 
-        request.then(({data: response, httpText}) => {
-            populateServiceModel(scope.serviceModel, response);
-            viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
+        viewFrame.setLoaderStep(100 / 5);
 
-            logger.info(httpText);
+        request.then(({data: response}) => {
+            populateServiceModel(scope.serviceModel, response);
+
+            viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
+            viewFrame.resetLoader();
             toast.error('Could not load service details');
-            logger.exception(httpText, error);
 
             window.location.href = '#!/services';
         });
 
-        scope.fetchRoutes(`/services/${scope.serviceId}/routes`);
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
+        scope.fetchMappedRoutes();
+        scope.fetchAppliedPlugins();
     }
+
+    viewFrame.setLoaderStep(100 / 2);
 
     scope.fetchPublicCertificates();
     scope.fetchCACertificates();
 }
-
-/*
-angular.element('table#pluginListTable').on('click', 'input[type="checkbox"].plugin-state', (event) => {
-    let state = (event.target.checked) ? 'enabled' : 'disabled';
-
-    ajax.patch({
-        endpoint: `/services/${scope.serviceId}/plugins/${event.target.value}`,
-        data: { enabled: (state === 'enabled') },
-    }).then(() => {
-        toast.success(`Plugin ${event.target.dataset.name} ${state}`);
-
-    }, () => {
-        toast.error('Status could not not be changed');
-    });
-});
-*/
