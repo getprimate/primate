@@ -14,8 +14,8 @@ import RouteModel from '../models/route-model.js';
  * Holds the list of available protocols and their configuration.
  *
  * The configuration also specifies the array of fields that are required
- * for a particiular protocol. Also, the fields required to be removed
- * can be obtained from the _exlusive_ property, to avoid validation errors.
+ * for a particular protocol. Also, the fields required to be removed
+ * can be obtained from the _exclusive_ property, to avoid validation errors.
  *
  * @type {{
  *      _exclusive_: string[], http: {required: string[]},
@@ -219,16 +219,15 @@ function _buildRouteObject(model) {
  * @param {Object} scope - The injected scope object.
  * @param {Object} location - Injected location service.
  * @param {function} location.path - Tells the current view path.
- * @param {Object} routeParams - Injected route parameters service.
- * @param {string} routeParams.serviceId - The service id,
- *                                          if attached to a service.
+ * @param {{
+ *          serviceId: string, pluginId: string, routeId: string
+ *      }} routeParams - Injected route parameters service.
  * @param {string} routeParams.routeId - The route id in editing mode.
- * @param {K_Ajax} ajax - Custom AJAX provider.
- * @param {K_ViewFrame} viewFrame - Custom view frame factory.
- * @param {K_Toast} toast - Custom toast message service.
- * @param {K_Logger} logger - Custom logger factory service.
+ * @param {RESTClientFactory} restClient - Custom AJAX provider.
+ * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
+ * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function RouteEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
+export default function RouteEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/routes'};
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
@@ -260,6 +259,7 @@ export default function RouteEditController(window, scope, location, routeParams
     switch (routeParams.routeId) {
         case '__create__':
             viewFrame.setTitle('Create Route');
+            viewFrame.setLoaderStep(scope.serviceId === '__none__' ? 100 : 0);
             break;
 
         default:
@@ -267,7 +267,9 @@ export default function RouteEditController(window, scope, location, routeParams
             ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.routeId}`;
 
             scope.routeId = routeParams.routeId;
+
             viewFrame.setTitle('Edit Route');
+            viewFrame.setLoaderStep(scope.serviceId === '__none__' ? 100 / 3 : 50);
             break;
     }
 
@@ -289,15 +291,13 @@ export default function RouteEditController(window, scope, location, routeParams
 
         try {
             const payload = _buildRouteObject(scope.routeModel);
-            const request = ajax.request({
+            const request = restClient.request({
                 method: ajaxConfig.method,
                 endpoint: ajaxConfig.endpoint,
-                data: payload
+                payload
             });
 
-            request.then(({data: response, headerText}) => {
-                logger.info(headerText);
-
+            request.then(({data: response}) => {
                 switch (scope.routeId) {
                     case '__none__':
                         toast.success('New route added.');
@@ -309,9 +309,8 @@ export default function RouteEditController(window, scope, location, routeParams
                 }
             });
 
-            request.catch(({data: exception, headerText}) => {
+            request.catch(() => {
                 toast.error('Could not save route details.');
-                logger.exception(headerText, exception);
             });
         } catch (error) {
             toast.error(`${error}`);
@@ -339,21 +338,21 @@ export default function RouteEditController(window, scope, location, routeParams
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
-        const request = ajax.get({endpoint: ajaxConfig.endpoint});
+        const request = restClient.get(ajaxConfig.endpoint);
 
-        request.then(({data: response, headerText}) => {
+        request.then(({data: response}) => {
             _refreshRouteModel(response, scope.routeModel);
 
             viewFrame.addAction('Delete', viewFrame.getNextRoute(false), 'critical delete', 'route', ajaxConfig.endpoint);
-
-            logger.info(headerText);
         });
 
-        request.catch(({data: error, headerText}) => {
+        request.catch(() => {
             toast.error('Could not load route details.');
-            logger.exception(headerText, error);
-
             window.location.href = viewFrame.getNextRoute();
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
     }
 }

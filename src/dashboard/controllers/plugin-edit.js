@@ -159,12 +159,11 @@ function _refreshPluginModel(model, source) {
  * @param {string} routeParams.serviceId - The service id, if attached to a service.
  * @param {string} routeParams.routeId - The route id, if attached to a service.
  * @param {string} routeParams.pluginId - The plugin object id in edit mode.
- * @param {K_Ajax} ajax - Custom AJAX provider.
- * @param {K_ViewFrame} viewFrame - Custom view frame factory.
- * @param {K_Toast} toast - Custom toast message service.
- * @param {K_Logger} logger - Custom logger factory service.
+ * @param {RESTClientFactory} restClient - Custom AJAX provider.
+ * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
+ * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function PluginEditController(window, scope, routeParams, ajax, viewFrame, toast, logger) {
+export default function PluginEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
     const {angular} = window;
     const pluginForm = angular.element('form#pg-ed__frm01');
 
@@ -232,42 +231,38 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     scope.routeList = [];
     scope.consumerList = [];
 
-    scope.fetchAvailablePlugins = (endpoint = '/plugins/enabled') => {
-        const request = ajax.get({endpoint});
+    scope.fetchAvailablePlugins = () => {
+        const request = restClient.get('/plugins/enabled');
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
-            logger.info(httpText);
         });
 
-        request.catch(({data: exception, httpText}) => {
+        request.catch(() => {
             toast.error('Could not fetch list of enabled plugins');
-            logger.exception(httpText, exception);
         });
 
         return true;
     };
 
     scope.fetchServiceList = function (endpoint = '/services') {
-        const request = ajax.get({endpoint});
+        const request = restClient.get(endpoint);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
-            logger.info(httpText);
         });
 
-        request.catch(({data: exception, httpText}) => {
+        request.catch(() => {
             toast.error('Could not fetch list of enabled plugins');
-            logger.exception(httpText, exception);
         });
 
         return true;
     };
 
     scope.fetchSchema = (plugin, config = null) => {
-        const request = ajax.get({endpoint: `/plugins/schema/${plugin}`});
+        const request = restClient.get(`/plugins/schema/${plugin}`);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             if (!Array.isArray(response['fields'])) {
                 toast.warning('Malformed plugin schema object. Please check Admin API version.');
                 return false;
@@ -282,16 +277,13 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
             }
 
             scope.schemaProps = _sanitiseSchema(response);
-
             scope.jsonText = JSON.stringify(scope.schemaProps, null, 4);
 
-            logger.info(httpText);
             return true;
         });
 
-        request.catch(({data: exception, httpText}) => {
+        request.catch(() => {
             toast.error('Unable to load plugin schema.');
-            logger.exception(httpText, exception);
         });
 
         return true;
@@ -321,22 +313,16 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
         try {
             const payload = _buildPluginObject(scope.pluginModel, scope.schemaModel);
 
-            const request = ajax.request({
-                method: ajaxConfig.method,
-                endpoint: ajaxConfig.endpoint,
-                data: payload
-            });
+            const request = restClient.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, payload});
 
-            request.then(({data: response, httpText}) => {
+            request.then(({data: response}) => {
                 toast.message(scope.pluginId === '__none__' ? 'SUCCESS' : 'INFO', 'Plugin details saved.');
-                logger.info(httpText);
 
                 window.location.href = '#!' + location.path().replace('__create__', response.id);
             });
 
-            request.catch(({data: error, httpText}) => {
+            request.catch(() => {
                 toast.error('Unable to save plugin details.');
-                logger.exception(httpText, error);
             });
         } catch (error) {
             toast.error(error.message);
@@ -348,18 +334,16 @@ export default function PluginEditController(window, scope, routeParams, ajax, v
     viewFrame.setTitle('Apply Plugin');
 
     if (ajaxConfig.method === 'PATCH' && scope.pluginId !== '__none__') {
-        const request = ajax.get({endpoint: `/plugins/${scope.pluginId}`});
+        const request = restClient.get(`/plugins/${scope.pluginId}`);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             _refreshPluginModel(scope.pluginModel, response);
 
             scope.fetchSchema(response.name, response.config);
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Unable to retrieve plugin details.');
-            logger.exception(httpText, error);
         });
     } else {
         scope.fetchAvailablePlugins();

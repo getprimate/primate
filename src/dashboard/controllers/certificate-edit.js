@@ -1,48 +1,77 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 import _ from '../../lib/core-utils.js';
+import restUtils from '../../lib/rest-utils.js';
 
-export default function CertificateEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
-    const {angular} = window;
-    const ajaxConfig = {method: 'POST', resource: '/certificates'};
-
-    const formCert = angular.element('form#cf-ed__frm01'),
-        formSnis = angular.element('form#cf-ed__frm02');
+/**
+ * Provides controller constructor for editing certificate objects.
+ *
+ * @constructor
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {Object} location - Injected Angular location service.
+ * @param {function} location.path - Tells the current view path.
+ * @param {{
+ *     upstreamId: string,
+ *     certId: string
+ * }} routeParams - Object containing route parameters.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
+ */
+export default function CertificateEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+    const restConfig = {method: 'POST', endpoint: '/certificates'};
 
     scope.certId = '__none__';
     scope.certModel = {cert: '', key: '', cert_alt: '', key_alt: '', tags: '', snis: ''};
 
     scope.sniModel = {shorthand: ''};
     scope.sniList = [];
-    scope.sniNext = '';
+    scope.sniNext = {offset: ''};
 
     scope.upstreamList = [];
-    scope.upstreamNext = '';
+    scope.upstreamNext = {offset: ''};
 
     if (typeof routeParams.upstreamId === 'string') {
-        ajaxConfig.resource = `/upstreams/${routeParams.upstreamId}/client_certificate`;
+        restConfig.endpoint = `/upstreams/${routeParams.upstreamId}/client_certificate`;
+        viewFrame.addRoute(`#!/upstreams/${routeParams.upstreamId}`);
+    } else {
+        viewFrame.addRoute('#!/certificates');
     }
 
     switch (routeParams.certId) {
         case '__create__':
-            viewFrame.title = 'Add New Certificate';
+            viewFrame.setTitle('Add Certificate');
             break;
 
         default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.resource = `${ajaxConfig.resource}/${routeParams.certId}`;
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.certId}`;
 
             scope.certId = routeParams.certId;
 
-            viewFrame.title = 'Edit Certificate';
+            viewFrame.setTitle('Edit Certificate');
             break;
     }
 
-    scope.fetchSniList = (resource) => {
-        const request = ajax.get({resource});
+    /**
+     * Retrieves the SNIs associated with the current certificate.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API endpoint.
+     * @return boolean - True if request could be made, false otherwise
+     */
+    scope.fetchSniList = (filters = null) => {
+        const request = restClient.get(`/certificates/${scope.certId}/snis` + restUtils.urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.sniNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.sniNext.offset = restUtils.urlOffset(response.next);
 
             for (let sni of response.data) {
                 sni.tags = sni.tags.length >= 1 ? sni.tags.join(', ') : 'No tags added.';
@@ -55,14 +84,24 @@ export default function CertificateEditController(window, scope, location, route
             toast.error('Could not load SNIs.');
         });
 
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
         return true;
     };
 
-    scope.fetchUpstreamList = (resource) => {
-        const request = ajax.get({resource: resource});
+    /**
+     * Retrieves the upstreams which uses the current certificate.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API endpoint.
+     * @return boolean - True if request could be made, false otherwise
+     */
+    scope.fetchUpstreamList = (filters = null) => {
+        const request = restClient.get(`/certificates/${scope.certId}/upstreams` + restUtils.urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.upstreamNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.upstreamNext = restUtils.urlOffset(response.next);
 
             for (let upstream of response.data) {
                 scope.upstreamList.push(upstream);
@@ -72,28 +111,38 @@ export default function CertificateEditController(window, scope, location, route
         request.catch(() => {
             toast.error('Could not load upstreams.');
         });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
     };
 
-    formCert.on('submit', (event) => {
+    /**
+     * Builds certificate object from the model and submits the form.
+     *
+     * @param {Event} event - The current event object.
+     * @returns {boolean} False always.
+     */
+    scope.submitCertificateForm = function (event) {
         event.preventDefault();
 
         if (scope.certModel.cert.length <= 10) {
-            formCert.find('textarea#cf-ed__txa01').focus();
+            toast.error('Please paste a valid certificate.');
             return false;
         }
 
         if (scope.certModel.key.length <= 10) {
-            formCert.find('textarea#cf-ed__txa02').focus();
+            toast.error('Please paste a valid key for the certificate.');
             return false;
         }
 
-        const payload = Object.assign({}, scope.certModel);
+        const payload = _.deepClone(scope.certModel);
 
         if (scope.certModel.tags.length > 0) {
             payload.tags = _.explode(scope.certModel.tags);
         }
 
-        if (ajaxConfig.method === 'PATCH') {
+        if (restConfig.method === 'PATCH') {
             delete payload.snis;
         } else {
             payload.snis = _.explode(scope.certModel.snis);
@@ -104,7 +153,7 @@ export default function CertificateEditController(window, scope, location, route
             delete payload.key_alt;
         }
 
-        const request = ajax.request({method: ajaxConfig.method, resource: ajaxConfig.resource, data: payload});
+        const request = restClient.request({method: restConfig.method, resource: restConfig.endpoint, data: payload});
 
         request.then(({data: response}) => {
             switch (scope.certId) {
@@ -123,9 +172,15 @@ export default function CertificateEditController(window, scope, location, route
         });
 
         return false;
-    });
+    };
 
-    formSnis.on('submit', (event) => {
+    /**
+     * Builds SNI object from the model and submits the form.
+     *
+     * @param {Event} event - The current event object.
+     * @returns {boolean} False always.
+     */
+    scope.submitSNIForm = function (event) {
         event.preventDefault();
 
         const exploded = _.explode(scope.sniModel.shorthand);
@@ -140,7 +195,8 @@ export default function CertificateEditController(window, scope, location, route
             payload.tags.push(exploded[index]);
         }
 
-        const request = ajax.post({resource: `/certificates/${scope.certId}/snis`, data: payload});
+        const request = restClient.post(`/certificates/${scope.certId}/snis`, payload);
+
         request.then(({data: response}) => {
             response.tags = response.tags.length >= 1 ? response.tags.join(', ') : 'No tags added.';
 
@@ -157,14 +213,12 @@ export default function CertificateEditController(window, scope, location, route
         });
 
         return false;
-    });
+    };
 
-    angular.element('span#cf-ed__btn01').on('click', function () {
-        formSnis.slideToggle(300);
-    });
+    if (restConfig.method === 'PATCH' && scope.certId !== '__none__') {
+        const request = restClient.get(restConfig.endpoint);
 
-    if (ajaxConfig.method === 'PATCH' && scope.certId !== '__none__') {
-        const request = ajax.get({resource: ajaxConfig.resource});
+        viewFrame.setLoaderStep(100 / 3);
 
         request.then(({data: response}) => {
             for (let key of Object.keys(response)) {
@@ -180,13 +234,7 @@ export default function CertificateEditController(window, scope, location, route
                 scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
             }
 
-            viewFrame.actionButtons.push({
-                target: 'Certificate',
-                url: `/certificates/${scope.certId}`,
-                redirect: '#!/certificates',
-                styles: 'btn critical delete',
-                displayText: 'Delete'
-            });
+            viewFrame.addAction('Delete', '#!/certificates', 'btn critical delete', 'certificate', `/certificates/${scope.certId}`);
         });
 
         request.catch(() => {
@@ -194,7 +242,11 @@ export default function CertificateEditController(window, scope, location, route
             window.location.href = '#!/certificates';
         });
 
-        scope.fetchSniList(`/certificates/${scope.certId}/snis`);
-        scope.fetchUpstreamList(`/certificates/${scope.certId}/upstreams`);
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
+        scope.fetchSniList();
+        scope.fetchUpstreamList();
     }
 }

@@ -4,7 +4,7 @@
     <div class="{{caId === '__none__' ? 'panel panel-border success' : 'panel panel-border info'}}">
         <div class="panel__heading">CA Details</div>
         <div class="panel__body">
-            <form id="ca-ed__frm01" class="form" method="post" action="#">
+            <form id="ca-ed__frm01" class="form" method="post" data-ng-submit="submitCAForm($event)">
                 <div class="row">
                     <div class="col md-6">
                         <div class="form__field">

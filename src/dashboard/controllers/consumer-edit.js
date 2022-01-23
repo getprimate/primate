@@ -21,14 +21,15 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {Object} scope - The injected scope object.
  * @param {Object} location - Injected location service.
  * @param {function} location.path - Tells the current view path.
- * @param {Object} routeParams - Injected route parameters service.
- * @param {string} routeParams.consumerId - The consumer id in edit mode.
- * @param {K_Ajax} ajax - Custom AJAX provider.
- * @param {K_ViewFrame} viewFrame - Custom view frame factory.
- * @param {K_Toast} toast - Custom toast message service.
- * @param {K_Logger} logger - Custom logger factory service.
+ * @param {{
+ *     pluginId: string,
+ *     consumerId: string
+ * }} routeParams - Injected route parameters service.
+ * @param {RESTClientFactory} restClient - Custom AJAX provider.
+ * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
+ * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function ConsumerEditController(window, scope, location, routeParams, ajax, viewFrame, toast, logger) {
+export default function ConsumerEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/consumers'};
 
     scope.ENUM_JWT_ALGO = ['HS256', 'HS384', 'HS512', 'RS256', 'ES256'];
@@ -56,8 +57,6 @@ export default function ConsumerEditController(window, scope, location, routePar
         case '__create__':
             viewFrame.setTitle('Add New Consumer');
             viewFrame.addRoute('#!/consumers');
-
-            // notebook.addClass('hidden');
             break;
 
         default:
@@ -72,24 +71,22 @@ export default function ConsumerEditController(window, scope, location, routePar
 
     scope.submitConsumerForm = function (event) {
         const payload = _.deepClone(scope.consumerModel);
-        const request = ajax.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, data: payload});
+        const request = restClient.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, payload});
 
         event.preventDefault();
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             const level = scope.consumerId === '__none__' ? 'SUCCESS' : 'INFO';
 
             toast.message(level, 'Consumer details saved.');
-            logger.info(httpText);
 
             if (level === 'SUCCESS') {
                 window.location.href = _.editPath(location.path(), response.id);
             }
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not save consumer details.');
-            logger.exception(httpText, error);
         });
 
         return false;
@@ -120,23 +117,21 @@ export default function ConsumerEditController(window, scope, location, routePar
             }
         }
 
-        const request = ajax.post({endpoint: `/consumers/${scope.consumerId}/${authMethod}`, data: payload});
+        const request = restClient.post(`/consumers/${scope.consumerId}/${authMethod}`, payload);
 
         event.preventDefault();
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             scope.userAuthList[authName].push(response);
 
             /* Clear the form */
             scope.userAuthModel[authName] = _.deepClone(UserAuthModel[authName]);
 
             toast.success('Authentication method saved.');
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not save authentication method.');
-            logger.exception(httpText, error);
         });
 
         return false;
@@ -149,27 +144,23 @@ export default function ConsumerEditController(window, scope, location, routePar
             return false;
         }
 
-        const endpoint = `/consumers/${scope.consumerId}/${method}`;
-        const request = ajax.get({endpoint});
+        const request = restClient.get(`/consumers/${scope.consumerId}/${method}`);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             scope.userAuthList[authName] = response.data;
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load authentication details');
-            logger.exception(httpText, error);
         });
 
         return true;
     };
 
     scope.fetchPluginList = function () {
-        const endpoint = `/consumers/${scope.consumerId}/plugins`;
-        const request = ajax.get({endpoint});
+        const request = restClient.get(`/consumers/${scope.consumerId}/plugins`);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             for (let plugin of response.data) {
                 scope.pluginList.push({
                     id: plugin.id,
@@ -177,13 +168,10 @@ export default function ConsumerEditController(window, scope, location, routePar
                     enabled: plugin.enabled
                 });
             }
-
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.warning('Could not fetch consumer plugins.');
-            logger.exception(httpText, error);
         });
     };
 
@@ -218,9 +206,9 @@ export default function ConsumerEditController(window, scope, location, routePar
     };
 
     if (ajaxConfig.method === 'PATCH' && scope.consumerId !== '__none__') {
-        const request = ajax.get({endpoint: `/consumers/${scope.consumerId}`});
+        const request = restClient.get(`/consumers/${scope.consumerId}`);
 
-        request.then(({data: response, httpText}) => {
+        request.then(({data: response}) => {
             for (let field in response) {
                 if (typeof scope.consumerModel[field] === 'undefined' || response[field] === null) {
                     continue;
@@ -230,14 +218,11 @@ export default function ConsumerEditController(window, scope, location, routePar
             }
 
             viewFrame.addAction('Delete', '#!/consumers', 'critical delete', 'consumer', `/ca_certificates/${scope.consumerId}`);
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load consumer details');
-            logger.exception(httpText, error);
-
-            window.location.href = viewFrame.prevUrl;
+            window.location.href = viewFrame.getNextRoute(false);
         });
 
         scope.fetchAuthList('key-auth');

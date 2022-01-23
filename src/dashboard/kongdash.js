@@ -11,15 +11,22 @@ import RestClientProvider from './components/rest-provider.js';
 import LoggerFactory from './components/logger-factory.js';
 import ToastFactory from './components/toast-factory.js';
 import ViewFrameFactory from './components/view-frame-factory.js';
+import HttpInterceptorFactory from './components/http-interceptor-factory.js';
 
 const {angular} = window;
 const KongDash = angular.module('KongDash', ['base64', 'ngRoute', 'ngAnimate']);
 
-KongDash.provider('restClient', ['$base64', RestClientProvider]);
+function registerInterceptor(httpProvider) {
+    httpProvider.interceptors.push('interceptor');
+}
 
+KongDash.factory('viewFrame', ViewFrameFactory);
 KongDash.factory('toast', ['$window', ToastFactory]);
 KongDash.factory('logger', LoggerFactory);
-KongDash.factory('viewFrame', ViewFrameFactory);
+KongDash.factory('interceptor', ['$q', 'logger', HttpInterceptorFactory]);
+
+KongDash.config(['$httpProvider', registerInterceptor]);
+KongDash.provider('restClient', ['$base64', RestClientProvider]);
 
 /**
  * Converts first letter of a string to uppercase and

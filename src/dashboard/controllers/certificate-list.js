@@ -1,42 +1,38 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
+import restUtils from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
  *
  * @constructor
  *
- * @param {Window} window- window DOM object
- * @param {{
- *      certList: [Object], caList: [Object], sniList: [Object],
- *      certNext: string, caNext: string, sniNext: string,
- *      fetchCertList: function, fetchCaList: function, fetchSniList: function
- *      }} scope
- * @param {K_Ajax} ajax - custom AJAX provider
- * @param {K_ViewFrame} viewFrame - custom view frame factory
- * @param {K_Toast} toast - custom toast message service
- * @param {K_Logger} logger - custom logger factory service
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function CertificateListController(window, scope, ajax, viewFrame, toast, logger) {
+export default function CertificateListController(window, scope, restClient, viewFrame, toast) {
     scope.certList = [];
-    scope.certNext = '';
+    scope.certNext = {offset: ''};
     scope.caList = [];
-    scope.caNext = '';
+    scope.caNext = {offset: ''};
     scope.sniList = [];
-    scope.sniNext = '';
+    scope.sniNext = {offset: ''};
 
     /**
      * Retrieves certificates from the specified resource.
      *
-     * @param {string} resource - the resource identifier
-     * @returns {boolean} - true on success
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchCertList = (resource) => {
-        const request = ajax.get({resource});
+    scope.fetchCertList = (filters = null) => {
+        const request = restClient.get('/certificates' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.certNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        request.then(({data: response}) => {
+            scope.certNext.offset = restUtils.urlOffset(response.next);
 
             for (let certificate of response.data) {
                 certificate.name = _.objectName(certificate.id);
@@ -45,13 +41,14 @@ export default function CertificateListController(window, scope, ajax, viewFrame
 
                 scope.certList.push(certificate);
             }
-
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(() => {
             toast.error('Could not load certificates.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -60,14 +57,14 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     /**
      * Retrieves CAs from the specified resource.
      *
-     * @param {string} resource - the resource identifier
-     * @returns {boolean} - true on success
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchCaList = (resource) => {
-        const request = ajax.get({resource});
+    scope.fetchCaList = (filters = null) => {
+        const request = restClient.get('/ca_certificates' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.caNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        request.then(({data: response}) => {
+            scope.caNext.offset = restUtils.urlOffset(response.next);
 
             for (let ca of response.data) {
                 ca.name = _.objectName(ca.id);
@@ -75,13 +72,14 @@ export default function CertificateListController(window, scope, ajax, viewFrame
 
                 scope.caList.push(ca);
             }
-
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(() => {
             toast.error('Could not load CA list.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -90,14 +88,14 @@ export default function CertificateListController(window, scope, ajax, viewFrame
     /**
      * Retrieves SNI objects from the specified resource.
      *
-     * @param {string} resource - the resource identifier
-     * @returns {boolean} - true on success
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchSniList = (resource) => {
-        const request = ajax.get({resource});
+    scope.fetchSniList = (filters = null) => {
+        const request = restClient.get('/snis' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, config: httpConfig, status: statusCode, statusText}) => {
-            scope.sniNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+        request.then(({data: response}) => {
+            scope.sniNext.offset = restUtils.urlOffset(response.next);
 
             for (let sni of response.data) {
                 if (typeof sni.certificate !== 'object' || sni.certificate === null) {
@@ -107,39 +105,27 @@ export default function CertificateListController(window, scope, ajax, viewFrame
                 sni.certificate.name = _.objectName(sni.certificate.id);
                 scope.sniList.push(sni);
             }
-
-            logger.info({source: 'http-response', httpConfig, statusCode, statusText});
         });
 
-        request.catch(({data: exception, config: httpConfig, status: statusCode, statusText}) => {
+        request.catch(() => {
             toast.error('Could not load SNIs.');
-            logger.error({source: 'admin-error', statusCode, statusText, httpConfig, exception});
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
     };
 
-    viewFrame.title = 'Certificate List';
-    viewFrame.prevUrl = '';
+    viewFrame.clearRoutes();
+    viewFrame.setTitle('Services');
+    viewFrame.setLoaderStep(100 / 3);
 
-    viewFrame.actionButtons.push(
-        {
-            displayText: 'Add Certificate',
-            target: 'certificate',
-            url: '/certificates',
-            redirect: '#!/certificates/__create__',
-            styles: 'btn success create'
-        },
-        {
-            displayText: 'Add Trusted CA',
-            target: 'CA',
-            url: '/ca_certificates',
-            redirect: '#!/trusted-cas/__create__',
-            styles: 'btn success create'
-        }
-    );
+    viewFrame.addAction('New Certificate', '#!/certificates/__create__');
+    viewFrame.addAction('New Trusted CA', '#!/trusted-cas/__create__');
 
-    scope.fetchCertList('/certificates');
-    scope.fetchCaList('/ca_certificates');
-    scope.fetchSniList('/snis');
+    scope.fetchCertList();
+    scope.fetchCaList();
+    scope.fetchSniList();
 }

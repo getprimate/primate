@@ -290,6 +290,22 @@ main header.content__header .navigate a:hover .material-icons {
 main header.content__header .title { padding: 0; font-size: 2rem; font-weight: 300; }
 main header.content__header .navigate ~ .title { padding-left: 0; }
 
+main header.content__header .loader-bar {
+    display: block;
+    float: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    margin: 0;
+    padding: 0;
+    background: var(--std__primary) none;
+    border: 0 solid transparent;
+    box-shadow: 5px 1px 3px var(--std__primary);
+    transition: width 0.4s linear, opacity 0.4s linear, visibility 0.4s linear;
+}
+
 main section.content__wrapper {
     width: calc(100% - 25px);
     height: calc(100% - 175px);
@@ -1039,8 +1055,9 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
     font-size: 1.1rem;
 }
 
-.well .well__scrollable {
-    max-height: 200px;
+.well .well__scrollable,
+.well .well__scroll-area {
+    max-height: 400px;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -1094,30 +1111,42 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
  */
 .container { display: block; position: relative; padding: 0; }
 
-.row { margin-bottom: 20px; width: 100%; display: block; }
+.row {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
 
 form.form .row { margin-bottom: 0 !important; }
 
 .row::before { display: table; content: " "; }
 .row::after { display: table; content: " "; clear: both; }
 
-.row >.col { display: block; float: left; position: relative; background: transparent; padding: 0 10px 0 10px; margin: 0; }
+.row >.col {
+    display: block;
+    float: left;
+    position: relative;
+    background: transparent;
+    padding: 0 10px 0 10px;
+    margin: 0;
+}
+
 .row > .col:first-child { padding-left: 0; }
 .row > .col:last-child { padding-right: 0; }
 .row > .col:only-child { padding-left: 0 !important; padding-right: 0 !important; }
 
 .md-1 { width: 8.333% !important; }
-.md-2 { width: 16.666% !important;; }
-.md-3 { width: 25% !important;; }
-.md-4 { width: 33.333% !important;; }
-.md-5 { width: 41.666% !important;; }
-.md-6 { width: 50% !important;; }
-.md-7 { width: 58.333% !important;; }
-.md-8 { width: 66.666% !important;; }
-.md-9 { width: 75.018% !important;; }
-.md-10 { width: 83.333% !important;; }
-.md-11 { width: 91.666% !important;; }
-.md-12 { width: 100% !important;; }
+.md-2 { width: 16.666% !important; }
+.md-3 { width: 25% !important; }
+.md-4 { width: 33.333% !important; }
+.md-5 { width: 41.666% !important; }
+.md-6 { width: 50% !important; }
+.md-7 { width: 58.333% !important; }
+.md-8 { width: 66.666% !important; }
+.md-9 { width: 75.018% !important; }
+.md-10 { width: 83.333% !important; }
+.md-11 { width: 91.666% !important; }
+.md-12 { width: 100% !important; }
 
 /**
  * Widget helper classes.

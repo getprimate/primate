@@ -14,32 +14,35 @@
  * Values could be set from any controller.
  *
  * @typedef {Object} ViewFrameFactory
- * @property {function} addRoute - Adds an entry to the route history.
- * @property {function} clearRoutes - Clears the route history stack.
- * @property {function} getRoutes - Returns the route history stack.
- * @property {function} getNextRoute - Pops the next route from history stack.
- * @property {function} setTitle - Sets the current view title.
- * @property {function} addAction - Adds an action to be displayed on the header.
- * @property {function} getActions - Returns the action buttons.
- * @property {function} getState - Returns the view frame state.
+ * @property {(function(string):void)} addRoute - Adds an entry to the route history.
+ * @property {(function(void):void)} clearRoutes - Clears the route history stack.
+ * @property {(function(void): string[])} getRoutes - Returns the route history stack.
+ * @property {(function(boolean): string)} getNextRoute - Pops the next route from history stack.
+ * @property {(function(string): void)} setTitle - Sets the current view title.
+ * @property {(function(displayText:string, redirect:string=, styles:string=,
+ *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
+ * @property {(function(void): object[])} getActions - Returns the action buttons.
+ * @property {(function(void):void)} clearActions - Clears action buttons.
+ * @property {(function(void): Object)} getState - Returns the view frame state.
+ * @property {(function(number):void)} setLoaderStep - Sets the loader step with respect to viewport width.
+ * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
+ * @property {function(void):void} incrementLoader - Increments loader width by adding loader step.
  */
 
 /**
  * Holds the current view frame state.
  *
  * @type {Object}
- * @property {string} frameTitle - The current frame title.
- * @property {string[]} routeHistory - An array containing the navigation history.
- * @property {string} routeNext - The next route in route history.
- * @property {string} serverHost - The current server host.
- * @property {object[]} actionButtons - Holds buttons to be displayed on the header
  */
 const frameState = {
     frameTitle: '',
     routeNext: '',
     routeHistory: [],
     serverHost: '',
-    actionButtons: []
+    actionButtons: [],
+    loaderWidth: 0,
+    loaderStep: 50,
+    loaderUnit: '0vw'
 };
 
 /**
@@ -49,6 +52,28 @@ const frameState = {
  */
 export default function ViewFrameFactory() {
     return {
+        setTitle(title) {
+            frameState.frameTitle = title;
+        },
+
+        addAction(displayText, redirect = '!#/', styles = 'success create', target = 'object', endpoint = '!#/') {
+            frameState.actionButtons.push({
+                styles: `btn ${styles}`,
+                displayText,
+                redirect,
+                target,
+                endpoint
+            });
+        },
+
+        getActions() {
+            return frameState.actionButtons;
+        },
+
+        clearActions() {
+            frameState.actionButtons.splice(0);
+        },
+
         addRoute(route) {
             frameState.routeNext = route;
             frameState.routeHistory.push(route);
@@ -76,26 +101,31 @@ export default function ViewFrameFactory() {
             return frameState.routeNext;
         },
 
-        setTitle(title) {
-            frameState.frameTitle = title;
+        setLoaderStep(step) {
+            if (frameState.loaderWidth === 0) {
+                frameState.loaderStep = Math.ceil(step);
+                frameState.loaderWidth = 1;
+                frameState.loaderUnit = `${frameState.loaderWidth}vw`;
+            }
         },
 
-        addAction(displayText, redirect = '!#/', styles = 'success create', target = 'object', endpoint = '!#/') {
-            frameState.actionButtons.push({
-                styles: `btn ${styles}`,
-                displayText,
-                redirect,
-                target,
-                endpoint
-            });
+        incrementLoader() {
+            const width = frameState.loaderWidth + frameState.loaderStep;
+
+            if (width >= 100) {
+                frameState.loaderStep = 0;
+                frameState.loaderWidth = 0;
+            } else {
+                frameState.loaderWidth = width;
+            }
+
+            frameState.loaderUnit = `${frameState.loaderWidth}vw`;
         },
 
-        getActions() {
-            return frameState.actionButtons;
-        },
-
-        clearActions() {
-            frameState.actionButtons.splice(0);
+        resetLoader() {
+            frameState.loaderStep = 0;
+            frameState.loaderWidth = 0;
+            frameState.loaderUnit = `${frameState.loaderWidth}vw`;
         },
 
         getState() {

@@ -6,7 +6,7 @@
     <div class="panel panel-border info">
     <div class="panel__heading">Certificate Details</div>
     <div class="panel__body">
-        <form id="cf-ed__frm01" class="form" method="post" action="#">
+        <form id="cf-ed__frm01" class="form" method="post" data-ng-submit="submitCertificateForm($event)">
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
@@ -24,13 +24,9 @@
             </div><!-- .row -->
 
             <div data-ng-if="certId=='__none__'" class="form__field">
-                <label for="cf-ed__txa06" class="field-label">SNIs (optional) <span title="An array of zero or more hostnames to associate with this certificate as SNIs." class="tooltip material-icons">help_outline</span></label>
-                <div class="field-input"><textarea id="cf-ed__txa06" class="tx-small" name="snis" data-ng-model="certModel.snis" placeholder=""></textarea></div>
-            </div>
-
-            <div class="form__field">
-                <label for="cf-ed__txa05" class="field-label">Tags (optional)</label>
-                <div class="field-input"><textarea id="cf-ed__txa05" class="tx-small" name="tags" data-ng-model="certModel.tags" placeholder="Eg: user-level, low-priority"></textarea></div>
+                <label class="field-label">SNIs (optional) <span title="An array of zero or more hostnames to associate with this certificate as SNIs." class="tooltip material-icons">help_outline</span></label>
+                <div class="field-input"><token-input name="snis" data-ng-model="certModel.snis" data-placeholder="Example: sni1.hostname.com, sni2.hostname.com"></token-input></div>
+                <div class="field-note">* Press enter key after typing the SNIs.</div>
             </div>
 
             <div class="panel__split"><span>Optional Alternate Certificate</span></div>
@@ -49,6 +45,12 @@
                 </div><!-- .col.md-6 -->
             </div><!-- .row -->
 
+            <div class="panel__split"><span>Certificate Tags</span></div>
+            <div class="form__field">
+                <div class="field-input"><token-input name="tags" data-ng-model="certModel.tags" data-placeholder="Example: user-level, low-priority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
+            </div>
+
             <div class="form__field" data-ng-switch="certId">
                 <a class="btn default" href="#!/certificates">Cancel</a>
                 <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
@@ -62,15 +64,7 @@
 <div class="col md-4">
     <!-- ==--==--==--==--==--==--==--==--==--== SNI List ==--==--==--==--==--==--==--==--==--== -->
     <div class="well">
-        <div class="well__heading">SNIs
-            <div class="pull-right"><span id="cf-ed__btn01" class="btn mini success">+</span></div>
-        </div>
-
-        <form id="cf-ed__frm02" class="form no-margin hidden" method="post" action="#">
-            <div class="hpadding-10 pad-top-10">
-                <input data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="Type host name and press enter..." />
-            </div>
-        </form>
+        <div class="well__heading">SNIs</div>
 
         <table id="sniListTable" class="board">
             <tbody>
@@ -84,17 +78,22 @@
 
             <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="2">No host names configured to use this certificate.</th></tr></tfoot>
 
-            <tfoot class="pagination" data-ng-if="sniNext.length>=5">
-            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
+            <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
+                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
+        <form data-ng-if="certId!=='__none__'" id="cf-ed__frm02" class="form no-margin hidden" method="post" data-ng-submit="submitSNIForm($event)">
+            <div class="hpadding-10 pad-top-10">
+                <input data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="Type host name and press enter..." />
+            </div>
+        </form>
     </div><!-- .well -->
 
     <!-- ==--==--==--==--==--==--==--==--==--== Upstream List ==--==--==--==--==--==--==--==--==--== -->
     <div class="well">
         <div class="well__heading">Upstreams</div>
 
-        <table id="cf-ed__tab02" class="table">
+        <table id="cf-ed__tab02" class="board">
             <tbody>
             <tr data-ng-repeat="upstream in upstreamList">
                 <td><a href="#!/certificates/{{certId}}/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>

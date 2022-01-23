@@ -9,39 +9,27 @@
 
 import KongDash from './kongdash.js';
 
-import HttpInterceptor from './components/http-interceptor.js';
-
-import LoggerFactory from './components/logger-factory.js';
 import TokenInputDirective from './components/token-input-directive.js';
 import MultiCheckDirective from './components/multi-check-directive.js';
 
-import Templates from './templates.js';
-
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
-
 import OverviewController from './controllers/overview.js';
-
 import ServiceListController from './controllers/service-list.js';
 import ServiceEditController from './controllers/service-edit.js';
-
 import RouteEditController from './controllers/route-edit.js';
-
 import CertificateListController from './controllers/certificate-list.js';
 import CertificateEditController from './controllers/certificate-edit.js';
-
 import TrustedCAEditController from './controllers/ca-edit.js';
-
 import UpstreamListController from './controllers/upstream-list.js';
 import UpstreamEditController from './controllers/upstream-edit.js';
-
 import ConsumerListController from './controllers/consumer-list.js';
 import ConsumerEditController from './controllers/consumer-edit.js';
-
 import PluginListController from './controllers/plugin-list.js';
 import PluginEditController from './controllers/plugin-edit.js';
-
 import SettingsController from './controllers/settings.js';
+
+import Templates from './templates.js';
 
 const {ipcRenderer} = require('electron');
 const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
@@ -63,11 +51,53 @@ function initRESTClient(provider) {
     provider.initialize(options);
 }
 
-KongDash.config(['$httpProvider', HttpInterceptor]);
+/**
+ * Attaches application wide event listeners.
+ *
+ * @param {Window} window - Top level window object.
+ * @param {Object} rootScope - Angular root scope object.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {LoggerFactory} logger - Factory for logging activities.
+ */
+function attachEventListeners(window, rootScope, viewFrame, logger) {
+    const {angular} = window;
+    const main = window.document.querySelector('main.content');
+
+    rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
+
+    rootScope.$on('$locationChangeStart', (event, next) => {
+        viewFrame.clearActions();
+        viewFrame.resetLoader();
+
+        if (next.indexOf('#') > 1) {
+            let refArray = next.split('#!/')[1].split('/');
+            let href = '#!/' + refArray[0],
+                nav = angular.element('nav.navigation');
+
+            nav.find('a.navigation__link').removeClass('active');
+            nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
+        }
+    });
+
+    main.addEventListener('click', (event) => {
+        const {target: anchor} = event;
+
+        if (anchor.nodeName !== 'A') {
+            return true;
+        }
+
+        if (anchor.target === '_blank') {
+            event.preventDefault();
+            ipcRenderer.send('open-external', anchor.href);
+
+            logger.info(`Opening ${anchor.href}`);
+        }
+
+        return true;
+    });
+}
 
 KongDash.config(['restClientProvider', initRESTClient]);
-
-KongDash.factory('logger', LoggerFactory);
 
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
@@ -169,6 +199,7 @@ KongDash.controller('PluginListController', ['$window', '$scope', 'restClient', 
 KongDash.controller('PluginEditController', [
     '$window',
     '$scope',
+    '$location',
     '$routeParams',
     'restClient',
     'viewFrame',
@@ -190,54 +221,7 @@ KongDash.controller('SettingsController', [
 
 KongDash.config(['$routeProvider', Templates]);
 
-KongDash.run([
-    '$window',
-    '$rootScope',
-    'viewFrame',
-    'logger',
-
-    /**
-     *
-     * @param {Window} window
-     * @param {Object} rootScope
-     * @param {K_ViewFrame} viewFrame
-     * @param {K_Logger} logger
-     */
-    function (window, rootScope, viewFrame, logger) {
-        const {angular} = window;
-        rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
-
-        rootScope.$on('$locationChangeStart', (event, next) => {
-            viewFrame.getActions().splice(0);
-
-            if (next.indexOf('#') > 1) {
-                let refArray = next.split('#!/')[1].split('/');
-                let href = '#!/' + refArray[0],
-                    nav = angular.element('nav.navigation');
-
-                nav.find('a.navigation__link').removeClass('active');
-                nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
-            }
-        });
-
-        window.document.querySelector('main.content').addEventListener('click', (event) => {
-            const {target: anchor} = event;
-
-            if (anchor.nodeName !== 'A') {
-                return true;
-            }
-
-            if (anchor.target === '_blank') {
-                event.preventDefault();
-                ipcRenderer.send('open-external', anchor.href);
-
-                logger.info(`Opening ${anchor.href}`);
-            }
-
-            return true;
-        });
-    }
-]);
+KongDash.run(['$window', '$rootScope', 'viewFrame', 'logger', attachEventListeners]);
 
 ipcRenderer.on('open-settings-view', () => {
     /* TODO: use $location */
