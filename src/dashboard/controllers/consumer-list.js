@@ -7,36 +7,35 @@
 
 'use strict';
 
+import restUtils from '../../lib/rest-utils.js';
+
 /**
  * Provides controller constructor for editing consumer objects.
  *
  * @constructor
  *
- * @param {Object} scope - The injected scope object.
- * @param {K_Ajax} ajax - Custom AJAX provider.
- * @param {K_ViewFrame} viewFrame - Custom view frame factory.
- * @param {K_Toast} toast - Custom toast message service.
- * @param {K_Logger} logger - Custom logger factory service.
- *
- * @property {Object[]} scope.consumerList - An array that holds the list of consumers.
- * @property {string} scope.consumerNext - The resource endpoint with offset value for pagination.
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function ConsumerListController(scope, ajax, viewFrame, toast, logger) {
+export default function ConsumerListController(scope, restClient, viewFrame, toast) {
     scope.consumerList = [];
-    scope.consumerNext = '';
+    scope.consumerNext = {offset: ''};
 
     /**
      * Retrieves the consumer list.
      *
-     * @param {string} endpoint - The consumer API endpoint.
-     * @returns {boolean} True if th request could be made, false otherwise.
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchConsumerList = function (endpoint = '/consumers') {
-        const request = ajax.get({endpoint});
+    scope.fetchConsumerList = function (filters = null) {
+        const request = restClient.get('/consumers' + restUtils.urlQuery(filters));
 
-        request.then(({data: response, httpText}) => {
-            let {next} = response;
-            scope.consumerNext = typeof next === 'string' ? next.replace(viewFrame.host, '') : '';
+        viewFrame.setLoaderStep(100);
+
+        request.then(({data: response}) => {
+            scope.consumerNext.offset = restUtils.urlOffset(response.next);
 
             for (let consumer of response.data) {
                 let createdAt = new Date(consumer.created_at);
@@ -49,13 +48,14 @@ export default function ConsumerListController(scope, ajax, viewFrame, toast, lo
 
                 scope.consumerList.push(consumer);
             }
-
-            logger.info(httpText);
         });
 
-        request.catch(({data: error, httpText}) => {
+        request.catch(() => {
             toast.error('Could not load the list of consumers.');
-            logger.exception(httpText, error);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
