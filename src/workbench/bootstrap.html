@@ -11,7 +11,16 @@
 <link rel="stylesheet" type="text/css" href="static/css/layout.css" />
 
 <style>
-main { padding-top: 10%; overflow: hidden; }
+main.content {
+    padding-top: 10%;
+    overflow: hidden;
+    /*background-color: var(--theme__accent-bg);*/
+}
+
+section#index__ngView {
+    width: min(53vw, 1000px);
+    margin: 0 auto 0 auto;
+}
 
 .icon { text-align: center;  }
 .icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
@@ -19,7 +28,13 @@ main { padding-top: 10%; overflow: hidden; }
 .icon p.caption { font-size: 2.5rem; text-shadow: 1px 1px #1A242D; font-weight: 500; }
 .icon .description { font-size: 1rem; font-weight: 400; color: #B5BCCE; text-shadow: 1px 1px #1A242D; }
 
-form.form { max-width: 400px; margin: 0 auto 0 auto;  }
+form.form {
+    padding: 20px min(1.041vw, 20px);
+}
+
+#bt-ed__wrp01 > .col.md-7 {
+    border-left: 1px solid var(--widget__accent-bg);
+}
 </style>
 
 <script type="text/javascript">
@@ -28,54 +43,104 @@ window.jQuery = require('./static/jquery-3.6.0.min.js');
 </head>
 <body class="body">
 <main class="content">
-    <section data-ng-controller="BootstrapController" id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}">
-        <div class="icon">
-            <img src="static/images/logo-192x192.png" alt="KongDash" />
-            <p class="caption">KongDash</p>
-            <p class="description">Version {{version}}</p>
-        </div>
 
-        <form method="POST" action="#" class="form hidden" id="configForm">
-        <div class="form__field">
-            <label class="field-label">Admin API URL</label>
-            <div class="field-input"><input data-ng-model="kongConfig.host" type="text" placeholder="Eg: http://localhost:8001" required="required" name="host" /></div>
-        </div>
+<section data-ng-controller="ClientSetupController" id="index__ngView" class="{{$root.ngViewAnimation}}">
+    <div class="well">
+    <div class="well__heading">Setup KongDash</div>
+    <div class="container">
+        <div id="bt-ed__wrp01" class="row">
+        <div class="col md-5 no-padding">
+        <table class="board">
+            <tbody>
+            <tr data-ng-repeat="connection in connectionList">
+                <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
+                <td><a href="#">{{connection.name}}</a><br>Last used: {{connection.connectionDate}}</td>
+                <td><td class="md-1"><span class="material-icons success">fiber_manual_record</span></td></td>
+            </tr>
+            </tbody>
+        </table><!-- .board -->
+        </div><!-- .col.md-5.no-padding -->
 
-        <div class="form__field">
-            <label class="field-label">Username</label>
-            <div class="field-input"><input data-ng-model="kongConfig.username" type="text" placeholder="Optional" name="username" /></div>
-        </div>
+        <div class="col md-7 no-padding">
+        <form method="POST" action="#" class="form" data-ng-submit="attemptConnection($event)">
+            <div class="form__field">
+                <label class="field-label">Admin API</label>
+                <ul class="field-input linked">
+                    <li>
+                        <select name="protocol" data-ng-model="setupModel.protocol" data-ng-selected="setupModel.protocol">
+                        <option value="http">HTTP</option>
+                        <option value="https">HTTPS</option>
+                        </select>
+                    </li>
+                    <li><input type="text" name="adminHost" value="" data-ng-model="setupModel.adminHost" placeholder="Example: 127.0.0.1" /></li>
+                    <li><input type="number" name="adminPort" value="80" data-ng-model="setupModel.adminPort" placeholder="8001" /></li>
+                </ul><!-- .linked -->
+            </div><!-- .form__field -->
 
-        <div class="form__field">
-            <label class="field-label">Password</label>
-            <div class="field-input"><input data-ng-model="kongConfig.password" type="password" placeholder="Optional" name="password" /></div>
-        </div>
+            <div class="row">
+            <div class="col md-8">
+                <div class="form__field">
+                    <label class="field-label">Connection Name</label>
+                    <div class="field-input"><input data-ng-model="setupModel.name" type="text" placeholder="Example: Staging server" name="connectionName" /></div>
+                </div>
+            </div><!-- .col.md-8 -->
 
-        <div class="form__field align-center"><button type="submit" class="btn success">Connect</button></div>
-        </form>
-    </section><!-- .content__wrapper -->
+            <div class="col md-4">
+                <div class="form__field">
+                    <label class="field-label">Color</label>
+                    <ul class="field-input linked">
+                        <li style="width: 41px"><input data-ng-model="setupModel.colorCode" type="color" name="colorCode" /></li>
+                        <li><input type="text" data-ng-model="setupModel.colorCode" readonly /></li>
+                    </ul>
+                </div>
+            </div><!-- .col.md-4 -->
+            </div><!-- .row -->
 
-    <footer data-ng-controller="FooterController" class="footer">
-        <section class="footer__window">
-            <div class="activity-log">
-                <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>
-            </div><!-- .activity-window -->
-        </section><!-- .footer__window -->
+            <div class="form__field">
+                <label class="field-label">Username</label>
+                <div class="field-input"><input data-ng-model="setupModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
+            </div><!-- .form__field -->
 
-        <section id="index__ftBase" class="footer__base"><form>
-            <ul class="base-menu">
-                <li><label><input type="checkbox" class="warning" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
-                <li>localhost:8001</li>
-                <li>version 0.6.0</li>
-            </ul>
-        </form></section>
+            <div class="form__field">
+                <label class="field-label">Password</label>
+                <div class="field-input"><input data-ng-model="setupModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
+            </div><!-- .form__field -->
+
+            <div class="row">
+            <div class="col md-6">
+                <div class="form__field">
+                    <div class="field-input"><label><input type="checkbox" class="success" name="defaultConnection"> Connect Automatically</label> </div>
+                </div>
+            </div><!-- .col.md-6 -->
+
+            <div class="col md-6">
+                <div class="form__field align-right">
+                    <button type="button" class="btn default" name="testConnection" data-ng-click="attemptConnection($event)">Test</button>
+                    <button type="submit" class="btn success" name="attemptConnection">Connect</button>
+                </div><!-- .form__field.align-right -->
+            </div><!-- .col.md-6 -->
+            </div><!-- .row -->
+        </form><!-- .form -->
+        </div><!-- .col md-7.no-padding -->
+
+        </div><!-- #bt-ed__wrp01.row -->
+    </div><!-- .container -->
+    </div><!-- .well -->
+</section><!-- .content__wrapper -->
+
+<footer data-ng-controller="FooterController" class="footer">
+    <section id="index__ftBase" class="footer__base"><form>
+        <ul class="base-menu">
+            <li>localhost:8001</li>
+            <li>version 0.6.0</li>
+        </ul>
+    </form></section>
     </footer><!-- .footer -->
 </main><!-- .content -->
 
 <script type="text/javascript" src="static/angular.min.js"></script>
 <script type="text/javascript" src="static/angular-route.min.js"></script>
 <script type="text/javascript" src="static/angular-animate.min.js"></script>
-<script type="text/javascript" src="static/angular-base64.min.js"></script>
 
 <script type="module" src="bootstrap.js"></script>
 </body>

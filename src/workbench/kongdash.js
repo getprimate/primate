@@ -14,7 +14,7 @@ import ViewFrameFactory from './components/view-frame-factory.js';
 import HttpInterceptorFactory from './components/http-interceptor-factory.js';
 
 const {angular} = window;
-const KongDash = angular.module('KongDash', ['base64', 'ngRoute', 'ngAnimate']);
+const KongDash = angular.module('KongDash', ['ngRoute', 'ngAnimate']);
 
 function registerInterceptor(httpProvider) {
     httpProvider.interceptors.push('interceptor');
@@ -26,7 +26,7 @@ KongDash.factory('logger', LoggerFactory);
 KongDash.factory('interceptor', ['$q', 'logger', HttpInterceptorFactory]);
 
 KongDash.config(['$httpProvider', registerInterceptor]);
-KongDash.provider('restClient', ['$base64', RestClientProvider]);
+KongDash.provider('restClient', RestClientProvider);
 
 /**
  * Converts first letter of a string to uppercase and

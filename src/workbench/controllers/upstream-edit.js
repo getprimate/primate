@@ -1,3 +1,11 @@
+/** TODO : Reactor the whole file. */
+
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
 'use strict';
 
 /**
@@ -27,6 +35,7 @@
  */
 
 import _ from '../../lib/core-utils.js';
+import restUtils from '../../lib/rest-utils.js';
 
 /**
  *
@@ -63,28 +72,23 @@ const _buildFromResponse = (to = {}, from = {}) => {
 };
 
 /**
- * Controller for editing upstreams.
+ * Provides controller constructor for editing upstream and target objects.
  *
- * @param {Object} window - the global window object
- * @param {{
- *      ENUM_ALGORITHMS: Array, ENUM_HASH_INPUTS: Array, ENUM_PROTOCOL: Array,
- *      targetList: Array, targetModel: Object, targetNext: string,
- *      upstreamId: string, upstreamModel: UpstreamScopeModel, fetchTargetList: function,
- *      certId: string, certList: [Object], certNext: string, fetchCertList: function
- *      }} scope - the injected scope object
- * @param {{path: function}} location - the angular location service
- * @param {{upstreamId: string, certId: string}} routeParams - the route parameters
- * @param ajax
- * @param viewFrame
- * @param toast
  * @constructor
+ * @param {Window} window - Top level window object.
+ * @param {Object} scope - Injected scope object.
+ * @param {Object} location - Injected Angular location service.
+ * @param {function} location.path - Tells the current view path.
+ * @param {{
+ *     upstreamId: string,
+ *     certId: string
+ * }} routeParams - Object containing route parameters.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function UpstreamEditController(window, scope, location, routeParams, ajax, viewFrame, toast) {
-    const {angular} = window;
-
-    const httpOptions = {method: 'POST', resource: '/upstreams'};
-    const formUpstream = angular.element('form#us-edit__form01'),
-        formTarget = angular.element('form#us-edit__form02');
+export default function UpstreamEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+    const restConfig = {method: 'POST', endpoint: '/upstreams'};
 
     scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
     scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
@@ -93,42 +97,42 @@ export default function UpstreamEditController(window, scope, location, routePar
     /**
      * @type UpstreamScopeModel
      */
-    scope.upstreamModel = angular.copy(require(`${__dirname}/controllers/upstream-model.json`));
+    scope.upstreamModel = _.deepClone(require(`${__dirname}/controllers/upstream-model.json`));
     scope.upstreamId = '__none__';
 
     scope.targetModel = {nextUrl: null, properties: ''};
     scope.targetList = [];
-    scope.targetNext = '';
+    scope.targetNext = {offset: ''};
 
     scope.certId = '__none__';
     scope.certList = [{id: '', displayName: '- None -'}];
-    scope.certNext = '';
+    scope.certNext = {offset: ''};
 
-    scope.fetchTargetList = (url) => {
-        ajax.get({
-            resource: url
-        })
-            .then(({data: response}) => {
-                scope.targetNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+    scope.fetchTargetList = (endpoint) => {
+        const request = restClient.get(endpoint);
 
-                for (let target of response.data) {
-                    scope.targetList.push(target);
-                }
-            })
-            .catch(({data: error}) => {
-                toast.error(`Could not load targets. ${error.message}`);
-            });
+        request.then(({data: response}) => {
+            scope.targetNext.offset = restUtils.urlOffset(response.next);
+
+            for (let target of response.data) {
+                scope.targetList.push(target);
+            }
+        });
+
+        request.catch(() => {
+            toast.error('Could not load targets.');
+        });
     };
 
     if (typeof routeParams.certId === 'string') {
-        httpOptions.resource = `/certificates/${routeParams.certId}/upstreams`;
+        restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
         scope.certId = routeParams.certId;
         scope.upstreamModel.client_certificate = routeParams.certId;
     } else {
-        const request = ajax.get({resource: '/certificates'});
+        const request = restClient.get('/certificates');
 
         request.then(({data: response}) => {
-            scope.certNext = typeof response.next === 'string' ? response.next.replace(new RegExp(viewFrame.host), '') : '';
+            scope.certNext.offset = restUtils.urlOffset(response.next);
 
             for (let cert of response.data) {
                 cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
@@ -143,21 +147,21 @@ export default function UpstreamEditController(window, scope, location, routePar
 
     switch (routeParams.upstreamId) {
         case '__create__':
-            viewFrame.title = 'Create Upstream';
+            viewFrame.setTitle('Create Upstream');
             break;
 
         default:
-            httpOptions.method = 'PATCH';
-            httpOptions.resource = `${httpOptions.resource}/${routeParams.upstreamId}`;
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.upstreamId}`;
 
             scope.upstreamId = routeParams.upstreamId;
 
-            viewFrame.title = 'Edit Upstream';
+            viewFrame.setTitle('Edit Upstream');
             break;
     }
 
-    if (httpOptions.method === 'PATCH' && scope.upstreamId !== '__none__') {
-        const request = ajax.get({resource: httpOptions.resource});
+    if (restConfig.method === 'PATCH' && scope.upstreamId !== '__none__') {
+        const request = restClient.get(restConfig.endpoint);
         request.then((response) => {
             _buildFromResponse(scope.upstreamModel, response.data);
 
@@ -178,13 +182,7 @@ export default function UpstreamEditController(window, scope, location, routePar
                 scope.upstreamModel.client_certificate = response.data.client_certificate.id;
             }
 
-            viewFrame.actionButtons.push({
-                target: 'Upstream',
-                url: httpOptions.resource,
-                redirect: '#!/upstreams',
-                styles: 'btn critical delete',
-                displayText: 'Delete'
-            });
+            viewFrame.addAction('Delete', '#!/upstreams', 'critical delete', 'upstream', restConfig.endpoint);
         });
 
         request.catch(() => {
@@ -195,7 +193,7 @@ export default function UpstreamEditController(window, scope, location, routePar
         scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
     }
 
-    formUpstream.on('submit', (event) => {
+    scope.submitUpstreamForm = function (event) {
         event.preventDefault();
 
         scope.upstreamModel.name = scope.upstreamModel.name.trim();
@@ -203,14 +201,14 @@ export default function UpstreamEditController(window, scope, location, routePar
         scope.upstreamModel.healthchecks.active.https_sni = scope.upstreamModel.healthchecks.active.https_sni.trim();
 
         if (scope.upstreamModel.name.length <= 0) {
-            formUpstream.find('input#up-ed__txt01').focus();
+            toast.error('Please provide a name for this upstream.');
             return false;
         }
 
         /**
          * @type {UpstreamPayload}
          */
-        const payload = angular.copy(scope.upstreamModel);
+        const payload = _.deepClone(scope.upstreamModel);
 
         switch (scope.upstreamModel.hash_on) {
             case 'header':
@@ -293,30 +291,32 @@ export default function UpstreamEditController(window, scope, location, routePar
         delete payload.hash_on_value;
         delete payload.hash_fallback_value;
 
-        ajax.request({
-            method: httpOptions.method,
-            resource: httpOptions.resource,
-            data: payload
-        })
-            .then(({data: response}) => {
-                switch (scope.upstreamId) {
-                    case '__none__':
-                        toast.success(`Created new upstream ${response.name}`);
-                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                        break;
+        const request = restClient.request({
+            method: restConfig.method,
+            resource: restConfig.endpoint,
+            payload
+        });
 
-                    default:
-                        toast.info(`Updated upstream ${payload.name}.`);
-                }
-            })
-            .catch(({data: error}) => {
-                toast.error('Could not ' + (scope.upstreamId === '__none__' ? 'create new' : 'update') + ` upstream. ${error.message}`);
-            });
+        request.then(({data: response}) => {
+            switch (scope.upstreamId) {
+                case '__none__':
+                    toast.success(`Created new upstream ${response.name}`);
+                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
+                    break;
+
+                default:
+                    toast.info(`Updated upstream ${payload.name}.`);
+            }
+        });
+
+        request.catch(({data: error}) => {
+            toast.error('Could not ' + (scope.upstreamId === '__none__' ? 'create new' : 'update') + ` upstream. ${error.message}`);
+        });
 
         return false;
-    });
+    };
 
-    formTarget.on('submit', (event) => {
+    scope.submitTargetForm = function (event) {
         event.preventDefault();
         const payload = {target: '', weight: 100, tags: []};
 
@@ -339,28 +339,19 @@ export default function UpstreamEditController(window, scope, location, routePar
             payload.tags.push(current);
         }
 
-        ajax.post({
-            resource: `/upstreams/${scope.upstreamId}/targets`,
-            data: payload
-        })
-            .then(({data: response}) => {
-                toast.success(`Added new target ${response.target}`);
-                scope.targetList.push(response);
-            })
-            .catch(({data: error}) => {
-                toast.error(error);
-            })
-            .finally(() => {
-                scope.targetModel.properties = '';
-            });
-    });
+        const request = restClient.post(`/upstreams/${scope.upstreamId}/targets`, payload);
 
-    angular.element('span#btnAddTarget').on('click', () => {
-        if (scope.upstreamId === '__none__') {
-            return false;
-        }
+        request.then(({data: response}) => {
+            toast.success(`Added new target ${response.target}`);
+            scope.targetList.push(response);
+        });
 
-        formTarget.slideToggle(300);
-        return true;
-    });
+        request.catch(({data: error}) => {
+            toast.error(error);
+        });
+
+        request.finally(() => {
+            scope.targetModel.properties = '';
+        });
+    };
 }

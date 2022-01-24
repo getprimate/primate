@@ -76,9 +76,17 @@ function configure(options) {
     if (typeof CLIENT_CONFIG.contentType === 'string') request.headers['Content-Type'] = CLIENT_CONFIG.contentType;
 
     if (typeof options.headers === 'object') {
-        Object.keys(options.headers).forEach(function (item) {
-            request.headers[item] = options.headers[item];
-        });
+        for (let header in options.headers) {
+            switch (header) {
+                case 'Authorization':
+                    request.headers[header] = 'Basic ' + btoa(options.headers[header]);
+                    break;
+
+                default:
+                    request.headers[header] = options.headers[header];
+                    break;
+            }
+        }
     }
 
     if (typeof options.query === 'object') {

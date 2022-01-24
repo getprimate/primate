@@ -4,7 +4,7 @@
     <div class="panel panel-border info">
     <div class="panel__heading">Upstream Details</div>
     <div class="panel__body">
-        <form id="us-edit__form01" class="form" method="post" action="#">
+        <form id="us-edit__form01" class="form" method="post" data-ng-submit="submitUpstreamForm($event)">
             <!-- Wraps upstream name -->
             <div class="row">
                 <div class="col md-4">
@@ -277,7 +277,7 @@
             <div class="pull-right"><span id="btnAddTarget" class="btn mini success">+</span></div>
         </div>
 
-        <form id="us-edit__form02" class="form hidden no-margin hpadding-15 vpadding-10" method="post" action="#">
+        <form id="us-edit__form02" class="form hidden no-margin hpadding-15 vpadding-10" method="post" data-ng-submit="submitTargetForm($event)">
             <div class="form__field">
                 <label for="up-ed__txt10" class="field-label">Target Details and Optional Tags <span title="Target host name, port, weight and optional tags in the format <host>:<port>, <weight>, [tags...]" class="tooltip material-icons">help_outline</span></label>
                 <div class="field-input"><input id="up-ed__txt10" type="text" name="target" placeholder="Eg: example.com:8080, 15, user-level, low-priority" data-ng-model="targetModel.properties" /></div>

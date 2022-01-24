@@ -11,7 +11,7 @@ const {ipcRenderer} = require('electron');
 const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
 const appConfig = ipcRenderer.sendSync('get-config', 'app');
 
-export default function SettingsController(window, rootScope, scope, base64, ajax, viewFrame, toast) {
+export default function SettingsController(window, rootScope, scope, ajax, viewFrame, toast) {
     const {angular} = window;
 
     viewFrame.prevUrl = '';
@@ -41,8 +41,7 @@ export default function SettingsController(window, rootScope, scope, base64, aja
         let config = {
             url: scope.kongConfig.host,
             headers: {
-                Authorization:
-                    'Basic ' + base64.encode(scope.kongConfig.username + ':' + (scope.kongConfig.password || ''))
+                Authorization: 'Basic ' + btoa(scope.kongConfig.username + ':' + (scope.kongConfig.password || ''))
             }
         };
 
@@ -69,8 +68,7 @@ export default function SettingsController(window, rootScope, scope, base64, aja
             function (response) {
                 if (response.status && parseInt(response.status) === 401 && scope.kongConfig.username)
                     toast.error('Invalid username or password');
-                else if (response.status && parseInt(response.status) === 401)
-                    toast.error('Please enter username and password');
+                else if (response.status && parseInt(response.status) === 401) toast.error('Please enter username and password');
                 else toast.error('Could not connect to ' + scope.kongConfig.host);
             }
         );

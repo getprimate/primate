@@ -707,6 +707,18 @@ input[type="radio"].critical:checked {
 
 label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
 
+input[type="color"] {
+    display: inline-block;
+    background-color: var(--input__primary-bg);
+    border: 2px solid var(--input__primary-bd);
+    border-radius: var(--theme__input-corner);
+    height: 41px;
+}
+
+input[type="color"]::after {
+    height: 20px;
+}
+
 /*
 select {
     padding: 12px;
@@ -736,7 +748,7 @@ multi-check {
     padding: 0;
     background: var(--input__primary-bg) none;
     border: 2px solid var(--input__primary-bd);
-    border-radius: 10px;
+    border-radius: var(--theme__input-corner);
 }
 
 multi-check ul {
@@ -758,7 +770,7 @@ token-input {
     width: 100%;
     padding: 0;
     border: 2px solid var(--input__primary-bd);
-    border-radius: 10px;
+    border-radius: var(--theme__input-corner);
     background: var(--input__primary-bg) none;
 }
 
@@ -886,6 +898,41 @@ form.form .form__field ul.field-input > li > label > input[type="radio"] {
     vertical-align: text-bottom;
 }
 
+form.form ul.field-input.linked {
+    justify-content: center;
+    align-content: space-around;
+    align-items: stretch;
+    padding: 0;
+    background-color: var(--input__primary-bg);
+    border-radius: var(--theme__input-corner);
+    border: 2px solid var(--input__primary-bd);
+}
+
+form.form ul.field-input.linked > li {
+    padding: 0;
+}
+
+form.form ul.field-input.linked > li > input,
+form.form ul.field-input.linked > li > select {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-width: 0;
+    border-radius: 0;
+}
+
+form.form ul.field-input.linked > li:first-child > input,
+form.form ul.field-input.linked > li:first-child > select {
+    border-top-left-radius: var(--theme__input-corner);
+    border-bottom-left-radius: var(--theme__input-corner);
+}
+
+form.form ul.field-input.linked > li:last-child > input,
+form.form ul.field-input.linked > li:last-child > select {
+    border-top-right-radius: var(--theme__input-corner);
+    border-bottom-right-radius: var(--theme__input-corner);
+}
+
 form.form .input-control {
     max-height: 150px; max-width: 900px; margin-top: 5px; padding: 5px;
     overflow-y: auto; overflow-x: hidden; border-radius: 4px; border: 2px solid; }
@@ -901,40 +948,6 @@ form.form .form__field .field-input input[type="range"] + .field-input__legend {
 form.form select[multiple] { padding: 8px; }
 form.form select[multiple] option { margin: 0 0 2px 0; padding: 5px; background: transparent none; border: 0 solid transparent; }
 form.form select[multiple] option:hover { background: rgba(200, 200, 200, 0.3) none; }
-
-form.form .form__field .field-input.linked {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-form.form .form__field .field-input.linked > input,
-form.form .form__field .field-input.linked > select {
-    box-sizing: border-box;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-radius: 0;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-form.form .form__field .field-input.linked input:first-child,
-form.form .form__field .field-input.linked select:first-child {
-    border-left-width: 2px !important;
-    border-top-left-radius: 10px !important;
-    border-bottom-left-radius: 10px !important;
-}
-
-form.form .form__field .field-input.linked input:last-child,
-form.form .form__field .field-input.linked select:last-child {
-    border-right-width: 2px !important;
-    border-top-right-radius: 10px !important;
-    border-bottom-right-radius: 10px !important;
-}
-
-form.form .form__field .field-input.linked input:last-child {
-    text-align: right;
-}
 
 form.form article {
     display: block;

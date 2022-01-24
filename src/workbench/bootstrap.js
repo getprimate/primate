@@ -9,7 +9,7 @@
 
 import KongDash from './kongdash.js';
 import FooterController from './controllers/footer.js';
-import BootstrapController from './controllers/bootstrap.js';
+import ClientSetupController from './controllers/client-setup.js';
 
 const {ipcRenderer} = require('electron');
 
@@ -28,5 +28,5 @@ function initRESTClient(provider) {
 
 KongDash.config(['restClientProvider', initRESTClient]);
 
-KongDash.controller('BootstrapController', ['$scope', '$element', 'restClient', 'viewFrame', 'toast', BootstrapController]);
+KongDash.controller('ClientSetupController', ['$scope', 'restClient', 'viewFrame', 'toast', ClientSetupController]);
 KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
