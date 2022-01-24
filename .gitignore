@@ -15,6 +15,8 @@ release/
 *.xcf
 *.bak
 *.old
+*.old.*
+
 
 # Misc.
 TODO.txt
