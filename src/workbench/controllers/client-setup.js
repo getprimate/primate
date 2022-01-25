@@ -91,11 +91,13 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
     /**
      * Attempts to connect to the specified server.
      *
-     * @param {{target: Object}|null} event
+     * @param {{target: Object, preventDefault: function}|null} event
      * @returns {boolean}
      */
     scope.attemptConnection = function (event = null) {
         const {nodeName} = _.isObject(event) && _.isObject(event.target) ? event.target : {nodeName: 'none'};
+
+        if (_.isObject(event) && typeof event.preventDefault === 'function') event.preventDefault();
 
         for (let property in scope.setupModel) {
             if (_.isText(scope.setupModel[property])) {

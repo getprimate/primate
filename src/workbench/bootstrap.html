@@ -62,7 +62,7 @@ window.jQuery = require('./static/jquery-3.6.0.min.js');
         </div><!-- .col.md-5.no-padding -->
 
         <div class="col md-7 no-padding">
-        <form method="POST" action="#" class="form" data-ng-submit="attemptConnection($event)">
+        <form method="POST" class="form" data-ng-submit="attemptConnection($event)">
             <div class="form__field">
                 <label class="field-label">Admin API</label>
                 <ul class="field-input linked">
@@ -109,7 +109,7 @@ window.jQuery = require('./static/jquery-3.6.0.min.js');
             <div class="row">
             <div class="col md-6">
                 <div class="form__field">
-                    <div class="field-input"><label><input type="checkbox" class="success" name="defaultConnection" data-ng-model="isDefault"> Connect Automatically</label> </div>
+                    <div class="field-input"><label><input type="checkbox" class="success" name="defaultConnection" data-ng-model="setupModel.isDefault"> Connect Automatically</label> </div>
                 </div>
             </div><!-- .col.md-6 -->
 

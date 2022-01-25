@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    printWidth: 140,
+    printWidth: 120,
     singleQuote: true,
     useTabs: false,
     tabWidth: 4,
