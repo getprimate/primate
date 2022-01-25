@@ -6,8 +6,7 @@
 node_modules/
 
 # Release binaries
-dist/
-releases/
+build/
 release/
 
 # Log and backup files
