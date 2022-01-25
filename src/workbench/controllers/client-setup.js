@@ -69,6 +69,10 @@ function validateServerResponse(response) {
     return response;
 }
 
+function ipcWriteClientSetup(payload) {
+    ipcRenderer.send('workbench:AsyncRequest', 'Write-Connection', payload);
+}
+
 /**
  * Provides controller constructor for setting up the application.
  *
@@ -79,19 +83,19 @@ function validateServerResponse(response) {
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function ClientSetupController(scope, restClient, viewFrame, toast) {
+    const defaultHost = ipcRenderer.sendSync('workbench:SyncQuery', 'Read-Default-Connection');
+
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = connectionList;
 
     /**
      * Attempts to connect to the specified server.
      *
-     * @param {Object} event
+     * @param {{target: Object}|null} event
      * @returns {boolean}
      */
-    scope.attemptConnection = function (event) {
-        const {target} = event;
-
-        event.preventDefault();
+    scope.attemptConnection = function (event = null) {
+        const {nodeName} = _.isObject(event) && _.isObject(event.target) ? event.target : {nodeName: 'none'};
 
         for (let property in scope.setupModel) {
             if (_.isText(scope.setupModel[property])) {
@@ -103,7 +107,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             toast.error('Please provide a valid host address.');
             return false;
         }
-        if (target.nodeName === 'FORM' && scope.setupModel.name.length === 0) {
+        if (nodeName === 'FORM' && scope.setupModel.name.length === 0) {
             toast.error('Please set a name for this connection.');
             return false;
         }
@@ -125,7 +129,12 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             try {
                 validateServerResponse(response);
 
-                if (target.nodeName === 'BUTTON') toast.success('Test OK');
+                if (nodeName === 'BUTTON') {
+                    toast.success('Test OK');
+                    return true;
+                }
+
+                ipcWriteClientSetup(scope.setupModel);
             } catch (error) {
                 toast.error(error.message);
             }
@@ -139,4 +148,12 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
 
         return true;
     };
+
+    if (_.isText(defaultHost.id) && false === _.isEmpty(defaultHost.id)) {
+        for (let property in defaultHost) {
+            scope.setupModel[property] = defaultHost[property];
+        }
+
+        scope.attemptConnection();
+    }
 }

@@ -7,6 +7,8 @@
 
 'use strict';
 
+import _ from '../lib/core-utils.js';
+
 import KongDash from './kongdash.js';
 
 import TokenInputDirective from './components/token-input-directive.js';
@@ -32,23 +34,22 @@ import SettingsController from './controllers/settings.js';
 import Templates from './templates.js';
 
 const {ipcRenderer} = require('electron');
-const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
-const appConfig = ipcRenderer.sendSync('get-config', 'app');
 
 /**
  *
  * @param {RESTClientProvider} provider
  */
 function initRESTClient(provider) {
-    const options = {host: kongConfig.host};
+    const defaultHost = ipcRenderer.sendSync('workbench:SyncQuery', 'Read-Session-Connection');
 
-    /* Add a basic authorization header
-     * if username and password are provided in the settings. */
-    if (typeof kongConfig.username === 'string' && kongConfig.username) {
-        options.authorization = `${kongConfig.username}:` + (kongConfig.password || '');
+    console.log('DEF ', JSON.stringify(defaultHost));
+
+    if (_.isText(defaultHost.adminHost) && false === _.isEmpty(defaultHost.adminHost)) {
+        provider.initialize({
+            /* TODO : Include basic auth not provided. */
+            host: `${defaultHost.protocol}://${defaultHost.adminHost}:${defaultHost.adminPort}`
+        });
     }
-
-    provider.initialize(options);
 }
 
 /**
@@ -63,7 +64,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
     const {angular} = window;
     const main = window.document.querySelector('main.content');
 
-    rootScope.ngViewAnimation = appConfig.enableAnimation ? 'fade' : '';
+    rootScope.ngViewAnimation = 'fade';
 
     rootScope.$on('$locationChangeStart', (event, next) => {
         viewFrame.clearActions();
@@ -102,13 +103,44 @@ KongDash.config(['restClientProvider', initRESTClient]);
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
-KongDash.controller('HeaderController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
+KongDash.controller('HeaderController', [
+    '$window',
+    '$scope',
+    'restClient',
+    'viewFrame',
+    'toast',
+    'logger',
+    HeaderController
+]);
 
-KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
+KongDash.controller('FooterController', [
+    '$window',
+    '$scope',
+    '$http',
+    'viewFrame',
+    'toast',
+    'logger',
+    FooterController
+]);
 
-KongDash.controller('OverviewController', ['$window', '$scope', 'restClient', 'toast', 'viewFrame', OverviewController]);
+KongDash.controller('OverviewController', [
+    '$window',
+    '$scope',
+    'restClient',
+    'toast',
+    'viewFrame',
+    OverviewController
+]);
 
-KongDash.controller('ServiceListController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', 'logger', ServiceListController]);
+KongDash.controller('ServiceListController', [
+    '$window',
+    '$scope',
+    'restClient',
+    'viewFrame',
+    'toast',
+    'logger',
+    ServiceListController
+]);
 
 KongDash.controller('ServiceEditController', [
     '$window',
@@ -180,7 +212,14 @@ KongDash.controller('UpstreamEditController', [
     UpstreamEditController
 ]);
 
-KongDash.controller('ConsumerListController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', ConsumerListController]);
+KongDash.controller('ConsumerListController', [
+    '$scope',
+    'restClient',
+    'viewFrame',
+    'toast',
+    'logger',
+    ConsumerListController
+]);
 
 KongDash.controller('ConsumerEditController', [
     '$window',
@@ -194,7 +233,14 @@ KongDash.controller('ConsumerEditController', [
     ConsumerEditController
 ]);
 
-KongDash.controller('PluginListController', ['$window', '$scope', 'restClient', 'viewFrame', 'toast', PluginListController]);
+KongDash.controller('PluginListController', [
+    '$window',
+    '$scope',
+    'restClient',
+    'viewFrame',
+    'toast',
+    PluginListController
+]);
 
 KongDash.controller('PluginEditController', [
     '$window',
@@ -208,7 +254,15 @@ KongDash.controller('PluginEditController', [
     PluginEditController
 ]);
 
-KongDash.controller('SettingsController', ['$window', '$rootScope', '$scope', 'restClient', 'viewFrame', 'toast', SettingsController]);
+KongDash.controller('SettingsController', [
+    '$window',
+    '$rootScope',
+    '$scope',
+    'restClient',
+    'viewFrame',
+    'toast',
+    SettingsController
+]);
 
 KongDash.config(['$routeProvider', Templates]);
 

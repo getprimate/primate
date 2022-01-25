@@ -7,26 +7,28 @@
 
 'use strict';
 
+import _ from '../lib/core-utils.js';
+
 import KongDash from './kongdash.js';
 import FooterController from './controllers/footer.js';
 import ClientSetupController from './controllers/client-setup.js';
 
 const {ipcRenderer} = require('electron');
 
-/**
- * Initializes the REST provider.
- *
- * @param {RESTClientProvider} provider - An instance of REST client provider constructor.
- */
-function initRESTClient(provider) {
-    const kongConfig = ipcRenderer.sendSync('get-config', 'kong');
+function removeIPCListeners() {
+    const channels = ['workbench:AsyncResponse', 'workbench:AsyncError', 'workbench:AsyncEventPush'];
 
-    if (typeof kongConfig.username === 'string') {
-        provider.setBasicAuth(kongConfig.username, kongConfig.password || '');
+    for (let channel of channels) {
+        ipcRenderer.removeAllListeners(channel);
     }
 }
 
-KongDash.config(['restClientProvider', initRESTClient]);
+ipcRenderer.on('workbench:AsyncResponse', (event, action) => {
+    if (action === 'Write-Connection') {
+        removeIPCListeners();
+        window.location.href = './dashboard.html';
+    }
+});
 
 KongDash.controller('ClientSetupController', ['$scope', 'restClient', 'viewFrame', 'toast', ClientSetupController]);
 KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);

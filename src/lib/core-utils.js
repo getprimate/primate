@@ -26,6 +26,29 @@ function isText(value) {
     return typeof value === 'string';
 }
 
+function isEmpty(value) {
+    switch (typeof value) {
+        case 'object':
+            return value === null || (Array.isArray(value) && value.length === 0) || Object.keys(value).length === 0;
+
+        case 'string':
+            return value.length === 0;
+
+        case 'number':
+            return value === 0;
+
+        case 'function':
+            return false;
+
+        case 'boolean':
+            return value === false;
+
+        case 'undefined':
+        default:
+            return false;
+    }
+}
+
 export default {
     deepClone: _baseClone,
     isObject: _isObject,
@@ -33,6 +56,7 @@ export default {
     isDefined: _isDefined,
     isNone: _isNone,
     isText,
+    isEmpty,
 
     get(object, path, defaultValue = null) {
         if (object === null) {

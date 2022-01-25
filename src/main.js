@@ -8,13 +8,27 @@ const path = require('path');
 const ospath = require('ospath');
 const jsonfile = require('jsonfile');
 
+const ConfigManager = require('./platform/config/config-manager');
+
+const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
+
 let absPath = path.dirname(__dirname),
     configFile = ospath.data() + '/' + APP_NAME + '/config.json';
 let {app, ipcMain, BrowserWindow, Menu} = electron;
 let mainWindow,
     appConfig = {kong: {}, app: {enableAnimation: true}};
 
-let startMainWindow = function () {
+const connectionMap = {};
+
+function sanitize(payload) {
+    if (payload === null || typeof payload === 'undefined') {
+        return {error: 'Requested entity is not available.', code: 'E404'};
+    }
+
+    return payload;
+}
+
+function startMainWindow() {
     mainWindow = new BrowserWindow({
         backgroundColor: '#1A242D',
         width: 1570,
@@ -38,7 +52,7 @@ let startMainWindow = function () {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
-};
+}
 
 app.setName(APP_NAME);
 
@@ -73,7 +87,14 @@ app.on('browser-window-created', (e, window) => {
         },
         {
             label: 'Edit',
-            submenu: [{role: 'undo'}, {role: 'redo'}, {type: 'separator'}, {role: 'cut'}, {role: 'copy'}, {role: 'paste'}]
+            submenu: [
+                {role: 'undo'},
+                {role: 'redo'},
+                {type: 'separator'},
+                {role: 'cut'},
+                {role: 'copy'},
+                {role: 'paste'}
+            ]
         },
         {
             label: 'Window',
@@ -129,16 +150,34 @@ ipcMain.on('get-config', (event, arg) => {
     event.returnValue = appConfig[arg];
 });
 
-ipcMain.on('write-config', (event, arg) => {
-    appConfig[arg.name] = arg.config;
-
-    jsonfile.writeFile(configFile, appConfig, function (error) {
-        if (error) {
-            event.sender.send('write-config-error', {message: 'Could not write configuration file.' + error});
-        } else {
-            event.sender.send('write-config-success', {message: 'Configuration saved successfully'});
+ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
+    if (action === 'Write-Connection') {
+        try {
+            const connection = configManager.writeConnection(payload);
+            connectionMap[`window${event.sender.id}`] = connection.id;
+            event.reply('workbench:AsyncResponse', 'Write-Connection', connection);
+        } catch (error) {
+            event.reply('workbench:AsyncError', 'Write-Connection', {message: `${error}`});
         }
-    });
+    } else {
+        event.reply('workbench:AsyncError', {message: `Unknown action ${action}`});
+    }
+});
+
+ipcMain.on('workbench:SyncQuery', (event, type) => {
+    switch (type) {
+        case 'Read-Default-Connection':
+            event.returnValue = sanitize(configManager.getDefaultConnection());
+            break;
+
+        case 'Read-Session-Connection':
+            event.returnValue = sanitize(configManager.getConnectionById(connectionMap[`window${event.sender.id}`]));
+            break;
+
+        default:
+            event.returnValue = {error: `Unknown query type ${type}.`, code: 'E400'};
+            break;
+    }
 });
 
 ipcMain.on('open-external', (event, arg) => {

@@ -11,5 +11,6 @@ export default {
     basicAuth: {
         username: '',
         password: ''
-    }
+    },
+    isDefault: true
 };
