@@ -8,13 +8,12 @@ import restUtils from '../../lib/rest-utils.js';
  *
  * @constructor
  *
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function CertificateListController(window, scope, restClient, viewFrame, toast) {
+export default function CertificateListController(scope, restClient, viewFrame, toast) {
     scope.certList = [];
     scope.certNext = {offset: ''};
     scope.caList = [];
@@ -37,7 +36,9 @@ export default function CertificateListController(window, scope, restClient, vie
             for (let certificate of response.data) {
                 certificate.name = _.objectName(certificate.id);
                 certificate.tags =
-                    certificate.tags !== null && certificate.tags.length >= 1 ? certificate.tags.join(', ') : 'No tags added';
+                    certificate.tags !== null && certificate.tags.length >= 1
+                        ? certificate.tags.join(', ')
+                        : 'No tags added';
 
                 scope.certList.push(certificate);
             }

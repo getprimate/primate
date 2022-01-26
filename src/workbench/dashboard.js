@@ -16,6 +16,7 @@ import MultiCheckDirective from './components/multi-check-directive.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
+import SidebarController from './controllers/sidebar.js';
 import OverviewController from './controllers/overview.js';
 import ServiceListController from './controllers/service-list.js';
 import ServiceEditController from './controllers/service-edit.js';
@@ -32,6 +33,7 @@ import PluginEditController from './controllers/plugin-edit.js';
 import SettingsController from './controllers/settings.js';
 
 import Templates from './templates.js';
+import RouteListController from './controllers/route-list.js';
 
 const {ipcRenderer} = require('electron');
 
@@ -41,8 +43,6 @@ const {ipcRenderer} = require('electron');
  */
 function initRESTClient(provider) {
     const defaultHost = ipcRenderer.sendSync('workbench:SyncQuery', 'Read-Session-Connection');
-
-    console.log('DEF ', JSON.stringify(defaultHost));
 
     if (_.isText(defaultHost.adminHost) && false === _.isEmpty(defaultHost.adminHost)) {
         provider.initialize({
@@ -103,6 +103,8 @@ KongDash.config(['restClientProvider', initRESTClient]);
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
+KongDash.controller('SidebarController', ['$scope', 'restClient', 'toast', SidebarController]);
+
 KongDash.controller('HeaderController', [
     '$window',
     '$scope',
@@ -132,15 +134,7 @@ KongDash.controller('OverviewController', [
     OverviewController
 ]);
 
-KongDash.controller('ServiceListController', [
-    '$window',
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    ServiceListController
-]);
+KongDash.controller('ServiceListController', ['$scope', 'restClient', 'viewFrame', 'toast', ServiceListController]);
 
 KongDash.controller('ServiceEditController', [
     '$window',
@@ -153,6 +147,8 @@ KongDash.controller('ServiceEditController', [
     'logger',
     ServiceEditController
 ]);
+
+KongDash.controller('RouteListController', ['$scope', 'restClient', 'viewFrame', 'toast', RouteListController]);
 
 KongDash.controller('RouteEditController', [
     '$window',
@@ -167,12 +163,10 @@ KongDash.controller('RouteEditController', [
 ]);
 
 KongDash.controller('CertificateListController', [
-    '$window',
     '$scope',
     'restClient',
     'viewFrame',
     'toast',
-    'logger',
     CertificateListController
 ]);
 
@@ -212,14 +206,7 @@ KongDash.controller('UpstreamEditController', [
     UpstreamEditController
 ]);
 
-KongDash.controller('ConsumerListController', [
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    ConsumerListController
-]);
+KongDash.controller('ConsumerListController', ['$scope', 'restClient', 'viewFrame', 'toast', ConsumerListController]);
 
 KongDash.controller('ConsumerEditController', [
     '$window',
@@ -233,14 +220,7 @@ KongDash.controller('ConsumerEditController', [
     ConsumerEditController
 ]);
 
-KongDash.controller('PluginListController', [
-    '$window',
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    PluginListController
-]);
+KongDash.controller('PluginListController', ['$scope', 'restClient', 'viewFrame', 'toast', PluginListController]);
 
 KongDash.controller('PluginEditController', [
     '$window',
@@ -250,7 +230,6 @@ KongDash.controller('PluginEditController', [
     'restClient',
     'viewFrame',
     'toast',
-    'logger',
     PluginEditController
 ]);
 

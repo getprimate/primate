@@ -14,7 +14,6 @@ import restUtils from '../../lib/rest-utils.js';
  *
  * @constructor
  *
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
@@ -22,7 +21,7 @@ import restUtils from '../../lib/rest-utils.js';
  *
  * @property {function} scope.toggleServiceState - Handles click events on action buttons on table rows.
  */
-export default function ServiceListController(window, scope, restClient, viewFrame, toast) {
+export default function ServiceListController(scope, restClient, viewFrame, toast) {
     scope.serviceList = [];
     scope.serviceNext = {offset: ''};
 
@@ -41,7 +40,8 @@ export default function ServiceListController(window, scope, restClient, viewFra
             scope.serviceNext.offset = restUtils.urlOffset(response.next);
 
             for (let service of response.data) {
-                service.displayText = typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
+                service.displayText =
+                    typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
                 scope.serviceList.push(service);
             }
         });

@@ -37,6 +37,6 @@
     --input__primary-bd : #484D5A;
     --input__focused-bd : #1F5EFF;
 
-    --theme__widget-corner: 12px;
+    --theme__widget-corner: 8px;
     --theme__input-corner: 6px;
 }

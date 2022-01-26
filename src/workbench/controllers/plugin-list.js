@@ -12,13 +12,12 @@ import restUtils from '../../lib/rest-utils.js';
 
 /**
  * @constructor
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function PluginListController(window, scope, restClient, viewFrame, toast) {
+export default function PluginListController(scope, restClient, viewFrame, toast) {
     scope.pluginList = [];
     scope.pluginNext = {offset: ''};
 

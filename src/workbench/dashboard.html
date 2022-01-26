@@ -17,7 +17,7 @@ if (typeof window.jQuery === 'undefined') {
 <body class="body">
 
 <div class="app-layout hidden">
-<aside class="drawer">
+<aside class="drawer" data-ng-controller="SidebarController">
     <div class="branding">KongDash</div><!-- .branding -->
     <nav class="navigation">
         <div class="navigation__title">Node</div><!-- .navigation__title -->
@@ -25,16 +25,25 @@ if (typeof window.jQuery === 'undefined') {
             <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
             <li><a class="navigation__link" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
         </ul><!-- .navigation__menu -->
-        <hr />
         <div class="navigation__title">Objects</div><!-- .navigation__title -->
-        <ul class="navigation__menu">
-            <li><a class="navigation__link" data-ng-href="#!/services"><span class="material-icons">settings_input_component</span><span>Services</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/plugins"><span class="material-icons">extension</span><span>Plugins</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/certificates"><span class="material-icons">verified_user</span><span>Certificates</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/upstreams"><span class="material-icons">backup</span><span>Upstreams</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/consumers"><span class="material-icons">person_pin</span><span>Consumers</span></a></li>
+        <ul class="navigation__menu" data-ng-click="redirectNav($event)">
+            <li data-ng-repeat="menu in navMenuObjects">
+                <a class="navigation__link" data-ng-href="{{menu.listView}}">
+                    <span class="material-icons">{{menu.icon}}</span>
+                    <span>{{menu.displayText}}</span>
+                </a>
+                <a data-ng-if="menu.editView.length>=5" href="{{menu.editView}}" class="navigation__link"><span class="material-icons">add</span></a>
+            </li>
+
         </ul><!-- .navigation__menu -->
     </nav><!-- .navigation -->
+
+    <section class="drawer__base">
+        <ul class="base-menu">
+            <li><span class="material-icons">fiber_manual_record</span> Local Server</li>
+            <li><span class="material-icons">logout</span></li>
+        </ul>
+    </section>
 </aside>
 
 <main class="content">
