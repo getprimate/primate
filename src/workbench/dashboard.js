@@ -61,23 +61,13 @@ function initRESTClient(provider) {
  * @param {LoggerFactory} logger - Factory for logging activities.
  */
 function attachEventListeners(window, rootScope, viewFrame, logger) {
-    const {angular} = window;
     const main = window.document.querySelector('main.content');
 
     rootScope.ngViewAnimation = 'fade';
 
-    rootScope.$on('$locationChangeStart', (event, next) => {
+    rootScope.$on('$locationChangeStart', () => {
         viewFrame.clearActions();
         viewFrame.resetLoader();
-
-        if (next.indexOf('#') > 1) {
-            let refArray = next.split('#!/')[1].split('/');
-            let href = '#!/' + refArray[0],
-                nav = angular.element('nav.navigation');
-
-            nav.find('a.navigation__link').removeClass('active');
-            nav.find('.navigation__link[data-ng-href="' + href + '"]').addClass('active');
-        }
     });
 
     main.addEventListener('click', (event) => {
