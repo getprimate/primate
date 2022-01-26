@@ -98,6 +98,17 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
     });
 }
 
+ipcRenderer.on('workbench:AsyncEventPush', (event, action) => {
+    switch (action) {
+        case 'Open-Settings-View':
+            window.location.href = '#!/settings';
+            break;
+
+        default:
+            break;
+    }
+});
+
 KongDash.config(['restClientProvider', initRESTClient]);
 
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
@@ -246,8 +257,3 @@ KongDash.controller('SettingsController', [
 KongDash.config(['$routeProvider', Templates]);
 
 KongDash.run(['$window', '$rootScope', 'viewFrame', 'logger', attachEventListeners]);
-
-ipcRenderer.on('open-settings-view', () => {
-    /* TODO: use $location */
-    window.location.href = '#!/settings';
-});

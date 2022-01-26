@@ -1,6 +1,8 @@
 'use strict';
 
-const {document} = window;
+const {ipcRenderer} = require('electron');
+
+const channels = [''];
 
 /**
  * Provides controller constructor for sidebar activities.
@@ -109,15 +111,21 @@ export default function SidebarController(scope, restClient, toast) {
     };
 
     scope.redirectNav = function (event) {
-        const {currentTarget: ul, target} = event;
+        const {currentTarget: nav, target} = event;
 
         if (target.nodeName === 'SPAN' || target.nodeName === 'A') {
-            for (let li of ul.children) {
+            for (let li of nav.querySelectorAll('li')) {
                 li.classList.remove('active');
             }
 
             target.closest('li').classList.add('active');
         }
+    };
+
+    scope.emitDestroySessionEvent = function () {
+        ipcRenderer.send('workbench:AsyncRequest', 'Destroy-Session');
+
+        ipcRenderer.removeAllListeners();
     };
 
     scope.fetchAvailableEndpoints();

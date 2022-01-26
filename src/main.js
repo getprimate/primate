@@ -12,8 +12,7 @@ const ConfigManager = require('./platform/config/config-manager');
 
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
 
-let absPath = path.dirname(__dirname),
-    configFile = ospath.data() + '/' + APP_NAME + '/config.json';
+let absPath = path.dirname(__dirname);
 let {app, ipcMain, BrowserWindow, Menu} = electron;
 let mainWindow,
     appConfig = {kong: {}, app: {enableAnimation: true}};
@@ -43,7 +42,7 @@ function startMainWindow() {
             contextIsolation: false
         }
     });
-    mainWindow.loadFile(`${absPath}/src/workbench/bootstrap.html`).then(() => {
+    mainWindow.loadFile(path.join(absPath, 'src', 'workbench', 'bootstrap.html')).then(() => {
         //* Debugging
         mainWindow.webContents.openDevTools();
         //*/
@@ -57,13 +56,7 @@ function startMainWindow() {
 app.setName(APP_NAME);
 
 app.on('ready', () => {
-    try {
-        appConfig = jsonfile.readFileSync(configFile);
-    } catch (e) {
-        /* Ignore. Uses default settings. */
-    } finally {
-        startMainWindow();
-    }
+    startMainWindow();
 });
 
 app.on('activate', () => {
@@ -78,7 +71,7 @@ app.on('browser-window-created', (e, window) => {
                 {
                     label: 'Settings',
                     click: () => {
-                        mainWindow.webContents.send('open-settings-view', '');
+                        mainWindow.webContents.send('workbench:AsyncEventPush', 'Open-Settings-View');
                     }
                 },
                 {type: 'separator'},
@@ -141,6 +134,10 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
 
+app.on('will-quit', () => {
+    configManager.saveState();
+});
+
 ipcMain.on('get-config', (event, arg) => {
     if (arg === 'VERSION') {
         event.returnValue = VERSION;
@@ -159,6 +156,15 @@ ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
         } catch (error) {
             event.reply('workbench:AsyncError', 'Write-Connection', {message: `${error}`});
         }
+    } else if (action === 'Destroy-Session') {
+        if (typeof connectionMap[`window${event.sender.id}`] !== 'undefined') {
+            delete connectionMap[`window${event.sender.id}`];
+            configManager.removeDefaultConnection();
+        }
+
+        mainWindow.loadFile(path.join(absPath, 'src', 'workbench', 'bootstrap.html')).catch((error) => {
+            console.error(`${error}`);
+        });
     } else {
         event.reply('workbench:AsyncError', {message: `Unknown action ${action}`});
     }

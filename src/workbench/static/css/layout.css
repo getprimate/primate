@@ -200,6 +200,7 @@ aside nav.navigation a.navigation__link > span.material-icons {
 
 aside a.navigation__link:nth-child(2) > span.material-icons {
     font-size: 20px;
+    margin-right: 0 !important;
 }
 
     aside a.navigation__link:nth-child(2):hover {
@@ -211,7 +212,7 @@ aside .drawer__base {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 10px 0 10px 0;
+    padding: 19px 28px;
     background-color: var(--widget__primary-bg);
 }
 
@@ -219,6 +220,8 @@ aside .drawer__base ul.base-menu {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
     margin: 0;
     padding: 0;
 }
@@ -229,7 +232,25 @@ aside .drawer__base ul.base-menu li {
     padding: 0;
 }
 
-/* Main section */
+aside .drawer__base ul.base-menu li span.material-icons {
+    display: inline-block;
+    vertical-align: text-top;
+    font-size: 1.35rem;
+    margin-right: 5px;
+}
+
+aside .drawer__base button.text {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    background: transparent none;
+    outline-width: 0;
+    cursor: pointer;
+}
+
+    /* Main section */
 main.content {
     height: 100%;
     overflow: hidden;

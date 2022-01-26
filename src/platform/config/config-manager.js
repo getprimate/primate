@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const crypto = require('crypto');
 
 const BASE_CONFIG = {
@@ -17,7 +18,7 @@ class ConfigManager {
     _write(name) {
         const config = JSON.stringify(CURRENT_CONFIG[name], null, 4);
 
-        fs.writeFileSync(`${this._location}/${name}.json`, `${config}\n`, {encoding: 'utf-8', flag: 'w'});
+        fs.writeFileSync(path.join(this._location, `${name}.json`), `${config}\n`, {encoding: 'utf-8', flag: 'w'});
     }
 
     constructor(location) {
@@ -47,6 +48,10 @@ class ConfigManager {
         return CURRENT_CONFIG.gateway.connections[defaultHost];
     }
 
+    removeDefaultConnection() {
+        CURRENT_CONFIG.gateway.defaultHost = '';
+    }
+
     getConnectionById(id) {
         if (typeof CURRENT_CONFIG.gateway.connections[id] === 'undefined') return null;
 
@@ -68,8 +73,13 @@ class ConfigManager {
             CURRENT_CONFIG.gateway.defaultHost = config.id;
         }
 
-        this._write('gateway');
         return config;
+    }
+
+    saveState() {
+        for (let type in CURRENT_CONFIG) {
+            this._write(type);
+        }
     }
 }
 

@@ -19,14 +19,14 @@ if (typeof window.jQuery === 'undefined') {
 <div class="app-layout hidden">
 <aside class="drawer" data-ng-controller="SidebarController">
     <div class="branding">KongDash</div><!-- .branding -->
-    <nav class="navigation">
+    <nav class="navigation" data-ng-click="redirectNav($event)">
         <div class="navigation__title">Node</div><!-- .navigation__title -->
         <ul class="navigation__menu">
             <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
             <li><a class="navigation__link" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
         </ul><!-- .navigation__menu -->
         <div class="navigation__title">Objects</div><!-- .navigation__title -->
-        <ul class="navigation__menu" data-ng-click="redirectNav($event)">
+        <ul class="navigation__menu">
             <li data-ng-repeat="menu in navMenuObjects">
                 <a class="navigation__link" data-ng-href="{{menu.listView}}">
                     <span class="material-icons">{{menu.icon}}</span>
@@ -40,8 +40,8 @@ if (typeof window.jQuery === 'undefined') {
 
     <section class="drawer__base">
         <ul class="base-menu">
-            <li><span class="material-icons">fiber_manual_record</span> Local Server</li>
-            <li><span class="material-icons">logout</span></li>
+            <li><span class="material-icons">noise_aware</span> Local Server</li>
+            <li><button class="text" title="Logout Session" data-ng-click="emitDestroySessionEvent()"><span class="material-icons">logout</span></button></li>
         </ul>
     </section>
 </aside>
