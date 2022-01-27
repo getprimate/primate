@@ -164,9 +164,6 @@ function _refreshPluginModel(model, source) {
  * @param {ToastFactory} toast - Custom toast message service.
  */
 export default function PluginEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
-    const {angular} = window;
-    const pluginForm = angular.element('form#pg-ed__frm01');
-
     const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
 
     scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {
@@ -299,11 +296,6 @@ export default function PluginEditController(window, scope, location, routeParam
 
         return scope.fetchSchema(scope.pluginModel.name);
     };
-
-    pluginForm.on('change', 'input[name="schema_Switcher"]', (event) => {
-        const {target} = event;
-        scope.jsonText = JSON.stringify(target.value === 'schema' ? scope.schemaProps : scope.schemaModel, null, 4);
-    });
 
     scope.submitPluginForm = function (event) {
         if (typeof event === 'undefined') {

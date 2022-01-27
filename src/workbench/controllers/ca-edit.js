@@ -17,10 +17,7 @@
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function TrustedCAEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
-    const {angular} = window;
     const restConfig = {method: 'POST', endpoint: '/ca_certificates'};
-
-    const formCa = angular.element('form#ca-ed__frm01');
 
     scope.caId = '__none__';
     scope.caModel = {cert: '', cert_digest: '', tags: []};
@@ -50,7 +47,7 @@ export default function TrustedCAEditController(window, scope, location, routePa
         event.preventDefault();
 
         if (scope.caModel.cert.length <= 10) {
-            formCa.find('textarea#cf-ed__txa01').focus();
+            toast.error('Please paste a valid certificate body.');
             return false;
         }
 
@@ -101,7 +98,13 @@ export default function TrustedCAEditController(window, scope, location, routePa
                 scope.caModel[key] = response[key];
             }
 
-            viewFrame.addAction('Delete', '#!/certificates', 'btn critical delete', 'CA certificate', `/ca_certificates/${scope.caId}`);
+            viewFrame.addAction(
+                'Delete',
+                '#!/certificates',
+                'btn critical delete',
+                'CA certificate',
+                `/ca_certificates/${scope.caId}`
+            );
         });
 
         request.catch(() => {

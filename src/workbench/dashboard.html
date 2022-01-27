@@ -66,7 +66,7 @@ if (typeof window.jQuery === 'undefined') {
 
         <section id="index__ftBase" class="footer__base"><form>
             <ul class="base-menu">
-                <li><label><input type="checkbox" class="warning" id="index__chk01" name="toggleLogger"> Activity Log</label> </li>
+                <li><label><input type="checkbox" class="warning" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> Activity Log</label> </li>
                 <li>localhost:8001</li>
                 <li>version 0.6.0</li>
             </ul>
@@ -97,8 +97,8 @@ const ngDependency  = ['ngRoute'];
 
 <script type="text/javascript">
 (function (angular) {
-    angular.element('.app-layout').fadeIn({ duration: 1000 });
-})(window.angular);
+    window.document.querySelector('div.app-layout').classList.remove('hidden');
+})(window);
 </script>
 </body>
 </html>
