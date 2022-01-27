@@ -11,7 +11,6 @@
  * An injectable toast message factory service.
  *
  * @typedef {Object} ToastFactory
- * @property {function} message - Displays a toast message of specified level.
  * @property {function} success - Displays a success toast message.
  * @property {function} info - Displays an information toast message.
  * @property {function} warning - Displays a warning toast message.
@@ -27,6 +26,41 @@ const TOAST_STATE = {
     interval: null
 };
 
+function createPopup(level, message) {
+    const popup = document.createElement('div');
+    popup.classList.add('notification');
+
+    popup.addEventListener('click', () => {
+        popup.remove();
+    });
+
+    switch (level) {
+        case 'ERROR':
+            popup.innerHTML = '<b>Error!</b>';
+            popup.classList.add('critical');
+            break;
+
+        case 'SUCCESS':
+            popup.innerHTML = '<b>Success!</b>';
+            popup.classList.add('success');
+            break;
+
+        case 'WARN':
+            popup.innerHTML = '<b>Warning!</b>';
+            popup.classList.add('warning');
+            break;
+
+        default:
+            popup.innerHTML = '<b>Message!</b>';
+            popup.classList.add('info');
+            break;
+    }
+
+    popup.innerText = message;
+
+    return popup;
+}
+
 /**
  * Returns the {@link ToastFactory toast factory} singleton.
  *
@@ -34,72 +68,23 @@ const TOAST_STATE = {
  * @returns {ToastFactory} The toast factory service.
  */
 export default function ToastFactory(window) {
-    const {angular, document} = window;
+    const {document} = window;
 
     return {
-        message(level, message) {
-            const body = angular.element(document.body);
-            const popup = angular.element('<div></div>', {class: 'notification'});
-
-            /* Remove previously created toast messages. */
-            if (body.children('.notification').length > 0) {
-                body.children('.notification').remove();
-            }
-
-            popup.on('click', () => {
-                popup.fadeOut(200);
-            });
-
-            switch (level) {
-                case 'ERROR':
-                    popup.html(`<b>Error!</b> ${message}`);
-                    popup.addClass('critical');
-                    break;
-
-                case 'SUCCESS':
-                    popup.html(`<b>Success!</b> ${message}`);
-                    popup.addClass('success');
-                    break;
-
-                case 'WARN':
-                    popup.html(`<b>Warning!</b> ${message}`);
-                    popup.addClass('warning');
-                    break;
-
-                default:
-                    popup.html(`<b>Message!</b> ${message}`);
-                    popup.addClass('info');
-                    break;
-            }
-
-            body.append(popup);
-
-            TOAST_STATE.interval = setInterval(() => {
-                popup.fadeOut({
-                    duration: 1000,
-                    complete: () => {
-                        clearInterval(TOAST_STATE.interval);
-                    }
-                });
-            }, 4000);
-
-            return true;
-        },
-
         success(message) {
-            this.message('SUCCESS', message);
+            document.body.appendChild(createPopup('SUCCESS', message));
         },
 
         info(message) {
-            this.message('INFO', message);
+            document.body.appendChild(createPopup('INFO', message));
         },
 
         warning(message) {
-            this.message('WARN', message);
+            document.body.appendChild(createPopup('WARN', message));
         },
 
         error(message) {
-            this.message('ERROR', message);
+            document.body.appendChild(createPopup('ERROR', message));
         }
     };
 }
