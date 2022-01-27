@@ -63,8 +63,6 @@ function initRESTClient(provider) {
 function attachEventListeners(window, rootScope, viewFrame, logger) {
     const main = window.document.querySelector('main.content');
 
-    rootScope.ngViewAnimation = 'fade';
-
     rootScope.$on('$locationChangeStart', () => {
         viewFrame.clearActions();
         viewFrame.resetLoader();

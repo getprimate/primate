@@ -6,13 +6,6 @@
 <link rel="stylesheet" type="text/css" href="static/css/material-icons.css" />
 <link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
 <link rel="stylesheet" type="text/css" href="static/css/layout.css" />
-
-<script type="text/javascript">
-if (typeof window.jQuery === 'undefined') {
-    window.jQuery = require('./static/jquery-3.6.0.min.js');
-}
-</script>
-
 </head>
 <body class="body">
 
@@ -72,7 +65,7 @@ if (typeof window.jQuery === 'undefined') {
             </ul>
         </form></section>
     </footer>
-    <section id="index__ngView" class="content__wrapper {{$root.ngViewAnimation}}" data-ng-view="">Loading...</section>
+    <section id="index__ngView" class="content__wrapper" data-ng-view="">Loading...</section>
 </main>
 </div><!-- .app-layout.hidden -->
 
@@ -91,7 +84,6 @@ const ngDependency  = ['ngRoute'];
 
 <script type="text/javascript" src="static/angular.min.js"></script>
 <script type="text/javascript" src="static/angular-route.min.js"></script>
-<script type="text/javascript" src="static/angular-animate.min.js"></script>
 
 <script type="module" src="dashboard.js"></script>
 

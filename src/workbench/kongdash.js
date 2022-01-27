@@ -14,7 +14,7 @@ import ViewFrameFactory from './components/view-frame-factory.js';
 import HttpInterceptorFactory from './components/http-interceptor-factory.js';
 
 const {angular} = window;
-const KongDash = angular.module('KongDash', ['ngRoute', 'ngAnimate']);
+const KongDash = angular.module('KongDash', ['ngRoute']);
 
 function registerInterceptor(httpProvider) {
     httpProvider.interceptors.push('interceptor');

@@ -12,8 +12,8 @@
  * @return {{append: function}} the element object
  */
 const _attachListNodes = (angular, scope, element, tokens) => {
-    const shouldAppend = (typeof tokens === 'string');
-    const tokenList = (shouldAppend === true) ? tokens.split(',') : [...scope.tokenList];
+    const shouldAppend = typeof tokens === 'string';
+    const tokenList = shouldAppend === true ? tokens.split(',') : [...scope.tokenList];
 
     for (let token of tokenList) {
         token = token.trim();
@@ -52,7 +52,12 @@ export default function TokenInputDirective(window) {
         require: 'ngModel',
         template: '<textarea class="token-input__text"></textarea><ul class="token-input__list"></ul>',
         scope: {tokenList: '=ngModel'},
-        controller: ['$scope', function (scope) { scope.isInitialised = false; }],
+        controller: [
+            '$scope',
+            function (scope) {
+                scope.isInitialised = false;
+            }
+        ],
 
         /**
          *
@@ -71,29 +76,29 @@ export default function TokenInputDirective(window) {
              * @type {Object}
              * @property {function} attr - sets an attribute
              */
-            const textNode = element.find('textarea.token-input__text');
+            const textNode = element.find('textarea').first();
 
             /**
              * The unordered list for attaching tokens.
              */
-            const itemNode = element.find('ul.token-input__list').first();
+            const itemNode = element.find('ul').first();
 
-            scope.$watch('tokenList', (current, previous) => {
-                if (scope.isInitialised === true) {
+            scope.$watch(
+                'tokenList',
+                (current, previous) => {
+                    if (scope.isInitialised === true) {
+                        return scope.isInitialised;
+                    }
+
+                    if (Array.isArray(previous) && Array.isArray(current) && previous.length !== current.length) {
+                        scope.isInitialised = true;
+                        return _attachListNodes(angular, scope, itemNode, scope.tokenList);
+                    }
+
                     return scope.isInitialised;
-                }
-
-                if (Array.isArray(previous)
-                    && Array.isArray(current)
-                    && previous.length !== current.length) {
-
-                    scope.isInitialised = true;
-                    return _attachListNodes(angular, scope, itemNode, scope.tokenList);
-                }
-
-                return scope.isInitialised;
-
-            }, false);
+                },
+                false
+            );
 
             element.addClass('token-input');
             element.on('click', 'li', (event) => {
@@ -118,7 +123,10 @@ export default function TokenInputDirective(window) {
                 }
             });
 
-            textNode.attr('placeholder', (typeof attrs.placeholder === 'string') ? attrs.placeholder : 'Type and press enter...');
+            textNode.attr(
+                'placeholder',
+                typeof attrs.placeholder === 'string' ? attrs.placeholder : 'Type and press enter...'
+            );
             textNode.on('keyup', (event) => {
                 const {target} = event;
                 event.preventDefault();

@@ -6,7 +6,6 @@ const VERSION = '0.3.0';
 const electron = require('electron');
 const path = require('path');
 const ospath = require('ospath');
-const jsonfile = require('jsonfile');
 
 const ConfigManager = require('./platform/config/config-manager');
 
@@ -14,8 +13,7 @@ const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION
 
 let absPath = path.dirname(__dirname);
 let {app, ipcMain, BrowserWindow, Menu} = electron;
-let mainWindow,
-    appConfig = {kong: {}, app: {enableAnimation: true}};
+let mainWindow;
 
 const connectionMap = {};
 
@@ -98,14 +96,14 @@ app.on('browser-window-created', (e, window) => {
             submenu: [
                 {
                     label: 'GitHub Repository',
-                    click: () => {
-                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash');
+                    click: async () => {
+                        await electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash');
                     }
                 },
                 {
                     label: 'Report Issues',
-                    click: () => {
-                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues');
+                    click: async () => {
+                        await electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues');
                     }
                 },
                 {
@@ -113,8 +111,8 @@ app.on('browser-window-created', (e, window) => {
                 },
                 {
                     label: 'About KongDash',
-                    click: () => {
-                        electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/');
+                    click: async () => {
+                        await electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/');
                     }
                 }
             ]
@@ -136,15 +134,6 @@ app.on('window-all-closed', () => {
 
 app.on('will-quit', () => {
     configManager.saveState();
-});
-
-ipcMain.on('get-config', (event, arg) => {
-    if (arg === 'VERSION') {
-        event.returnValue = VERSION;
-        return;
-    }
-
-    event.returnValue = appConfig[arg];
 });
 
 ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
