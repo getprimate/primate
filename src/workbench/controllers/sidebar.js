@@ -1,6 +1,6 @@
 'use strict';
 
-const {ipcHandler} = window;
+const {/** @type {IPCHandler} */ ipcHandler} = window;
 
 /**
  * Provides controller constructor for sidebar activities.
@@ -121,7 +121,7 @@ export default function SidebarController(scope, restClient, toast) {
     };
 
     scope.emitDestroySessionEvent = function () {
-        ipcHandler.sendMessage('workbench:AsyncRequest', 'Destroy-Session');
+        ipcHandler.sendRequest('Destroy-Session');
         ipcHandler.removeListeners();
     };
 

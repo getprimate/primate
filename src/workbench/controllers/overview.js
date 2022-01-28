@@ -9,7 +9,7 @@ function _createChart(container, data) {
     return new Chart(container.getContext('2d'), data);
 }
 
-export default function OverviewController(window, scope, restClient, toast, viewFrame) {
+export default function OverviewController(scope, restClient, toast, viewFrame) {
     const {document} = window;
 
     viewFrame.setTitle('Overview');

@@ -75,7 +75,6 @@ const _buildFromResponse = (to = {}, from = {}) => {
  * Provides controller constructor for editing upstream and target objects.
  *
  * @constructor
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {Object} location - Injected Angular location service.
  * @param {function} location.path - Tells the current view path.
@@ -87,7 +86,7 @@ const _buildFromResponse = (to = {}, from = {}) => {
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function UpstreamEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function UpstreamEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/upstreams'};
 
     scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
@@ -310,7 +309,11 @@ export default function UpstreamEditController(window, scope, location, routePar
         });
 
         request.catch(({data: error}) => {
-            toast.error('Could not ' + (scope.upstreamId === '__none__' ? 'create new' : 'update') + ` upstream. ${error.message}`);
+            toast.error(
+                'Could not ' +
+                    (scope.upstreamId === '__none__' ? 'create new' : 'update') +
+                    ` upstream. ${error.message}`
+            );
         });
 
         return false;

@@ -4,15 +4,13 @@
  * Provides controller constructor for footer view.
  *
  * @constructor
- *
- * @param {Window} window- window DOM object
  * @param {Object} scope - injected scope object
  * @param {function} http - angular http provider
  * @param {ViewFrameFactory} viewFrame - custom view frame factory
  * @param {ToastFactory} toast - custom toast message service
  * @param {LoggerFactory} logger - custom logger factory
  */
-export default function FooterController(window, scope, http, viewFrame, toast, logger) {
+export default function FooterController(scope, http, viewFrame, toast, logger) {
     const {document} = window;
     const footerMain = document.querySelector('footer.footer');
 

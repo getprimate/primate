@@ -4,8 +4,6 @@
  * Provides controller constructor for editing CA certificates.
  *
  * @constructor
- *
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {Object} location - Injected Angular location service.
  * @param {function} location.path - Tells the current view path.
@@ -16,7 +14,7 @@
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function TrustedCAEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function TrustedCAEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/ca_certificates'};
 
     scope.caId = '__none__';

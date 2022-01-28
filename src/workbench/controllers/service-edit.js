@@ -60,7 +60,10 @@ function populateServiceModel(model, source = {}) {
                 break;
 
             case 'client_certificate':
-                model[property] = source[property] !== null && typeof source[property]['id'] === 'string' ? source[property]['id'] : '';
+                model[property] =
+                    source[property] !== null && typeof source[property]['id'] === 'string'
+                        ? source[property]['id']
+                        : '';
                 break;
 
             case 'ca_certificates':
@@ -129,8 +132,6 @@ function prepareServiceObject(model) {
  * Provides controller constructor for editing service objects.
  *
  * @constructor
- *
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {Object} location - Injected Angular location service.
  * @param {function} location.path - Tells the current view path.
@@ -144,7 +145,7 @@ function prepareServiceObject(model) {
  * @property {string} scope.serviceId - Holds the service object id in edit mode.
  * @property {ServiceModel} scope.serviceModel - Holds the service model object.
  */
-export default function ServiceEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function ServiceEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/services'};
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);

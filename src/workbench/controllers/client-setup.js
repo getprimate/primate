@@ -10,7 +10,7 @@
 import _ from '../../lib/core-utils.js';
 import setupModel from '../models/setup-model.js';
 
-const {ipcHandler} = window;
+const {/** @type {IPCHandler} */ ipcHandler} = window;
 
 const connectionList = [
     {
@@ -69,7 +69,7 @@ function validateServerResponse(response) {
 }
 
 function ipcWriteClientSetup(payload) {
-    ipcHandler.sendMessage('workbench:AsyncRequest', 'Write-Connection', payload);
+    ipcHandler.sendRequest('Write-Connection', payload);
 }
 
 /**

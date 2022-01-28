@@ -150,8 +150,6 @@ function _refreshPluginModel(model, source) {
  * Provides controller constructor for editing plugin objects.
  *
  * @constructor
- *
- * @param {Window} window- The top level Window object.
  * @param {Object} scope - The injected scope object.
  * @param {Object} location - Injected location service.
  * @param {function} location.path - Tells the current view path.
@@ -163,7 +161,7 @@ function _refreshPluginModel(model, source) {
  * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
  * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function PluginEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function PluginEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
 
     scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {

@@ -214,8 +214,6 @@ function _buildRouteObject(model) {
  * Provides controller constructor for editing route objects.
  *
  * @constructor
- *
- * @param {Window} window- The top level Window object.
  * @param {Object} scope - The injected scope object.
  * @param {Object} location - Injected location service.
  * @param {function} location.path - Tells the current view path.
@@ -227,7 +225,7 @@ function _buildRouteObject(model) {
  * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
  * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function RouteEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function RouteEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/routes'};
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
@@ -343,7 +341,13 @@ export default function RouteEditController(window, scope, location, routeParams
         request.then(({data: response}) => {
             _refreshRouteModel(response, scope.routeModel);
 
-            viewFrame.addAction('Delete', viewFrame.getNextRoute(false), 'critical delete', 'route', ajaxConfig.endpoint);
+            viewFrame.addAction(
+                'Delete',
+                viewFrame.getNextRoute(false),
+                'critical delete',
+                'route',
+                ajaxConfig.endpoint
+            );
         });
 
         request.catch(() => {

@@ -14,7 +14,6 @@ import restUtils from '../../lib/rest-utils.js';
  * Provides controller constructor for editing certificate objects.
  *
  * @constructor
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {Object} location - Injected Angular location service.
  * @param {function} location.path - Tells the current view path.
@@ -26,7 +25,7 @@ import restUtils from '../../lib/rest-utils.js';
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function CertificateEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function CertificateEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/certificates'};
 
     scope.certId = '__none__';
@@ -234,7 +233,13 @@ export default function CertificateEditController(window, scope, location, route
                 scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
             }
 
-            viewFrame.addAction('Delete', '#!/certificates', 'btn critical delete', 'certificate', `/certificates/${scope.certId}`);
+            viewFrame.addAction(
+                'Delete',
+                '#!/certificates',
+                'btn critical delete',
+                'certificate',
+                `/certificates/${scope.certId}`
+            );
         });
 
         request.catch(() => {

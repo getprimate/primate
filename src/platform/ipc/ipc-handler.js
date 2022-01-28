@@ -29,9 +29,9 @@
  *      action: string,
  *      listener: IPCEventCallback): boolean
  *      )} onRequestFail - Registers an event listener to handle failed event responses.
- * @property {(function(action: string, payload: any): void)} sendRequest - Sends an event to the asynchronous event channel.
- * @property {(function(resource: string, payload: any): any)} sendQuery - Sends an event to the synchronous event channel.
- * @property {(function(channel: string|void): void)} cleanup - Cleans up the existing event listeners.
+ * @property {(function(action: string, payload: any=): void)} sendRequest - Sends an event to the asynchronous event channel.
+ * @property {(function(resource: string, payload: any=): any)} sendQuery - Sends an event to the synchronous event channel.
+ * @property {(function(channel: string[]=): void)} removeListeners - Cleans up the existing event listeners.
  */
 
 const {ipcRenderer} = require('electron');
@@ -66,6 +66,7 @@ function registerCallback(channel, action, listener) {
 }
 
 /**
+ * THe object to be attached to the context.
  *
  * @type {IPCHandler}
  */
@@ -82,18 +83,18 @@ const ipcHandler = {
         return registerCallback('workbench:AsyncError', action, listener);
     },
 
-    sendRequest(action, payload) {
+    sendRequest(action, payload = {}) {
         ipcRenderer.send('workbench:AsyncRequest', action, payload);
     },
 
-    sendQuery(resource, payload) {
+    sendQuery(resource, payload = {}) {
         return ipcRenderer.sendSync('workbench:SyncQuery', resource, payload);
     },
 
-    cleanup() {
-        const channels = Object.keys(registeredCallbacks);
+    removeListeners(channels = null) {
+        const chList = Array.isArray(channels) ? channels : Object.keys(registeredCallbacks);
 
-        for (let channel of channels) {
+        for (let channel of chList) {
             ipcRenderer.removeAllListeners(channel);
 
             let current = registeredCallbacks[channel];

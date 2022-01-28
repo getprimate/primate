@@ -35,6 +35,8 @@ import SettingsController from './controllers/settings.js';
 import Templates from './templates.js';
 import RouteListController from './controllers/route-list.js';
 
+const {/** @type {IPCHandler} */ ipcHandler} = window;
+
 /**
  *
  * @param {RESTClientProvider} provider
@@ -75,7 +77,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
 
         if (anchor.target === '_blank') {
             event.preventDefault();
-            window.ipcHandler.sendQuery('open-external', anchor.href);
+            ipcHandler.sendQuery('open-external', anchor.href);
 
             logger.info(`Opening ${anchor.href}`);
         }
@@ -84,7 +86,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
     });
 }
 
-window.ipcHandler.registerListener('workbench:AsyncEventPush', 'Open-Settings-View', () => {
+ipcHandler.onEventPush('Open-Settings-View', () => {
     window.location.href = '#!/settings';
 });
 
@@ -95,39 +97,15 @@ KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
 KongDash.controller('SidebarController', ['$scope', 'restClient', 'toast', SidebarController]);
 
-KongDash.controller('HeaderController', [
-    '$window',
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    HeaderController
-]);
+KongDash.controller('HeaderController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
 
-KongDash.controller('FooterController', [
-    '$window',
-    '$scope',
-    '$http',
-    'viewFrame',
-    'toast',
-    'logger',
-    FooterController
-]);
+KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
 
-KongDash.controller('OverviewController', [
-    '$window',
-    '$scope',
-    'restClient',
-    'toast',
-    'viewFrame',
-    OverviewController
-]);
+KongDash.controller('OverviewController', ['$scope', 'restClient', 'toast', 'viewFrame', OverviewController]);
 
 KongDash.controller('ServiceListController', ['$scope', 'restClient', 'viewFrame', 'toast', ServiceListController]);
 
 KongDash.controller('ServiceEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -141,7 +119,6 @@ KongDash.controller('ServiceEditController', [
 KongDash.controller('RouteListController', ['$scope', 'restClient', 'viewFrame', 'toast', RouteListController]);
 
 KongDash.controller('RouteEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -161,7 +138,6 @@ KongDash.controller('CertificateListController', [
 ]);
 
 KongDash.controller('CertificateEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -172,7 +148,6 @@ KongDash.controller('CertificateEditController', [
 ]);
 
 KongDash.controller('TrustedCAEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -186,7 +161,6 @@ KongDash.controller('TrustedCAEditController', [
 KongDash.controller('UpstreamListController', ['$scope', 'restClient', 'viewFrame', 'toast', UpstreamListController]);
 
 KongDash.controller('UpstreamEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -199,7 +173,6 @@ KongDash.controller('UpstreamEditController', [
 KongDash.controller('ConsumerListController', ['$scope', 'restClient', 'viewFrame', 'toast', ConsumerListController]);
 
 KongDash.controller('ConsumerEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -213,7 +186,6 @@ KongDash.controller('ConsumerEditController', [
 KongDash.controller('PluginListController', ['$scope', 'restClient', 'viewFrame', 'toast', PluginListController]);
 
 KongDash.controller('PluginEditController', [
-    '$window',
     '$scope',
     '$location',
     '$routeParams',
@@ -224,7 +196,6 @@ KongDash.controller('PluginEditController', [
 ]);
 
 KongDash.controller('SettingsController', [
-    '$window',
     '$rootScope',
     '$scope',
     'restClient',

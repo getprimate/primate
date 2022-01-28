@@ -11,14 +11,13 @@
  * Provides controller constructor for handling the header bar.
  *
  * @constructor
- * @param {Window} window - Top level window object.
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  * @param {LoggerFactory} logger - Factory for logging activities.
  */
-export default function HeaderController(window, scope, restClient, viewFrame, toast, logger) {
+export default function HeaderController(scope, restClient, viewFrame, toast, logger) {
     scope.frameState = viewFrame.getState();
 
     /**

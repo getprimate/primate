@@ -11,14 +11,12 @@ import KongDash from './kongdash.js';
 import FooterController from './controllers/footer.js';
 import ClientSetupController from './controllers/client-setup.js';
 
-console.log('handler', typeof window.ipcHandler);
+const {/** @type {IPCHandler} */ ipcHandler} = window;
 
-if (typeof window.ipcHandler === 'object') {
-    window.ipcHandler.registerListener('workbench:AsyncResponse', 'Write-Connection', () => {
-        window.ipcHandler.removeListeners();
-        window.location.href = './dashboard.html';
-    });
-}
+ipcHandler.onRequestDone('Write-Connection', () => {
+    ipcHandler.removeListeners();
+    window.location.href = './dashboard.html';
+});
 
 KongDash.controller('ClientSetupController', ['$scope', 'restClient', 'viewFrame', 'toast', ClientSetupController]);
 

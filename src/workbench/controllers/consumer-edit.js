@@ -16,8 +16,6 @@ import UserAuthModel from '../models/user-auth-model.js';
  * Provides controller constructor for editing consumer objects.
  *
  * @constructor
- *
- * @param {Window} window- The top level Window object.
  * @param {Object} scope - The injected scope object.
  * @param {Object} location - Injected location service.
  * @param {function} location.path - Tells the current view path.
@@ -29,7 +27,7 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {ViewFrameFactory} viewFrame - Custom view frame factory.
  * @param {ToastFactory} toast - Custom toast message service.
  */
-export default function ConsumerEditController(window, scope, location, routeParams, restClient, viewFrame, toast) {
+export default function ConsumerEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/consumers'};
 
     scope.ENUM_JWT_ALGO = ['HS256', 'HS384', 'HS512', 'RS256', 'ES256'];
@@ -217,7 +215,13 @@ export default function ConsumerEditController(window, scope, location, routePar
                 scope.consumerModel[field] = response[field];
             }
 
-            viewFrame.addAction('Delete', '#!/consumers', 'critical delete', 'consumer', `/ca_certificates/${scope.consumerId}`);
+            viewFrame.addAction(
+                'Delete',
+                '#!/consumers',
+                'critical delete',
+                'consumer',
+                `/ca_certificates/${scope.consumerId}`
+            );
         });
 
         request.catch(() => {
