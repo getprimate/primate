@@ -7,7 +7,7 @@ const electron = require('electron');
 const path = require('path');
 const ospath = require('ospath');
 
-const ConfigManager = require('./platform/config/config-manager');
+const ConfigManager = require('./config/config-manager');
 
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
 
