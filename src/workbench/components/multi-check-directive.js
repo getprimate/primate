@@ -1,43 +1,51 @@
 'use strict';
 
-const _refresh = (angular, element, scope) => {
+const {document} = window;
+
+/**
+ *
+ * @param {HTMLElement} element
+ * @param {Object} scope
+ * @returns {*}
+ * @private
+ */
+function _refresh(element, scope) {
     const {available, selected} = scope;
-    const ul = element.children().first();
+    const ul = element.querySelector('ul');
+    const inputStyle = typeof element.dataset['inputStyle'] === 'string' ? element.dataset['inputStyle'] : 'success';
 
-    const inputStyle = typeof element.data('input-style') === 'string' ? element.data('input-style') : 'success';
-
-    /* Remove previously existing nodes */
-    ul.empty();
+    /* Remove all existing child elements. */
+    while (ul.firstChild) {
+        ul.firstChild.remove();
+    }
 
     for (let item of available) {
         let {nodeValue, displayText} = typeof item === 'object' ? item : {nodeValue: item, displayText: item};
 
-        let li = angular.element('<li></li>');
-        let input = angular.element('<input>', {
-            type: 'checkbox',
-            class: `multi-check__input ${inputStyle}`,
-            'data-node-value': nodeValue
-        });
+        let li = document.createElement('li');
+        let input = document.createElement('input');
 
-        let label = angular.element('<label></label>');
+        input.type = 'checkbox';
+        input.classList.add('multi-check__input', inputStyle);
+        input.dataset['nodeValue'] = nodeValue;
+
+        let label = document.createElement('label');
 
         if (selected.indexOf(nodeValue) >= 0) {
-            input.attr('checked', 'checked');
+            input.checked = true;
         }
 
-        label.append(input);
-        label.append(`&nbsp; ${displayText}`);
+        label.appendChild(input);
+        label.append(`\u00A0 ${displayText}`);
 
-        li.append(label);
-        ul.append(li);
+        li.appendChild(label);
+        ul.appendChild(li);
     }
 
     return element;
-};
+}
 
-export default function MultiCheckDirective(window) {
-    const {angular} = window;
-
+export default function MultiCheckDirective() {
     return {
         transclude: false,
         restrict: 'E',
@@ -55,13 +63,16 @@ export default function MultiCheckDirective(window) {
                 return false;
             }
 
-            _refresh(angular, element, scope);
+            /** @type {HTMLElement} */
+            const parent = element[0];
+
+            _refresh(parent, scope);
 
             scope.$watch(
                 'selected',
                 (current, previous) => {
                     if (Array.isArray(previous) && Array.isArray(current) && previous.length !== current.length) {
-                        return _refresh(angular, element, scope);
+                        return _refresh(parent, scope);
                     }
                 },
                 false
@@ -71,14 +82,15 @@ export default function MultiCheckDirective(window) {
                 'available',
                 (current, previous) => {
                     if (Array.isArray(previous) && Array.isArray(current) && previous.length !== current.length) {
-                        return _refresh(angular, element, scope);
+                        return _refresh(parent, scope);
                     }
                 },
                 false
             );
 
-            element.on('change', 'input.multi-check__input', (event) => {
-                const {currentTarget: target} = event;
+            parent.addEventListener('click', (event) => {
+                const {target} = event;
+
                 if (target.nodeName !== 'INPUT') {
                     return false;
                 }
