@@ -11,8 +11,8 @@ import _ from '../lib/core-utils.js';
 
 import KongDash from './kongdash.js';
 
-import TokenInputDirective from './components/token-input-directive.js';
-import MultiCheckDirective from './components/multi-check-directive.js';
+import TokenInputDirective from './widgets/token-input-directive.js';
+import MultiCheckDirective from './widgets/multi-check-directive.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';

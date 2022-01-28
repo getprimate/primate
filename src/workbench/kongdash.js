@@ -7,11 +7,11 @@
 
 'use strict';
 
-import RestClientProvider from './components/rest-provider.js';
-import LoggerFactory from './components/logger-factory.js';
-import ToastFactory from './components/toast-factory.js';
-import ViewFrameFactory from './components/view-frame-factory.js';
-import HttpInterceptorFactory from './components/http-interceptor-factory.js';
+import RestClientProvider from './services/rest-provider.js';
+import LoggerFactory from './services/logger-factory.js';
+import ToastFactory from './services/toast-factory.js';
+import ViewFrameFactory from './services/view-frame-factory.js';
+import HttpInterceptorFactory from './services/http-interceptor-factory.js';
 
 const {angular} = window;
 const KongDash = angular.module('KongDash', ['ngRoute']);
