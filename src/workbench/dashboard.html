@@ -69,19 +69,6 @@
 </main>
 </div><!-- .app-layout.hidden -->
 
-<script type="text/javascript">
-if (typeof module === 'object') {
-    window.module = module;
-    module = undefined;
-}
-
-const {ipcRenderer} = require('electron');
-const kongConfig    = ipcRenderer.sendSync('get-config', 'kong');
-const appConfig     = ipcRenderer.sendSync('get-config', 'app');
-
-const ngDependency  = ['ngRoute'];
-</script>
-
 <script type="text/javascript" src="static/angular.min.js"></script>
 <script type="text/javascript" src="static/angular-route.min.js"></script>
 

@@ -10,8 +10,7 @@
 import _ from '../../lib/core-utils.js';
 import setupModel from '../models/setup-model.js';
 
-const {ipcRenderer} = require('electron');
-const semver = require('semver');
+const {ipcHandler} = window;
 
 const connectionList = [
     {
@@ -70,7 +69,7 @@ function validateServerResponse(response) {
 }
 
 function ipcWriteClientSetup(payload) {
-    ipcRenderer.send('workbench:AsyncRequest', 'Write-Connection', payload);
+    ipcHandler.sendMessage('workbench:AsyncRequest', 'Write-Connection', payload);
 }
 
 /**
@@ -83,7 +82,7 @@ function ipcWriteClientSetup(payload) {
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function ClientSetupController(scope, restClient, viewFrame, toast) {
-    const defaultHost = ipcRenderer.sendSync('workbench:SyncQuery', 'Read-Default-Connection');
+    const defaultHost = ipcHandler.sendQuery('Read-Default-Connection');
 
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = connectionList;

@@ -35,14 +35,12 @@ import SettingsController from './controllers/settings.js';
 import Templates from './templates.js';
 import RouteListController from './controllers/route-list.js';
 
-const {ipcRenderer} = require('electron');
-
 /**
  *
  * @param {RESTClientProvider} provider
  */
 function initRESTClient(provider) {
-    const defaultHost = ipcRenderer.sendSync('workbench:SyncQuery', 'Read-Session-Connection');
+    const defaultHost = window.ipcHandler.sendQuery('Read-Session-Connection');
 
     if (_.isText(defaultHost.adminHost) && false === _.isEmpty(defaultHost.adminHost)) {
         provider.initialize({
@@ -77,7 +75,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
 
         if (anchor.target === '_blank') {
             event.preventDefault();
-            ipcRenderer.send('open-external', anchor.href);
+            window.ipcHandler.sendQuery('open-external', anchor.href);
 
             logger.info(`Opening ${anchor.href}`);
         }
@@ -86,15 +84,8 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
     });
 }
 
-ipcRenderer.on('workbench:AsyncEventPush', (event, action) => {
-    switch (action) {
-        case 'Open-Settings-View':
-            window.location.href = '#!/settings';
-            break;
-
-        default:
-            break;
-    }
+window.ipcHandler.registerListener('workbench:AsyncEventPush', 'Open-Settings-View', () => {
+    window.location.href = '#!/settings';
 });
 
 KongDash.config(['restClientProvider', initRESTClient]);

@@ -7,28 +7,27 @@
 
 'use strict';
 
-import _ from '../lib/core-utils.js';
-
 import KongDash from './kongdash.js';
 import FooterController from './controllers/footer.js';
 import ClientSetupController from './controllers/client-setup.js';
 
-const {ipcRenderer} = require('electron');
+console.log('handler', typeof window.ipcHandler);
 
-function removeIPCListeners() {
-    const channels = ['workbench:AsyncResponse', 'workbench:AsyncError', 'workbench:AsyncEventPush'];
-
-    for (let channel of channels) {
-        ipcRenderer.removeAllListeners(channel);
-    }
+if (typeof window.ipcHandler === 'object') {
+    window.ipcHandler.registerListener('workbench:AsyncResponse', 'Write-Connection', () => {
+        window.ipcHandler.removeListeners();
+        window.location.href = './dashboard.html';
+    });
 }
 
-ipcRenderer.on('workbench:AsyncResponse', (event, action) => {
-    if (action === 'Write-Connection') {
-        removeIPCListeners();
-        window.location.href = './dashboard.html';
-    }
-});
-
 KongDash.controller('ClientSetupController', ['$scope', 'restClient', 'viewFrame', 'toast', ClientSetupController]);
-KongDash.controller('FooterController', ['$window', '$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
+
+KongDash.controller('FooterController', [
+    '$window',
+    '$scope',
+    '$http',
+    'viewFrame',
+    'toast',
+    'logger',
+    FooterController
+]);

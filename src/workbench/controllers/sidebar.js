@@ -1,8 +1,6 @@
 'use strict';
 
-const {ipcRenderer} = require('electron');
-
-const channels = [''];
+const {ipcHandler} = window;
 
 /**
  * Provides controller constructor for sidebar activities.
@@ -123,9 +121,8 @@ export default function SidebarController(scope, restClient, toast) {
     };
 
     scope.emitDestroySessionEvent = function () {
-        ipcRenderer.send('workbench:AsyncRequest', 'Destroy-Session');
-
-        ipcRenderer.removeAllListeners();
+        ipcHandler.sendMessage('workbench:AsyncRequest', 'Destroy-Session');
+        ipcHandler.removeListeners();
     };
 
     scope.fetchAvailableEndpoints();

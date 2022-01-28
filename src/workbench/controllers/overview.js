@@ -1,9 +1,11 @@
 'use strict';
 
-const {Chart} = require('chart.js');
+import {Chart, CategoryScale, BarElement, BarController, LinearScale} from '../static/chart-esm.js';
+Chart.register(CategoryScale, BarElement, BarController, LinearScale);
 
 function _createChart(container, data) {
-    if (typeof data.options === 'undefined') data.options = {responsive: true, scales: {x: {ticks: {beginAtZero: true}}}};
+    if (typeof data.options === 'undefined')
+        data.options = {responsive: true, scales: {x: {ticks: {beginAtZero: true}}}};
     return new Chart(container.getContext('2d'), data);
 }
 

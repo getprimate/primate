@@ -1,17 +1,17 @@
 'use strict';
 
-const APP_NAME = 'KongDash';
-const VERSION = '0.3.0';
-
 const electron = require('electron');
 const path = require('path');
 const ospath = require('ospath');
+
+const APP_NAME = 'KongDash';
+const VERSION = '0.3.0';
+const ABS_PATH = path.dirname(__dirname);
 
 const ConfigManager = require('./config/config-manager');
 
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
 
-let absPath = path.dirname(__dirname);
 let {app, ipcMain, BrowserWindow, Menu} = electron;
 let mainWindow;
 
@@ -34,13 +34,14 @@ function startMainWindow() {
         title: app.getName(),
         minWidth: 1280,
         minHeight: 800,
-        icon: absPath + '/kongdash-256x256.png',
+        icon: path.dirname(ABS_PATH) + '/kongdash-256x256.png',
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
         }
     });
-    mainWindow.loadFile(path.join(absPath, 'src', 'workbench', 'bootstrap.html')).then(() => {
+    mainWindow.loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html')).then(() => {
         //* Debugging
         mainWindow.webContents.openDevTools();
         //*/
@@ -151,7 +152,7 @@ ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
             configManager.removeDefaultConnection();
         }
 
-        mainWindow.loadFile(path.join(absPath, 'src', 'workbench', 'bootstrap.html')).catch((error) => {
+        mainWindow.loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html')).catch((error) => {
             console.error(`${error}`);
         });
     } else {

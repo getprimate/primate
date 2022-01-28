@@ -80,13 +80,13 @@ function valueOrDefault(value, defaultValue) {
   return typeof value === 'undefined' ? defaultValue : value;
 }
 const toPercentage = (value, dimension) =>
-  typeof value === 'string' && value.endsWith('%') ?
-    parseFloat(value) / 100
-    : value / dimension;
+    typeof value === 'string' && value.endsWith('%') ?
+        parseFloat(value) / 100
+        : value / dimension;
 const toDimension = (value, dimension) =>
-  typeof value === 'string' && value.endsWith('%') ?
-    parseFloat(value) / 100 * dimension
-    : +value;
+    typeof value === 'string' && value.endsWith('%') ?
+        parseFloat(value) / 100 * dimension
+        : +value;
 function callback(fn, args, thisArg) {
   if (fn && typeof fn.call === 'function') {
     return fn.apply(thisArg, args);
@@ -196,7 +196,7 @@ function _mergerIf(key, target, source) {
 function _deprecated(scope, value, previous, current) {
   if (value !== undefined) {
     console.warn(scope + ': "' + previous +
-			'" is deprecated. Please use "' + current + '" instead');
+        '" is deprecated. Please use "' + current + '" instead');
   }
 }
 const emptyString = '';
@@ -341,7 +341,7 @@ function _angleBetween(angle, start, end, sameAngleIsFullCircle) {
   const startToAngle = _normalizeAngle(a - s);
   const endToAngle = _normalizeAngle(a - e);
   return a === s || a === e || (sameAngleIsFullCircle && s === e)
-    || (angleToStart > angleToEnd && startToAngle < endToAngle);
+      || (angleToStart > angleToEnd && startToAngle < endToAngle);
 }
 function _limitValue(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -361,45 +361,45 @@ const effects = {
   easeInQuad: t => t * t,
   easeOutQuad: t => -t * (t - 2),
   easeInOutQuad: t => ((t /= 0.5) < 1)
-    ? 0.5 * t * t
-    : -0.5 * ((--t) * (t - 2) - 1),
+      ? 0.5 * t * t
+      : -0.5 * ((--t) * (t - 2) - 1),
   easeInCubic: t => t * t * t,
   easeOutCubic: t => (t -= 1) * t * t + 1,
   easeInOutCubic: t => ((t /= 0.5) < 1)
-    ? 0.5 * t * t * t
-    : 0.5 * ((t -= 2) * t * t + 2),
+      ? 0.5 * t * t * t
+      : 0.5 * ((t -= 2) * t * t + 2),
   easeInQuart: t => t * t * t * t,
   easeOutQuart: t => -((t -= 1) * t * t * t - 1),
   easeInOutQuart: t => ((t /= 0.5) < 1)
-    ? 0.5 * t * t * t * t
-    : -0.5 * ((t -= 2) * t * t * t - 2),
+      ? 0.5 * t * t * t * t
+      : -0.5 * ((t -= 2) * t * t * t - 2),
   easeInQuint: t => t * t * t * t * t,
   easeOutQuint: t => (t -= 1) * t * t * t * t + 1,
   easeInOutQuint: t => ((t /= 0.5) < 1)
-    ? 0.5 * t * t * t * t * t
-    : 0.5 * ((t -= 2) * t * t * t * t + 2),
+      ? 0.5 * t * t * t * t * t
+      : 0.5 * ((t -= 2) * t * t * t * t + 2),
   easeInSine: t => -Math.cos(t * HALF_PI) + 1,
   easeOutSine: t => Math.sin(t * HALF_PI),
   easeInOutSine: t => -0.5 * (Math.cos(PI * t) - 1),
   easeInExpo: t => (t === 0) ? 0 : Math.pow(2, 10 * (t - 1)),
   easeOutExpo: t => (t === 1) ? 1 : -Math.pow(2, -10 * t) + 1,
   easeInOutExpo: t => atEdge(t) ? t : t < 0.5
-    ? 0.5 * Math.pow(2, 10 * (t * 2 - 1))
-    : 0.5 * (-Math.pow(2, -10 * (t * 2 - 1)) + 2),
+      ? 0.5 * Math.pow(2, 10 * (t * 2 - 1))
+      : 0.5 * (-Math.pow(2, -10 * (t * 2 - 1)) + 2),
   easeInCirc: t => (t >= 1) ? t : -(Math.sqrt(1 - t * t) - 1),
   easeOutCirc: t => Math.sqrt(1 - (t -= 1) * t),
   easeInOutCirc: t => ((t /= 0.5) < 1)
-    ? -0.5 * (Math.sqrt(1 - t * t) - 1)
-    : 0.5 * (Math.sqrt(1 - (t -= 2) * t) + 1),
+      ? -0.5 * (Math.sqrt(1 - t * t) - 1)
+      : 0.5 * (Math.sqrt(1 - (t -= 2) * t) + 1),
   easeInElastic: t => atEdge(t) ? t : elasticIn(t, 0.075, 0.3),
   easeOutElastic: t => atEdge(t) ? t : elasticOut(t, 0.075, 0.3),
   easeInOutElastic(t) {
     const s = 0.1125;
     const p = 0.45;
     return atEdge(t) ? t :
-      t < 0.5
-        ? 0.5 * elasticIn(t * 2, s, p)
-        : 0.5 + 0.5 * elasticOut(t * 2 - 1, s, p);
+        t < 0.5
+            ? 0.5 * elasticIn(t * 2, s, p)
+            : 0.5 + 0.5 * elasticOut(t * 2 - 1, s, p);
   },
   easeInBack(t) {
     const s = 1.70158;
@@ -432,8 +432,8 @@ const effects = {
     return m * (t -= (2.625 / d)) * t + 0.984375;
   },
   easeInOutBounce: t => (t < 0.5)
-    ? effects.easeInBounce(t * 2) * 0.5
-    : effects.easeOutBounce(t * 2 - 1) * 0.5 + 0.5,
+      ? effects.easeInBounce(t * 2) * 0.5
+      : effects.easeOutBounce(t * 2 - 1) * 0.5 + 0.5,
 };
 
 /*!
@@ -448,547 +448,547 @@ const h1 = (b) => hex[b & 0xF];
 const h2 = (b) => hex[(b & 0xF0) >> 4] + hex[b & 0xF];
 const eq = (b) => (((b & 0xF0) >> 4) === (b & 0xF));
 function isShort(v) {
-	return eq(v.r) && eq(v.g) && eq(v.b) && eq(v.a);
+  return eq(v.r) && eq(v.g) && eq(v.b) && eq(v.a);
 }
 function hexParse(str) {
-	var len = str.length;
-	var ret;
-	if (str[0] === '#') {
-		if (len === 4 || len === 5) {
-			ret = {
-				r: 255 & map[str[1]] * 17,
-				g: 255 & map[str[2]] * 17,
-				b: 255 & map[str[3]] * 17,
-				a: len === 5 ? map[str[4]] * 17 : 255
-			};
-		} else if (len === 7 || len === 9) {
-			ret = {
-				r: map[str[1]] << 4 | map[str[2]],
-				g: map[str[3]] << 4 | map[str[4]],
-				b: map[str[5]] << 4 | map[str[6]],
-				a: len === 9 ? (map[str[7]] << 4 | map[str[8]]) : 255
-			};
-		}
-	}
-	return ret;
+  var len = str.length;
+  var ret;
+  if (str[0] === '#') {
+    if (len === 4 || len === 5) {
+      ret = {
+        r: 255 & map[str[1]] * 17,
+        g: 255 & map[str[2]] * 17,
+        b: 255 & map[str[3]] * 17,
+        a: len === 5 ? map[str[4]] * 17 : 255
+      };
+    } else if (len === 7 || len === 9) {
+      ret = {
+        r: map[str[1]] << 4 | map[str[2]],
+        g: map[str[3]] << 4 | map[str[4]],
+        b: map[str[5]] << 4 | map[str[6]],
+        a: len === 9 ? (map[str[7]] << 4 | map[str[8]]) : 255
+      };
+    }
+  }
+  return ret;
 }
 function hexString(v) {
-	var f = isShort(v) ? h1 : h2;
-	return v
-		? '#' + f(v.r) + f(v.g) + f(v.b) + (v.a < 255 ? f(v.a) : '')
-		: v;
+  var f = isShort(v) ? h1 : h2;
+  return v
+      ? '#' + f(v.r) + f(v.g) + f(v.b) + (v.a < 255 ? f(v.a) : '')
+      : v;
 }
 function round(v) {
-	return v + 0.5 | 0;
+  return v + 0.5 | 0;
 }
 const lim = (v, l, h) => Math.max(Math.min(v, h), l);
 function p2b(v) {
-	return lim(round(v * 2.55), 0, 255);
+  return lim(round(v * 2.55), 0, 255);
 }
 function n2b(v) {
-	return lim(round(v * 255), 0, 255);
+  return lim(round(v * 255), 0, 255);
 }
 function b2n(v) {
-	return lim(round(v / 2.55) / 100, 0, 1);
+  return lim(round(v / 2.55) / 100, 0, 1);
 }
 function n2p(v) {
-	return lim(round(v * 100), 0, 100);
+  return lim(round(v * 100), 0, 100);
 }
 const RGB_RE = /^rgba?\(\s*([-+.\d]+)(%)?[\s,]+([-+.e\d]+)(%)?[\s,]+([-+.e\d]+)(%)?(?:[\s,/]+([-+.e\d]+)(%)?)?\s*\)$/;
 function rgbParse(str) {
-	const m = RGB_RE.exec(str);
-	let a = 255;
-	let r, g, b;
-	if (!m) {
-		return;
-	}
-	if (m[7] !== r) {
-		const v = +m[7];
-		a = 255 & (m[8] ? p2b(v) : v * 255);
-	}
-	r = +m[1];
-	g = +m[3];
-	b = +m[5];
-	r = 255 & (m[2] ? p2b(r) : r);
-	g = 255 & (m[4] ? p2b(g) : g);
-	b = 255 & (m[6] ? p2b(b) : b);
-	return {
-		r: r,
-		g: g,
-		b: b,
-		a: a
-	};
+  const m = RGB_RE.exec(str);
+  let a = 255;
+  let r, g, b;
+  if (!m) {
+    return;
+  }
+  if (m[7] !== r) {
+    const v = +m[7];
+    a = 255 & (m[8] ? p2b(v) : v * 255);
+  }
+  r = +m[1];
+  g = +m[3];
+  b = +m[5];
+  r = 255 & (m[2] ? p2b(r) : r);
+  g = 255 & (m[4] ? p2b(g) : g);
+  b = 255 & (m[6] ? p2b(b) : b);
+  return {
+    r: r,
+    g: g,
+    b: b,
+    a: a
+  };
 }
 function rgbString(v) {
-	return v && (
-		v.a < 255
-			? `rgba(${v.r}, ${v.g}, ${v.b}, ${b2n(v.a)})`
-			: `rgb(${v.r}, ${v.g}, ${v.b})`
-	);
+  return v && (
+      v.a < 255
+          ? `rgba(${v.r}, ${v.g}, ${v.b}, ${b2n(v.a)})`
+          : `rgb(${v.r}, ${v.g}, ${v.b})`
+  );
 }
 const HUE_RE = /^(hsla?|hwb|hsv)\(\s*([-+.e\d]+)(?:deg)?[\s,]+([-+.e\d]+)%[\s,]+([-+.e\d]+)%(?:[\s,]+([-+.e\d]+)(%)?)?\s*\)$/;
 function hsl2rgbn(h, s, l) {
-	const a = s * Math.min(l, 1 - l);
-	const f = (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-	return [f(0), f(8), f(4)];
+  const a = s * Math.min(l, 1 - l);
+  const f = (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  return [f(0), f(8), f(4)];
 }
 function hsv2rgbn(h, s, v) {
-	const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
-	return [f(5), f(3), f(1)];
+  const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+  return [f(5), f(3), f(1)];
 }
 function hwb2rgbn(h, w, b) {
-	const rgb = hsl2rgbn(h, 1, 0.5);
-	let i;
-	if (w + b > 1) {
-		i = 1 / (w + b);
-		w *= i;
-		b *= i;
-	}
-	for (i = 0; i < 3; i++) {
-		rgb[i] *= 1 - w - b;
-		rgb[i] += w;
-	}
-	return rgb;
+  const rgb = hsl2rgbn(h, 1, 0.5);
+  let i;
+  if (w + b > 1) {
+    i = 1 / (w + b);
+    w *= i;
+    b *= i;
+  }
+  for (i = 0; i < 3; i++) {
+    rgb[i] *= 1 - w - b;
+    rgb[i] += w;
+  }
+  return rgb;
 }
 function rgb2hsl(v) {
-	const range = 255;
-	const r = v.r / range;
-	const g = v.g / range;
-	const b = v.b / range;
-	const max = Math.max(r, g, b);
-	const min = Math.min(r, g, b);
-	const l = (max + min) / 2;
-	let h, s, d;
-	if (max !== min) {
-		d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-		h = max === r
-			? ((g - b) / d) + (g < b ? 6 : 0)
-			: max === g
-				? (b - r) / d + 2
-				: (r - g) / d + 4;
-		h = h * 60 + 0.5;
-	}
-	return [h | 0, s || 0, l];
+  const range = 255;
+  const r = v.r / range;
+  const g = v.g / range;
+  const b = v.b / range;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h, s, d;
+  if (max !== min) {
+    d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    h = max === r
+        ? ((g - b) / d) + (g < b ? 6 : 0)
+        : max === g
+            ? (b - r) / d + 2
+            : (r - g) / d + 4;
+    h = h * 60 + 0.5;
+  }
+  return [h | 0, s || 0, l];
 }
 function calln(f, a, b, c) {
-	return (
-		Array.isArray(a)
-			? f(a[0], a[1], a[2])
-			: f(a, b, c)
-	).map(n2b);
+  return (
+      Array.isArray(a)
+          ? f(a[0], a[1], a[2])
+          : f(a, b, c)
+  ).map(n2b);
 }
 function hsl2rgb(h, s, l) {
-	return calln(hsl2rgbn, h, s, l);
+  return calln(hsl2rgbn, h, s, l);
 }
 function hwb2rgb(h, w, b) {
-	return calln(hwb2rgbn, h, w, b);
+  return calln(hwb2rgbn, h, w, b);
 }
 function hsv2rgb(h, s, v) {
-	return calln(hsv2rgbn, h, s, v);
+  return calln(hsv2rgbn, h, s, v);
 }
 function hue(h) {
-	return (h % 360 + 360) % 360;
+  return (h % 360 + 360) % 360;
 }
 function hueParse(str) {
-	const m = HUE_RE.exec(str);
-	let a = 255;
-	let v;
-	if (!m) {
-		return;
-	}
-	if (m[5] !== v) {
-		a = m[6] ? p2b(+m[5]) : n2b(+m[5]);
-	}
-	const h = hue(+m[2]);
-	const p1 = +m[3] / 100;
-	const p2 = +m[4] / 100;
-	if (m[1] === 'hwb') {
-		v = hwb2rgb(h, p1, p2);
-	} else if (m[1] === 'hsv') {
-		v = hsv2rgb(h, p1, p2);
-	} else {
-		v = hsl2rgb(h, p1, p2);
-	}
-	return {
-		r: v[0],
-		g: v[1],
-		b: v[2],
-		a: a
-	};
+  const m = HUE_RE.exec(str);
+  let a = 255;
+  let v;
+  if (!m) {
+    return;
+  }
+  if (m[5] !== v) {
+    a = m[6] ? p2b(+m[5]) : n2b(+m[5]);
+  }
+  const h = hue(+m[2]);
+  const p1 = +m[3] / 100;
+  const p2 = +m[4] / 100;
+  if (m[1] === 'hwb') {
+    v = hwb2rgb(h, p1, p2);
+  } else if (m[1] === 'hsv') {
+    v = hsv2rgb(h, p1, p2);
+  } else {
+    v = hsl2rgb(h, p1, p2);
+  }
+  return {
+    r: v[0],
+    g: v[1],
+    b: v[2],
+    a: a
+  };
 }
 function rotate(v, deg) {
-	var h = rgb2hsl(v);
-	h[0] = hue(h[0] + deg);
-	h = hsl2rgb(h);
-	v.r = h[0];
-	v.g = h[1];
-	v.b = h[2];
+  var h = rgb2hsl(v);
+  h[0] = hue(h[0] + deg);
+  h = hsl2rgb(h);
+  v.r = h[0];
+  v.g = h[1];
+  v.b = h[2];
 }
 function hslString(v) {
-	if (!v) {
-		return;
-	}
-	const a = rgb2hsl(v);
-	const h = a[0];
-	const s = n2p(a[1]);
-	const l = n2p(a[2]);
-	return v.a < 255
-		? `hsla(${h}, ${s}%, ${l}%, ${b2n(v.a)})`
-		: `hsl(${h}, ${s}%, ${l}%)`;
+  if (!v) {
+    return;
+  }
+  const a = rgb2hsl(v);
+  const h = a[0];
+  const s = n2p(a[1]);
+  const l = n2p(a[2]);
+  return v.a < 255
+      ? `hsla(${h}, ${s}%, ${l}%, ${b2n(v.a)})`
+      : `hsl(${h}, ${s}%, ${l}%)`;
 }
 const map$1 = {
-	x: 'dark',
-	Z: 'light',
-	Y: 're',
-	X: 'blu',
-	W: 'gr',
-	V: 'medium',
-	U: 'slate',
-	A: 'ee',
-	T: 'ol',
-	S: 'or',
-	B: 'ra',
-	C: 'lateg',
-	D: 'ights',
-	R: 'in',
-	Q: 'turquois',
-	E: 'hi',
-	P: 'ro',
-	O: 'al',
-	N: 'le',
-	M: 'de',
-	L: 'yello',
-	F: 'en',
-	K: 'ch',
-	G: 'arks',
-	H: 'ea',
-	I: 'ightg',
-	J: 'wh'
+  x: 'dark',
+  Z: 'light',
+  Y: 're',
+  X: 'blu',
+  W: 'gr',
+  V: 'medium',
+  U: 'slate',
+  A: 'ee',
+  T: 'ol',
+  S: 'or',
+  B: 'ra',
+  C: 'lateg',
+  D: 'ights',
+  R: 'in',
+  Q: 'turquois',
+  E: 'hi',
+  P: 'ro',
+  O: 'al',
+  N: 'le',
+  M: 'de',
+  L: 'yello',
+  F: 'en',
+  K: 'ch',
+  G: 'arks',
+  H: 'ea',
+  I: 'ightg',
+  J: 'wh'
 };
 const names = {
-	OiceXe: 'f0f8ff',
-	antiquewEte: 'faebd7',
-	aqua: 'ffff',
-	aquamarRe: '7fffd4',
-	azuY: 'f0ffff',
-	beige: 'f5f5dc',
-	bisque: 'ffe4c4',
-	black: '0',
-	blanKedOmond: 'ffebcd',
-	Xe: 'ff',
-	XeviTet: '8a2be2',
-	bPwn: 'a52a2a',
-	burlywood: 'deb887',
-	caMtXe: '5f9ea0',
-	KartYuse: '7fff00',
-	KocTate: 'd2691e',
-	cSO: 'ff7f50',
-	cSnflowerXe: '6495ed',
-	cSnsilk: 'fff8dc',
-	crimson: 'dc143c',
-	cyan: 'ffff',
-	xXe: '8b',
-	xcyan: '8b8b',
-	xgTMnPd: 'b8860b',
-	xWay: 'a9a9a9',
-	xgYF: '6400',
-	xgYy: 'a9a9a9',
-	xkhaki: 'bdb76b',
-	xmagFta: '8b008b',
-	xTivegYF: '556b2f',
-	xSange: 'ff8c00',
-	xScEd: '9932cc',
-	xYd: '8b0000',
-	xsOmon: 'e9967a',
-	xsHgYF: '8fbc8f',
-	xUXe: '483d8b',
-	xUWay: '2f4f4f',
-	xUgYy: '2f4f4f',
-	xQe: 'ced1',
-	xviTet: '9400d3',
-	dAppRk: 'ff1493',
-	dApskyXe: 'bfff',
-	dimWay: '696969',
-	dimgYy: '696969',
-	dodgerXe: '1e90ff',
-	fiYbrick: 'b22222',
-	flSOwEte: 'fffaf0',
-	foYstWAn: '228b22',
-	fuKsia: 'ff00ff',
-	gaRsbSo: 'dcdcdc',
-	ghostwEte: 'f8f8ff',
-	gTd: 'ffd700',
-	gTMnPd: 'daa520',
-	Way: '808080',
-	gYF: '8000',
-	gYFLw: 'adff2f',
-	gYy: '808080',
-	honeyMw: 'f0fff0',
-	hotpRk: 'ff69b4',
-	RdianYd: 'cd5c5c',
-	Rdigo: '4b0082',
-	ivSy: 'fffff0',
-	khaki: 'f0e68c',
-	lavFMr: 'e6e6fa',
-	lavFMrXsh: 'fff0f5',
-	lawngYF: '7cfc00',
-	NmoncEffon: 'fffacd',
-	ZXe: 'add8e6',
-	ZcSO: 'f08080',
-	Zcyan: 'e0ffff',
-	ZgTMnPdLw: 'fafad2',
-	ZWay: 'd3d3d3',
-	ZgYF: '90ee90',
-	ZgYy: 'd3d3d3',
-	ZpRk: 'ffb6c1',
-	ZsOmon: 'ffa07a',
-	ZsHgYF: '20b2aa',
-	ZskyXe: '87cefa',
-	ZUWay: '778899',
-	ZUgYy: '778899',
-	ZstAlXe: 'b0c4de',
-	ZLw: 'ffffe0',
-	lime: 'ff00',
-	limegYF: '32cd32',
-	lRF: 'faf0e6',
-	magFta: 'ff00ff',
-	maPon: '800000',
-	VaquamarRe: '66cdaa',
-	VXe: 'cd',
-	VScEd: 'ba55d3',
-	VpurpN: '9370db',
-	VsHgYF: '3cb371',
-	VUXe: '7b68ee',
-	VsprRggYF: 'fa9a',
-	VQe: '48d1cc',
-	VviTetYd: 'c71585',
-	midnightXe: '191970',
-	mRtcYam: 'f5fffa',
-	mistyPse: 'ffe4e1',
-	moccasR: 'ffe4b5',
-	navajowEte: 'ffdead',
-	navy: '80',
-	Tdlace: 'fdf5e6',
-	Tive: '808000',
-	TivedBb: '6b8e23',
-	Sange: 'ffa500',
-	SangeYd: 'ff4500',
-	ScEd: 'da70d6',
-	pOegTMnPd: 'eee8aa',
-	pOegYF: '98fb98',
-	pOeQe: 'afeeee',
-	pOeviTetYd: 'db7093',
-	papayawEp: 'ffefd5',
-	pHKpuff: 'ffdab9',
-	peru: 'cd853f',
-	pRk: 'ffc0cb',
-	plum: 'dda0dd',
-	powMrXe: 'b0e0e6',
-	purpN: '800080',
-	YbeccapurpN: '663399',
-	Yd: 'ff0000',
-	Psybrown: 'bc8f8f',
-	PyOXe: '4169e1',
-	saddNbPwn: '8b4513',
-	sOmon: 'fa8072',
-	sandybPwn: 'f4a460',
-	sHgYF: '2e8b57',
-	sHshell: 'fff5ee',
-	siFna: 'a0522d',
-	silver: 'c0c0c0',
-	skyXe: '87ceeb',
-	UXe: '6a5acd',
-	UWay: '708090',
-	UgYy: '708090',
-	snow: 'fffafa',
-	sprRggYF: 'ff7f',
-	stAlXe: '4682b4',
-	tan: 'd2b48c',
-	teO: '8080',
-	tEstN: 'd8bfd8',
-	tomato: 'ff6347',
-	Qe: '40e0d0',
-	viTet: 'ee82ee',
-	JHt: 'f5deb3',
-	wEte: 'ffffff',
-	wEtesmoke: 'f5f5f5',
-	Lw: 'ffff00',
-	LwgYF: '9acd32'
+  OiceXe: 'f0f8ff',
+  antiquewEte: 'faebd7',
+  aqua: 'ffff',
+  aquamarRe: '7fffd4',
+  azuY: 'f0ffff',
+  beige: 'f5f5dc',
+  bisque: 'ffe4c4',
+  black: '0',
+  blanKedOmond: 'ffebcd',
+  Xe: 'ff',
+  XeviTet: '8a2be2',
+  bPwn: 'a52a2a',
+  burlywood: 'deb887',
+  caMtXe: '5f9ea0',
+  KartYuse: '7fff00',
+  KocTate: 'd2691e',
+  cSO: 'ff7f50',
+  cSnflowerXe: '6495ed',
+  cSnsilk: 'fff8dc',
+  crimson: 'dc143c',
+  cyan: 'ffff',
+  xXe: '8b',
+  xcyan: '8b8b',
+  xgTMnPd: 'b8860b',
+  xWay: 'a9a9a9',
+  xgYF: '6400',
+  xgYy: 'a9a9a9',
+  xkhaki: 'bdb76b',
+  xmagFta: '8b008b',
+  xTivegYF: '556b2f',
+  xSange: 'ff8c00',
+  xScEd: '9932cc',
+  xYd: '8b0000',
+  xsOmon: 'e9967a',
+  xsHgYF: '8fbc8f',
+  xUXe: '483d8b',
+  xUWay: '2f4f4f',
+  xUgYy: '2f4f4f',
+  xQe: 'ced1',
+  xviTet: '9400d3',
+  dAppRk: 'ff1493',
+  dApskyXe: 'bfff',
+  dimWay: '696969',
+  dimgYy: '696969',
+  dodgerXe: '1e90ff',
+  fiYbrick: 'b22222',
+  flSOwEte: 'fffaf0',
+  foYstWAn: '228b22',
+  fuKsia: 'ff00ff',
+  gaRsbSo: 'dcdcdc',
+  ghostwEte: 'f8f8ff',
+  gTd: 'ffd700',
+  gTMnPd: 'daa520',
+  Way: '808080',
+  gYF: '8000',
+  gYFLw: 'adff2f',
+  gYy: '808080',
+  honeyMw: 'f0fff0',
+  hotpRk: 'ff69b4',
+  RdianYd: 'cd5c5c',
+  Rdigo: '4b0082',
+  ivSy: 'fffff0',
+  khaki: 'f0e68c',
+  lavFMr: 'e6e6fa',
+  lavFMrXsh: 'fff0f5',
+  lawngYF: '7cfc00',
+  NmoncEffon: 'fffacd',
+  ZXe: 'add8e6',
+  ZcSO: 'f08080',
+  Zcyan: 'e0ffff',
+  ZgTMnPdLw: 'fafad2',
+  ZWay: 'd3d3d3',
+  ZgYF: '90ee90',
+  ZgYy: 'd3d3d3',
+  ZpRk: 'ffb6c1',
+  ZsOmon: 'ffa07a',
+  ZsHgYF: '20b2aa',
+  ZskyXe: '87cefa',
+  ZUWay: '778899',
+  ZUgYy: '778899',
+  ZstAlXe: 'b0c4de',
+  ZLw: 'ffffe0',
+  lime: 'ff00',
+  limegYF: '32cd32',
+  lRF: 'faf0e6',
+  magFta: 'ff00ff',
+  maPon: '800000',
+  VaquamarRe: '66cdaa',
+  VXe: 'cd',
+  VScEd: 'ba55d3',
+  VpurpN: '9370db',
+  VsHgYF: '3cb371',
+  VUXe: '7b68ee',
+  VsprRggYF: 'fa9a',
+  VQe: '48d1cc',
+  VviTetYd: 'c71585',
+  midnightXe: '191970',
+  mRtcYam: 'f5fffa',
+  mistyPse: 'ffe4e1',
+  moccasR: 'ffe4b5',
+  navajowEte: 'ffdead',
+  navy: '80',
+  Tdlace: 'fdf5e6',
+  Tive: '808000',
+  TivedBb: '6b8e23',
+  Sange: 'ffa500',
+  SangeYd: 'ff4500',
+  ScEd: 'da70d6',
+  pOegTMnPd: 'eee8aa',
+  pOegYF: '98fb98',
+  pOeQe: 'afeeee',
+  pOeviTetYd: 'db7093',
+  papayawEp: 'ffefd5',
+  pHKpuff: 'ffdab9',
+  peru: 'cd853f',
+  pRk: 'ffc0cb',
+  plum: 'dda0dd',
+  powMrXe: 'b0e0e6',
+  purpN: '800080',
+  YbeccapurpN: '663399',
+  Yd: 'ff0000',
+  Psybrown: 'bc8f8f',
+  PyOXe: '4169e1',
+  saddNbPwn: '8b4513',
+  sOmon: 'fa8072',
+  sandybPwn: 'f4a460',
+  sHgYF: '2e8b57',
+  sHshell: 'fff5ee',
+  siFna: 'a0522d',
+  silver: 'c0c0c0',
+  skyXe: '87ceeb',
+  UXe: '6a5acd',
+  UWay: '708090',
+  UgYy: '708090',
+  snow: 'fffafa',
+  sprRggYF: 'ff7f',
+  stAlXe: '4682b4',
+  tan: 'd2b48c',
+  teO: '8080',
+  tEstN: 'd8bfd8',
+  tomato: 'ff6347',
+  Qe: '40e0d0',
+  viTet: 'ee82ee',
+  JHt: 'f5deb3',
+  wEte: 'ffffff',
+  wEtesmoke: 'f5f5f5',
+  Lw: 'ffff00',
+  LwgYF: '9acd32'
 };
 function unpack() {
-	const unpacked = {};
-	const keys = Object.keys(names);
-	const tkeys = Object.keys(map$1);
-	let i, j, k, ok, nk;
-	for (i = 0; i < keys.length; i++) {
-		ok = nk = keys[i];
-		for (j = 0; j < tkeys.length; j++) {
-			k = tkeys[j];
-			nk = nk.replace(k, map$1[k]);
-		}
-		k = parseInt(names[ok], 16);
-		unpacked[nk] = [k >> 16 & 0xFF, k >> 8 & 0xFF, k & 0xFF];
-	}
-	return unpacked;
+  const unpacked = {};
+  const keys = Object.keys(names);
+  const tkeys = Object.keys(map$1);
+  let i, j, k, ok, nk;
+  for (i = 0; i < keys.length; i++) {
+    ok = nk = keys[i];
+    for (j = 0; j < tkeys.length; j++) {
+      k = tkeys[j];
+      nk = nk.replace(k, map$1[k]);
+    }
+    k = parseInt(names[ok], 16);
+    unpacked[nk] = [k >> 16 & 0xFF, k >> 8 & 0xFF, k & 0xFF];
+  }
+  return unpacked;
 }
 let names$1;
 function nameParse(str) {
-	if (!names$1) {
-		names$1 = unpack();
-		names$1.transparent = [0, 0, 0, 0];
-	}
-	const a = names$1[str.toLowerCase()];
-	return a && {
-		r: a[0],
-		g: a[1],
-		b: a[2],
-		a: a.length === 4 ? a[3] : 255
-	};
+  if (!names$1) {
+    names$1 = unpack();
+    names$1.transparent = [0, 0, 0, 0];
+  }
+  const a = names$1[str.toLowerCase()];
+  return a && {
+    r: a[0],
+    g: a[1],
+    b: a[2],
+    a: a.length === 4 ? a[3] : 255
+  };
 }
 function modHSL(v, i, ratio) {
-	if (v) {
-		let tmp = rgb2hsl(v);
-		tmp[i] = Math.max(0, Math.min(tmp[i] + tmp[i] * ratio, i === 0 ? 360 : 1));
-		tmp = hsl2rgb(tmp);
-		v.r = tmp[0];
-		v.g = tmp[1];
-		v.b = tmp[2];
-	}
+  if (v) {
+    let tmp = rgb2hsl(v);
+    tmp[i] = Math.max(0, Math.min(tmp[i] + tmp[i] * ratio, i === 0 ? 360 : 1));
+    tmp = hsl2rgb(tmp);
+    v.r = tmp[0];
+    v.g = tmp[1];
+    v.b = tmp[2];
+  }
 }
 function clone(v, proto) {
-	return v ? Object.assign(proto || {}, v) : v;
+  return v ? Object.assign(proto || {}, v) : v;
 }
 function fromObject(input) {
-	var v = {r: 0, g: 0, b: 0, a: 255};
-	if (Array.isArray(input)) {
-		if (input.length >= 3) {
-			v = {r: input[0], g: input[1], b: input[2], a: 255};
-			if (input.length > 3) {
-				v.a = n2b(input[3]);
-			}
-		}
-	} else {
-		v = clone(input, {r: 0, g: 0, b: 0, a: 1});
-		v.a = n2b(v.a);
-	}
-	return v;
+  var v = {r: 0, g: 0, b: 0, a: 255};
+  if (Array.isArray(input)) {
+    if (input.length >= 3) {
+      v = {r: input[0], g: input[1], b: input[2], a: 255};
+      if (input.length > 3) {
+        v.a = n2b(input[3]);
+      }
+    }
+  } else {
+    v = clone(input, {r: 0, g: 0, b: 0, a: 1});
+    v.a = n2b(v.a);
+  }
+  return v;
 }
 function functionParse(str) {
-	if (str.charAt(0) === 'r') {
-		return rgbParse(str);
-	}
-	return hueParse(str);
+  if (str.charAt(0) === 'r') {
+    return rgbParse(str);
+  }
+  return hueParse(str);
 }
 class Color {
-	constructor(input) {
-		if (input instanceof Color) {
-			return input;
-		}
-		const type = typeof input;
-		let v;
-		if (type === 'object') {
-			v = fromObject(input);
-		} else if (type === 'string') {
-			v = hexParse(input) || nameParse(input) || functionParse(input);
-		}
-		this._rgb = v;
-		this._valid = !!v;
-	}
-	get valid() {
-		return this._valid;
-	}
-	get rgb() {
-		var v = clone(this._rgb);
-		if (v) {
-			v.a = b2n(v.a);
-		}
-		return v;
-	}
-	set rgb(obj) {
-		this._rgb = fromObject(obj);
-	}
-	rgbString() {
-		return this._valid ? rgbString(this._rgb) : this._rgb;
-	}
-	hexString() {
-		return this._valid ? hexString(this._rgb) : this._rgb;
-	}
-	hslString() {
-		return this._valid ? hslString(this._rgb) : this._rgb;
-	}
-	mix(color, weight) {
-		const me = this;
-		if (color) {
-			const c1 = me.rgb;
-			const c2 = color.rgb;
-			let w2;
-			const p = weight === w2 ? 0.5 : weight;
-			const w = 2 * p - 1;
-			const a = c1.a - c2.a;
-			const w1 = ((w * a === -1 ? w : (w + a) / (1 + w * a)) + 1) / 2.0;
-			w2 = 1 - w1;
-			c1.r = 0xFF & w1 * c1.r + w2 * c2.r + 0.5;
-			c1.g = 0xFF & w1 * c1.g + w2 * c2.g + 0.5;
-			c1.b = 0xFF & w1 * c1.b + w2 * c2.b + 0.5;
-			c1.a = p * c1.a + (1 - p) * c2.a;
-			me.rgb = c1;
-		}
-		return me;
-	}
-	clone() {
-		return new Color(this.rgb);
-	}
-	alpha(a) {
-		this._rgb.a = n2b(a);
-		return this;
-	}
-	clearer(ratio) {
-		const rgb = this._rgb;
-		rgb.a *= 1 - ratio;
-		return this;
-	}
-	greyscale() {
-		const rgb = this._rgb;
-		const val = round(rgb.r * 0.3 + rgb.g * 0.59 + rgb.b * 0.11);
-		rgb.r = rgb.g = rgb.b = val;
-		return this;
-	}
-	opaquer(ratio) {
-		const rgb = this._rgb;
-		rgb.a *= 1 + ratio;
-		return this;
-	}
-	negate() {
-		const v = this._rgb;
-		v.r = 255 - v.r;
-		v.g = 255 - v.g;
-		v.b = 255 - v.b;
-		return this;
-	}
-	lighten(ratio) {
-		modHSL(this._rgb, 2, ratio);
-		return this;
-	}
-	darken(ratio) {
-		modHSL(this._rgb, 2, -ratio);
-		return this;
-	}
-	saturate(ratio) {
-		modHSL(this._rgb, 1, ratio);
-		return this;
-	}
-	desaturate(ratio) {
-		modHSL(this._rgb, 1, -ratio);
-		return this;
-	}
-	rotate(deg) {
-		rotate(this._rgb, deg);
-		return this;
-	}
+  constructor(input) {
+    if (input instanceof Color) {
+      return input;
+    }
+    const type = typeof input;
+    let v;
+    if (type === 'object') {
+      v = fromObject(input);
+    } else if (type === 'string') {
+      v = hexParse(input) || nameParse(input) || functionParse(input);
+    }
+    this._rgb = v;
+    this._valid = !!v;
+  }
+  get valid() {
+    return this._valid;
+  }
+  get rgb() {
+    var v = clone(this._rgb);
+    if (v) {
+      v.a = b2n(v.a);
+    }
+    return v;
+  }
+  set rgb(obj) {
+    this._rgb = fromObject(obj);
+  }
+  rgbString() {
+    return this._valid ? rgbString(this._rgb) : this._rgb;
+  }
+  hexString() {
+    return this._valid ? hexString(this._rgb) : this._rgb;
+  }
+  hslString() {
+    return this._valid ? hslString(this._rgb) : this._rgb;
+  }
+  mix(color, weight) {
+    const me = this;
+    if (color) {
+      const c1 = me.rgb;
+      const c2 = color.rgb;
+      let w2;
+      const p = weight === w2 ? 0.5 : weight;
+      const w = 2 * p - 1;
+      const a = c1.a - c2.a;
+      const w1 = ((w * a === -1 ? w : (w + a) / (1 + w * a)) + 1) / 2.0;
+      w2 = 1 - w1;
+      c1.r = 0xFF & w1 * c1.r + w2 * c2.r + 0.5;
+      c1.g = 0xFF & w1 * c1.g + w2 * c2.g + 0.5;
+      c1.b = 0xFF & w1 * c1.b + w2 * c2.b + 0.5;
+      c1.a = p * c1.a + (1 - p) * c2.a;
+      me.rgb = c1;
+    }
+    return me;
+  }
+  clone() {
+    return new Color(this.rgb);
+  }
+  alpha(a) {
+    this._rgb.a = n2b(a);
+    return this;
+  }
+  clearer(ratio) {
+    const rgb = this._rgb;
+    rgb.a *= 1 - ratio;
+    return this;
+  }
+  greyscale() {
+    const rgb = this._rgb;
+    const val = round(rgb.r * 0.3 + rgb.g * 0.59 + rgb.b * 0.11);
+    rgb.r = rgb.g = rgb.b = val;
+    return this;
+  }
+  opaquer(ratio) {
+    const rgb = this._rgb;
+    rgb.a *= 1 + ratio;
+    return this;
+  }
+  negate() {
+    const v = this._rgb;
+    v.r = 255 - v.r;
+    v.g = 255 - v.g;
+    v.b = 255 - v.b;
+    return this;
+  }
+  lighten(ratio) {
+    modHSL(this._rgb, 2, ratio);
+    return this;
+  }
+  darken(ratio) {
+    modHSL(this._rgb, 2, -ratio);
+    return this;
+  }
+  saturate(ratio) {
+    modHSL(this._rgb, 1, ratio);
+    return this;
+  }
+  desaturate(ratio) {
+    modHSL(this._rgb, 1, -ratio);
+    return this;
+  }
+  rotate(deg) {
+    rotate(this._rgb, deg);
+    return this;
+  }
 }
 function index_esm(input) {
-	return new Color(input);
+  return new Color(input);
 }
 
 const isPatternOrGradient = (value) => value instanceof CanvasGradient || value instanceof CanvasPattern;
@@ -997,8 +997,8 @@ function color(value) {
 }
 function getHoverColor(value) {
   return isPatternOrGradient(value)
-    ? value
-    : index_esm(value).saturate(0.5).darken(0.1).hexString();
+      ? value
+      : index_esm(value).saturate(0.5).darken(0.1).hexString();
 }
 
 const overrides = Object.create(null);
@@ -1119,9 +1119,9 @@ function toFontString(font) {
     return null;
   }
   return (font.style ? font.style + ' ' : '')
-		+ (font.weight ? font.weight + ' ' : '')
-		+ font.size + 'px '
-		+ font.family;
+      + (font.weight ? font.weight + ' ' : '')
+      + font.size + 'px '
+      + font.family;
 }
 function _measureText(ctx, data, gc, longest, string) {
   let textWidth = data[string];
@@ -1205,80 +1205,80 @@ function drawPoint(ctx, options, x, y) {
   }
   ctx.beginPath();
   switch (style) {
-  default:
-    ctx.arc(x, y, radius, 0, TAU);
-    ctx.closePath();
-    break;
-  case 'triangle':
-    ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-    rad += TWO_THIRDS_PI;
-    ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-    rad += TWO_THIRDS_PI;
-    ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
-    ctx.closePath();
-    break;
-  case 'rectRounded':
-    cornerRadius = radius * 0.516;
-    size = radius - cornerRadius;
-    xOffset = Math.cos(rad + QUARTER_PI) * size;
-    yOffset = Math.sin(rad + QUARTER_PI) * size;
-    ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
-    ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
-    ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
-    ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
-    ctx.closePath();
-    break;
-  case 'rect':
-    if (!rotation) {
-      size = Math.SQRT1_2 * radius;
-      ctx.rect(x - size, y - size, 2 * size, 2 * size);
+    default:
+      ctx.arc(x, y, radius, 0, TAU);
+      ctx.closePath();
       break;
-    }
-    rad += QUARTER_PI;
-  case 'rectRot':
-    xOffset = Math.cos(rad) * radius;
-    yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
-    ctx.closePath();
-    break;
-  case 'crossRot':
-    rad += QUARTER_PI;
-  case 'cross':
-    xOffset = Math.cos(rad) * radius;
-    yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
-    break;
-  case 'star':
-    xOffset = Math.cos(rad) * radius;
-    yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
-    rad += QUARTER_PI;
-    xOffset = Math.cos(rad) * radius;
-    yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    ctx.moveTo(x + yOffset, y - xOffset);
-    ctx.lineTo(x - yOffset, y + xOffset);
-    break;
-  case 'line':
-    xOffset = Math.cos(rad) * radius;
-    yOffset = Math.sin(rad) * radius;
-    ctx.moveTo(x - xOffset, y - yOffset);
-    ctx.lineTo(x + xOffset, y + yOffset);
-    break;
-  case 'dash':
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(rad) * radius, y + Math.sin(rad) * radius);
-    break;
+    case 'triangle':
+      ctx.moveTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+      rad += TWO_THIRDS_PI;
+      ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+      rad += TWO_THIRDS_PI;
+      ctx.lineTo(x + Math.sin(rad) * radius, y - Math.cos(rad) * radius);
+      ctx.closePath();
+      break;
+    case 'rectRounded':
+      cornerRadius = radius * 0.516;
+      size = radius - cornerRadius;
+      xOffset = Math.cos(rad + QUARTER_PI) * size;
+      yOffset = Math.sin(rad + QUARTER_PI) * size;
+      ctx.arc(x - xOffset, y - yOffset, cornerRadius, rad - PI, rad - HALF_PI);
+      ctx.arc(x + yOffset, y - xOffset, cornerRadius, rad - HALF_PI, rad);
+      ctx.arc(x + xOffset, y + yOffset, cornerRadius, rad, rad + HALF_PI);
+      ctx.arc(x - yOffset, y + xOffset, cornerRadius, rad + HALF_PI, rad + PI);
+      ctx.closePath();
+      break;
+    case 'rect':
+      if (!rotation) {
+        size = Math.SQRT1_2 * radius;
+        ctx.rect(x - size, y - size, 2 * size, 2 * size);
+        break;
+      }
+      rad += QUARTER_PI;
+    case 'rectRot':
+      xOffset = Math.cos(rad) * radius;
+      yOffset = Math.sin(rad) * radius;
+      ctx.moveTo(x - xOffset, y - yOffset);
+      ctx.lineTo(x + yOffset, y - xOffset);
+      ctx.lineTo(x + xOffset, y + yOffset);
+      ctx.lineTo(x - yOffset, y + xOffset);
+      ctx.closePath();
+      break;
+    case 'crossRot':
+      rad += QUARTER_PI;
+    case 'cross':
+      xOffset = Math.cos(rad) * radius;
+      yOffset = Math.sin(rad) * radius;
+      ctx.moveTo(x - xOffset, y - yOffset);
+      ctx.lineTo(x + xOffset, y + yOffset);
+      ctx.moveTo(x + yOffset, y - xOffset);
+      ctx.lineTo(x - yOffset, y + xOffset);
+      break;
+    case 'star':
+      xOffset = Math.cos(rad) * radius;
+      yOffset = Math.sin(rad) * radius;
+      ctx.moveTo(x - xOffset, y - yOffset);
+      ctx.lineTo(x + xOffset, y + yOffset);
+      ctx.moveTo(x + yOffset, y - xOffset);
+      ctx.lineTo(x - yOffset, y + xOffset);
+      rad += QUARTER_PI;
+      xOffset = Math.cos(rad) * radius;
+      yOffset = Math.sin(rad) * radius;
+      ctx.moveTo(x - xOffset, y - yOffset);
+      ctx.lineTo(x + xOffset, y + yOffset);
+      ctx.moveTo(x + yOffset, y - xOffset);
+      ctx.lineTo(x - yOffset, y + xOffset);
+      break;
+    case 'line':
+      xOffset = Math.cos(rad) * radius;
+      yOffset = Math.sin(rad) * radius;
+      ctx.moveTo(x - xOffset, y - yOffset);
+      ctx.lineTo(x + xOffset, y + yOffset);
+      break;
+    case 'dash':
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(rad) * radius, y + Math.sin(rad) * radius);
+      break;
   }
   ctx.fill();
   if (options.borderWidth > 0) {
@@ -1288,7 +1288,7 @@ function drawPoint(ctx, options, x, y) {
 function _isPointInArea(point, area, margin) {
   margin = margin || 0.5;
   return !area || (point && point.x > area.left - margin && point.x < area.right + margin &&
-		point.y > area.top - margin && point.y < area.bottom + margin);
+      point.y > area.top - margin && point.y < area.bottom + margin);
 }
 function clipArea(ctx, area) {
   ctx.save();
@@ -1319,12 +1319,12 @@ function _bezierCurveTo(ctx, previous, target, flip) {
     return ctx.lineTo(target.x, target.y);
   }
   ctx.bezierCurveTo(
-    flip ? previous.cp1x : previous.cp2x,
-    flip ? previous.cp1y : previous.cp2y,
-    flip ? target.cp2x : target.cp1x,
-    flip ? target.cp2y : target.cp1y,
-    target.x,
-    target.y);
+      flip ? previous.cp1x : previous.cp2x,
+      flip ? previous.cp1y : previous.cp2y,
+      flip ? target.cp2x : target.cp1x,
+      flip ? target.cp2y : target.cp1y,
+      target.x,
+      target.y);
 }
 function renderText(ctx, text, x, y, font, opts = {}) {
   const lines = isArray(text) ? text : [text];
@@ -1404,11 +1404,11 @@ function toLineHeight(value, size) {
   }
   value = +matches[2];
   switch (matches[3]) {
-  case 'px':
-    return value;
-  case '%':
-    value /= 100;
-    break;
+    case 'px':
+      return value;
+    case '%':
+      value /= 100;
+      break;
   }
   return size * value;
 }
@@ -1418,10 +1418,10 @@ function _readValueToProps(value, props) {
   const objProps = isObject(props);
   const keys = objProps ? Object.keys(props) : props;
   const read = isObject(value)
-    ? objProps
-      ? prop => valueOrDefault(value[prop], value[props[prop]])
-      : prop => value[prop]
-    : () => value;
+      ? objProps
+          ? prop => valueOrDefault(value[prop], value[props[prop]])
+          : prop => value[prop]
+      : () => value;
   for (const prop of keys) {
     ret[prop] = numberOrZero(read(prop));
   }
@@ -1515,9 +1515,9 @@ function _lookup(table, value, cmp) {
   return {lo, hi};
 }
 const _lookupByKey = (table, key, value) =>
-  _lookup(table, value, index => table[index][key] < value);
+    _lookup(table, value, index => table[index][key] < value);
 const _rlookupByKey = (table, key, value) =>
-  _lookup(table, value, index => table[index][key] >= value);
+    _lookup(table, value, index => table[index][key] >= value);
 function _filterBetween(values, min, max) {
   let start = 0;
   let end = values.length;
@@ -1528,8 +1528,8 @@ function _filterBetween(values, min, max) {
     end--;
   }
   return start > 0 || end < values.length
-    ? values.slice(start, end)
-    : values;
+      ? values.slice(start, end)
+      : values;
 }
 const arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 function listenArrayEvents(array, listener) {
@@ -1614,7 +1614,7 @@ function _createResolver(scopes, prefixes = [''], rootScopes = scopes, fallback,
     },
     get(target, prop) {
       return _cached(target, prop,
-        () => _resolveWithPrefixes(prop, prefixes, scopes, target));
+          () => _resolveWithPrefixes(prop, prefixes, scopes, target));
     },
     getOwnPropertyDescriptor(target, prop) {
       return Reflect.getOwnPropertyDescriptor(target._scopes[0], prop);
@@ -1655,12 +1655,12 @@ function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     },
     get(target, prop, receiver) {
       return _cached(target, prop,
-        () => _resolveWithContext(target, prop, receiver));
+          () => _resolveWithContext(target, prop, receiver));
     },
     getOwnPropertyDescriptor(target, prop) {
       return target._descriptors.allKeys
-        ? Reflect.has(proxy, prop) ? {enumerable: true, configurable: true} : undefined
-        : Reflect.getOwnPropertyDescriptor(proxy, prop);
+          ? Reflect.has(proxy, prop) ? {enumerable: true, configurable: true} : undefined
+          : Reflect.getOwnPropertyDescriptor(proxy, prop);
     },
     getPrototypeOf() {
       return Reflect.getPrototypeOf(proxy);
@@ -1690,7 +1690,7 @@ function _descriptors(proxy, defaults = {scriptable: true, indexable: true}) {
 }
 const readKey = (prefix, name) => prefix ? prefix + _capitalize(name) : name;
 const needsSubResolver = (prop, value) => isObject(value) && prop !== 'adapters' &&
-  (Object.getPrototypeOf(value) === null || value.constructor === Object);
+    (Object.getPrototypeOf(value) === null || value.constructor === Object);
 function _cached(target, prop, resolve) {
   if (Object.prototype.hasOwnProperty.call(target, prop)) {
     return target[prop];
@@ -1745,7 +1745,7 @@ function resolveFallback(fallback, prop, value) {
   return isFunction(fallback) ? fallback(prop, value) : fallback;
 }
 const getScope = (key, parent) => key === true ? parent
-  : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
+    : typeof key === 'string' ? resolveObjectKey(parent, key) : undefined;
 function addScopes(set, parentScopes, key, parentFallback, value) {
   for (const parent of parentScopes) {
     const scope = getScope(key, parent);
@@ -1778,7 +1778,7 @@ function createSubResolver(parentScopes, resolver, prop, value) {
     }
   }
   return _createResolver(Array.from(set), [''], rootScopes, fallback,
-    () => subGetTarget(resolver, prop, value));
+      () => subGetTarget(resolver, prop, value));
 }
 function addScopesFromKey(set, allScopes, key, fallback, item) {
   while (key) {
@@ -1803,8 +1803,8 @@ function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
     value = _resolve(readKey(prefix, prop), scopes);
     if (defined(value)) {
       return needsSubResolver(prop, value)
-        ? createSubResolver(scopes, proxy, prop, value)
-        : value;
+          ? createSubResolver(scopes, proxy, prop, value)
+          : value;
     }
   }
 }
@@ -1932,9 +1932,9 @@ function splineCurveMonotone(points, indexAxis = 'x') {
       deltaK[i] = slopeDelta !== 0 ? (pointAfter[valueAxis] - pointCurrent[valueAxis]) / slopeDelta : 0;
     }
     mK[i] = !pointBefore ? deltaK[i]
-      : !pointAfter ? deltaK[i - 1]
-      : (sign(deltaK[i - 1]) !== sign(deltaK[i])) ? 0
-      : (deltaK[i - 1] + deltaK[i]) / 2;
+        : !pointAfter ? deltaK[i - 1]
+            : (sign(deltaK[i - 1]) !== sign(deltaK[i])) ? 0
+                : (deltaK[i - 1] + deltaK[i]) / 2;
   }
   monotoneAdjust(points, deltaK, mK);
   monotoneCompute(points, mK, indexAxis);
@@ -1975,10 +1975,10 @@ function _updateBezierControlPoints(points, options, area, loop, indexAxis) {
     for (i = 0, ilen = points.length; i < ilen; ++i) {
       point = points[i];
       controlPoints = splineCurve(
-        prev,
-        point,
-        points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen],
-        options.tension
+          prev,
+          point,
+          points[Math.min(i + 1, ilen - (loop ? 0 : 1)) % ilen],
+          options.tension
       );
       point.cp1x = controlPoints.previous.x;
       point.cp1y = controlPoints.previous.y;
@@ -2172,8 +2172,8 @@ function _steppedInterpolation(p1, p2, t, mode) {
   return {
     x: p1.x + t * (p2.x - p1.x),
     y: mode === 'middle' ? t < 0.5 ? p1.y : p2.y
-    : mode === 'after' ? t < 1 ? p1.y : p2.y
-    : t > 0 ? p2.y : p1.y
+        : mode === 'after' ? t < 1 ? p1.y : p2.y
+            : t > 0 ? p2.y : p1.y
   };
 }
 function _bezierInterpolation(p1, p2, t, mode) {
