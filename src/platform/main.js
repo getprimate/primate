@@ -41,11 +41,16 @@ function startMainWindow() {
             preload: path.join(__dirname, 'preload.js')
         }
     });
-    mainWindow.loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html')).then(() => {
-        //* Debugging
-        mainWindow.webContents.openDevTools();
-        //*/
-    });
+    mainWindow
+        .loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html'))
+        .then(() => {
+            //* Debugging
+            mainWindow.webContents.openDevTools();
+            //*/
+        })
+        .catch((err) => {
+            console.error('Main error ' + err);
+        });
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -97,14 +102,18 @@ app.on('browser-window-created', (e, window) => {
             submenu: [
                 {
                     label: 'GitHub Repository',
-                    click: async () => {
-                        await electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash');
+                    click: () => {
+                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash').catch((err) => {
+                            console.error(`Help menu error ${err}`);
+                        });
                     }
                 },
                 {
                     label: 'Report Issues',
-                    click: async () => {
-                        await electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues');
+                    click: () => {
+                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues').catch((err) => {
+                            console.error(`Help menu error ${err}`);
+                        });
                     }
                 },
                 {
@@ -112,8 +121,10 @@ app.on('browser-window-created', (e, window) => {
                 },
                 {
                     label: 'About KongDash',
-                    click: async () => {
-                        await electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/');
+                    click: () => {
+                        electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/').catch((err) => {
+                            console.error(`Help menu error ${err}`);
+                        });
                     }
                 }
             ]

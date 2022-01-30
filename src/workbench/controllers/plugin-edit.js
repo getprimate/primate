@@ -163,27 +163,11 @@ function _refreshPluginModel(model, source) {
  */
 export default function PluginEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
+    let loaderStep = 1;
 
     scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {
         return {nodeValue: protocol, displayText: protocol.toUpperCase()};
     });
-
-    switch (routeParams.pluginId) {
-        case '__create__':
-            scope.pluginId = '__none__';
-
-            viewFrame.setTitle('Apply Plugin');
-            break;
-
-        default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.pluginId}`;
-
-            scope.pluginId = routeParams.pluginId;
-
-            viewFrame.setTitle('Edit Plugin');
-            break;
-    }
 
     scope.pluginModel = _.deepClone(PluginModel);
     scope.pluginList = [];
@@ -197,51 +181,12 @@ export default function PluginEditController(scope, location, routeParams, restC
     scope.routeId = '__none__';
     scope.consumerId = '__none__';
 
-    /* Modify plugin resource endpoint according to the route parameters provided.
-     * IMPORTANT: The order of these conditional statements needs to be maintained. */
-    if (typeof routeParams.routeId === 'string') {
-        ajaxConfig.endpoint = `/routes/${routeParams.routeId}${ajaxConfig.endpoint}`;
-
-        scope.routeId = routeParams.routeId;
-        scope.pluginModel.route = scope.routeId;
-    }
-
-    if (typeof routeParams.serviceId === 'string') {
-        if (scope.routeId === '__none__') {
-            ajaxConfig.endpoint = `/services/${routeParams.serviceId}${ajaxConfig.endpoint}`;
-        }
-
-        scope.serviceId = routeParams.serviceId;
-        scope.pluginModel.service = scope.serviceId;
-    }
-
-    if (typeof routeParams.consumerId === 'string') {
-        ajaxConfig.endpoint = `/consumers/${routeParams.consumerId}${ajaxConfig.endpoint}`;
-
-        scope.consumerId = routeParams.consumerId;
-        scope.pluginModel.consumer = scope.consumerId;
-    }
-
     scope.serviceList = [];
     scope.routeList = [];
     scope.consumerList = [];
 
-    scope.fetchAvailablePlugins = () => {
+    scope.fetchAvailablePlugins = function () {
         const request = restClient.get('/plugins/enabled');
-
-        request.then(({data: response}) => {
-            scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
-        });
-
-        request.catch(() => {
-            toast.error('Could not fetch list of enabled plugins');
-        });
-
-        return true;
-    };
-
-    scope.fetchServiceList = function (endpoint = '/services') {
-        const request = restClient.get(endpoint);
 
         request.then(({data: response}) => {
             scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
@@ -320,6 +265,62 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         return false;
     };
+
+    scope.fetchServiceList = function (endpoint = '/services') {
+        const request = restClient.get(endpoint);
+
+        request.then(({data: response}) => {
+            scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
+        });
+
+        request.catch(() => {
+            toast.error('Could not fetch list of enabled plugins');
+        });
+
+        return true;
+    };
+
+    /* Modify plugin resource endpoint according to the route parameters provided.
+     * IMPORTANT: The order of these conditional statements needs to be maintained. */
+    if (typeof routeParams.routeId === 'string') {
+        ajaxConfig.endpoint = `/routes/${routeParams.routeId}${ajaxConfig.endpoint}`;
+
+        scope.routeId = routeParams.routeId;
+        scope.pluginModel.route = scope.routeId;
+    }
+
+    if (typeof routeParams.serviceId === 'string') {
+        if (scope.routeId === '__none__') {
+            ajaxConfig.endpoint = `/services/${routeParams.serviceId}${ajaxConfig.endpoint}`;
+        }
+
+        scope.serviceId = routeParams.serviceId;
+        scope.pluginModel.service = scope.serviceId;
+    }
+
+    if (typeof routeParams.consumerId === 'string') {
+        ajaxConfig.endpoint = `/consumers/${routeParams.consumerId}${ajaxConfig.endpoint}`;
+
+        scope.consumerId = routeParams.consumerId;
+        scope.pluginModel.consumer = scope.consumerId;
+    }
+
+    switch (routeParams.pluginId) {
+        case '__create__':
+            scope.pluginId = '__none__';
+
+            viewFrame.setTitle('Apply Plugin');
+            break;
+
+        default:
+            ajaxConfig.method = 'PATCH';
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.pluginId}`;
+
+            scope.pluginId = routeParams.pluginId;
+
+            viewFrame.setTitle('Edit Plugin');
+            break;
+    }
 
     viewFrame.setTitle('Apply Plugin');
 

@@ -35,7 +35,7 @@
  */
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  *
@@ -111,7 +111,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.get(endpoint);
 
         request.then(({data: response}) => {
-            scope.targetNext.offset = restUtils.urlOffset(response.next);
+            scope.targetNext.offset = urlOffset(response.next);
 
             for (let target of response.data) {
                 scope.targetList.push(target);
@@ -131,7 +131,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.get('/certificates');
 
         request.then(({data: response}) => {
-            scope.certNext.offset = restUtils.urlOffset(response.next);
+            scope.certNext.offset = urlOffset(response.next);
 
             for (let cert of response.data) {
                 cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);

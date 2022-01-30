@@ -9,6 +9,7 @@
 
 import _ from '../../lib/core-utils.js';
 import RouteModel from '../models/route-model.js';
+import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
 
 /**
  * Holds the list of available protocols and their configuration.
@@ -132,7 +133,7 @@ function _refreshRouteModel(source, model) {
  */
 function _buildRouteObject(model) {
     if (model.protocols.length === 0) {
-        throw 'Please check at least one protocol from the list.';
+        throw 'Please check at least one protocol frolet loaderFactor = 2;m the list.';
     }
 
     const payload = Object.assign({}, model);
@@ -227,6 +228,7 @@ function _buildRouteObject(model) {
  */
 export default function RouteEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/routes'};
+    let loaderSteps = 0;
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
     scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTION'];
@@ -238,38 +240,10 @@ export default function RouteEditController(scope, location, routeParams, restCl
     scope.routeModel = _.deepClone(RouteModel);
 
     scope.serviceId = '__none__';
+    scope.serviceList = [];
 
     scope.pluginList = [];
-
-    if (typeof routeParams.serviceId === 'string') {
-        ajaxConfig.endpoint = `/services/${routeParams.serviceId}/routes`;
-
-        scope.serviceId = routeParams.serviceId;
-        scope.routeModel.service = {id: routeParams.serviceId};
-
-        viewFrame.addRoute(`#!/services/${routeParams.serviceId}`);
-    } else if (typeof routeParams.pluginId === 'string') {
-        viewFrame.addRoute(`#!/plugins/${routeParams.pluginId}`);
-    } else {
-        viewFrame.addRoute('#!/services');
-    }
-
-    switch (routeParams.routeId) {
-        case '__create__':
-            viewFrame.setTitle('Create Route');
-            viewFrame.setLoaderStep(scope.serviceId === '__none__' ? 100 : 0);
-            break;
-
-        default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.routeId}`;
-
-            scope.routeId = routeParams.routeId;
-
-            viewFrame.setTitle('Edit Route');
-            viewFrame.setLoaderStep(scope.serviceId === '__none__' ? 100 / 3 : 50);
-            break;
-    }
+    scope.pluginNext = {offset: ''};
 
     /**
      * Handles route form submit event.
@@ -335,28 +309,130 @@ export default function RouteEditController(scope, location, routeParams, restCl
         return false;
     };
 
-    if (ajaxConfig.method === 'PATCH' && scope.routeId !== '__none__') {
-        const request = restClient.get(ajaxConfig.endpoint);
+    /**
+     * Retrieves the list of services for attaching to the route.
+     *
+     * @return {boolean} True if request could be made, false otherwise.
+     */
+    scope.fetchServiceList = function () {
+        if (scope.serviceId !== '__none__') return false;
+
+        const request = restClient.get('/services');
 
         request.then(({data: response}) => {
-            _refreshRouteModel(response, scope.routeModel);
-
-            viewFrame.addAction(
-                'Delete',
-                viewFrame.getNextRoute(false),
-                'critical delete',
-                'route',
-                ajaxConfig.endpoint
-            );
+            for (let service of response.data) {
+                service.displayText =
+                    typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
+                scope.serviceList.push(service);
+            }
         });
 
         request.catch(() => {
-            toast.error('Could not load route details.');
-            window.location.href = viewFrame.getNextRoute();
+            toast.error('Could not load list of services.');
         });
 
         request.finally(() => {
             viewFrame.incrementLoader();
         });
+
+        return true;
+    };
+
+    /**
+     * Retrieves the list if plugins applied on this route.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
+     */
+    scope.fetchPluginList = function (filters = null) {
+        if (scope.routeId === '__none__') return false;
+
+        const request = restClient.get(`/routes/${scope.routeId}/plugins` + urlQuery(filters));
+
+        request.then(({data: response}) => {
+            scope.pluginNext.offset = urlOffset(response.next);
+
+            for (let plugin of response.data) {
+                scope.pluginList.push({
+                    id: plugin.id,
+                    name: plugin.name,
+                    enabled: plugin.enabled
+                });
+            }
+        });
+
+        request.catch(() => {
+            toast.warning('Could not fetch route plugins.');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+    };
+
+    if (typeof routeParams.serviceId === 'string') {
+        ajaxConfig.endpoint = `/services/${routeParams.serviceId}/routes`;
+
+        scope.serviceId = routeParams.serviceId;
+        scope.routeModel.service = {id: routeParams.serviceId};
+    } else if (typeof routeParams.pluginId === 'string') {
+        // TODO add stuff
+    } else {
+        viewFrame.clearBreadcrumbs();
+        loaderSteps++;
+    }
+
+    viewFrame.addBreadcrumb('#!/routes', 'Routes');
+
+    switch (routeParams.routeId) {
+        case '__create__':
+            viewFrame.setTitle('Create Route');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
+            break;
+
+        default:
+            ajaxConfig.method = 'PATCH';
+            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.routeId}`;
+            scope.routeId = routeParams.routeId;
+
+            viewFrame.setTitle('Edit Route');
+            loaderSteps = loaderSteps + 2;
+            break;
+    }
+
+    if (_.isNone(scope.serviceId)) {
+        scope.fetchServiceList();
+    }
+
+    viewFrame.setLoaderSteps(loaderSteps);
+
+    if (ajaxConfig.method === 'PATCH' && !_.isNone(scope.routeId)) {
+        const request = restClient.get(ajaxConfig.endpoint);
+
+        request.then(({data: response}) => {
+            const {id, name} = response;
+            _refreshRouteModel(response, scope.routeModel);
+
+            viewFrame.addAction(
+                'Delete',
+                viewFrame.previousRoute(false),
+                'critical delete',
+                'route',
+                ajaxConfig.endpoint
+            );
+
+            viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : _.objectName(id));
+        });
+
+        request.catch(() => {
+            toast.error('Could not load route details.');
+            window.location.href = viewFrame.previousRoute();
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
+        scope.fetchPluginList();
     }
 }

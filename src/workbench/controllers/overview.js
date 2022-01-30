@@ -12,9 +12,6 @@ function _createChart(container, data) {
 export default function OverviewController(scope, restClient, toast, viewFrame) {
     const {document} = window;
 
-    viewFrame.setTitle('Overview');
-    viewFrame.clearRoutes();
-
     scope.refreshTimer = function (master) {
         restClient.get('/').then(
             function (response) {
@@ -84,6 +81,10 @@ export default function OverviewController(scope, restClient, toast, viewFrame) 
             }
         );
     };
+
+    viewFrame.clearBreadcrumbs();
+    viewFrame.setTitle('Overview');
+    viewFrame.addBreadcrumb('#!/overview', 'Overview');
 
     scope.refreshStatus(true);
     scope.refreshTimer(true);

@@ -1,5 +1,7 @@
 'use strict';
 
+import _ from '../../lib/core-utils.js';
+
 /**
  * Provides controller constructor for editing CA certificates.
  *
@@ -19,21 +21,6 @@ export default function TrustedCAEditController(scope, location, routeParams, re
 
     scope.caId = '__none__';
     scope.caModel = {cert: '', cert_digest: '', tags: []};
-
-    switch (routeParams.caId) {
-        case '__create__':
-            viewFrame.setTitle('Add CA Certificate');
-            break;
-
-        default:
-            restConfig.method = 'PATCH';
-            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.caId}`;
-
-            scope.caId = routeParams.caId;
-
-            viewFrame.setTitle('Edit CA Certificate');
-            break;
-    }
 
     /**
      * Builds CA  certificate object from the model and submits the form.
@@ -77,11 +64,28 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         return false;
     };
 
+    switch (routeParams.caId) {
+        case '__create__':
+            viewFrame.setTitle('Add CA Certificate');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
+            break;
+
+        default:
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.caId}`;
+
+            scope.caId = routeParams.caId;
+
+            viewFrame.setTitle('Edit CA Certificate');
+            break;
+    }
+
     /* Load the CA certificate details if a valid certificate id is provided. */
     if (restConfig.method === 'PATCH' && scope.caId !== '__none__') {
         const request = restClient.get(restConfig.endpoint);
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
+
         request.then(({data: response}) => {
             for (let key of Object.keys(response)) {
                 if (typeof scope.caModel[key] === 'undefined') {
@@ -103,6 +107,8 @@ export default function TrustedCAEditController(scope, location, routeParams, re
                 'CA certificate',
                 `/ca_certificates/${scope.caId}`
             );
+
+            viewFrame.addBreadcrumb(location.path(), _.objectName(response.id));
         });
 
         request.catch(() => {
@@ -114,6 +120,4 @@ export default function TrustedCAEditController(scope, location, routeParams, re
             viewFrame.incrementLoader();
         });
     }
-
-    viewFrame.addRoute('#!/certificates');
 }

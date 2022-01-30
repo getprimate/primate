@@ -7,19 +7,16 @@
 
 'use strict';
 
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for listing services.
  *
  * @constructor
- *
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
- *
- * @property {function} scope.toggleServiceState - Handles click events on action buttons on table rows.
  */
 export default function ServiceListController(scope, restClient, viewFrame, toast) {
     scope.serviceList = [];
@@ -32,12 +29,12 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchServiceList = function (filters = null) {
-        const request = restClient.get('/services' + restUtils.urlQuery(filters));
+        const request = restClient.get('/services' + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.serviceNext.offset = restUtils.urlOffset(response.next);
+            scope.serviceNext.offset = urlOffset(response.next);
 
             for (let service of response.data) {
                 service.displayText =
@@ -98,8 +95,11 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
         return true;
     };
 
-    viewFrame.clearRoutes();
     viewFrame.setTitle('Services');
+
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/services', 'Services');
+
     viewFrame.addAction('New Service', '#!/services/__create__');
 
     scope.fetchServiceList();

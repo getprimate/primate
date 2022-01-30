@@ -7,7 +7,7 @@
 
 'use strict';
 
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
@@ -30,12 +30,12 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchConsumerList = function (filters = null) {
-        const request = restClient.get('/consumers' + restUtils.urlQuery(filters));
+        const request = restClient.get('/consumers' + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.consumerNext.offset = restUtils.urlOffset(response.next);
+            scope.consumerNext.offset = urlOffset(response.next);
 
             for (let consumer of response.data) {
                 let createdAt = new Date(consumer.created_at);
@@ -61,7 +61,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
         return true;
     };
 
-    viewFrame.clearRoutes();
+    viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Consumers');
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 

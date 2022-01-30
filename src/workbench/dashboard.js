@@ -61,7 +61,7 @@ function initRESTClient(provider) {
  * @param {LoggerFactory} logger - Factory for logging activities.
  */
 function attachEventListeners(window, rootScope, viewFrame, logger) {
-    const main = window.document.querySelector('main.content');
+    const main = window.document.getElementById('mainWrapper');
 
     rootScope.$on('$locationChangeStart', () => {
         viewFrame.clearActions();

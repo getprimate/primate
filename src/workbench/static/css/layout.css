@@ -105,7 +105,11 @@ ul.list li {
 .app-layout { width: 100%; height: 100%; }
 
 /* Sidebar navigation */
-aside.drawer {
+aside#sidebarMenu {
+    --primary-bg: var(--theme__primary-bg);
+    --border-size: 1px;
+    --border_fg: #22242A;
+
     float: none;
     position: absolute;
     left: 0;
@@ -113,11 +117,12 @@ aside.drawer {
     height: 100%;
     padding: 0;
     margin: 0;
-    background-color: var(--theme__accent-bg);
+    background-color: var(--primary-bg);
+    border-right: var(--border-size) solid var(--border_fg);
     color: var(--theme__accent-fg);
 }
 
-aside .branding {
+aside#sidebarMenu .branding {
     max-height: 150px;
     margin: 20px 30px 20px 30px;
     padding: 0;
@@ -130,7 +135,7 @@ aside .branding {
     background: var(--theme__accent-bg) none;
 }
 
-aside nav.navigation {
+aside#sidebarMenu nav.navigation {
     display: block;
     width: 100%;
     height: auto;
@@ -147,14 +152,14 @@ aside.drawer nav.navigation .navigation__title {
     opacity: 0.80;
 }
 
-aside nav.navigation ul.navigation__menu {
+aside#sidebarMenu nav.navigation ul.navigation__menu {
     display: block;
     width: 100%;
     margin: 0;
     padding: 0;
 }
 
-aside nav.navigation ul.navigation__menu li {
+aside#sidebarMenu nav.navigation ul.navigation__menu li {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -163,7 +168,7 @@ aside nav.navigation ul.navigation__menu li {
     padding: 10px 20px 10px 20px;
 }
 
-aside nav.navigation ul.navigation__menu li.active {
+aside#sidebarMenu nav.navigation ul.navigation__menu li.active {
     border-radius: var(--theme__input-corner);
     background-color: var(--theme__primary-bg);
     color: var(--theme__primary-fg);
@@ -171,7 +176,7 @@ aside nav.navigation ul.navigation__menu li.active {
     text-shadow: none;
 }
 
-aside nav.navigation a.navigation__link {
+aside#sidebarMenu nav.navigation a.navigation__link {
     display: inline-block;
     cursor: pointer;
     color: var(--std__default);
@@ -181,33 +186,33 @@ aside nav.navigation a.navigation__link {
     vertical-align: middle;
 }
 
-aside nav.navigation a.navigation__link > span {
+aside#sidebarMenu nav.navigation a.navigation__link > span {
     display: inline-block;
     cursor: pointer;
     vertical-align: middle;
 }
 
-aside nav.navigation a.navigation__link > span.material-icons {
+aside#sidebarMenu nav.navigation a.navigation__link > span.material-icons {
     font-size: 20px;
     margin-right: 10px;
 }
 
-    aside a.navigation__link:hover { color: var(--theme__primary-fg); }
+    aside#sidebarMenu a.navigation__link:hover { color: var(--theme__primary-fg); }
 
-    aside nav.navigation ul.navigation__menu li:first-child {
+    aside#sidebarMenu nav.navigation ul.navigation__menu li:first-child {
         margin-top: 0;
     }
 
-aside a.navigation__link:nth-child(2) > span.material-icons {
+aside#sidebarMenu a.navigation__link:nth-child(2) > span.material-icons {
     font-size: 20px;
     margin-right: 0 !important;
 }
 
-    aside a.navigation__link:nth-child(2):hover {
+    aside#sidebarMenu a.navigation__link:nth-child(2):hover {
         color: var(--std__success);
     }
 
-aside .drawer__base {
+aside#sidebarMenu .drawer__base {
     float: none;
     position: absolute;
     bottom: 0;
@@ -216,7 +221,7 @@ aside .drawer__base {
     background-color: var(--widget__primary-bg);
 }
 
-aside .drawer__base ul.base-menu {
+aside#sidebarMenu .drawer__base ul.base-menu {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -226,20 +231,20 @@ aside .drawer__base ul.base-menu {
     padding: 0;
 }
 
-aside .drawer__base ul.base-menu li {
+aside#sidebarMenu .drawer__base ul.base-menu li {
     display: inline-block;
     margin: 0;
     padding: 0;
 }
 
-aside .drawer__base ul.base-menu li span.material-icons {
+aside#sidebarMenu .drawer__base ul.base-menu li span.material-icons {
     display: inline-block;
     vertical-align: text-top;
     font-size: 1.35rem;
     margin-right: 5px;
 }
 
-aside .drawer__base button.text {
+aside#sidebarMenu .drawer__base button.text {
     display: inline;
     margin: 0;
     padding: 0;
@@ -251,14 +256,14 @@ aside .drawer__base button.text {
 }
 
     /* Main section */
-main.content {
+main#mainWrapper {
     height: 100%;
     overflow: hidden;
     --widget__heading-sz: 1.1rem;
     background-color: var(--theme__primary-bg);
 }
 
-aside.drawer + main.content {
+aside#sidebarMenu + main#mainWrapper {
     float: none;
     position: absolute;
     left: 250px;
@@ -266,44 +271,55 @@ aside.drawer + main.content {
     padding: 0;
 }
 
-main header.content__header {
+header#mainHeader {
+    --primary-bg: transparent;
+    --primary-fg: var(--theme__primary-fg);
+    --border-size: 1px;
+    --border-fg: #22242A;
+
     float: none;
     position: absolute;
     max-height: 100px;
-    width: calc(100% - 50px);
-    height: 90px;
-    padding: 33px 0 0 0;
-    margin: 0 25px;
-    border-bottom: 1px solid var(--theme__header-bd);
+    width: 100%;
+    height: 60px;
+    padding: 15px 25px 0 25px;
+    margin: 0;
+    border-bottom: var(--border-size) solid var(--border-fg);
     background-color: var(--theme__header-bg);
     color: var(--theme__header-fg);
     z-index: 100;
 }
 
-    main header.content__header::after {
+    header#mainHeader::after {
         display: table;
         content: " ";
         clear: both;
     }
 
-main header.content__header .navigate,
-main header.content__header .title {
+header#mainHeader .navigate {
     display: block;
     float: left;
     position: relative;
     height: 100%;
     width: auto;
     margin-right: 5px;
+    padding-top: 6px;
     vertical-align: middle;
 }
 
-main header.content__header .actions {
+header#mainHeader .actions {
     float: right;
     position: relative;
     height: 100%;
 }
 
-.actions > .btn.create.success {
+header#mainHeader .actions > .btn.create.success,
+header#mainHeader .actions > .btn.critical.delete {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+header#mainHeader .actions > .btn.create.success {
     background: transparent none;
     color: var(--theme__primary-fg);
     font-weight: 500;
@@ -315,24 +331,21 @@ main header.content__header .actions {
         background-image: linear-gradient(to right, var(--std__success), var(--std__success)), var(--overlay__dark-10);
     }
 
-main header.content__header .navigate a {
+header#mainHeader .navigate button.text {
     display: inline-block;
-    padding-top: 5px;
+    padding: 0;
     text-align: left;
 }
-main header.content__header .navigate a .material-icons {
-    font-size: 2.15rem;
+
+header#mainHeader .navigate .material-icons {
+    font-size: 1.35rem;
     color: var(--theme__accent-fg);
 }
 
-main header.content__header .navigate a:hover .material-icons {
-    color: var(--theme__primary-fg);
-}
+header#mainHeader .title { padding: 0; font-size: 2rem; font-weight: 300; }
+header#mainHeader .navigate ~ .title { padding-left: 0; }
 
-main header.content__header .title { padding: 0; font-size: 2rem; font-weight: 300; }
-main header.content__header .navigate ~ .title { padding-left: 0; }
-
-main header.content__header .loader-bar {
+header#mainHeader .loader-bar {
     display: block;
     float: none;
     position: fixed;
@@ -348,7 +361,42 @@ main header.content__header .loader-bar {
     transition: width 0.4s linear, opacity 0.4s linear, visibility 0.4s linear;
 }
 
-main section.content__wrapper {
+header#mainHeader ul.breadcrumbs {
+    float: left;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+header#mainHeader ul.breadcrumbs li {
+    display: inline-block;
+    height: 100%;
+    padding: 5px 1px;
+    margin-right: 5px;
+}
+
+header#mainHeader ul.breadcrumbs li > a {
+    font-weight: normal;
+    color: var(--theme__default-fg);
+}
+
+header#mainHeader ul.breadcrumbs li .material-icons {
+    margin-top: -2px; /* TODO : This is a temporary fix! */
+    vertical-align: middle;
+    font-size: 1.2rem;
+}
+
+header#mainHeader ul.breadcrumbs li > span {
+    font-weight: normal;
+    color: var(--theme__primary-fg);
+}
+
+main#mainWrapper section.content__wrapper {
     width: calc(100% - 25px);
     height: calc(100% - 175px);
     margin: 90px 0 0 25px;
@@ -359,7 +407,8 @@ main section.content__wrapper {
 }
 
 footer.footer.maximized + section.content__wrapper,
-main section.content__wrapper.resized {
+
+main#mainWrapper section.content__wrapper.resized {
     height: calc(100% - 380px) !important;
 }
 
@@ -598,7 +647,7 @@ select,
 label.checkbox {
     width: 100%;
     padding: 10px;
-    border: 2px solid var(--input__primary-bd);
+    border: var(--input__border-size) solid var(--input__primary-bd);
     border-radius: var(--theme__input-corner);
     background-color: var(--input__primary-bg);
     color: var(--theme__primary-fg);
@@ -789,7 +838,7 @@ multi-check {
     overflow-y: auto;
     padding: 0;
     background: var(--input__primary-bg) none;
-    border: 2px solid var(--input__primary-bd);
+    border: var(--input__border-size) solid var(--input__primary-bd);
     border-radius: var(--theme__input-corner);
 }
 
@@ -811,7 +860,7 @@ token-input {
     display: block;
     width: 100%;
     padding: 0;
-    border: 2px solid var(--input__primary-bd);
+    border: var(--input__border-size) solid var(--input__primary-bd);
     border-radius: var(--theme__input-corner);
     background: var(--input__primary-bg) none;
 }

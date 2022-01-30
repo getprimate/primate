@@ -8,7 +8,7 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for listing routes.
@@ -31,12 +31,12 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchRouteList = function (filters = null) {
-        const request = restClient.get('/routes' + restUtils.urlQuery(filters));
+        const request = restClient.get('/routes' + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.routeNext.offset = restUtils.urlOffset(response.next);
+            scope.routeNext.offset = urlOffset(response.next);
 
             for (let route of response.data) {
                 route.displayText = typeof route.name === 'string' ? route.name : _.objectName(route.id);
@@ -57,8 +57,9 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
         return true;
     };
 
-    viewFrame.clearRoutes();
+    viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Routes');
+    viewFrame.addBreadcrumb('#!/routes', 'Routes');
     viewFrame.addAction('New Route', '#!/routes/__create__');
 
     scope.fetchRouteList();

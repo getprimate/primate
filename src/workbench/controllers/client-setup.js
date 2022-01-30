@@ -155,6 +155,9 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             scope.setupModel[property] = defaultHost[property];
         }
 
-        scope.attemptConnection();
+        let timeout = setTimeout(() => {
+            scope.attemptConnection();
+            clearTimeout(timeout);
+        }, 2000);
     }
 }

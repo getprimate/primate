@@ -184,14 +184,11 @@
             <div data-ng-if="routeId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!{{currentPath}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
         </div><!-- .well__heading -->
 
-        <table id="pluginListTable" class="table">
-            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
 
+        <table id="pluginListTable" class="board">
             <tbody>
             <tr data-ng-repeat="plugin in pluginList">
-                <td><label class="checkbox success">
-                    <input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" />
-                </label></td>
+                <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" /></td>
 
                 <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
                 <td>
@@ -204,6 +201,10 @@
             </tbody>
 
             <tfoot data-ng-if="pluginList.length<=0"><tr><th colspan="3">No plugins enabled for this route.</th></tr></tfoot>
+
+            <tfoot data-ng-if="pluginNext.offset.length<=5" class="pagination">
+                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchPluginList(pluginNext)">Load Next</button></th></tr>
+            </tfoot>
         </table>
     </div>
 

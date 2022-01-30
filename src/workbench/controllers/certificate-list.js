@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
@@ -28,10 +28,10 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCertList = (filters = null) => {
-        const request = restClient.get('/certificates' + restUtils.urlQuery(filters));
+        const request = restClient.get('/certificates' + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.certNext.offset = restUtils.urlOffset(response.next);
+            scope.certNext.offset = urlOffset(response.next);
 
             for (let certificate of response.data) {
                 certificate.name = _.objectName(certificate.id);
@@ -62,10 +62,10 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCaList = (filters = null) => {
-        const request = restClient.get('/ca_certificates' + restUtils.urlQuery(filters));
+        const request = restClient.get('/ca_certificates' + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.caNext.offset = restUtils.urlOffset(response.next);
+            scope.caNext.offset = urlOffset(response.next);
 
             for (let ca of response.data) {
                 ca.name = _.objectName(ca.id);
@@ -93,10 +93,10 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchSniList = (filters = null) => {
-        const request = restClient.get('/snis' + restUtils.urlQuery(filters));
+        const request = restClient.get('/snis' + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.sniNext.offset = restUtils.urlOffset(response.next);
+            scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
                 if (typeof sni.certificate !== 'object' || sni.certificate === null) {
@@ -119,9 +119,11 @@ export default function CertificateListController(scope, restClient, viewFrame, 
         return true;
     };
 
-    viewFrame.clearRoutes();
     viewFrame.setTitle('Services');
-    viewFrame.setLoaderStep(100 / 3);
+    viewFrame.setLoaderSteps(3);
+
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
 
     viewFrame.addAction('New Certificate', '#!/certificates/__create__');
     viewFrame.addAction('New Trusted CA', '#!/trusted-cas/__create__');

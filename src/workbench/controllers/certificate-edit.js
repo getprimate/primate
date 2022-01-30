@@ -8,7 +8,7 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for editing certificate objects.
@@ -38,28 +38,6 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.upstreamList = [];
     scope.upstreamNext = {offset: ''};
 
-    if (typeof routeParams.upstreamId === 'string') {
-        restConfig.endpoint = `/upstreams/${routeParams.upstreamId}/client_certificate`;
-        viewFrame.addRoute(`#!/upstreams/${routeParams.upstreamId}`);
-    } else {
-        viewFrame.addRoute('#!/certificates');
-    }
-
-    switch (routeParams.certId) {
-        case '__create__':
-            viewFrame.setTitle('Add Certificate');
-            break;
-
-        default:
-            restConfig.method = 'PATCH';
-            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.certId}`;
-
-            scope.certId = routeParams.certId;
-
-            viewFrame.setTitle('Edit Certificate');
-            break;
-    }
-
     /**
      * Retrieves the SNIs associated with the current certificate.
      *
@@ -67,10 +45,10 @@ export default function CertificateEditController(scope, location, routeParams, 
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchSniList = (filters = null) => {
-        const request = restClient.get(`/certificates/${scope.certId}/snis` + restUtils.urlQuery(filters));
+        const request = restClient.get(`/certificates/${scope.certId}/snis` + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.sniNext.offset = restUtils.urlOffset(response.next);
+            scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
                 sni.tags = sni.tags.length >= 1 ? sni.tags.join(', ') : 'No tags added.';
@@ -97,10 +75,10 @@ export default function CertificateEditController(scope, location, routeParams, 
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchUpstreamList = (filters = null) => {
-        const request = restClient.get(`/certificates/${scope.certId}/upstreams` + restUtils.urlQuery(filters));
+        const request = restClient.get(`/certificates/${scope.certId}/upstreams` + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.upstreamNext = restUtils.urlOffset(response.next);
+            scope.upstreamNext = urlOffset(response.next);
 
             for (let upstream of response.data) {
                 scope.upstreamList.push(upstream);
@@ -214,10 +192,34 @@ export default function CertificateEditController(scope, location, routeParams, 
         return false;
     };
 
+    if (typeof routeParams.upstreamId === 'string') {
+        restConfig.endpoint = `/upstreams/${routeParams.upstreamId}/client_certificate`;
+    } else {
+        viewFrame.clearBreadcrumbs();
+    }
+
+    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
+
+    switch (routeParams.certId) {
+        case '__create__':
+            viewFrame.setTitle('Add Certificate');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
+            break;
+
+        default:
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.certId}`;
+
+            scope.certId = routeParams.certId;
+
+            viewFrame.setTitle('Edit Certificate');
+            break;
+    }
+
     if (restConfig.method === 'PATCH' && scope.certId !== '__none__') {
         const request = restClient.get(restConfig.endpoint);
 
-        viewFrame.setLoaderStep(100 / 3);
+        viewFrame.setLoaderSteps(3);
 
         request.then(({data: response}) => {
             for (let key of Object.keys(response)) {
@@ -240,6 +242,8 @@ export default function CertificateEditController(scope, location, routeParams, 
                 'certificate',
                 `/certificates/${scope.certId}`
             );
+
+            viewFrame.addBreadcrumb(location.path(), _.objectName(response.id));
         });
 
         request.catch(() => {

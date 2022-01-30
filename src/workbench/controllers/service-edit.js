@@ -8,7 +8,7 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
 
 import ServiceModel from '../models/service-model.js';
 
@@ -37,7 +37,6 @@ const ENUM_PROTOCOL = {
 /**
  * Populates Service model after sanitising values in the service object.
  *
- * @private
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#service-object
  *
  * @param {ServiceModel} model - A service model object.
@@ -87,7 +86,6 @@ function populateServiceModel(model, source = {}) {
  * The function validates service model before preparing the payload. Throws an error
  * if the validation fails.
  *
- * @private
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#service-object
  *
  * @param {ServiceModel} model - The source service model
@@ -147,6 +145,7 @@ function prepareServiceObject(model) {
  */
 export default function ServiceEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/services'};
+    let loaderSteps = 2;
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
@@ -161,22 +160,6 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
     scope.pluginList = [];
     scope.pluginNext = {offset: ''};
-
-    viewFrame.addRoute('#!/services');
-
-    switch (routeParams.serviceId) {
-        case '__create__':
-            viewFrame.setTitle('Create Service');
-            break;
-
-        default:
-            restConfig.method = 'PATCH';
-            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.serviceId}`;
-
-            scope.serviceId = routeParams.serviceId;
-            viewFrame.setTitle('Edit Service');
-            break;
-    }
 
     /**
      * Retrieves the public client certificates.
@@ -247,12 +230,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchMappedRoutes = function (filters = null) {
-        const request = restClient.get(`/services/${scope.serviceId}/routes` + restUtils.urlQuery(filters));
+        const request = restClient.get(`/services/${scope.serviceId}/routes` + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.routeNext.offset = restUtils.urlOffset(response.next);
+            scope.routeNext.offset = urlOffset(response.next);
 
             for (let current of response.data) {
                 scope.routeList.push(current);
@@ -277,12 +260,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchAppliedPlugins = function (filters = null) {
-        const request = restClient.get(`/services/${scope.serviceId}/plugins` + restUtils.urlQuery(filters));
+        const request = restClient.get(`/services/${scope.serviceId}/plugins` + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.pluginNext.offset = restUtils.urlOffset(response.next);
+            scope.pluginNext.offset = urlOffset(response.next);
 
             for (let plugin of response.data) {
                 scope.pluginList.push({id: plugin.id, name: plugin.name, enabled: plugin.enabled});
@@ -387,14 +370,35 @@ export default function ServiceEditController(scope, location, routeParams, rest
         return true;
     };
 
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/services', 'Services');
+
+    switch (routeParams.serviceId) {
+        case '__create__':
+            viewFrame.setTitle('Create Service');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
+            break;
+
+        default:
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.serviceId}`;
+
+            scope.serviceId = routeParams.serviceId;
+            viewFrame.setTitle('Edit Service');
+            loaderSteps = 5;
+            break;
+    }
+
+    viewFrame.setLoaderSteps(loaderSteps);
+
     if (restConfig.method === 'PATCH' && scope.serviceId !== '__none__') {
         const request = restClient.get(restConfig.endpoint);
 
-        viewFrame.setLoaderStep(100 / 5);
-
         request.then(({data: response}) => {
+            const {id, name} = response;
             populateServiceModel(scope.serviceModel, response);
 
+            viewFrame.addBreadcrumb(`#!/services/${id}`, _.isText(name) ? name : _.objectName(id));
             viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 
@@ -412,8 +416,6 @@ export default function ServiceEditController(scope, location, routeParams, rest
         scope.fetchMappedRoutes();
         scope.fetchAppliedPlugins();
     }
-
-    viewFrame.setLoaderStep(100 / 2);
 
     scope.fetchPublicCertificates();
     scope.fetchCACertificates();

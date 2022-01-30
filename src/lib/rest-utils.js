@@ -9,7 +9,7 @@
 
 import _ from './core-utils.js';
 
-function urlOffset(location) {
+export function urlOffset(location) {
     if (!_.isText(location)) return '';
 
     const url = new URL(location);
@@ -18,7 +18,7 @@ function urlOffset(location) {
     return params.has('offset') ? params.get('offset') : '';
 }
 
-function urlQuery(options) {
+export function urlQuery(options) {
     if (_.isObject(options)) {
         const params = new URLSearchParams();
 
@@ -35,8 +35,3 @@ function urlQuery(options) {
 
     return '';
 }
-
-export default {
-    urlOffset,
-    urlQuery
-};

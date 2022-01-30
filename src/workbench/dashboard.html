@@ -10,7 +10,7 @@
 <body class="body">
 
 <div class="app-layout hidden">
-<aside class="drawer" data-ng-controller="SidebarController">
+<aside id="sidebarMenu" data-ng-controller="SidebarController">
     <div class="branding">KongDash</div><!-- .branding -->
     <nav class="navigation" data-ng-click="redirectNav($event)">
         <div class="navigation__title">Node</div><!-- .navigation__title -->
@@ -39,18 +39,25 @@
     </section>
 </aside>
 
-<main class="content">
-    <header class="content__header" data-ng-controller="HeaderController">
+<main id="mainWrapper">
+    <header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
         <div class="navigate" data-ng-if="frameState.routeNext.length >= 1">
             <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
         </div>
-        <div class="title">{{frameState.frameTitle}}</div>
+
+        <ul class="breadcrumbs">
+           <li data-ng-repeat="crumb in frameState.breadcrumbs track by $index">
+               <a data-ng-if="$index < frameState.breadcrumbs.length - 1" href="{{crumb.redirect}}">{{crumb.displayText}} <span class="material-icons">navigate_next</span></a>
+               <span data-ng-if="$index === frameState.breadcrumbs.length - 1">{{crumb.displayText}}</span>
+           </li>
+        </ul>
+
         <div class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
             <button type="button" class="{{button.styles}}" data-ng-repeat="button in frameState.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button>
         </div>
         <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
     </header>
-    <footer class="footer" data-ng-controller="FooterController">
+    <footer id="mainFooter" class="footer" data-ng-controller="FooterController">
         <section class="footer__window">
             <div class="activity-log">
                 <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>

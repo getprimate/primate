@@ -8,9 +8,10 @@
 'use strict';
 
 import _ from '../../lib/core-utils.js';
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
+ * Provides controller constructor for editing plugin objects.
  * @constructor
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
@@ -28,12 +29,12 @@ export default function PluginListController(scope, restClient, viewFrame, toast
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchPluginList = function (filters = null) {
-        const request = restClient.get('/plugins' + restUtils.urlQuery(filters));
+        const request = restClient.get('/plugins' + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.pluginNext.offset = restUtils.urlOffset(response.next);
+            scope.pluginNext.offset = urlOffset(response.next);
 
             for (let plugin of response.data) {
                 let objectNames = [];
@@ -89,8 +90,11 @@ export default function PluginListController(scope, restClient, viewFrame, toast
         return true;
     };
 
-    viewFrame.clearRoutes();
     viewFrame.setTitle('Plugins');
+
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('!#/plugins', 'Plugins');
+
     viewFrame.addAction('Apply Plugin', '#!/plugins/__create__');
 
     scope.fetchPluginList();

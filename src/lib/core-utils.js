@@ -19,7 +19,19 @@ function _isNil(value) {
 }
 
 function _isNone(value) {
-    return typeof value === 'undefined' || value === null;
+    switch (typeof value) {
+        case 'object':
+            return value === null;
+
+        case 'undefined':
+            return true;
+
+        case 'string':
+            return value === '__none__';
+
+        default:
+            return false;
+    }
 }
 
 function isText(value) {

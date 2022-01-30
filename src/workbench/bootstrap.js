@@ -20,12 +20,4 @@ ipcHandler.onRequestDone('Write-Connection', () => {
 
 KongDash.controller('ClientSetupController', ['$scope', 'restClient', 'viewFrame', 'toast', ClientSetupController]);
 
-KongDash.controller('FooterController', [
-    '$window',
-    '$scope',
-    '$http',
-    'viewFrame',
-    'toast',
-    'logger',
-    FooterController
-]);
+KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);

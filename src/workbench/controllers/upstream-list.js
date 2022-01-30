@@ -7,7 +7,7 @@
 
 'use strict';
 
-import restUtils from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
  * Provides controller constructor for listing upstream objects.
@@ -29,12 +29,12 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchUpstreamList = (filters = null) => {
-        const request = restClient.get('/upstreams' + restUtils.urlQuery(filters));
+        const request = restClient.get('/upstreams' + urlQuery(filters));
 
-        viewFrame.setLoaderStep(100);
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.upstreamNext.offset = restUtils.urlOffset(response.next);
+            scope.upstreamNext.offset = urlOffset(response.next);
 
             for (let upstream of response.data) {
                 scope.upstreamList.push({
@@ -56,7 +56,7 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
     };
 
     viewFrame.setTitle('Upstreams');
-    viewFrame.clearRoutes();
+    viewFrame.clearBreadcrumbs();
 
     viewFrame.addAction('New Upstream', '#!/upstreams/__create__');
 

@@ -14,20 +14,23 @@
  * Values could be set from any controller.
  *
  * @typedef {Object} ViewFrameFactory
- * @property {(function(string):void)} addRoute - Adds an entry to the route history.
- * @property {(function(void):void)} clearRoutes - Clears the route history stack.
- * @property {(function(void): string[])} getRoutes - Returns the route history stack.
- * @property {(function(boolean): string)} getNextRoute - Pops the next route from history stack.
+ * @property {(function(redirect: string, displayText: string):void)} addBreadcrumb - Adds an entry to the route history.
+ * @property {(function(void):void)} clearBreadcrumbs - Clears the route history stack.
+ * @property {(function(void): string[])} getBreadcrumbs - Returns the route history stack.
+ * @property {(function(shouldPop: boolean=): string)} previousRoute - Pops the next route from history stack.
+ * @property {(function(void): boolean)} hasBreadcrumbs - Tells if the breadcrumbs are present.
  * @property {(function(string): void)} setTitle - Sets the current view title.
  * @property {(function(displayText:string, redirect:string=, styles:string=,
  *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
  * @property {(function(void): object[])} getActions - Returns the action buttons.
  * @property {(function(void):void)} clearActions - Clears action buttons.
  * @property {(function(void): Object)} getState - Returns the view frame state.
- * @property {(function(number):void)} setLoaderStep - Sets the loader step with respect to viewport width.
+ * @property {(function(number):void)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
  * @property {function(void):void} incrementLoader - Increments loader width by adding loader step.
  */
+
+import _ from '../../lib/core-utils.js';
 
 /**
  * Holds the current view frame state.
@@ -37,7 +40,7 @@
 const frameState = {
     frameTitle: '',
     routeNext: '',
-    routeHistory: [],
+    breadcrumbs: [],
     serverHost: '',
     actionButtons: [],
     loaderWidth: 0,
@@ -74,36 +77,40 @@ export default function ViewFrameFactory() {
             frameState.actionButtons.splice(0);
         },
 
-        addRoute(route) {
-            frameState.routeNext = route;
-            frameState.routeHistory.push(route);
+        addBreadcrumb(redirect, displayText = null) {
+            if (_.isEmpty(displayText)) {
+                displayText = redirect;
+            }
+
+            frameState.breadcrumbs.push({redirect, displayText});
+            frameState.routeNext = frameState.breadcrumbs.length >= 2 ? redirect : '';
         },
 
-        clearRoutes() {
-            frameState.routeHistory.splice(0);
+        clearBreadcrumbs() {
+            frameState.breadcrumbs.splice(0);
             frameState.routeNext = '';
         },
 
-        getRoutes() {
-            return frameState.routeHistory;
+        getBreadcrumbs() {
+            return frameState.breadcrumbs;
         },
 
-        hasNextRoute() {
-            return frameState.routeHistory.length >= 1;
+        hasBreadcrumbs() {
+            return frameState.breadcrumbs.length >= 1;
         },
 
-        getNextRoute(shouldPop = true) {
+        previousRoute(shouldPop = true) {
             if (shouldPop === false) return frameState.routeNext;
 
-            if (frameState.routeHistory.length === 0) frameState.routeNext = '';
-            else frameState.routeNext = frameState.routeHistory.pop();
+            if (frameState.breadcrumbs.length === 0) frameState.routeNext = '';
+            else frameState.routeNext = frameState.breadcrumbs.pop()['redirect'];
 
             return frameState.routeNext;
         },
 
-        setLoaderStep(step) {
-            if (frameState.loaderWidth === 0) {
-                frameState.loaderStep = Math.ceil(step);
+        setLoaderSteps(steps) {
+            if (frameState.loaderWidth === 0 && steps >= 1) {
+                frameState.loaderStep = Math.ceil(100 / steps);
                 frameState.loaderWidth = 1;
                 frameState.loaderUnit = `${frameState.loaderWidth}vw`;
             }

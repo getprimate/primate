@@ -17,14 +17,18 @@
 
     /* Primary theme colours. */
     --theme__primary-bg : #1B1D22;
-    --theme__accent-bg  : #121318;
+    --theme__accent-bg  : #1B1D22 /* #121318 */;
     --theme__primary-fg : #FAFAFA;
     --theme__accent-fg  : #7B849C;
+
+    --theme__default-fg: #7B849C;
 
     /* Header-bar colours. */
     --theme__header-bg: transparent;
     --theme__header-fg: var(--theme__primary-fg);
     --theme__header-bd: transparent;
+
+    /* Header theme styles. */
 
     /* Widget Colours */
     --widget__primary-bg : #22242A;
@@ -36,6 +40,7 @@
     --input__focused-bg : #292F3A;
     --input__primary-bd : #484D5A;
     --input__focused-bd : #1F5EFF;
+    --input__border-size: 1px;
 
     --theme__widget-corner: 8px;
     --theme__input-corner: 6px;
