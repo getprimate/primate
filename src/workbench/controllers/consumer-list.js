@@ -24,7 +24,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     scope.consumerNext = {offset: ''};
 
     /**
-     * Retrieves the consumer list.
+     * Retrieves the list of consumers.
      *
      * @param {string|object|null} filters - Filters to the Admin API.
      * @return {boolean} True if request could be made, false otherwise.
@@ -51,7 +51,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
         });
 
         request.catch(() => {
-            toast.error('Could not load the list of consumers.');
+            toast.error('Unable to fetch consumers.');
         });
 
         request.finally(() => {
@@ -62,6 +62,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     };
 
     viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/consumers', 'Consumers');
     viewFrame.setTitle('Consumers');
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
