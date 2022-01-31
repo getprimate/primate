@@ -154,5 +154,29 @@ export default {
         return value.replace(/-([a-z])/g, (hyphen, char) => {
             return char.toUpperCase();
         });
+    },
+
+    snakeToDisplayText(value) {
+        if (typeof value !== 'string') {
+            return '';
+        }
+
+        let displayText = '';
+        let nextIsUpper = true;
+
+        for (let index = 0; index < value.length; index++) {
+            let char = value.charAt(index);
+
+            if (char === '_') {
+                displayText = displayText + ' ';
+                nextIsUpper = true;
+                continue;
+            }
+
+            displayText = displayText + (nextIsUpper ? char.toUpperCase() : char);
+            nextIsUpper = false;
+        }
+
+        return displayText.trim();
     }
 };

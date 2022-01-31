@@ -50,8 +50,11 @@ function _sanitiseSchema(schema) {
 
     for (let field of fields) {
         for (let name of Object.keys(field)) {
-            let attributes = field[name],
-                checkEnum = true;
+            console.log(name);
+            let attributes = field[name];
+            let checkEnum = true;
+
+            attributes.fieldName = _.snakeToDisplayText(name);
 
             switch (attributes.type) {
                 case 'integer':
@@ -92,6 +95,8 @@ function _sanitiseSchema(schema) {
             }
         }
     }
+
+    console.log(JSON.stringify(schema, null, 4));
 
     return schema;
 }
@@ -163,7 +168,7 @@ function _refreshPluginModel(model, source) {
  */
 export default function PluginEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
-    let loaderStep = 1;
+    let loaderSteps = 4;
 
     scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {
         return {nodeValue: protocol, displayText: protocol.toUpperCase()};
@@ -194,6 +199,10 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         request.catch(() => {
             toast.error('Could not fetch list of enabled plugins');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -270,14 +279,34 @@ export default function PluginEditController(scope, location, routeParams, restC
         const request = restClient.get(endpoint);
 
         request.then(({data: response}) => {
-            scope.pluginList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
+            scope.serviceList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
         });
 
         request.catch(() => {
             toast.error('Could not fetch list of enabled plugins');
         });
 
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
         return true;
+    };
+
+    scope.fetchConsumerList = function () {
+        const request = restClient.get('/consumers');
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+    };
+
+    scope.fetchRouteList = function () {
+        const request = restClient.get('/routes');
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
     };
 
     /* Modify plugin resource endpoint according to the route parameters provided.
@@ -287,6 +316,8 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         scope.routeId = routeParams.routeId;
         scope.pluginModel.route = scope.routeId;
+
+        loaderSteps--;
     }
 
     if (typeof routeParams.serviceId === 'string') {
@@ -296,6 +327,8 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         scope.serviceId = routeParams.serviceId;
         scope.pluginModel.service = scope.serviceId;
+
+        loaderSteps--;
     }
 
     if (typeof routeParams.consumerId === 'string') {
@@ -303,6 +336,8 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         scope.consumerId = routeParams.consumerId;
         scope.pluginModel.consumer = scope.consumerId;
+
+        loaderSteps--;
     }
 
     switch (routeParams.pluginId) {
@@ -323,6 +358,7 @@ export default function PluginEditController(scope, location, routeParams, restC
     }
 
     viewFrame.setTitle('Apply Plugin');
+    viewFrame.setLoaderSteps(loaderSteps);
 
     if (ajaxConfig.method === 'PATCH' && scope.pluginId !== '__none__') {
         const request = restClient.get(`/plugins/${scope.pluginId}`);
@@ -335,6 +371,10 @@ export default function PluginEditController(scope, location, routeParams, restC
 
         request.catch(() => {
             toast.error('Unable to retrieve plugin details.');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
     } else {
         scope.fetchAvailablePlugins();

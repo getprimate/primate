@@ -21,7 +21,7 @@
         </div><!-- .col.md-8 -->
         <div class="col md-4">
             <div class="form__field">
-                <label for="sv-ed__txt03" class="field-label">Plugin State</label>
+                <label for="pg-ed__chk01" class="field-label">Plugin State</label>
                 <div class="field-input">
                     <label class="checkbox"><input type="checkbox" id="pg-ed__chk01" class="success" name="pluginEnabled" data-ng-model="pluginModel.enabled" checked /> Enable Plugin</label>
                 </div>
@@ -76,44 +76,48 @@
         </div><!-- .col.md-4 -->
         </div><!-- .row -->
 
-        <div class="panel__split"><span>Configurations for {{pluginModel.name}} plugin</span></div>
+        <div data-ng-if="pluginModel.name!=='__none__'" class="panel__split"><span>Configurations for {{pluginModel.name}} plugin</span></div>
 
-        <div class="row">
-        <div class="col md-6">
-        <div>&nbsp;</div>
-        <div class="mg-bottom-10" data-ng-repeat="fieldWrap in schemaProps.fields">
-            <div data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
-                <div data-ng-switch="fieldProp.nodeType">
+        <div class="mg-bottom-10 border-bottom-solid" data-ng-repeat="fieldWrap in schemaProps.fields">
+            <div class="row" data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
+                <div class="col md-6">
+                    <div class="form__field">
+                        <label class="field-label">{{fieldProp.fieldName}}</label>
+                        <div class="field-input">Field of type {{fieldProp.type}}. Default value is {{fieldProp.default}}.</div>
+                    </div>
+                </div><!-- .col.md-6 -->
+
+                <div class="col md-6" data-ng-switch="fieldProp.nodeType">
 
                     <div data-ng-switch-when="input__checkbox" class="form__field">
-                        <label class="field-label">Plugin Flag</label>
+                        <label class="field-label">&nbsp</label>
                         <div class="field-input">
                             <label class="checkbox"><input type="checkbox" class="warning" data-ng-model="schemaModel[fieldName]" /> {{fieldName | pgname}}</label>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="input__text" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><input type="text" data-ng-model="schemaModel[fieldName]" /></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="input__number" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><input type="number" data-ng-model="schemaModel[fieldName]" /></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="token-input" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><token-input data-ng-model="schemaModel[fieldName]" data-placeholder="Type the value and press enter."></token-input></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="multi-check" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><multi-check data-ng-model="schemaModel[fieldName]" data-option-list="fieldProp.nodeList"></multi-check></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="select" class="form__field">
-                        <label class="field-label">{{fieldName | pgname}}</label>
+                        <label class="field-label">&nbsp;</label>
                         <div class="field-input">
                             <select data-ng-selected="schemaModel[fieldName]" data-ng-model="schemaModel[fieldName]">
                                 <option data-ng-repeat="option in fieldProp.nodeList" value="{{option}}">{{option}}</option>
@@ -125,25 +129,9 @@
                         <div><strong>{{fieldName | pgname}}</strong></div>
                         <div data-ng-include="'views/plugin-static-record.html'"></div>
                     </div>
-                </div><!-- data-ng-switch -->
-            </div><!-- data-ng-repeat -->
+                </div><!-- .col.md-6 data-ng-switch -->
+            </div><!-- .row data-ng-repeat -->
         </div><!-- .mg-bottom-10 -->
-        </div>
-
-        <div class="col md-6">
-            <div class="form__field">
-                <div class="field-input">
-                    <label>Schema <input type="radio" name="schema_Switcher" value="schema" checked="checked" /></label>
-                    <label>Payload <input type="radio" name="schema_Switcher" value="payload" /></label>
-                </div>
-            </div><!-- .form__field -->
-            <div class="form__field">
-                <div class="field-input">
-                    <textarea readonly="readonly" data-ng-model="jsonText"></textarea>
-                </div>
-            </div><!-- .form__field -->
-        </div>
-        </div><!-- .row -->
 
         <div class="panel__split"><span>Plugin Tags</span></div>
         <div class="form__field">
@@ -160,7 +148,12 @@
     </div><!-- .col.md-5 -->
 
     <div class="col md-4">
-
+        <div class="well">
+            <div class="well__heading">Plugin Schema</div>
+            <form class="form padding-20">
+                <textarea style="max-height: 1000px; height: 579px" readonly>{{jsonText}}</textarea>
+            </form><!-- .padding-10 -->
+        </div>
     </div><!-- .col.md-4 -->
     </div><!-- .row -->
 </div>
