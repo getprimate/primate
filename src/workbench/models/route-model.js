@@ -32,7 +32,7 @@ const RouteModel = {
     preserve_host: false,
     request_buffering: true,
     response_buffering: true,
-    tags: ['user-level', 'low-priority'],
+    tags: [],
     service: '',
     snis: [],
     sources: [],

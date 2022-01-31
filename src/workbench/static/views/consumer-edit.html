@@ -4,25 +4,28 @@
 <div class="panel panel-border {{consumerId === '__none__' ? 'success' : 'info'}}">
 <div class="panel__heading">Consumer Details</div>
 <div class="panel__body">
-    <form id="cs-ed__frm01" class="form" method="post" action="#">
+    <form id="cs-ed__frm01" class="form" method="post" data-ng-submit="submitConsumerForm($event)">
     <div class="row">
         <div class="col md-6">
             <div class="form__field">
                 <label for="cs-ed__txt01" class="field-label">Username</label>
-                <div class="field-input"><input id="cs-ed__txt01" type="text" data-ng-model="consumerModel.username" name="username" /></div>
+                <div class="field-input"><input id="cs-ed__txt01" type="text" data-ng-model="consumerModel.username" name="username" placeholder="jane-doe" /></div>
+                <div class="field-note">Needs to be unique.</div>
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
         <div class="col md-6">
             <div class="form__field">
                 <label for="cs-ed__txt02" class="field-label">Custom ID</label>
-                <div class="field-input"><input id="cs-ed__txt02" type="text" data-ng-model="consumerModel.custom_id" name="customId" /></div>
+                <div class="field-input"><input id="cs-ed__txt02" type="text" data-ng-model="consumerModel.custom_id" name="customId" placeholder="custom-id" /></div>
+                <div class="field-note">Either this field or username is required.</div>
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
     </div><!-- .row -->
 
     <div class="panel__split"><span>Consumer Tags</span></div>
     <div class="form__field">
-        <div class="field-input"><token-input data-ng-model="consumerModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
+        <div class="field-input"><token-input data-ng-model="consumerModel.tags" data-placeholder="primary-consumer, high-priority"></token-input></div>
+        <div class="field-note">Press enter key to apply tags.</div>
     </div><!-- .form__field -->
 
     <div data-ng-switch="consumerId" class="form__field">
@@ -70,11 +73,11 @@
     </div>
     <div class="col md-6">
         <table class="board data-table">
-            <tbody>
+            <tbody data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
-                <td class="row-actions"><span class="material-icons critical delete" data-target="authentication key" data-url="{{userAuthList.key_Res}}/{{keyAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="authentication key" data-endpoint="/consumers/{{consumerId}}/key-auth/{{keyAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.keyAuth.length===0"><tr><th colspan="3">No keys added yet.</th></tr></tfoot>
@@ -89,7 +92,7 @@
     <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
         <div class="form__field">
             <label for="cs-ed__txt05" class="field-label">Username</label>
-            <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="Example: Jane-Doe" required /></div>
+            <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="Example: jane-doe" required /></div>
         </div><!-- .form__field -->
 
         <div class="form__field">
@@ -108,11 +111,11 @@
 
     <div class="col md-6">
     <table class="board data-table">
-        <tbody>
+        <tbody data-ng-click="deleteTableRow($event)">
         <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
             <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
             <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
-            <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-url="{{userAuthList.basic_Res}}/{{basicAuth.id}}">delete_forever</span></td>
+            <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</span></td>
         </tr>
         </tbody>
         <tfoot data-ng-if="userAuthList.basicAuth.length===0"><tr><th colspan="3">No Basic authentication methods added yet.</th></tr></tfoot>
@@ -170,7 +173,7 @@
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
-                <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-url="{{userAuthList.oauth_Res}}/{{oauth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/oauth2/{{oauth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.oauth2.length===0"><tr><th colspan="3">No OAuth2 methods added yet.</th></tr></tfoot>
@@ -206,7 +209,7 @@
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
-                <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-url="{{userAuthList.hmac_Res}}/{{hmacAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/hmac-auth/{{hmacAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.hmacAuth.length===0"><tr><th colspan="3">No HMAC methods added yet.</th></tr></tfoot>
@@ -259,7 +262,7 @@
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
-                <td class="row-actions"><span class="material-icons critical delete" data-target="token" data-url="{{userAuthList.jwt_Res}}/{{jwtAuth.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="token" data-endpoint="/consumers/{{consumerId}}/jwt/{{jwtAuth.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.jwt.length===0"><tr><th colspan="3">No web tokens added yet.</th></tr></tfoot>
@@ -291,7 +294,7 @@
             <tr data-ng-repeat="acl in userAuthList.acls">
                 <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
                 <td><strong>{{acl.group}}</strong><br>{{acl.created_at | date}}</td>
-                <td class="row-actions"><span class="material-icons critical delete" data-target="group" data-url="{{userAuthList.acl_Res}}/{{acl.id}}">delete_forever</span></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="group" data-endpoint="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</span></td>
             </tr>
             </tbody>
             <tfoot data-ng-if="userAuthList.acls.length===0"><tr><th colspan="3">No groups added yet.</th></tr></tfoot>
@@ -308,27 +311,28 @@
             <div data-ng-if="consumerId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
         </div><!-- .well__heading -->
 
-        <table class="table">
+        <table class="board">
             <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
 
-            <tbody>
+            <tbody data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state success" data-ng-checked="plugin.enabled===true" /></td>
 
-                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td><a href="#!/consumers/{{consumerId}}/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
                 <td>
                     <div class="action-group" data-service-id="{{service.id}}">
                         <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="plugin" data-url="/consumers/{{consumerId}}/plugins/{{plugin.id}}">delete_forever</i>
+                        <i class="material-icons critical delete" data-target="plugin" data-endpoint="/consumers/{{consumerId}}/plugins/{{plugin.id}}">delete_forever</i>
                     </div>
                 </td>
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="pluginList.length === 0">
+            <tfoot data-ng-if="pluginList.length === 0" class="placebo">
                 <tr data-ng-switch="consumerId">
-                    <th data-ng-switch-when="__none__" colspan="3">Plugins can be applied after creating the consumer.</th>
-                    <th data-ng-switch-default colspan="3">No plugins applied for this consumer.</th>
+                    <th><span class="material-icons">extension</span></th>
+                    <th data-ng-switch-when="__none__">Enables after creating the consumer.</th>
+                    <th data-ng-switch-default>No plugins applied for this consumer.</th>
                 </tr>
             </tfoot>
         </table>

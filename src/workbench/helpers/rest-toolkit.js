@@ -23,9 +23,9 @@ function deleteMethodHandler(event) {
     const {target: element} = event;
     const {classList} = element;
 
-    event.preventDefault();
-
     if (element.nodeName === 'SPAN' && classList.contains('critical') && classList.contains('delete')) {
+        event.preventDefault();
+
         const {target, endpoint} = element.dataset;
         if (!_.isText(endpoint)) return false;
 
@@ -52,6 +52,7 @@ function deleteMethodHandler(event) {
  *
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {GenericHandlerCallback} callback - A callback to be executed on completion.
+ * @return {(function(Event): boolean)} The event handler function.
  */
 export function deleteMethodInitiator(restClient, callback) {
     return deleteMethodHandler.bind({_client: restClient, _callback: callback});

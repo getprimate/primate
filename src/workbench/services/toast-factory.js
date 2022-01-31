@@ -11,27 +11,33 @@
  * An injectable toast message factory service.
  *
  * @typedef {Object} ToastFactory
- * @property {function} success - Displays a success toast message.
- * @property {function} info - Displays an information toast message.
- * @property {function} warning - Displays a warning toast message.
- * @property {function} error - Displays a success toast message.
+ * @property {(function(level: string,
+ *      message: string): void)} message - Displays a toast message of the specified level.
+ * @property {(function(message: string): void)} success - Displays a success toast message.
+ * @property {(function(message: string): void)} info - Displays an information toast message.
+ * @property {(function(message: string): void)} warning - Displays a warning toast message.
+ * @property {(function(message: string): void)} error - Displays a success toast message.
  */
 
 /**
  * Holds the current state of the toast service.
  *
- * @type {{interval: any}}
+ * @type {Object}
  */
 const TOAST_STATE = {
-    interval: null
+    timeout: null
 };
 
 function createPopup(level, message) {
     const popup = document.createElement('div');
     popup.classList.add('notification');
 
-    popup.addEventListener('click', () => {
-        popup.remove();
+    popup.addEventListener('click', (event) => {
+        const {currentTarget: target} = event;
+
+        if (target.nodeName === 'DIV') {
+            target.remove();
+        }
     });
 
     switch (level) {
@@ -58,6 +64,10 @@ function createPopup(level, message) {
 
     popup.innerText = message;
 
+    TOAST_STATE.timeout = setTimeout(() => {
+        clearTimeout(TOAST_STATE.timeout);
+    }, 5000);
+
     return popup;
 }
 
@@ -71,6 +81,10 @@ export default function ToastFactory(window) {
     const {document} = window;
 
     return {
+        message(level, message) {
+            document.body.appendChild(createPopup(level, message));
+        },
+
         success(message) {
             document.body.appendChild(createPopup('SUCCESS', message));
         },

@@ -16,7 +16,7 @@
  * @property {string} hash_fallback_value - Hash fallback value
  * @property {string} hash_fallback - Hash on
  * @property {string} host_header - Hash on
- * @property {string|Array} tags - Tags
+ * @property {string[]} tags - Tags
  * @property {{active: { healthy: Object, unhealthy: Object }, passive: { healthy: Object, unhealthy: Object }}} healthchecks - Health check options
  */
 
@@ -37,6 +37,8 @@
 import _ from '../../lib/core-utils.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
+import upstreamModel from '../models/upstream-model.js';
+
 /**
  *
  * @param to
@@ -45,27 +47,24 @@ import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
  */
 const _buildFromResponse = (to = {}, from = {}) => {
     for (let key of Object.keys(from)) {
-        if (typeof to[key] === 'undefined') {
+        if (typeof to[key] === 'undefined' || from[key] === null) {
             continue;
         }
 
         let current = from[key];
 
-        if (typeof current === 'string' || current === null) {
-            to[key] = current === null ? '' : `${current}`;
-            continue;
-        }
-
-        if (typeof current === 'boolean' || typeof current === 'number') {
+        if (typeof current === 'string' || typeof current === 'boolean' || typeof current === 'number') {
             to[key] = current;
             continue;
         }
 
-        if (typeof current === 'object' && Array.isArray(current)) {
-            to[key] = current.join(', ');
-        } else if (typeof current === 'object') {
-            _buildFromResponse(to[key], from[key]);
+        if (Array.isArray(current)) {
+            to[key] = current.map((value) => {
+                return `${value}`;
+            });
         }
+
+        if (_.isObject(current)) _buildFromResponse(to[key], from[key]);
     }
 
     return to;
@@ -88,6 +87,7 @@ const _buildFromResponse = (to = {}, from = {}) => {
  */
 export default function UpstreamEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/upstreams'};
+    let loaderSteps = 0;
 
     scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
     scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
@@ -96,10 +96,10 @@ export default function UpstreamEditController(scope, location, routeParams, res
     /**
      * @type UpstreamScopeModel
      */
-    scope.upstreamModel = _.deepClone(require(`${__dirname}/controllers/upstream-model.json`));
+    scope.upstreamModel = _.deepClone(upstreamModel);
     scope.upstreamId = '__none__';
 
-    scope.targetModel = {nextUrl: null, properties: ''};
+    scope.targetModel = {properties: ''};
     scope.targetList = [];
     scope.targetNext = {offset: ''};
 
@@ -121,83 +121,18 @@ export default function UpstreamEditController(scope, location, routeParams, res
         request.catch(() => {
             toast.error('Could not load targets.');
         });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
     };
 
-    if (typeof routeParams.certId === 'string') {
-        restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
-        scope.certId = routeParams.certId;
-        scope.upstreamModel.client_certificate = routeParams.certId;
-    } else {
-        const request = restClient.get('/certificates');
-
-        request.then(({data: response}) => {
-            scope.certNext.offset = urlOffset(response.next);
-
-            for (let cert of response.data) {
-                cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
-                scope.certList.push(cert);
-            }
-        });
-
-        request.catch(() => {
-            toast.error('Could not load certificates');
-        });
-    }
-
-    switch (routeParams.upstreamId) {
-        case '__create__':
-            viewFrame.setTitle('Create Upstream');
-            break;
-
-        default:
-            restConfig.method = 'PATCH';
-            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.upstreamId}`;
-
-            scope.upstreamId = routeParams.upstreamId;
-
-            viewFrame.setTitle('Edit Upstream');
-            break;
-    }
-
-    if (restConfig.method === 'PATCH' && scope.upstreamId !== '__none__') {
-        const request = restClient.get(restConfig.endpoint);
-        request.then((response) => {
-            _buildFromResponse(scope.upstreamModel, response.data);
-
-            if (response.data.hash_on === 'header') {
-                scope.upstreamModel.hash_on_value = `${response.data.hash_on_header}`;
-            }
-
-            if (response.data.hash_fallback === 'header') {
-                scope.upstreamModel.hash_fallback_value =
-                    response.data.hash_fallback_header === null ? '' : `${response.data.hash_fallback_header}`;
-            }
-
-            if (response.data.hash_on === 'cookie' || response.data.hash_fallback === 'cookie') {
-                scope.upstreamModel.hash_fallback_value = `${response.data.hash_on_cookie}`;
-            }
-
-            if (response.data.client_certificate !== null && typeof response.data.client_certificate.id === 'string') {
-                scope.upstreamModel.client_certificate = response.data.client_certificate.id;
-            }
-
-            viewFrame.addAction('Delete', '#!/upstreams', 'critical delete', 'upstream', restConfig.endpoint);
-        });
-
-        request.catch(() => {
-            toast.error('Could not load upstream details');
-            window.location.href = '#!/upstreams';
-        });
-
-        scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
-    }
-
     scope.submitUpstreamForm = function (event) {
-        event.preventDefault();
-
         scope.upstreamModel.name = scope.upstreamModel.name.trim();
         scope.upstreamModel.host_header = scope.upstreamModel.host_header.trim();
         scope.upstreamModel.healthchecks.active.https_sni = scope.upstreamModel.healthchecks.active.https_sni.trim();
+
+        event.preventDefault();
 
         if (scope.upstreamModel.name.length <= 0) {
             toast.error('Please provide a name for this upstream.');
@@ -248,7 +183,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         for (let child of statuses) {
             let current = scope.upstreamModel.healthchecks[child[0]][child[1]]['http_statuses'];
 
-            payload.healthchecks[child[0]][child[1]]['http_statuses'] = current.split(',').reduce((codes, value) => {
+            payload.healthchecks[child[0]][child[1]]['http_statuses'] = current.reduce((codes, value) => {
                 let code = parseInt(value.trim());
 
                 if (!isNaN(code) && code >= 200 && code <= 999) {
@@ -257,6 +192,11 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
                 return codes;
             }, []);
+
+            /* If status codes are empty, remove them from payload for defaults to be applied. */
+            if (payload.healthchecks[child[0]][child[1]]['http_statuses'].length === 0) {
+                delete payload.healthchecks[child[0]][child[1]]['http_statuses'];
+            }
         }
 
         if (scope.upstreamModel.client_certificate.length > 5) {
@@ -266,7 +206,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         }
 
         /* Split comma-separated list of tags into array and sanitise each tag. */
-        payload.tags = scope.upstreamModel.tags.split(',').reduce((tags, current) => {
+        payload.tags = scope.upstreamModel.tags.reduce((tags, current) => {
             current = current.trim();
 
             if (current.length >= 1) {
@@ -296,6 +236,8 @@ export default function UpstreamEditController(scope, location, routeParams, res
             payload
         });
 
+        viewFrame.setLoaderSteps(1);
+
         request.then(({data: response}) => {
             switch (scope.upstreamId) {
                 case '__none__':
@@ -314,6 +256,10 @@ export default function UpstreamEditController(scope, location, routeParams, res
                     (scope.upstreamId === '__none__' ? 'create new' : 'update') +
                     ` upstream. ${error.message}`
             );
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return false;
@@ -355,6 +301,100 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
         request.finally(() => {
             scope.targetModel.properties = '';
+            viewFrame.incrementLoader();
         });
     };
+
+    /**
+     * Retrieves certificates for applying on upstream.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
+     */
+    scope.fetchCertificates = (filters = null) => {
+        const request = restClient.get('/certificates' + urlQuery(filters));
+
+        request.then(({data: response}) => {
+            scope.certNext.offset = urlOffset(response.next);
+
+            for (let cert of response.data) {
+                cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
+                scope.certList.push(cert);
+            }
+        });
+
+        request.catch(() => {
+            toast.warning('Could not load certificates');
+        });
+
+        return true;
+    };
+
+    if (typeof routeParams.certId === 'string') {
+        restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
+        scope.certId = routeParams.certId;
+        scope.upstreamModel.client_certificate = routeParams.certId;
+    } else {
+        scope.fetchCertificates();
+        viewFrame.clearBreadcrumbs();
+    }
+
+    viewFrame.addBreadcrumb('#!/upstreams', 'Upstreams');
+
+    switch (routeParams.upstreamId) {
+        case '__create__':
+            viewFrame.setTitle('Create Upstream');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
+            break;
+
+        default:
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.upstreamId}`;
+
+            scope.upstreamId = routeParams.upstreamId;
+            viewFrame.setTitle('Edit Upstream');
+            loaderSteps++;
+            break;
+    }
+
+    viewFrame.setLoaderSteps(loaderSteps);
+
+    if (restConfig.method === 'PATCH' && scope.upstreamId !== '__none__') {
+        const request = restClient.get(restConfig.endpoint);
+
+        request.then(({data: response}) => {
+            _buildFromResponse(scope.upstreamModel, response);
+
+            if (response.hash_on === 'header') {
+                scope.upstreamModel.hash_on_value = `${response.hash_on_header}`;
+            }
+
+            if (response.hash_fallback === 'header') {
+                scope.upstreamModel.hash_fallback_value =
+                    response.hash_fallback_header === null ? '' : `${response.hash_fallback_header}`;
+            }
+
+            if (response.hash_on === 'cookie' || response.hash_fallback === 'cookie') {
+                scope.upstreamModel.hash_fallback_value = `${response.hash_on_cookie}`;
+            }
+
+            if (response.client_certificate !== null && typeof response.client_certificate.id === 'string') {
+                scope.upstreamModel.client_certificate = response.client_certificate.id;
+            }
+
+            viewFrame.addAction('Delete', '#!/upstreams', 'critical delete', 'upstream', restConfig.endpoint);
+            viewFrame.addBreadcrumb(location.path(), response.name);
+        });
+
+        request.catch(() => {
+            toast.error('Could not load upstream details');
+            window.location.href = '#!/upstreams';
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
+        scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
+    }
 }

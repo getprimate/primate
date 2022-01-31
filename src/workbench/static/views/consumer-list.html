@@ -3,7 +3,7 @@
 <!-- ==-==-==-==-== Display this section if consumer list is empty. ==-==-==-==-== -->
 <div data-ng-if="consumerList.length===0" class="view-hero">
     <p><span class="material-icons hero">person_pin</span></p>
-    <p>No consumers are added yet.</p>
+    <p>Seems like no consumers are added yet!</p>
     <p><a href="#!/consumers/__create__" class="btn default">Add New Consumer</a></p>
 </div><!-- .view-hero -->
 
@@ -12,14 +12,14 @@
 <table id="cs-ed__tab01" class="table data-table">
     <thead><tr><th>Username</th><th>Custom Id</th><th>Created At</th><th class="align-right">Actions</th></tr></thead>
 
-    <tbody>
+    <tbody data-ng-click="deleteTableRow($event)">
     <tr data-ng-repeat="consumer in consumerList">
         <td><a href="#!/consumers/{{consumer.id}}">{{consumer.username}}</a></td>
         <td>{{consumer.custom_id}}</td>
         <td>{{consumer.created_at}}</td>
         <td class="align-right">
             <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><span class="material-icons warning">edit</span></a>
-            <span title="Delete Consumer" class="material-icons critical delete" data-target="consumer" data-url="/consumers/{{consumer.id}}">delete_forever</span>
+            <span title="Delete Consumer" class="material-icons critical delete" data-target="consumer" data-endpoint="/consumers/{{consumer.id}}">delete_forever</span>
         </td>
     </tr>
     </tbody>

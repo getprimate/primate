@@ -7,7 +7,9 @@
 
 'use strict';
 
+import _ from '../../lib/core-utils.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
@@ -32,7 +34,8 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     scope.fetchConsumerList = function (filters = null) {
         const request = restClient.get('/consumers' + urlQuery(filters));
 
-        viewFrame.setLoaderSteps(1);
+        viewFrame.setLoaderSteps(2);
+        viewFrame.incrementLoader();
 
         request.then(({data: response}) => {
             scope.consumerNext.offset = urlOffset(response.next);
@@ -60,6 +63,16 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
 
         return true;
     };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (_.isText(err)) toast.error(err);
+        else toast.success('Deleted consumer and credentials.');
+    });
 
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/consumers', 'Consumers');

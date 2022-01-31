@@ -102,8 +102,12 @@ export default function ViewFrameFactory() {
         previousRoute(shouldPop = true) {
             if (shouldPop === false) return frameState.routeNext;
 
-            if (frameState.breadcrumbs.length === 0) frameState.routeNext = '';
-            else frameState.routeNext = frameState.breadcrumbs.pop()['redirect'];
+            if (frameState.breadcrumbs.length === 0) {
+                frameState.routeNext = '';
+            } else {
+                frameState.breadcrumbs.pop();
+                frameState.routeNext = frameState.breadcrumbs.pop()['redirect'];
+            }
 
             return frameState.routeNext;
         },

@@ -7,7 +7,7 @@ const {document} = window;
  *
  * @private
  * @param {{tokenList: Array}} scope - the current scope
- * @param {HTMLElement} element - the jqLite wrapped instance of the element
+ * @param {HTMLElement} element - the parent element
  * @param {Array|string} tokens - tokens to be appended
  * @return {{append: function}} the element object
  */
@@ -84,16 +84,20 @@ export default function TokenInputDirective() {
             scope.$watch(
                 'tokenList',
                 (current, previous) => {
-                    if (scope.isInitialised === true) {
+                    if (scope.isInitialised === false) {
+                        scope.isInitialised = true;
+                        _attachListNodes(scope, itemNode, scope.tokenList);
+
                         return scope.isInitialised;
                     }
 
                     if (Array.isArray(previous) && Array.isArray(current) && previous.length !== current.length) {
-                        scope.isInitialised = true;
-                        return _attachListNodes(scope, itemNode, scope.tokenList);
+                        _attachListNodes(scope, itemNode, current);
+
+                        return true;
                     }
 
-                    return scope.isInitialised;
+                    return false;
                 },
                 false
             );
