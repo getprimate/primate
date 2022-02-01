@@ -2,22 +2,19 @@
 
 <div class="well">
 <div class="well__heading">List of Services</div>
-<table id="sv-ls__tab01" class="table" data-ng-click="toggleServiceState($event)">
+<table id="sv-ls__tab01" class="table">
     <thead data-ng-if="serviceList.length>0"><tr><th>Enabled</th> <th>Name</th> <th>Protocol</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
 
-    <tbody>
+    <tbody data-ng-click="handleTableClickEvents($event)">
         <tr data-ng-repeat="service in serviceList">
-            <td data-ng-switch="service.enabled">
-                <span data-ng-switch-when="true" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons success state-highlight">done</span>
-                <span data-ng-switch-default="" data-attribute="enabled" data-service-id="{{service.id}}" title="Enable or disable service" class="material-icons default state-highlight">done</span>
-            </td>
+            <td><input type="checkbox" class="success" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
 
             <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a></td>
             <td>{{service.protocol}}</td>
             <td>{{service.created_at | date: 'medium'}}</td>
             <td class="align-right">
                 <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
-                <span class="material-icons critical delete" data-target="Service" data-url="/services/{{service.id}}">delete_forever</span>
+                <span class="material-icons critical delete" data-target="Service" data-endpoint="/services/{{service.id}}">delete_forever</span>
             </td>
         </tr>
     </tbody>

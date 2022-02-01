@@ -7,6 +7,8 @@
 
 'use strict';
 
+import _ from '../../lib/core-utils.js';
+import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 /**
@@ -23,6 +25,42 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     scope.serviceNext = {offset: ''};
 
     /**
+     * Handles click events on action buttons on table rows.
+     *
+     * @private
+     * @param {Event} event - The event object.
+     * @param {HTMLInputElement} event.target - The input HTML element.
+     * @return {boolean} True if event handled, false otherwise.
+     */
+    scope._toggleServiceState = function (event) {
+        const {target} = event;
+        const {attribute, serviceId} = target.dataset;
+
+        const request = restClient.patch(`/services/${serviceId}`, {[attribute]: target.checked});
+
+        request.then(() => {
+            toast.success('Service state updated.');
+        });
+
+        request.catch(() => {
+            toast.error('Could not update service state.');
+        });
+
+        return true;
+    };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @private
+     * @type {function(Event): boolean}
+     */
+    scope._deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (_.isText(err)) toast.error(err);
+        else toast.success('Service deleted successfully.');
+    });
+
+    /**
      * Retrieves the list of services.
      *
      * @param {string|object|null} filters - Filters to the Admin API.
@@ -31,7 +69,8 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     scope.fetchServiceList = function (filters = null) {
         const request = restClient.get('/services' + urlQuery(filters));
 
-        viewFrame.setLoaderSteps(1);
+        viewFrame.setLoaderSteps(2);
+        viewFrame.incrementLoader();
 
         request.then(({data: response}) => {
             scope.serviceNext.offset = urlOffset(response.next);
@@ -55,51 +94,21 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     };
 
     /**
-     * Handles click events on action buttons on table rows.
+     * Handles click events on the table widgets.
      *
-     * @param {Object} event - The event object
+     * @param {Event} event - The current event object
      * @return {boolean} True if event handled, false otherwise
      */
-    scope.toggleServiceState = function (event) {
-        if (typeof event === 'undefined') {
-            return false;
-        }
-
+    scope.handleTableClickEvents = function (event) {
         const {target} = event;
 
-        if (target.nodeName !== 'SPAN' || !target.classList.contains('state-highlight')) {
-            return false;
-        }
-
-        const {attribute, serviceId} = target.dataset;
-        const payload = {[attribute]: !target.classList.contains('success')};
-
-        const request = restClient.patch(`/services/${serviceId}`, payload);
-
-        request.then(({data: response}) => {
-            if (response[attribute] === true) {
-                target.classList.remove('default');
-                target.classList.add('success');
-            } else {
-                target.classList.remove('success');
-                target.classList.add('default');
-            }
-
-            toast.info('Service state updated.');
-        });
-
-        request.catch(() => {
-            toast.error('Could not update service state.');
-        });
-
-        return true;
+        if (target.nodeName === 'INPUT' && target.type === 'checkbox') return scope._toggleServiceState(event);
+        else return scope._deleteTableRow(event);
     };
 
-    viewFrame.setTitle('Services');
-
     viewFrame.clearBreadcrumbs();
+    viewFrame.setTitle('Services');
     viewFrame.addBreadcrumb('#!/services', 'Services');
-
     viewFrame.addAction('New Service', '#!/services/__create__');
 
     scope.fetchServiceList();
