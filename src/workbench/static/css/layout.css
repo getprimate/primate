@@ -143,7 +143,7 @@ aside#sidebarMenu nav.navigation {
     padding: 0 10px 0 10px;
 }
 
-aside.drawer nav.navigation .navigation__title {
+aside#sidebarMenu nav.navigation .navigation__title {
     margin: 40px 20px 10px 20px;
     color: var(--theme__accent-fg);
     font-size: 0.95rem;
@@ -1418,6 +1418,51 @@ dl.horizontal > dd { width: 60%; font-size: 1rem; color: #f1f1f1; }
 div.input-control { background-color: var(--input__primary-bg); border-color: var(--input__primary-bd) !important; }
 
 ul.list li { background-color: var(--input__primary-bg) }
+
+article.scale {
+    margin-bottom: 20px;
+}
+
+article.scale .scale__caption {
+    width: 100%;
+}
+
+article.scale .scale__caption > span {
+    display: inline-block;
+}
+
+article.scale .scale__caption > span:first-child {
+    width: calc(100% - 155px);
+    font-weight: 500;
+    color: var(--theme__accent-fg);
+    text-align: left;
+}
+
+article.scale .scale__caption > span:last-child {
+    width: 150px;
+    text-align: right;
+}
+
+article.scale .scale__trough {
+    display: block;
+    width: 100%;
+    height: 10px;
+    margin: 10px 0;
+    padding: 1px;
+    border-radius: var(--theme__widget-corner);
+    background: var(--theme__primary-bg);
+}
+
+article.scale .scale-fill {
+    height: 100%;
+    border-radius: var(--theme__widget-corner);
+}
+
+article.scale .scale-fill { background-color: var(--std__default); }
+article.scale.success .scale-fill { background-color: var(--std__success); }
+article.scale.info .scale-fill { background-color: var(--std__info); }
+article.scale.warning .scale-fill { background-color: var(--std__warning); }
+article.scale.critical .scale-fill { background-color: var(--std__critical); }
 
 /**
  * Miscellaneous helper classes.

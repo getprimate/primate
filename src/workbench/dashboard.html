@@ -16,10 +16,11 @@
         <div class="navigation__title">Node</div><!-- .navigation__title -->
         <ul class="navigation__menu">
             <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/health"><span class="material-icons">cloud_done</span><span>Health</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/node-status"><span class="material-icons">cloud_done</span><span>Status</span></a></li>
         </ul><!-- .navigation__menu -->
         <div class="navigation__title">Objects</div><!-- .navigation__title -->
         <ul class="navigation__menu">
+            <li><a class="navigation__link"><span class="material-icons warning">search</span><span>Tag Search</span></a></li>
             <li data-ng-repeat="menu in navMenuObjects">
                 <a class="navigation__link" data-ng-href="{{menu.listView}}">
                     <span class="material-icons">{{menu.icon}}</span>

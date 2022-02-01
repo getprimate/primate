@@ -17,6 +17,11 @@ export default function Templates(routeProvider) {
         throw new TypeError('Parameter is not a valid Route Provider object.');
     }
 
+    routeProvider.when('/node-status', {
+        controller: 'NodeStatusController',
+        templateUrl: 'static/views/node-status.html'
+    });
+
     /* Configure route templates. */
     routeProvider
         .when('/', {

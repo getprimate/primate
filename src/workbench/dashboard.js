@@ -18,6 +18,7 @@ import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
 import SidebarController from './controllers/sidebar.js';
 import OverviewController from './controllers/overview.js';
+import NodeStatusController from './controllers/node-status.js';
 import ServiceListController from './controllers/service-list.js';
 import ServiceEditController from './controllers/service-edit.js';
 import RouteEditController from './controllers/route-edit.js';
@@ -95,14 +96,16 @@ KongDash.config(['restClientProvider', initRESTClient]);
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
+/* Register sidebar, header and footer controllers. */
 KongDash.controller('SidebarController', ['$scope', 'restClient', 'toast', SidebarController]);
-
 KongDash.controller('HeaderController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
-
 KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
 
+/* Register node details controllers. */
 KongDash.controller('OverviewController', ['$scope', 'restClient', 'toast', 'viewFrame', OverviewController]);
+KongDash.controller('NodeStatusController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeStatusController]);
 
+/* Register object handler controllers. */
 KongDash.controller('ServiceListController', ['$scope', 'restClient', 'viewFrame', 'toast', ServiceListController]);
 
 KongDash.controller('ServiceEditController', [
