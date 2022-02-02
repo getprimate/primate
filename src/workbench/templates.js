@@ -22,6 +22,11 @@ export default function Templates(routeProvider) {
         templateUrl: 'static/views/node-status.html'
     });
 
+    routeProvider.when('/tag-search', {
+        controller: 'TagSearchController',
+        templateUrl: 'static/views/tag-search.html'
+    });
+
     /* Configure route templates. */
     routeProvider
         .when('/', {

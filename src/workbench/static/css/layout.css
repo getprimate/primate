@@ -107,6 +107,7 @@ ul.list li {
 /* Sidebar navigation */
 aside#sidebarMenu {
     --primary-bg: var(--theme__primary-bg);
+    --accent-bg: var(--widget__accent-bg);
     --border-size: 1px;
     --border_fg: #22242A;
 
@@ -170,7 +171,7 @@ aside#sidebarMenu nav.navigation ul.navigation__menu li {
 
 aside#sidebarMenu nav.navigation ul.navigation__menu li.active {
     border-radius: var(--theme__input-corner);
-    background-color: var(--theme__primary-bg);
+    background-color: var(--accent-bg);
     color: var(--theme__primary-fg);
     font-weight: 500;
     text-shadow: none;
@@ -352,7 +353,7 @@ header#mainHeader .loader-bar {
     top: 0;
     left: 0;
     width: 100%;
-    height: 3px;
+    height: 1px;
     margin: 0;
     padding: 0;
     background: var(--std__primary) none;
@@ -581,10 +582,14 @@ table.table i.state-highlight { font-size: 1.25rem; cursor: pointer; }
     table.table tr:last-child td:last-child { border-bottom-right-radius: var(--theme__widget-corner); }
 
 table.board {
-    padding: 0 min(1.041vw, 20px);
     border-collapse: separate;
     border-spacing: 0 min(1.041vw, 20px);
 }
+
+.well table.board {
+    padding: 0 min(1.041vw, 20px);
+}
+
 .well.notebook .notebook__page table.board { padding: 0 !important; }
 
 table.board tbody tr,
@@ -592,6 +597,12 @@ table.board tfoot tr {
     background: var(--widget__accent-bg) none;
     border:1px solid transparent;
     border-radius: var(--theme__widget-corner);
+}
+
+table.board.transparent tbody tr,
+table.board.transparent tfoot tr {
+    background: transparent none;
+    border-radius: 0;
 }
 
 table.board tbody tr td {
@@ -1012,6 +1023,10 @@ form.form ul.field-input.linked {
 form.form ul.field-input.linked > li {
     padding: 0;
 }
+
+    form.form ul.field-input.linked > li.stretch {
+        flex: 1;
+    }
 
 form.form ul.field-input.linked > li > input,
 form.form ul.field-input.linked > li > select {
@@ -1544,6 +1559,8 @@ table tfoot.placebo .material-icons {
 }
 
 #staticMessage a { color: #D2D2D2; }
+
+.capitalize { text-transform: capitalize; }
 
 @-webkit-keyframes fadein {
     from { opacity: 0; }

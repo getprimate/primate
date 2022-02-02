@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+        <div class="col md-2">
+            <form class="form">
+                <div class="form__field">
+                    <label class="field-label">Filter Objects</label>
+                    <div class="field-input">
+                        <multi-check data-ng-model="filterModel.entityList" data-option-list="ENUM_ENTITY_LIST" data-input-style="warning"></multi-check>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col md-10">
+            <form class="form" data-ng-submit="searchByTags($event)" method="GET">
+                <div class="form__field">
+                    <label class="field-label">&nbsp;</label>
+                    <ul class="field-input linked">
+                        <li class="stretch"><input type="text" name="tagName" placeholder="Tag keywords..." data-ng-model="filterModel.queryText"></li>
+                        <li><button type="submit" class="btn success">Search</button></li>
+                    </ul>
+                </div>
+            </form>
+
+            <section id="ta-sc__Results">
+                <table class="transparent board">
+                    <tr data-ng-repeat="result in searchResults">
+                        <td><span class="material-icons success">{{result.displayIcon}}</span></td>
+                        <td class="border-bottom-solid"><a href="{{result.redirect}}">{{result.displayText}}</a>
+                            <br />{{result.entityType}}
+                            <br />{{result.tags}}</td>
+                        <td class="border-bottom-solid row-actions">{{result.createdAt}}</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+    </div>
+</div><!-- .container -->

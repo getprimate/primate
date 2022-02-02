@@ -19,6 +19,7 @@ import FooterController from './controllers/footer.js';
 import SidebarController from './controllers/sidebar.js';
 import OverviewController from './controllers/overview.js';
 import NodeStatusController from './controllers/node-status.js';
+import TagSearchController from './controllers/tag-search.js';
 import ServiceListController from './controllers/service-list.js';
 import ServiceEditController from './controllers/service-edit.js';
 import RouteEditController from './controllers/route-edit.js';
@@ -106,6 +107,7 @@ KongDash.controller('OverviewController', ['$scope', 'restClient', 'toast', 'vie
 KongDash.controller('NodeStatusController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeStatusController]);
 
 /* Register object handler controllers. */
+KongDash.controller('TagSearchController', ['$scope', 'restClient', 'viewFrame', 'toast', TagSearchController]);
 KongDash.controller('ServiceListController', ['$scope', 'restClient', 'viewFrame', 'toast', ServiceListController]);
 
 KongDash.controller('ServiceEditController', [
