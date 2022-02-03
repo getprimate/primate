@@ -16,14 +16,11 @@
     "pack:osx": "gulp pack-osx"
   },
   "dependencies": {
-    "chart.js": "^3.7.0",
     "ospath": "^1.2.2",
     "semver": "^7.3.5"
   },
   "devDependencies": {
     "electron": "^16.0.7",
-    "eslint": "^8.7.0",
-    "eslint-config-standard": "^16.0.3",
     "prettier": "^2.5.1"
   }
 }
