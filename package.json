@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "test": "npm run lint",
-    "lint": "eslint src/platform/main.js ./src/scripts ./src/controllers ./src/components ./src/models",
+    "test": "yarn run lint",
+    "lint": "eslint src/lib src/platform src/workbench",
     "start": "electron . --trace-warnings",
     "pack:linux": "gulp pack-linux64",
     "pack:windows": "gulp pack-windows64",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "electron": "^16.0.7",
+    "eslint": "^8.8.0",
     "prettier": "^2.5.1"
   }
 }

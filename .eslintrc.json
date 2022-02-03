@@ -19,5 +19,6 @@
         "arrow-body-style": ["error", "always"],
         "require-await": ["error"],
         "eol-last": ["error", "always"]
-    }
+    },
+    "ignorePatterns": ["**/static/*.js"]
 }
