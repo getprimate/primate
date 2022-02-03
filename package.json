@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npm run lint",
     "lint": "eslint src/platform/main.js ./src/scripts ./src/controllers ./src/components ./src/models",
-    "start": "electron .",
+    "start": "electron . --trace-warnings",
     "pack:linux": "gulp pack-linux64",
     "pack:windows": "gulp pack-windows64",
     "pack:osx": "gulp pack-osx"
@@ -24,7 +24,6 @@
     "electron": "^16.0.7",
     "eslint": "^8.7.0",
     "eslint-config-standard": "^16.0.3",
-    "gulp": "^4.0.2",
     "prettier": "^2.5.1"
   }
 }
