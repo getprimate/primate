@@ -1,0 +1,8 @@
+{
+  "name": "Default Theme",
+  "version": "0.1.0",
+  "authors": ["Ajay Sreedhar <ajaysreedhar05@mail.com>"],
+  "caption": "Light",
+  "styles": "default-light.json",
+  "fileType": "json"
+}

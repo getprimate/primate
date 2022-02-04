@@ -1,0 +1,56 @@
+{
+  "theme": {
+    "std__default": "#9db4be",
+    "std__primary": "#1F5EFF",
+    "std__success": "#22b07d",
+    "std__info": "#35B8E0",
+    "std__critical": "#FF5B5B",
+    "std__warning": "#ff691a",
+
+    "theme__primary-bg": "#FFFFFF",
+    "theme__accent-bg": "#FFFFFF",
+    "theme__default-bg": "#FFFFFF",
+    "theme__primary-fg": "#FFFFFF",
+    "theme__accent-fg": "#FFFFFF",
+    "theme__default-fg": "#FFFFFF",
+    "theme__border-fg": "#FFFFFF",
+    "theme__corners": "10px",
+
+    "input__primary-bg": "#FFFFFF",
+    "input__default-bg": "#FFFFFF",
+    "input__accent-bg": "#FFFFFF",
+    "input__corners": "5px",
+    "input__border-size": "1px",
+    "input__border-fg": "#777777"
+  },
+
+  "sidebarMenu": {
+    "primary-bg": "#eef4fb",
+    "default-bg": "#888888",
+    "accent-bg": "#eceef0",
+    "primary-fg": "#000000",
+    "accent-fg": "#FF0000",
+    "border-size": "1px",
+    "border-fg": "#666666"
+  },
+
+  "mainHeader": {
+    "primary-bg": "#eef4fb",
+    "default-bg": "#888888",
+    "accent-bg": "#eceef0",
+    "primary-fg": "#000000",
+    "accent-fg": "#FF0000",
+    "border-size": "1px",
+    "border-fg": "#666666"
+  },
+
+  "mainFooter": {
+    "primary-bg": "#eef4fb",
+    "default-bg": "#888888",
+    "accent-bg": "#eceef0",
+    "primary-fg": "#000000",
+    "accent-fg": "#FF0000",
+    "border-size": "1px",
+    "border-fg": "#666666"
+  }
+}
