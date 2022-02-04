@@ -200,14 +200,7 @@ KongDash.controller('PluginEditController', [
     PluginEditController
 ]);
 
-KongDash.controller('SettingsController', [
-    '$rootScope',
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    SettingsController
-]);
+KongDash.controller('SettingsController', ['$scope', 'restClient', 'viewFrame', 'toast', SettingsController]);
 
 KongDash.config(['$routeProvider', Templates]);
 

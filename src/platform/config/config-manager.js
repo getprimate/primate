@@ -39,6 +39,10 @@ class ConfigManager {
         }
     }
 
+    getAllConnections() {
+        return CURRENT_CONFIG.gateway.connections;
+    }
+
     getDefaultConnection() {
         if (CURRENT_CONFIG.gateway.defaultHost.length === 0) return null;
 

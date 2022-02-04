@@ -41,6 +41,7 @@
     --input__primary-bd : #484D5A;
     --input__focused-bd : #1F5EFF;
     --input__border-size: 1px;
+    --input__border-fg: #484D5A;
 
     --theme__widget-corner: 8px;
     --theme__input-corner: 6px;

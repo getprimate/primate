@@ -9,7 +9,6 @@
 
 /**
  * @callback IPCEventCallback
- * @param {Electron.IpcRendererEvent} event - The event object.
  * @param {Object} payload - The event data payload.
  */
 
@@ -32,6 +31,7 @@
  * @property {(function(action: string, payload: any=): void)} sendRequest - Sends an event to the asynchronous event channel.
  * @property {(function(resource: string, payload: any=): any)} sendQuery - Sends an event to the synchronous event channel.
  * @property {(function(channel: string[]=): void)} removeListeners - Cleans up the existing event listeners.
+ * @property {(function(channel: string, action: string): void)} removeCallbacks - Removes listeners for a particular action.
  */
 
 const {ipcRenderer} = require('electron');
@@ -45,7 +45,7 @@ function callbackWrapper(event, action, payload) {
 
     if (typeof registeredCallbacks[this._channelName] === 'object') {
         for (let callback of registeredCallbacks[this._channelName][action]) {
-            callback.apply({}, payload);
+            callback.call({}, payload);
         }
     }
 }
@@ -105,6 +105,23 @@ const ipcHandler = {
             }
 
             delete registeredCallbacks[channel];
+        }
+    },
+
+    removeCallbacks(event, action) {
+        let channel = '__none__';
+
+        switch (event) {
+            case 'onRequestDone':
+                channel = 'workbench:AsyncResponse';
+                break;
+
+            default:
+                break;
+        }
+
+        if (Array.isArray(registeredCallbacks[channel][action])) {
+            registeredCallbacks[channel][action].splice(0);
         }
     }
 };

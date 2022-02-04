@@ -146,6 +146,7 @@ app.on('window-all-closed', () => {
 
 app.on('will-quit', () => {
     configManager.saveState();
+    ipcMain.removeAllListeners();
 });
 
 ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
@@ -173,6 +174,10 @@ ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
 
 ipcMain.on('workbench:SyncQuery', (event, type) => {
     switch (type) {
+        case 'Read-All-Connections':
+            event.returnValue = sanitize(configManager.getAllConnections());
+            break;
+
         case 'Read-Default-Connection':
             event.returnValue = sanitize(configManager.getDefaultConnection());
             break;

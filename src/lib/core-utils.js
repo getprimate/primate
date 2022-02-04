@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @template T
+ * @param {T} source
+ * @return {T}
+ * @private
+ */
 function _baseClone(source) {
     const {angular} = window;
 
