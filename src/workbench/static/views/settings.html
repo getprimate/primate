@@ -93,9 +93,11 @@
         <div class="well__scroll-area large">
             <table class="board">
                 <tbody>
-                <tr>
-                    <td><input type="radio" class="success"></td>
-                    <td></td>
+                <tr data-ng-repeat="theme in themeDefs">
+                    <td><input type="radio" class="success" name="themeSelector" /></td>
+                    <td><strong>{{theme.name}}</strong>
+                        <br />Version: {{theme.version}}
+                        <br />{{theme.maintainer}}</td>
                 </tr>
                 </tbody>
             </table>

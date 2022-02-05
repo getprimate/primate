@@ -9,11 +9,14 @@ const VERSION = '0.3.0';
 const ABS_PATH = path.dirname(__dirname);
 
 const ConfigManager = require('./config/config-manager');
+const ThemeScanner = require('./theme/theme-scanner');
 
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
+const themeScanner = new ThemeScanner([path.join(path.dirname(ABS_PATH), 'resources', 'themes')]);
 
 let {app, ipcMain, BrowserWindow, Menu} = electron;
 let mainWindow;
+let themeDefs = {};
 
 const connectionMap = {};
 
@@ -24,6 +27,10 @@ function sanitize(payload) {
 
     return payload;
 }
+
+themeScanner.scanThemes().then((defs)=> {
+   themeDefs = defs;
+});
 
 function startMainWindow() {
     mainWindow = new BrowserWindow({
@@ -184,6 +191,10 @@ ipcMain.on('workbench:SyncQuery', (event, type) => {
 
         case 'Read-Session-Connection':
             event.returnValue = sanitize(configManager.getConnectionById(connectionMap[`window${event.sender.id}`]));
+            break;
+
+        case 'Read-Theme-Defs':
+            event.returnValue = themeDefs;
             break;
 
         default:

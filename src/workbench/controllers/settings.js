@@ -26,7 +26,9 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = {};
 
-    scope.themeList = [];
+    scope.themeDefs = ipcHandler.sendQuery('Read-Theme-Defs');
+
+    console.log(JSON.stringify(scope.themeDefs, null, 4));
 
     ipcHandler.onRequestDone('Write-Connection', (payload) => {
         if (_.isObject(payload) && _.isText(payload.id)) {
@@ -40,7 +42,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     });
 
     scope.queryConnectionList = function () {
-        const connectionList = ipcHandler.sendQuery('Read-All-Connections', {});
+        const connectionList = ipcHandler.sendQuery('Read-All-Connections');
 
         if (typeof connectionList.error === 'string') {
             return false;
