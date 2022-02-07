@@ -5,52 +5,52 @@
     "std__success": "#22b07d",
     "std__info": "#35B8E0",
     "std__critical": "#FF5B5B",
-    "std__warning": "#ff691a",
+    "std__warning": "#c77c19",
 
-    "theme__primary-bg": "#FFFFFF",
-    "theme__accent-bg": "#FFFFFF",
-    "theme__default-bg": "#FFFFFF",
-    "theme__primary-fg": "#FFFFFF",
-    "theme__accent-fg": "#FFFFFF",
-    "theme__default-fg": "#FFFFFF",
-    "theme__border-fg": "#FFFFFF",
-    "theme__corners": "10px",
+    "theme__default-bg": "#202225",
+    "theme__primary-bg": "#27292c",
 
-    "input__primary-bg": "#FFFFFF",
-    "input__default-bg": "#FFFFFF",
-    "input__accent-bg": "#FFFFFF",
-    "input__corners": "5px",
-    "input__border-size": "1px",
-    "input__border-fg": "#777777"
+    "theme__default-fg": "#636e78",
+    "theme__primary-fg": "#d1d2d2",
+    "theme__accent-fg": "#937ec9",
+
+    "theme__border-fg": "#35383b",
+
+    "theme__widget-corner": "10px",
+    "theme__input-corner": "5px",
+
+    "widget__primary-bg": "#27292c",
+    "widget__accent-bg": "#232527",
+
+    "input__primary-bg": "#242629",
+    "input__accent-bg": "#232527",
+    "input__focused-bg": "#292e2f",
+    "input__border-fg": "#343a40",
+    "input__border-size": "2px"
   },
 
   "sidebar": {
-    "primary-bg": "#eef4fb",
-    "default-bg": "#888888",
-    "accent-bg": "#eceef0",
-    "primary-fg": "#000000",
-    "accent-fg": "#FF0000",
+    "default-bg": "#202225",
+    "primary-bg": "#27292c",
+    "accent-bg": "#27292c",
+    "default-fg": "#61617d",
+    "primary-fg": "#FFFFFF",
+    "accent-fg": "#61617d",
     "border-size": "1px",
-    "border-fg": "#666666"
+    "border-fg": "#2C2E36"
   },
 
   "header": {
-    "primary-bg": "#eef4fb",
-    "default-bg": "#888888",
-    "accent-bg": "#eceef0",
-    "primary-fg": "#000000",
-    "accent-fg": "#FF0000",
+    "primary-bg": "transparent",
+    "primary-fg": "#d1d2d2",
+    "default-fg": "#636e78",
     "border-size": "1px",
-    "border-fg": "#666666"
+    "border-fg": "#2f3138"
   },
 
   "footer": {
-    "primary-bg": "#eef4fb",
-    "default-bg": "#888888",
-    "accent-bg": "#eceef0",
-    "primary-fg": "#000000",
-    "accent-fg": "#FF0000",
-    "border-size": "1px",
-    "border-fg": "#666666"
+    "primary-bg": "#27292c",
+    "primary-fg": "#d1d2d2",
+    "accent-bg": "#212121"
   }
 }

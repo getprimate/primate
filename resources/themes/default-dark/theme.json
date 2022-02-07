@@ -2,6 +2,6 @@
   "name": "Default Dark",
   "version": "0.1.0",
   "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
-  "styles": "default-light.json",
+  "styles": "default-dark.json",
   "fileType": "json"
 }

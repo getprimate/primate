@@ -1,7 +1,7 @@
 {
-  "name": "Glossy Green",
+  "name": "Ocean",
   "version": "0.1.0",
   "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
-  "styles": "glossy-green.json",
+  "styles": "ocean-theme.json",
   "fileType": "json"
 }
