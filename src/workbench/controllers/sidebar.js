@@ -6,11 +6,13 @@ const {/** @type {IPCHandler} */ ipcHandler} = window;
  * Provides controller constructor for sidebar activities.
  *
  * @constructor
- * @param {Object} scope
- * @param {RESTClientFactory} restClient
- * @param {ToastFactory} toast
+ * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
-export default function SidebarController(scope, restClient, toast) {
+export default function SidebarController(scope, restClient, viewFrame, toast) {
+    scope.frameState = viewFrame.getState();
     scope.navMenuObjects = [];
 
     scope.fetchAvailableEndpoints = function () {

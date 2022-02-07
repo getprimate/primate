@@ -34,7 +34,7 @@
 
     <section class="drawer__base">
         <ul class="base-menu">
-            <li><span class="material-icons">noise_aware</span> Local Server</li>
+            <li data-ng-style="{'color': frameState.sessionTheme}"><span class="material-icons">noise_aware</span> Local Server</li>
             <li><button class="text" title="Logout Session" data-ng-click="emitDestroySessionEvent()"><span class="material-icons">logout</span></button></li>
         </ul>
     </section>
@@ -58,7 +58,7 @@
         </div>
         <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
     </header>
-    <footer id="mainFooter" class="footer" data-ng-controller="FooterController">
+    <footer id="mainFooter" data-ng-controller="FooterController">
         <section class="footer__window">
             <div class="activity-log">
                 <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>

@@ -153,7 +153,6 @@ function buildRESTClientFactory(http) {
  * Implements the provider for {@link RESTClientFactory REST factory service}.
  *
  * @constructor
- * @type {RESTClientProvider}
  */
 export default function RestClientProvider() {
     this.initialize = (options) => {

@@ -1,3 +1,7 @@
 'use strict';
 
-module.exports = {};
+module.exports = {
+    appearance: {
+        themeDef: '__none__'
+    }
+};

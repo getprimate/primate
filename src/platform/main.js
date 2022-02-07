@@ -174,6 +174,18 @@ ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
         mainWindow.loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html')).catch((error) => {
             console.error(`${error}`);
         });
+    } else if (action === 'Update-Theme') {
+        const resolver = themeScanner.readStyle(payload.nonce);
+
+        resolver.then((styles) => {
+            event.reply('workbench:AsyncResponse', action, styles);
+        });
+
+        resolver.catch((error) => {
+            console.error(error);
+            event.reply('workbench:AsyncError', action, {message: `${error}`});
+        });
+
     } else {
         event.reply('workbench:AsyncError', {message: `Unknown action ${action}`});
     }

@@ -37,20 +37,27 @@ import SettingsController from './controllers/settings.js';
 import Templates from './templates.js';
 import RouteListController from './controllers/route-list.js';
 
+import ThemeEngine from './interface/theme-engine.js';
+
 const {/** @type {IPCHandler} */ ipcHandler} = window;
+const themeEngine = new ThemeEngine();
 
 /**
+ * Initializes factory providers.
  *
- * @param {RESTClientProvider} provider
+ * @param {RESTClientProvider} restProvider - REST Client factory provider
+ * @param {ViewFrameProvider} vfProvider - View Frame factory provider
  */
-function initRESTClient(provider) {
-    const defaultHost = window.ipcHandler.sendQuery('Read-Session-Connection');
+function initFactories(restProvider, vfProvider) {
+    const defaultHost = ipcHandler.sendQuery('Read-Session-Connection');
 
     if (_.isText(defaultHost.adminHost) && false === _.isEmpty(defaultHost.adminHost)) {
-        provider.initialize({
+        restProvider.initialize({
             /* TODO : Include basic auth not provided. */
             host: `${defaultHost.protocol}://${defaultHost.adminHost}:${defaultHost.adminPort}`
         });
+
+        vfProvider.initialize({sessionTheme: defaultHost.colorCode});
     }
 }
 
@@ -92,13 +99,17 @@ ipcHandler.onEventPush('Open-Settings-View', () => {
     window.location.href = '#!/settings';
 });
 
-KongDash.config(['restClientProvider', initRESTClient]);
+ipcHandler.onRequestDone('Update-Theme', (payload) => {
+    themeEngine.applyTheme(payload);
+});
+
+KongDash.config(['restClientProvider', 'viewFrameProvider', initFactories]);
 
 KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
 KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
 
 /* Register sidebar, header and footer controllers. */
-KongDash.controller('SidebarController', ['$scope', 'restClient', 'toast', SidebarController]);
+KongDash.controller('SidebarController', ['$scope', 'restClient', 'viewFrame', 'toast', SidebarController]);
 KongDash.controller('HeaderController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
 KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
 

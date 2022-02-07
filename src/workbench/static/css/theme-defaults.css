@@ -13,36 +13,24 @@
     --std__critical: #FF5B5B;
     --std__warning: #ff691a;
 
-    --std__hyperlink: #64bfe0;
+    --theme__default-bg: #202225;
+    --theme__primary-bg: #27292c;
 
-    /* Primary theme colours. */
-    --theme__primary-bg : #1B1D22;
-    --theme__accent-bg  : #1B1D22 /* #121318 */;
-    --theme__primary-fg : #FAFAFA;
-    --theme__accent-fg  : #7B849C;
+    --theme__default-fg: #636e78;
+    --theme__primary-fg: #d1d2d2;
+    --theme__accent-fg: #937ec9;
 
-    --theme__default-fg: #838383;
+    --theme__border-fg: #35383b;
 
-    /* Header-bar colours. */
-    --theme__header-bg: transparent;
-    --theme__header-fg: var(--theme__primary-fg);
-    --theme__header-bd: transparent;
+    --theme__widget-corner: 10px;
+    --theme__input-corner: 5px;
 
-    /* Header theme styles. */
+    --widget__primary-bg: var(--theme__primary-bg);
+    --widget__accent-bg: #232527;
 
-    /* Widget Colours */
-    --widget__primary-bg : #22242A;
-    --widget__accent-bg  : #27292f;
-
-    /* Form input colours. */
-    --input__primary-bg : #323741;
-    --input__accent-bg  : var(--widget__accent-bg);
-    --input__focused-bg : #292F3A;
-    --input__primary-bd : #484D5A;
-    --input__focused-bd : #1F5EFF;
-    --input__border-size: 1px;
-    --input__border-fg: #484D5A;
-
-    --theme__widget-corner: 8px;
-    --theme__input-corner: 6px;
+    --input__primary-bg: #242629;
+    --input__accent-bg: #232527;
+    --input__focused-bg: #292e2f;
+    --input__border-fg: #343a40;
+    --input__border-size: 2px;
 }

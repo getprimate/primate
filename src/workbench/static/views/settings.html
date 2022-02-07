@@ -90,18 +90,26 @@
 <section id="st-ed__npg02" class="notebook__page">
     <div class="well">
         <div class="well__heading">Appearance Settings</div>
-        <div class="well__scroll-area large">
-            <table class="board">
-                <tbody>
-                <tr data-ng-repeat="theme in themeDefs">
-                    <td><input type="radio" class="success" name="themeSelector" /></td>
-                    <td><strong>{{theme.name}}</strong>
-                        <br />Version: {{theme.version}}
-                        <br />{{theme.maintainer}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div><!-- .well__scroll-area.large -->
+
+        <div class="row">
+            <div class="col md-6">
+                &nbsp;
+            </div><!-- .col.md-6 -->
+            <div class="col md-6">
+                <div class="well__scroll-area large">
+                    <table class="board">
+                        <tbody data-ng-click="setWorkbenchTheme($event)">
+                        <tr data-ng-repeat="theme in themeDefs">
+                            <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeNonce" value="{{theme.nonce}}" /></td>
+                            <td><strong>{{theme.name}}</strong>
+                                <br />Version: {{theme.version}}
+                                <br />{{theme.maintainer}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- .well__scroll-area.large -->
+            </div><!-- .col.md-6 -->
+        </div><!-- .row -->
     </div><!-- .well -->
 </section>
 

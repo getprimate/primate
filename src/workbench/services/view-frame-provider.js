@@ -19,6 +19,7 @@
  * @property {(function(void): string[])} getBreadcrumbs - Returns the route history stack.
  * @property {(function(shouldPop: boolean=): string)} previousRoute - Pops the next route from history stack.
  * @property {(function(void): boolean)} hasBreadcrumbs - Tells if the breadcrumbs are present.
+ * @property {(function(string): void)} setSessionTheme - Sets the session theme color.
  * @property {(function(string): void)} setTitle - Sets the current view title.
  * @property {(function(displayText:string, redirect:string=, styles:string=,
  *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
@@ -30,7 +31,18 @@
  * @property {function(void):void} incrementLoader - Increments loader width by adding loader step.
  */
 
+/**
+ * Implements the provider for {@link ViewFrameFactory View Frame factory}.
+ *
+ * @typedef {Object} ViewFrameProvider
+ * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
+ */
+
 import _ from '../../lib/core-utils.js';
+
+const cacheMap = {
+    /** @type {NodeJS.Timeout} */ loaderTimeout: null
+};
 
 /**
  * Holds the current view frame state.
@@ -38,6 +50,7 @@ import _ from '../../lib/core-utils.js';
  * @type {Object}
  */
 const frameState = {
+    sessionTheme: '#FFFFFF',
     frameTitle: '',
     routeNext: '',
     breadcrumbs: [],
@@ -48,13 +61,30 @@ const frameState = {
     loaderUnit: '0vw'
 };
 
+function loaderTimeoutCallback(state) {
+    state.loaderStep = 0;
+    state.loaderWidth = 0;
+    state.loaderUnit = `${state.loaderWidth}vw`;
+
+    clearTimeout(cacheMap.loaderTimeout);
+    cacheMap.loaderTimeout = null;
+}
+
 /**
  * Returns the {@link ViewFrameFactory View frame} singleton.
  *
  * @returns {ViewFrameFactory} The view frame singleton.
  */
-export default function ViewFrameFactory() {
+function buildViewFrameFactory() {
     return {
+        setSessionTheme(color) {
+            frameState.sessionTheme = color;
+        },
+
+        getSessionTheme() {
+            return frameState.sessionTheme;
+        },
+
         setTitle(title) {
             frameState.frameTitle = title;
         },
@@ -121,16 +151,14 @@ export default function ViewFrameFactory() {
         },
 
         incrementLoader() {
-            const width = frameState.loaderWidth + frameState.loaderStep;
+            const width = Math.min(frameState.loaderWidth + frameState.loaderStep, 100);
 
-            if (width >= 100) {
-                frameState.loaderStep = 0;
-                frameState.loaderWidth = 0;
-            } else {
-                frameState.loaderWidth = width;
-            }
-
+            frameState.loaderWidth = width;
             frameState.loaderUnit = `${frameState.loaderWidth}vw`;
+
+            if (width >= 100 && _.isNil(cacheMap.loaderTimeout)) {
+                cacheMap.loaderTimeout = setTimeout(loaderTimeoutCallback, 500, frameState);
+            }
         },
 
         resetLoader() {
@@ -143,4 +171,18 @@ export default function ViewFrameFactory() {
             return frameState;
         }
     };
+}
+
+export default function ViewFrameProvider() {
+    this.initialize = (options) => {
+        for (let name in options) {
+            if (!_.isDefined(frameState[name])) {
+                continue;
+            }
+
+            frameState[name] = options[name];
+        }
+    };
+
+    this.$get = [buildViewFrameFactory];
 }

@@ -25,10 +25,8 @@ const {/** @type {IPCHandler} */ ipcHandler} = window;
 export default function SettingsController(scope, restClient, viewFrame, toast) {
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = {};
-
-    scope.themeDefs = ipcHandler.sendQuery('Read-Theme-Defs');
-
-    console.log(JSON.stringify(scope.themeDefs, null, 4));
+    scope.themeDefs = {};
+    scope.workbenchConfig = {};
 
     ipcHandler.onRequestDone('Write-Connection', (payload) => {
         if (_.isObject(payload) && _.isText(payload.id)) {
@@ -49,6 +47,13 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         }
 
         scope.connectionList = connectionList;
+    };
+
+    scope.queryWorkbenchSettings = function () {
+        scope.workbenchConfig = ipcHandler.sendQuery('Read-Theme-Defs');
+        scope.themeDefs = ipcHandler.sendQuery('Read-Theme-Defs');
+
+        scope.workbenchConfig.nonce = '';
     };
 
     scope.populateConnection = function (event) {
@@ -102,12 +107,24 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         return true;
     };
 
+    scope.setWorkbenchTheme = function (event) {
+        const {target} = event;
+
+        if (target.nodeName === 'INPUT' && _.isText(target.value)) {
+            ipcHandler.sendRequest('Update-Theme', {nonce: target.value});
+            return true;
+        }
+
+        return false;
+    };
+
     scope.switchNotebookTabs = switchTabInitiator();
 
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/settings', 'Settings');
 
     scope.queryConnectionList();
+    scope.queryWorkbenchSettings();
 
     scope.$on('$destroy', () => {
         ipcHandler.removeCallbacks('onRequestDone', 'Write-Connection');
