@@ -1,7 +1,7 @@
 {
-  "name": "Default Light",
+  "name": "Glossy Green",
   "version": "0.1.0",
   "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
-  "styles": "default-light.json",
+  "styles": "glossy-green.json",
   "fileType": "json"
 }
