@@ -78,6 +78,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
             for (let service of response.data) {
                 service.displayText =
                     typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
+                service.created_at = service.created_at * 1000;
                 scope.serviceList.push(service);
             }
         });

@@ -40,8 +40,8 @@
 
 import _ from '../../lib/core-utils.js';
 
-const cacheMap = {
-    /** @type {NodeJS.Timeout} */ loaderTimeout: null
+const frameCache = {
+    isLoading: false
 };
 
 /**
@@ -66,8 +66,7 @@ function loaderTimeoutCallback(state) {
     state.loaderWidth = 0;
     state.loaderUnit = `${state.loaderWidth}vw`;
 
-    clearTimeout(cacheMap.loaderTimeout);
-    cacheMap.loaderTimeout = null;
+    frameCache.isLoading = false;
 }
 
 /**
@@ -75,8 +74,10 @@ function loaderTimeoutCallback(state) {
  *
  * @returns {ViewFrameFactory} The view frame singleton.
  */
-function buildViewFrameFactory() {
+function buildViewFrameFactory(timeoutFn) {
     return {
+        _setTimeout: timeoutFn,
+
         setSessionTheme(color) {
             frameState.sessionTheme = color;
         },
@@ -156,8 +157,9 @@ function buildViewFrameFactory() {
             frameState.loaderWidth = width;
             frameState.loaderUnit = `${frameState.loaderWidth}vw`;
 
-            if (width >= 100 && _.isNil(cacheMap.loaderTimeout)) {
-                cacheMap.loaderTimeout = setTimeout(loaderTimeoutCallback, 500, frameState);
+            if (width >= 100 && false === frameCache.isLoading) {
+                frameCache.isLoading = true;
+                this._setTimeout(loaderTimeoutCallback, 500, true, frameState);
             }
         },
 
@@ -184,5 +186,5 @@ export default function ViewFrameProvider() {
         }
     };
 
-    this.$get = [buildViewFrameFactory];
+    this.$get = ['$timeout', buildViewFrameFactory];
 }

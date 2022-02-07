@@ -1,4 +1,4 @@
-/** TODO : Reactor the whole file. */
+/** TODO : Refactor the whole file. */
 
 /**
  * Copyright (c) Ajay Sreedhar. All rights reserved.
@@ -397,4 +397,11 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
         scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
     }
+
+    scope.$on('$destroy', () => {
+        scope.certList.length = 0;
+        scope.targetList.length = 0;
+
+        delete scope.upstreamModel;
+    });
 }

@@ -18,7 +18,7 @@ main.content {
 }
 
 section#index__ngView {
-    width: min(53vw, 1000px);
+    width: min(67vw, 1280px);
     margin: 0 auto 0 auto;
 }
 
@@ -46,19 +46,24 @@ form.form {
     <div class="well__heading">Setup KongDash</div>
     <div class="container">
         <div id="bt-ed__wrp01" class="row">
-        <div class="col md-5 no-padding">
-        <table class="board">
-            <tbody>
-            <tr data-ng-repeat="connection in connectionList">
-                <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
-                <td><a href="#">{{connection.name}}</a><br>Last used: {{connection.connectionDate}}</td>
-                <td><td class="md-1"><span class="material-icons success">fiber_manual_record</span></td></td>
+        <div class="col md-6 no-padding">
+        <table class="board clickable">
+            <tbody data-ng-click="pickConnection($event)">
+            <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
+                <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
+                <td><strong>{{connProps.name}}</strong>
+                    <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
+                    <br>Last Used on: 04 February, 2022</td>
+                <td class="row-actions">
+                    <span title="Edit before connecting" class="material-icons edit warning">edit</span>
+                    <span title="Delete connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
+                </td><!-- .row-actions -->
             </tr>
             </tbody>
         </table><!-- .board -->
-        </div><!-- .col.md-5.no-padding -->
+        </div><!-- .col.md-6.no-padding -->
 
-        <div class="col md-7 no-padding">
+        <div class="col md-6 no-padding">
         <form method="POST" class="form" data-ng-submit="attemptConnection($event)">
             <div class="form__field">
                 <label class="field-label">Admin API</label>
@@ -118,14 +123,14 @@ form.form {
             </div><!-- .col.md-6 -->
             </div><!-- .row -->
         </form><!-- .form -->
-        </div><!-- .col md-7.no-padding -->
+        </div><!-- .col md-6.no-padding -->
 
         </div><!-- #bt-ed__wrp01.row -->
     </div><!-- .container -->
     </div><!-- .well -->
 </section><!-- .content__wrapper -->
 
-<footer data-ng-controller="FooterController" class="footer">
+<footer id="mainFooter" data-ng-controller="FooterController">
     <section id="index__ftBase" class="footer__base"><form>
         <ul class="base-menu">
             <li>localhost:8001</li>

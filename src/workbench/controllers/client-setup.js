@@ -12,47 +12,6 @@ import setupModel from '../models/setup-model.js';
 
 const {/** @type {IPCHandler} */ ipcHandler} = window;
 
-const connectionList = [
-    {
-        id: '123-123-123-111',
-        name: 'Kong Staging',
-        host: '127.0.0.1',
-        port: 8001,
-        authentication: {
-            basicAuth: {
-                username: 'ajaysreedhar'
-            }
-        },
-        connectionDate: '20 January, 2022'
-    },
-
-    {
-        id: '123-123-123-112',
-        name: 'Kong Production',
-        host: '127.0.0.1',
-        port: 8001,
-        authentication: {
-            basicAuth: {
-                username: 'ajaysreedhar'
-            }
-        },
-        connectionDate: '15 January, 2022'
-    },
-
-    {
-        id: '123-123-123-113',
-        name: 'Kong Local',
-        host: '127.0.0.1',
-        port: 8001,
-        authentication: {
-            basicAuth: {
-                username: 'ajaysreedhar'
-            }
-        },
-        connectionDate: '11 January, 2022'
-    }
-];
-
 /**
  *
  * @param {{
@@ -85,7 +44,52 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
     const defaultHost = ipcHandler.sendQuery('Read-Default-Connection');
 
     scope.setupModel = _.deepClone(setupModel);
-    scope.connectionList = connectionList;
+    scope.connectionList = {};
+
+    scope.queryConnectionList = function () {
+        const connectionList = ipcHandler.sendQuery('Read-All-Connections');
+
+        if (typeof connectionList.error === 'string') {
+            return false;
+        }
+
+        scope.connectionList = connectionList;
+    };
+
+    scope.pickConnection = function (event) {
+        const {target} = event;
+        let tableRow = target;
+
+        if (target.nodeName === 'TBODY') return false;
+        else if (target.nodeName !== 'TR') tableRow = target.closest('tr');
+
+        const {connectionId} = tableRow.dataset;
+
+        if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
+            const proceed = confirm('Delete this connection?');
+
+            if (proceed === true) {
+                delete scope.connectionList[connectionId];
+                /* TODO : Implement delete request handler in main process. */
+                ipcHandler.sendRequest('Delete-Connection', {id: connectionId});
+            }
+
+            return proceed;
+        }
+
+        const fields = Object.keys(scope.connectionList[connectionId]);
+
+        for (let field of fields) {
+            scope.setupModel[field] = scope.connectionList[connectionId][field];
+            scope.setupModel.id = connectionId;
+        }
+
+        if (target.nodeName === 'SPAN' && target.classList.contains('edit')) {
+            return true;
+        }
+
+        return scope.attemptConnection();
+    };
 
     /**
      * Attempts to connect to the specified server.
@@ -159,5 +163,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             scope.attemptConnection();
             clearTimeout(timeout);
         }, 2000);
+    } else {
+        scope.queryConnectionList();
     }
 }
