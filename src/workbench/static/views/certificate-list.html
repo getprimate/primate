@@ -6,21 +6,24 @@
     <div class="well">
         <div class="well__heading">Public Certificates</div>
         <table id="cf-list__tab01" class="board">
-            <tbody>
+            <tbody data-ng-if="certList.length>=1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="cert in certList">
-                <td><a href="#!/certificates/{{cert.id}}">{{cert.name}}</a><br /> {{cert.tags}}</td>
-                <td>
-                    <div class="action-group">
-                        <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="certificate" data-url="/certificates/{{cert.id}}">delete_forever</i>
-                    </div>
-                </td>
+                <td><a href="#!/certificates/{{cert.id}}">{{cert.displayText}}</a><br /> {{cert.subTagsText}}</td>
+                <td class="row-actions">
+                    <a href="#!/certificates/{{cert.id}}"><i class="material-icons warning">edit</i></a>
+                    <span class="material-icons critical delete" data-target="certificate" data-endpoint="/certificates/{{cert.id}}">delete_forever</span>
+                </td><!-- .row-actions -->
             </tr>
             </tbody>
-            <tfoot data-ng-if="certList.length<=0"><tr><th colspan="5">No public certificates added yet.</th></tr></tfoot>
+
+            <tbody class="hero-placeholder" data-ng-if="certList.length===0">
+            <tr><td><span class="material-icons hero">local_police</span></td></tr>
+            <tr><td>Looks like no certificates are present!</td></tr>
+            <tr><td><a href="#!/trusted-cas/__create__" class="btn default">Add Certificate</a></td></tr>
+            </tbody><!-- .hero-placeholder -->
 
             <tfoot class="pagination" data-ng-if="certNext.offset.length>=5">
-                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchCertList(certNext)">Load Next</button></th></tr>
+            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchCertList(certNext)">Load Next</button></th></tr>
             </tfoot><!-- .pagination -->
         </table><!-- #cf-list__tab01.board -->
     </div><!-- .well -->
@@ -29,20 +32,23 @@
 <!-- ==--==--==--==--==--==--==--==--==--== CA Certificates ==--==--==--==--==--==--==--==--==--== -->
 <div class="col md-4">
     <div class="well">
-        <div class="well__heading">Trusted CAs</div>
+        <div class="well__heading">CA Certificates</div>
         <table id="cf-list__tab02" class="board">
-            <tbody>
+            <tbody data-ng-if="caList.length>=1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="ca in caList">
-                <td><a href="#!/trusted-cas/{{ca.id}}">{{ca.name}}</a><br /> {{ca.tags}}</td>
-                <td>
-                    <div class="action-group">
-                        <a href="#!/trusted-cas/{{ca.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="CA" data-url="/ca_certificates/{{ca.id}}">delete_forever</i>
-                    </div>
-                </td>
+                <td><a href="#!/trusted-cas/{{ca.id}}">{{ca.displayText}}</a><br /> {{ca.subTagsText}}</td>
+                <td class="row-actions">
+                    <a href="#!/trusted-cas/{{ca.id}}"><i class="material-icons warning">edit</i></a>
+                    <span class="material-icons critical delete" data-target="CA" data-endpoint="/ca_certificates/{{ca.id}}">delete_forever</span>
+                </td><!-- .row-actions -->
             </tr>
             </tbody>
-            <tfoot data-ng-if="caList.length<=0"><tr><th colspan="5">No CAs added yet.</th></tr></tfoot>
+
+            <tbody class="hero-placeholder" data-ng-if="caList.length===0">
+            <tr><td><span class="material-icons hero">security</span></td></tr>
+            <tr><td>Looks like no trusted CAs are present!</td></tr>
+            <tr><td><a href="#!/trusted-cas/__create__" class="btn default">Add Trusted CA</a></td></tr>
+            </tbody><!-- .hero-placeholder -->
 
             <tfoot class="pagination" data-ng-if="caNext.offset.length>=5">
                 <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchCaList(caNext)">Load Next</button></th></tr>
@@ -55,20 +61,23 @@
 <div class="col md-4">
     <div class="well">
         <div class="well__heading">SNIs</div>
-        <table id="cf-list__tab03" class="table">
-            <thead data-ng-if="sniList.length>0"><tr><th>Certificate</th><th>SNI Name</th></tr></thead>
-            <tbody>
-            <tr data-ng-repeat="sni in sniList">
-                <td><a href="#!/certificates/{{sni.certificate.id}}">{{sni.certificate.name}}</a></td>
-                <td>{{sni.name}}</td>
-            </tr>
-            </tbody>
-            <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="5">No SNIs added yet.</th></tr></tfoot>
+        <div class="well__scroll-area large">
+            <table id="cf-list__tab03" class="table">
+                <thead data-ng-if="sniList.length>=1"><tr><th>Certificate</th><th>SNI Name</th></tr></thead>
+                <tbody data-ng-if="sniList.length>=1" data-ng-click="deleteTableRow($event)">
+                <tr data-ng-repeat="sni in sniList">
+                    <td><a href="#!/certificates/{{sni.certificate.id}}">{{sni.certificate.name}}</a></td>
+                    <td>{{sni.name}}</td>
+                </tr>
+                </tbody>
 
-            <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
-                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
-            </tfoot><!-- .pagination -->
-        </table><!-- #cf-list__tab03.table -->
+                <tbody data-ng-if="sniList.length===0"><tr><th colspan="2">No SNIs are added yet.</th></tr></tbody>
+
+                <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
+                    <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
+                </tfoot><!-- .pagination -->
+            </table><!-- #cf-list__tab03.table -->
+        </div><!-- .well__scroll-area.large -->
     </div><!-- .well -->
 </div><!-- .col.md-4 -->
 </div><!-- .row -->
