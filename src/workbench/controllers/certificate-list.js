@@ -1,7 +1,15 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
-import _ from '../../lib/core-utils.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {isEmpty, isText} from '../../lib/core-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {simplifyObjectId, urlQuery, urlOffset, tagsToText, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
@@ -16,8 +24,10 @@ import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 export default function CertificateListController(scope, restClient, viewFrame, toast) {
     scope.certList = [];
     scope.certNext = {offset: ''};
+
     scope.caList = [];
     scope.caNext = {offset: ''};
+
     scope.sniList = [];
     scope.sniNext = {offset: ''};
 
@@ -28,24 +38,28 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCertList = (filters = null) => {
+        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
+
         const request = restClient.get('/certificates' + urlQuery(filters));
 
         request.then(({data: response}) => {
             scope.certNext.offset = urlOffset(response.next);
 
             for (let certificate of response.data) {
-                certificate.name = _.objectName(certificate.id);
-                certificate.tags =
-                    certificate.tags !== null && certificate.tags.length >= 1
-                        ? certificate.tags.join(', ')
-                        : 'No tags added';
-
-                scope.certList.push(certificate);
+                scope.certList.push({
+                    id: certificate.id,
+                    displayText: simplifyObjectId(certificate.id),
+                    subTagsText: isEmpty(certificate.tags)
+                        ? epochToDate(certificate.created_at)
+                        : tagsToText(certificate.tags)
+                });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load certificates.');
+            toast.error('Unable to fetch public certificates.');
         });
 
         request.finally(() => {
@@ -62,21 +76,26 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCaList = (filters = null) => {
+        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
+
         const request = restClient.get('/ca_certificates' + urlQuery(filters));
 
         request.then(({data: response}) => {
             scope.caNext.offset = urlOffset(response.next);
 
             for (let ca of response.data) {
-                ca.name = _.objectName(ca.id);
-                ca.tags = ca.tags.length >= 1 ? ca.tags.join(', ') : 'No tags added';
-
-                scope.caList.push(ca);
+                scope.caList.push({
+                    id: ca.id,
+                    displayText: simplifyObjectId(ca.id),
+                    subTagsText: isEmpty(ca.tags) ? epochToDate(ca.created_at) : tagsToText(ca.tags)
+                });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load CA list.');
+            toast.error('Unable to fetch CA certificates.');
         });
 
         request.finally(() => {
@@ -93,23 +112,23 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchSniList = (filters = null) => {
+        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
+
         const request = restClient.get('/snis' + urlQuery(filters));
 
         request.then(({data: response}) => {
             scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
-                if (typeof sni.certificate !== 'object' || sni.certificate === null) {
-                    sni.certificate = {id: null};
-                }
-
-                sni.certificate.name = _.objectName(sni.certificate.id);
+                sni.certificate.displayText = simplifyObjectId(sni.certificate.id);
                 scope.sniList.push(sni);
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load SNIs.');
+            toast.error('Unable to fetch SNIs.');
         });
 
         request.finally(() => {
@@ -119,12 +138,22 @@ export default function CertificateListController(scope, restClient, viewFrame, 
         return true;
     };
 
-    viewFrame.setTitle('Services');
-    viewFrame.setLoaderSteps(3);
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (isText(err)) toast.error(err);
+        else toast.success('Certificate deleted successfully.');
+    });
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
 
+    viewFrame.setTitle('Certificates');
+    viewFrame.setLoaderSteps(3);
+
+    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
     viewFrame.addAction('New Certificate', '#!/certificates/__create__');
     viewFrame.addAction('New Trusted CA', '#!/trusted-cas/__create__');
 
