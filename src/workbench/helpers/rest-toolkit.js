@@ -15,7 +15,7 @@
  * @param {{target: string}=} properties - The property payload from the function.
  */
 
-import _ from '../../lib/core-utils.js';
+import {isText, isObject, isEmpty} from '../../lib/core-toolkit.js';
 
 /**
  * Handles delete requests initiated from delete icons.
@@ -34,7 +34,7 @@ function deleteMethodHandler(event) {
         event.preventDefault();
 
         const {target, endpoint} = element.dataset;
-        if (!_.isText(endpoint)) return false;
+        if (!isText(endpoint)) return false;
 
         const proceed = confirm(`Delete this ${target}?`);
         if (proceed === false) return proceed;
@@ -47,7 +47,8 @@ function deleteMethodHandler(event) {
         });
 
         request.catch(() => {
-            if (typeof this._callback === 'function') this._callback.call(`Unable to delete ${target}.`, {target});
+            if (typeof this._callback === 'function')
+                this._callback.call(null, `Unable to delete ${target}.`, {target});
         });
     }
 
@@ -63,4 +64,79 @@ function deleteMethodHandler(event) {
  */
 export function deleteMethodInitiator(restClient, callback) {
     return deleteMethodHandler.bind({_client: restClient, _callback: callback});
+}
+
+export function simplifyObjectId(objectId) {
+    if (typeof objectId !== 'string' || objectId.length === 0) {
+        return 'None';
+    }
+
+    let position = objectId.length;
+
+    while (position >= 0) {
+        if (objectId.charAt(position) === '-') {
+            break;
+        }
+
+        position--;
+    }
+
+    if (position === 0 || position === objectId.length) {
+        return objectId;
+    }
+
+    return objectId.substr(position + 1).toUpperCase();
+}
+
+export function epochToDate(seconds, format = 'date') {
+    const date = new Date(seconds * 1000);
+
+    switch (format) {
+        case 'date':
+            return date.toDateString();
+
+        case 'UTC':
+        case 'GMT':
+            return date.toUTCString();
+
+        default:
+            return date.toString();
+    }
+}
+
+export function urlOffset(location) {
+    if (!isText(location)) return '';
+
+    const url = new URL(location);
+    const params = url.searchParams;
+
+    return params.has('offset') ? params.get('offset') : '';
+}
+
+export function urlQuery(options) {
+    if (isObject(options)) {
+        const params = new URLSearchParams();
+
+        for (let name in options) {
+            params.append(name, options[name]);
+        }
+
+        return '?' + params.toString();
+    }
+
+    if (isText(options)) {
+        return `?${options}`;
+    }
+
+    return '';
+}
+
+export function tagsToText(tags, maxLen = 50) {
+    if (isEmpty(tags) || !Array.isArray(tags)) return '';
+
+    const text = tags.join(', ');
+
+    if (text.length <= maxLen) return text;
+
+    return text.substring(0, maxLen - 1) + '...';
 }

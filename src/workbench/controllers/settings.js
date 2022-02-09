@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import setupModel from '../models/setup-model.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
 
@@ -30,7 +30,6 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
     ipcHandler.onRequestDone('Write-Connection', (payload) => {
         if (_.isObject(payload) && _.isText(payload.id)) {
-
             scope.$apply((_this) => {
                 _this.connectionList[payload.id] = payload;
             });
@@ -61,7 +60,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         if (target.nodeName === 'TBODY') return false;
 
-        const tableRow = (target.nodeName === 'TR') ? target : target.closest('tr');
+        const tableRow = target.nodeName === 'TR' ? target : target.closest('tr');
         const {connectionId} = tableRow.dataset;
 
         if (_.isText(connectionId) && connectionId.length >= 5) {

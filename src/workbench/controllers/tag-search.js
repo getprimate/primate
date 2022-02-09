@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import {urlQuery} from '../../lib/rest-utils.js';
 
 const entityList = {
@@ -35,7 +35,7 @@ const entityList = {
     certificates: {
         nodeValue: 'certificates',
         displayText: 'Certificates',
-        displayIcon: 'verified_user',
+        displayIcon: 'local_police',
         redirect: '#!/certificates'
     },
 

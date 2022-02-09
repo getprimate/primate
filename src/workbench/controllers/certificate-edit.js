@@ -7,8 +7,10 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {isText, deepClone, explode} from '../../lib/core-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
+
+import certModel from '../models/certificate-model';
 
 /**
  * Provides controller constructor for editing certificate objects.
@@ -27,9 +29,10 @@ import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
  */
 export default function CertificateEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/certificates'};
+    const eventLocks = {submitCertForm: false, submitSNIForm: false};
 
     scope.certId = '__none__';
-    scope.certModel = {cert: '', key: '', cert_alt: '', key_alt: '', tags: '', snis: ''};
+    scope.certModel = deepClone(certModel);
 
     scope.sniModel = {shorthand: ''};
     scope.sniList = [];
@@ -113,17 +116,14 @@ export default function CertificateEditController(scope, location, routeParams, 
             return false;
         }
 
-        const payload = _.deepClone(scope.certModel);
+        if (eventLocks.submitCertForm === true) return false;
+        else eventLocks.submitCertForm = true;
 
-        if (scope.certModel.tags.length > 0) {
-            payload.tags = _.explode(scope.certModel.tags);
-        }
+        viewFrame.setLoaderSteps(1);
 
-        if (restConfig.method === 'PATCH') {
-            delete payload.snis;
-        } else {
-            payload.snis = _.explode(scope.certModel.snis);
-        }
+        const payload = deepClone(scope.certModel);
+
+        if (restConfig.method === 'PATCH') delete payload.snis;
 
         if (scope.certModel.cert_alt.length <= 0 || scope.certModel.key_alt.length <= 0) {
             delete payload.cert_alt;
@@ -148,6 +148,11 @@ export default function CertificateEditController(scope, location, routeParams, 
             toast.error(response.data);
         });
 
+        request.finally(() => {
+            eventLocks.submitCertForm = false;
+            viewFrame.incrementLoader();
+        });
+
         return false;
     };
 
@@ -160,11 +165,14 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.submitSNIForm = function (event) {
         event.preventDefault();
 
-        const exploded = _.explode(scope.sniModel.shorthand);
+        const exploded = explode(scope.sniModel.shorthand);
 
-        if (exploded.length <= 0) {
-            return false;
-        }
+        if (exploded.length <= 0) return false;
+
+        if (eventLocks.submitSNIForm === true) return false;
+        else eventLocks.submitSNIForm = true;
+
+        viewFrame.setLoaderSteps(1);
 
         const payload = {name: exploded[0], certificate: {id: scope.certId}, tags: []};
 
@@ -178,7 +186,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             response.tags = response.tags.length >= 1 ? response.tags.join(', ') : 'No tags added.';
 
             scope.sniList.push(response);
-            toast.success(`Added new SNI ${response.name}`);
+            toast.success(`Added new SNI ${response.name}.`);
         });
 
         request.catch(({status, data: error}) => {
@@ -187,10 +195,23 @@ export default function CertificateEditController(scope, location, routeParams, 
 
         request.finally(() => {
             scope.sniModel.shorthand = '';
+            eventLocks.submitSNIForm = false;
+
+            viewFrame.incrementLoader();
         });
 
         return false;
     };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
+        if (isText(err)) toast.error(err);
+        else toast.success(`${properties.target} deleted successfully.`);
+    });
 
     if (typeof routeParams.upstreamId === 'string') {
         restConfig.endpoint = `/upstreams/${routeParams.upstreamId}/client_certificate`;
@@ -243,7 +264,7 @@ export default function CertificateEditController(scope, location, routeParams, 
                 `/certificates/${scope.certId}`
             );
 
-            viewFrame.addBreadcrumb(location.path(), _.objectName(response.id));
+            viewFrame.addBreadcrumb(location.path(), simplifyObjectId(response.id));
         });
 
         request.catch(() => {

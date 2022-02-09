@@ -29,7 +29,7 @@ export default function SidebarController(scope, restClient, viewFrame, toast) {
             certificates: {
                 enabled: false,
                 displayText: 'Certificates',
-                icon: 'verified_user',
+                icon: 'local_police',
                 listView: '',
                 editView: ''
             },

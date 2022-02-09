@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from './core-utils.js';
+import * as _ from './core-toolkit.js';
 
 export function urlOffset(location) {
     if (!_.isText(location)) return '';

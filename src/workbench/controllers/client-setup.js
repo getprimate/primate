@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import setupModel from '../models/setup-model.js';
 
 const {/** @type {IPCHandler} */ ipcHandler} = window;

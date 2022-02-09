@@ -9,14 +9,14 @@
             <div class="col md-12">
                 <div class="form__field">
                     <ul class="field-input linked">
-                        <li>
+                        <li class="md-2">
                             <select id="sv-ed__sel01" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required">
                             <option value="null">- Protocol -</option>
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                             </select>
                         </li>
-                        <li><input id="sv-ed__txt01" type="text" name="serviceHost" value="" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" /></li>
-                        <li><input id="sv-ed__txt02" type="number" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Port" /></li>
+                        <li class="stretch"><input id="sv-ed__txt01" type="text" name="serviceHost" value="" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" /></li>
+                        <li class="md-2"><input id="sv-ed__txt02" type="number" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Port" /></li>
                     </ul><!-- .linked -->
                 </div>
             </div><!-- .col.md-12 -->
@@ -49,10 +49,9 @@
                 </div><!-- .col.md-8 -->
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__rge01" class="field-label">Retries <span class="tooltip material-icons">help_outline</span></label>
+                        <label for="sv-ed__rge01" class="field-label">Retries <output class="label-legend">{{serviceModel.retries}}</output></label>
                         <div class="field-input">
                             <input id="sv-ed__rge01" type="range" min="0" max="100" name="retries" value="5" data-ng-model="serviceModel.retries" />
-                            <output class="field-input__legend">{{serviceModel.retries}}</output>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
@@ -114,10 +113,10 @@
                     </div><!-- .form__field -->
 
                     <div class="form__field">
-                        <label for="sv-ed__rge02" class="field-label">TLS Chain Depth</label>
+                        <label for="sv-ed__rge02" class="field-label">TLS Chain Depth
+                            <output class="label-legend">{{serviceModel.tls_verify_depth === -1 ? 'Default' : serviceModel.tls_verify_depth}}</output></label>
                         <div class="field-input">
                             <input id="sv-ed__rge02" type="range" min="-1" max="64" name="tlsVerifyDepth" value="-1" data-ng-model="serviceModel.tls_verify_depth" />
-                            <output class="field-input__legend">{{serviceModel.tls_verify_depth === -1 ? 'Default' : serviceModel.tls_verify_depth}}</output>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
@@ -148,12 +147,11 @@
             <table id="sv-edit__tab01" class="board">
                 <tbody>
                 <tr data-ng-repeat="route in routeList">
-                    <td><a href="#!/services/{{serviceId}}/routes/{{route.id}}"><b>{{route.name}}</b></a></td>
-                    <td>
-                        <div class="action-group" data-service-id="{{service.id}}">
-                            <a href="#!/services/{{serviceId}}/routes/{{route.id}}"><i class="material-icons warning">edit</i></a>
-                            <i class="material-icons critical delete" data-target="route" data-url="/services/{{serviceId}}/routes/{{route.id}}">delete_forever</i>
-                        </div>
+                    <td><a href="#!/services/{{serviceId}}/routes/{{route.id}}">{{route.displayText}}</a>
+                        <br>{{route.subTagsText}}</td>
+                    <td class="row-actions">
+                        <a href="#!/services/{{serviceId}}/routes/{{route.id}}"><i class="material-icons warning">edit</i></a>
+                        <i class="material-icons critical delete" data-target="route" data-url="/services/{{serviceId}}/routes/{{route.id}}">delete_forever</i>
                     </td>
                 </tr>
                 </tbody>
@@ -165,8 +163,8 @@
                     </tr><!-- data-ng-switch -->
                 </tfoot>
 
-                <tfoot data-ng-if="routeNext.offset.length<=5" class="pagination">
-                    <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchMappedRoutes()">Load Next</button></th></tr>
+                <tfoot data-ng-if="routeNext.offset.length>=5" class="pagination">
+                    <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchMappedRoutes(routeNext)">Load Next</button></th></tr>
                 </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
@@ -182,13 +180,11 @@
             <tbody>
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="success plugin-state" data-ng-checked="plugin.enabled===true" title="Enable or disable plugin." /></td>
-
-                <td><a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
-                <td>
-                    <div class="action-group" data-service-id="{{service.id}}">
-                        <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
-                    </div>
+                <td><a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}">{{plugin.displayText}}</a>
+                    <br />{{plugin.subTagsText}}</td>
+                <td class="row-actions">
+                    <a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
+                    <i class="material-icons critical delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
                 </td>
             </tr>
             </tbody>

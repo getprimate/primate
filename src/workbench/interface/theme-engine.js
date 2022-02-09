@@ -7,12 +7,11 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 
 const {document} = window;
 
 class ThemeEngine {
-
     _applyJSONTheme(styleString) {
         const themeStyle = JSON.parse(styleString);
         const components = Object.keys(themeStyle);
@@ -70,7 +69,6 @@ class ThemeEngine {
      * @param {string?} styles.styleSheet - The file path if the theme file is a CSS file.
      */
     applyTheme(styles = {}) {
-
         if (_.isObject(styles) && _.isText(styles.styleString)) {
             this._applyJSONTheme(styles.styleString);
         }

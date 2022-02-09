@@ -34,7 +34,7 @@
  * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
  */
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
 import upstreamModel from '../models/upstream-model.js';

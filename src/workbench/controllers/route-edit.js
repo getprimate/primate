@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import RouteModel from '../models/route-model.js';
 import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
 

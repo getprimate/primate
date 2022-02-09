@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 
 /**
  * Provides controller constructor for displaying node status.

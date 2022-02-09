@@ -480,16 +480,16 @@ ul.list li {
 
 /* Sidebar navigation */
 aside#sidebarMenu {
-    --default-bg: #202225;
-    --primary-bg: #27292c;
-    --accent-bg: var(--theme__primary-bg);
+    --default-bg: #121418;
+    --primary-bg: #181a23;
+    --accent-bg: #1f2029;
 
-    --default-fg: #61617d;
+    --default-fg: #a4a4a8;
     --primary-fg: #FFFFFF;
     --accent-fg: var(--default-fg);
 
-    --border-size: 1px;
-    --border-fg: #2C2E36;
+    --border-size: 0px;
+    --border-fg: transparent;
 
     float: none;
     position: absolute;
@@ -666,8 +666,8 @@ header#mainHeader {
     --primary-bg: transparent;
     --default-fg: var(--theme__default-fg);
     --primary-fg: var(--theme__primary-fg);
-    --border-size: 1px;
-    --border-fg: #2f3138;
+    --border-size: 0px;
+    --border-fg: transparent;
 
     float: none;
     position: absolute;
@@ -1595,8 +1595,6 @@ section.notebook__page .row.only-grid > .col:last-child form.form {
 .pad-top-10 { padding-top: 10px; }
 .pad-top-20 { padding-top: 20px; }
 
-.stretch { display: inline-block; width: 100%; }
-
 .pull-right { float: right; position: relative; }
 .pull-left { float: left; position: relative; }
 
@@ -1641,7 +1639,27 @@ table.board.clickable tbody tr:hover {
     background-color: var(--input__primary-bg);
 }
 
+table tbody.hero-placeholder {
+    text-align: center;
+    background-color: transparent;
+    border-spacing: 0;
+}
+
+table.board tbody.hero-placeholder tr,
+table.board tbody.hero-placeholder th {
+    background-color: transparent;
+}
+
+table.board .hero-placeholder .material-icons.hero {
+    font-size: 7.5rem;
+}
+
 .capitalize { text-transform: capitalize; }
+
+.no-word-wrap {
+    overflow-y: hidden;
+    white-space: nowrap;
+}
 
 @-webkit-keyframes fadein {
     from { opacity: 0; }
@@ -1665,5 +1683,3 @@ table.board.clickable tbody tr:hover {
 /* Fade animation */
 .ng-animate.fade.ng-enter { -webkit-animation: fadein 0.2s; }
 .ng-animate.fade.ng-leave { -webkit-animation: fadeout 0.1s; }
-
-

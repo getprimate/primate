@@ -34,7 +34,7 @@
  * @property {(function(type: string): void)} setContentType - Sets contentType header.
  */
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 
 /**
  * Stores system-wide HTTP configuration.

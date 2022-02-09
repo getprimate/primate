@@ -7,7 +7,8 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import {isText} from '../../lib/core-toolkit.js';
+import {toDateText} from '../helpers/date-lib.js';
 import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 
@@ -36,6 +37,8 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
         const {target} = event;
         const {attribute, serviceId} = target.dataset;
 
+        viewFrame.setLoaderSteps(2).incrementLoader();
+
         const request = restClient.patch(`/services/${serviceId}`, {[attribute]: target.checked});
 
         request.then(() => {
@@ -44,6 +47,10 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
 
         request.catch(() => {
             toast.error('Could not update service state.');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -56,7 +63,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
      * @type {function(Event): boolean}
      */
     scope._deleteTableRow = deleteMethodInitiator(restClient, (err) => {
-        if (_.isText(err)) toast.error(err);
+        if (isText(err)) toast.error(err);
         else toast.success('Service deleted successfully.');
     });
 
@@ -69,22 +76,21 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     scope.fetchServiceList = function (filters = null) {
         const request = restClient.get('/services' + urlQuery(filters));
 
-        viewFrame.setLoaderSteps(2);
-        viewFrame.incrementLoader();
+        viewFrame.setLoaderSteps(2).incrementLoader();
 
         request.then(({data: response}) => {
             scope.serviceNext.offset = urlOffset(response.next);
 
             for (let service of response.data) {
-                service.displayText =
-                    typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
-                service.created_at = service.created_at * 1000;
+                service.displayText = isText(service.name) ? service.name : `${service.host}:${service.port}`;
+                service.created_at = toDateText(service.created_at, viewFrame.getFrameConfig('dateFormat'));
+
                 scope.serviceList.push(service);
             }
         });
 
         request.catch(() => {
-            toast.error('Could not load list of services');
+            toast.error('Unable to fetch the list of services.');
         });
 
         request.finally(() => {
@@ -113,4 +119,9 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     viewFrame.addAction('New Service', '#!/services/__create__');
 
     scope.fetchServiceList();
+
+    scope.$on('$destroy', () => {
+        scope.serviceList.length = 0;
+        delete scope.serviceList;
+    });
 }

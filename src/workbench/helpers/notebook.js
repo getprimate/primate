@@ -7,9 +7,9 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 
-function switchTabHandler (event) {
+function switchTabHandler(event) {
     const {target, currentTarget: tabList} = event;
 
     if (target.nodeName !== 'LI' || _.isNil(target.dataset.pageId)) {

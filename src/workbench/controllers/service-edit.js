@@ -7,8 +7,9 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
-import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
+import {isText, objectName, deepClone, isEmpty} from '../../lib/core-toolkit.js';
+import {simplifyObjectId, tagsToText, urlOffset, urlQuery} from '../helpers/rest-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
 
 import ServiceModel from '../models/service-model.js';
 
@@ -96,7 +97,7 @@ function prepareServiceObject(model) {
         throw new Error('Please provide a valid host');
     }
 
-    const payload = _.deepClone(model);
+    const payload = deepClone(model);
     const {excluded} = ENUM_PROTOCOL[payload.protocol];
 
     delete payload.client_certificate;
@@ -150,7 +151,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
     scope.serviceId = '__none__';
-    scope.serviceModel = _.deepClone(ServiceModel);
+    scope.serviceModel = deepClone(ServiceModel);
 
     scope.pbCertList = [];
     scope.caCertList = [];
@@ -174,7 +175,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
-                    displayText: (_.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: (objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
                 });
             }
         });
@@ -205,7 +206,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 certificates.push({
                     nodeValue: current.id,
-                    displayText: (_.objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: (objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
                 });
 
                 scope.caCertList = certificates;
@@ -237,9 +238,15 @@ export default function ServiceEditController(scope, location, routeParams, rest
         request.then(({data: response}) => {
             scope.routeNext.offset = urlOffset(response.next);
 
-            for (let current of response.data) {
-                scope.routeList.push(current);
+            for (let route of response.data) {
+                scope.routeList.push({
+                    id: route.id,
+                    displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
+                    subTagsText: isEmpty(route.tags) ? epochToDate(route.created_at) : tagsToText(route.tags)
+                });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
@@ -268,7 +275,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
             scope.pluginNext.offset = urlOffset(response.next);
 
             for (let plugin of response.data) {
-                scope.pluginList.push({id: plugin.id, name: plugin.name, enabled: plugin.enabled});
+                scope.pluginList.push({
+                    id: plugin.id,
+                    displayText: plugin.name,
+                    subTagsText: isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : tagsToText(plugin.tags),
+                    enabled: plugin.enabled
+                });
             }
         });
 
@@ -335,7 +347,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
      */
     scope.resetServiceForm = function (event) {
         if (confirm('Proceed to clear the form?')) {
-            scope.serviceModel = _.deepClone(ServiceModel);
+            scope.serviceModel = deepClone(ServiceModel);
             return true;
         }
 
@@ -398,7 +410,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             const {id, name} = response;
             populateServiceModel(scope.serviceModel, response);
 
-            viewFrame.addBreadcrumb(`#!/services/${id}`, _.isText(name) ? name : _.objectName(id));
+            viewFrame.addBreadcrumb(`#!/services/${id}`, isText(name) ? name : objectName(id));
             viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 

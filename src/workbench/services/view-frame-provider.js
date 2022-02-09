@@ -26,9 +26,10 @@
  * @property {(function(void): object[])} getActions - Returns the action buttons.
  * @property {(function(void):void)} clearActions - Clears action buttons.
  * @property {(function(void): Object)} getState - Returns the view frame state.
- * @property {(function(number):void)} setLoaderSteps - Sets the loader step with respect to viewport width.
+ * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
- * @property {function(void):void} incrementLoader - Increments loader width by adding loader step.
+ * @property {function(void):ViewFrameFactory} incrementLoader - Increments loader width by adding loader step.
+ * @property {(function(name: string): void)} getFrameConfig - Finds the configuration value by name.
  */
 
 /**
@@ -38,7 +39,7 @@
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
  */
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 
 const frameCache = {
     isLoading: false
@@ -59,6 +60,10 @@ const frameState = {
     loaderWidth: 0,
     loaderStep: 50,
     loaderUnit: '0vw'
+};
+
+const frameConfig = {
+    dateFormat: 'date'
 };
 
 function loaderTimeoutCallback(state) {
@@ -149,6 +154,8 @@ function buildViewFrameFactory(timeoutFn) {
                 frameState.loaderWidth = 1;
                 frameState.loaderUnit = `${frameState.loaderWidth}vw`;
             }
+
+            return this;
         },
 
         incrementLoader() {
@@ -161,6 +168,8 @@ function buildViewFrameFactory(timeoutFn) {
                 frameCache.isLoading = true;
                 this._setTimeout(loaderTimeoutCallback, 500, true, frameState);
             }
+
+            return this;
         },
 
         resetLoader() {
@@ -171,6 +180,10 @@ function buildViewFrameFactory(timeoutFn) {
 
         getState() {
             return frameState;
+        },
+
+        getFrameConfig(name) {
+            return _.isText(frameConfig[name]) ? frameConfig[name] : null;
         }
     };
 }

@@ -7,7 +7,7 @@
 
 'use strict';
 
-import _ from '../../lib/core-utils.js';
+import * as _ from '../../lib/core-toolkit.js';
 import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
 import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 

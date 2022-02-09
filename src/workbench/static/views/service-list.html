@@ -3,15 +3,16 @@
 <div class="well">
 <div class="well__heading">List of Services</div>
 <table id="sv-ls__tab01" class="table">
-    <thead data-ng-if="serviceList.length>0"><tr><th>Enabled</th> <th>Name</th> <th>Protocol</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
+    <thead data-ng-if="serviceList.length>0"><tr><th>Enabled</th> <th>Name</th> <th>Host</th> <th>Protocol</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
 
     <tbody data-ng-click="handleTableClickEvents($event)">
         <tr data-ng-repeat="service in serviceList">
             <td><input type="checkbox" class="success" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
 
             <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a></td>
+            <td>{{service.host}}</td>
             <td>{{service.protocol}}</td>
-            <td>{{service.created_at | date: 'medium'}}</td>
+            <td>{{service.created_at}}</td>
             <td class="align-right">
                 <a href="#!/services/{{service.id}}"><span class="material-icons warning">edit</span></a>
                 <span class="material-icons critical delete" data-target="Service" data-endpoint="/services/{{service.id}}">delete_forever</span>
@@ -21,11 +22,11 @@
 
     <!-- ==-==-==-==-== Display this footer if no service objects are added yet. ==-==-==-==-== -->
     <tfoot data-ng-if="serviceList.length===0" class="align-center">
-        <tr><th colspan="4">&nbsp;</th></tr>
-        <tr><th colspan="4"><span class="material-icons hero">settings_input_component</span></th></tr>
-        <tr><th colspan="4">No service objects are created yet.</th></tr>
-        <tr><th colspan="4"><a href="#!/services/__create__" class="btn default">Create New Service</a></th></tr>
-        <tr><th colspan="4">&nbsp;</th></tr>
+        <tr><th colspan="5">&nbsp;</th></tr>
+        <tr><th colspan="5"><span class="material-icons hero">settings_input_component</span></th></tr>
+        <tr><th colspan="5">No service objects are created yet.</th></tr>
+        <tr><th colspan="5"><a href="#!/services/__create__" class="btn default">Create New Service</a></th></tr>
+        <tr><th colspan="5">&nbsp;</th></tr>
     </tfoot>
 </table><!-- #sv-ls__tab01.table -->
 </div><!-- .well -->
