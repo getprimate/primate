@@ -38,10 +38,10 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCertList = (filters = null) => {
-        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
-
         const request = restClient.get('/certificates' + urlQuery(filters));
 
+        viewFrame.setLoaderSteps(1);
+        
         request.then(({data: response}) => {
             scope.certNext.offset = urlOffset(response.next);
 
@@ -76,9 +76,9 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCaList = (filters = null) => {
-        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
-
         const request = restClient.get('/ca_certificates' + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             scope.caNext.offset = urlOffset(response.next);
@@ -112,9 +112,9 @@ export default function CertificateListController(scope, restClient, viewFrame, 
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchSniList = (filters = null) => {
-        if (!isEmpty(filters)) viewFrame.setLoaderSteps(2).incrementLoader();
-
         const request = restClient.get('/snis' + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             scope.sniNext.offset = urlOffset(response.next);
