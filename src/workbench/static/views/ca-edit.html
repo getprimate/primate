@@ -1,37 +1,48 @@
 <div class="container">
 <div class="row">
     <div class="col md-8">
-    <div class="{{caId === '__none__' ? 'panel panel-border success' : 'panel panel-border info'}}">
-        <div class="panel__heading">CA Details</div>
+    <div class="{{caId === '__none__'?'panel panel-border success':'panel panel-border info'}}">
+        <div class="panel__heading">
+            <span class="title">CA Details</span>
+            <span data-ng-if="caId.length>=10" class="clipboard clickable" data-clipboard-text="{{caId}}" title="Click to copy CA id">{{caId}}</span>
+        </div><!-- .panel__heading -->
+
         <div class="panel__body">
-            <form id="ca-ed__frm01" class="form" method="post" data-ng-submit="submitCAForm($event)">
+            <form class="form" method="post" data-ng-submit="submitCAForm($event)">
                 <div class="row">
                     <div class="col md-6">
                         <div class="form__field">
-                            <label for="ca-ed__txa01" class="field-label">CA Certificate <span title="PEM-encoded public certificate of the CA." class="tooltip material-icons">help_outline</span></label>
+                            <label for="ca-ed__txa01" class="field-label">CA Certificate</label>
                             <div class="field-input"><textarea id="ca-ed__txa01" name="cert" data-ng-model="caModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
-                        </div>
+                            <div class="field-note">PEM-encoded CA certificate.</div>
+                        </div><!-- .form__field -->
                     </div><!-- col.md-6 -->
 
                     <div class="col md-6">
                         <div class="form__field">
-                            <label for="ca-ed__txa02" class="field-label">SHA Digest (optional) <span title="SHA256 hex digest of the public certificate." class="tooltip material-icons">help_outline</span></label>
-                            <div class="field-input"><textarea id="ca-ed__txa02" name="digest" data-ng-model="caModel.cert_digest" placeholder="SHA256 hex digest of the public certificate"></textarea></div>
-                        </div>
+                            <label for="ca-ed__txa02" class="field-label">SHA Digest</label>
+                            <div class="field-input"><textarea id="ca-ed__txa02" name="digest" data-ng-model="caModel.cert_digest" placeholder="Optional SHA256 hex digest of the public certificate."></textarea></div>
+                        </div><!-- .form__field -->
                     </div><!-- col.md-6 -->
                 </div><!-- .row -->
 
+                <div class="panel__split"><span>CA Tags</span></div>
                 <div class="form__field">
-                    <label class="field-label">Tags (optional)</label>
-                    <div class="field-input"><token-input data-ng-model="caModel.tags" data-dv-trigger="caId" data-placeholder="Type a tag and press enter key."></token-input></div>
-                </div>
-
-                <div class="form__field" data-ng-switch="caId">
-                    <a class="btn default" href="#!/certificates">Cancel</a>
-                    <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
-                    <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                    <div class="field-input"><token-input data-ng-model="caModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
+                    <div class="field-note">* Press enter key after typing the tags.</div>
                 </div><!-- .form__field -->
-            </form>
+
+                <div class="row">
+                    <div class="col md-6">&nbsp;</div>
+                    <div class="col md-6">
+                        <div class="form__field align-right" data-ng-switch="caId">
+                            <button class="btn default" type="button" data-ng-click="resetCAForm($event)">Reset</button>
+                            <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
+                            <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                        </div><!-- .form__field -->
+                    </div><!-- .col.md-6 -->
+                </div><!-- .row -->
+            </form><!-- .form -->
         </div><!-- .panel__body -->
     </div><!-- .panel__heading -->
     </div><!-- .col-md-8 -->
