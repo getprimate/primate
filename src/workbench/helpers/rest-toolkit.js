@@ -43,7 +43,7 @@ function deleteMethodHandler(event) {
 
         request.then(() => {
             element.closest('tr').remove();
-            if (typeof this._callback === 'function') this._callback.call(null, {target});
+            if (typeof this._callback === 'function') this._callback.call(null, null, {target});
         });
 
         request.catch(() => {
@@ -139,4 +139,14 @@ export function tagsToText(tags, maxLen = 50) {
     if (text.length <= maxLen) return text;
 
     return text.substring(0, maxLen - 1) + '...';
+}
+
+export function editViewURL(current, id = '') {
+    let replaced = current.replace('/__create__', `/${id}`);
+
+    if (replaced.charAt(0) !== '/') {
+        replaced = `/${replaced}`;
+    }
+
+    return `#!${replaced}`;
 }

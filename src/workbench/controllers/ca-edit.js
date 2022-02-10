@@ -104,6 +104,9 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         return proceed;
     };
 
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
+
     switch (routeParams.caId) {
         case '__create__':
             viewFrame.setTitle('Add CA Certificate');
@@ -115,9 +118,6 @@ export default function TrustedCAEditController(scope, location, routeParams, re
             restConfig.endpoint = `${restConfig.endpoint}/${routeParams.caId}`;
 
             scope.caId = routeParams.caId;
-
-            viewFrame.clearBreadcrumbs();
-            viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
             viewFrame.setTitle('Edit CA Certificate');
             break;
     }

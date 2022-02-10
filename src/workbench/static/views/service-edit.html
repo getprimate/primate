@@ -15,7 +15,7 @@
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                             </select>
                         </li>
-                        <li class="stretch"><input id="sv-ed__txt01" type="text" name="serviceHost" value="" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" /></li>
+                        <li class="stretch"><input id="sv-ed__txt01" type="text" name="serviceHost" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" /></li>
                         <li class="md-2"><input id="sv-ed__txt02" type="number" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Port" /></li>
                     </ul><!-- .linked -->
                 </div>
@@ -86,19 +86,14 @@
                 <div class="col md-8">
                     <div class="form__field">
                         <label for="sv-ed__sel02" class="field-label">Client certificate</label>
-                        <div class="field-input">
-                            <select id="sv-ed__sel02" class="stretch" name="clientCertificate" data-ng-model="serviceModel.client_certificate" data-ng-selected="serviceModel.client_certificate">
-                                <option value="">-- None --</option>
+                        <div class="field-input" data-ng-switch="pbCertId">
+                            <select data-ng-switch-when="__none__" id="sv-ed__sel02" class="stretch" name="clientCertificate" data-ng-model="serviceModel.client_certificate" data-ng-selected="serviceModel.client_certificate">
+                                <option value="{{pbCertId}}">-- None --</option>
                                 <option data-ng-repeat="current in pbCertList" value="{{current.nodeValue}}">{{current.displayText}}</option>
                             </select>
-                        </div><!-- .field-input -->
-                    </div><!-- .form__field -->
 
-                    <div class="form__field">
-                        <label class="field-label">CA Certificates</label>
-                        <div class="field-input">
-                            <multi-check data-ng-model="serviceModel.ca_certificates" data-option-list="caCertList"></multi-check>
-                        </div>
+                            <article data-ng-switch-default>Selected: {{pbCertId}}</article>
+                        </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-8 -->
 
@@ -111,7 +106,20 @@
                             <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="false"/> Off</label></li>
                         </ul><!-- .field-input -->
                     </div><!-- .form__field -->
+                </div><!-- .col.md-4 -->
+            </div><!-- .row -->
 
+            <div class="row">
+                <div class="col md-8">
+                    <div class="form__field">
+                        <label class="field-label">CA Certificates</label>
+                        <div class="field-input">
+                            <multi-check data-ng-model="serviceModel.ca_certificates" data-option-list="caCertList"></multi-check>
+                        </div>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-8 -->
+
+                <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__rge02" class="field-label">TLS Chain Depth
                             <output class="label-legend">{{serviceModel.tls_verify_depth === -1 ? 'Default' : serviceModel.tls_verify_depth}}</output></label>
@@ -122,8 +130,9 @@
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="panel__split">Service Tags</div>
+            <div class="panel__split">&nbsp;</div>
             <div class="form__field">
+                <label class="field-label">Service Tags</label>
                 <div class="field-input"><token-input data-ng-model="serviceModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
             </div><!-- .form__field -->
 

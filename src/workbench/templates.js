@@ -27,6 +27,11 @@ export default function Templates(routeProvider) {
         templateUrl: 'static/views/tag-search.html'
     });
 
+    routeProvider.when('/certificates/:certId/services/:serviceId', {
+        templateUrl: 'static/views/service-edit.html',
+        controller: 'ServiceEditController'
+    });
+
     /* Configure route templates. */
     routeProvider
         .when('/', {

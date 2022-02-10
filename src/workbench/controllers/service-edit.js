@@ -7,11 +7,11 @@
 
 'use strict';
 
-import {isText, objectName, deepClone, isEmpty} from '../../lib/core-toolkit.js';
-import {simplifyObjectId, tagsToText, urlOffset, urlQuery} from '../helpers/rest-toolkit.js';
+import {isText, isEmpty, isNil, deepClone} from '../../lib/core-toolkit.js';
+import {editViewURL, simplifyObjectId, tagsToText, urlOffset, urlQuery} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 
-import ServiceModel from '../models/service-model.js';
+import serviceModel from '../models/service-model.js';
 
 /**
  * Holds the list of available protocols and their configuration,
@@ -36,7 +36,7 @@ const ENUM_PROTOCOL = {
 };
 
 /**
- * Populates Service model after sanitising values in the service object.
+ * Populates service model after sanitising values in the service object.
  *
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#service-object
  *
@@ -44,35 +44,27 @@ const ENUM_PROTOCOL = {
  * @param {Object} source - A service object.
  * @return {ServiceModel} The populated service model.
  */
-function populateServiceModel(model, source = {}) {
-    for (let property in source) {
-        if (typeof model[property] === 'undefined' || (Array.isArray(model[property]) && source[property] === null)) {
-            continue;
-        }
+function refreshServiceModel(model, source = {}) {
+    const fieldList = Object.keys(source);
 
-        switch (property) {
+    for (let field of fieldList) {
+        if (isNil(model[field]) || isNil(source[field])) continue;
+
+        switch (field) {
             case 'tls_verify':
-                model[property] = source[property] === null ? 'default' : String(source[property]);
+                model[field] = source[field] === null ? 'default' : String(source[field]);
                 break;
 
             case 'tls_verify_depth':
-                model[property] = source[property] === null ? -1 : source[property];
+                model[field] = source[field] === null ? -1 : source[field];
                 break;
 
             case 'client_certificate':
-                model[property] =
-                    source[property] !== null && typeof source[property]['id'] === 'string'
-                        ? source[property]['id']
-                        : '';
-                break;
-
-            case 'ca_certificates':
-            case 'tags':
-                model[property] = Array.isArray(source[property]) ? source[property] : [];
+                model[field] = isText(source[field]['id']) ? source[field]['id'] : '__none__';
                 break;
 
             default:
-                model[property] = source[property];
+                model[field] = source[field];
                 break;
         }
     }
@@ -83,7 +75,7 @@ function populateServiceModel(model, source = {}) {
 /**
  * Prepares service object after sanitising values in a specified service model.
  *
- * Technically, this function does the inverse of {@link populateServiceModel} function.
+ * Technically, this function does the inverse of {@link refreshServiceModel} function.
  * The function validates service model before preparing the payload. Throws an error
  * if the validation fails.
  *
@@ -94,7 +86,7 @@ function populateServiceModel(model, source = {}) {
  */
 function prepareServiceObject(model) {
     if (model.host.length === 0) {
-        throw new Error('Please provide a valid host');
+        throw new Error('Please provide a valid host.');
     }
 
     const payload = deepClone(model);
@@ -102,7 +94,7 @@ function prepareServiceObject(model) {
 
     delete payload.client_certificate;
 
-    if (model.client_certificate.length > 10) {
+    if (model.client_certificate.length >= 10) {
         payload.client_certificate = {id: model.client_certificate};
     }
 
@@ -136,6 +128,8 @@ function prepareServiceObject(model) {
  * @param {function} location.path - Tells the current view path.
  * @param {Object} routeParams - Object containing route parameters.
  * @param {string} routeParams.serviceId - The service id in editing mode.
+ * @param {string} routeParams.certId - The certificate id if
+ *                                      redirected from certificate view.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
@@ -146,13 +140,16 @@ function prepareServiceObject(model) {
  */
 export default function ServiceEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/services'};
+    const eventLocks = {submitServiceForm: false, togglePluginState: false};
+
     let loaderSteps = 2;
 
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
     scope.serviceId = '__none__';
-    scope.serviceModel = deepClone(ServiceModel);
+    scope.serviceModel = deepClone(serviceModel);
 
+    scope.pbCertId = '__none__';
     scope.pbCertList = [];
     scope.caCertList = [];
 
@@ -175,7 +172,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
-                    displayText: (objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + tagsToText(current.tags, 64)
                 });
             }
         });
@@ -206,7 +203,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 certificates.push({
                     nodeValue: current.id,
-                    displayText: (objectName(current.id) + ' - ' + current.tags.join(', ')).substring(0, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + tagsToText(current.tags, 64)
                 });
 
                 scope.caCertList = certificates;
@@ -305,36 +302,44 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @return {boolean} True if the request could be made, false otherwise
      */
     scope.submitServiceForm = function (event) {
-        if (typeof event === 'undefined') {
+        event.preventDefault();
+
+        if (eventLocks.submitServiceForm === true) return false;
+
+        Object.keys(scope.serviceModel).forEach((key) => {
+            if (isText(scope.serviceModel[key])) scope.serviceModel[key] = scope.serviceModel[key].trim();
+        });
+
+        let payload = null;
+
+        try {
+            payload = prepareServiceObject(scope.serviceModel);
+            eventLocks.submitServiceForm = true;
+
+            viewFrame.setLoaderSteps(1);
+        } catch (error) {
+            toast.error(error.message);
             return false;
         }
 
-        event.preventDefault();
-
-        Object.keys(scope.serviceModel).forEach((key) => {
-            if (typeof scope.serviceModel[key] === 'string') scope.serviceModel[key] = scope.serviceModel[key].trim();
-        });
-
-        const payload = prepareServiceObject(scope.serviceModel);
         const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
 
         request.then(({data: response}) => {
-            switch (scope.serviceId) {
-                case '__none__':
-                    toast.success(`Created new service ${response.name}`);
-                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                    break;
+            toast.success('Service details saved successfully.');
 
-                default:
-                    toast.info(`Updated service ${payload.name}.`);
-            }
+            if (scope.serviceId === '__none__') window.location.href = editViewURL(location.path(), response.id);
         });
 
         request.catch(() => {
-            toast.error('Could not ' + (scope.serviceId === '__none__' ? 'create new' : 'update') + ' service.');
+            toast.error('Unable to save service details.');
         });
 
-        return false;
+        request.finally(() => {
+            eventLocks.submitServiceForm = false;
+            viewFrame.incrementLoader();
+        });
+
+        return true;
     };
 
     /**
@@ -346,13 +351,14 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @return boolean - True if reset confirmed, false otherwise
      */
     scope.resetServiceForm = function (event) {
-        if (confirm('Proceed to clear the form?')) {
-            scope.serviceModel = deepClone(ServiceModel);
-            return true;
-        }
-
         event.preventDefault();
-        return false;
+
+        if (eventLocks.submitServiceForm === true) return false;
+
+        const proceed = confirm('Proceed to clear the form?');
+        if (proceed) scope.serviceModel = deepClone(serviceModel);
+
+        return proceed;
     };
 
     /**
@@ -364,9 +370,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @returns {boolean} True if action completed, false otherwise.
      */
     scope.togglePluginState = function ({target}) {
-        if (target.nodeName !== 'INPUT' || target.type !== 'checkbox') {
+        if (target.nodeName !== 'INPUT' || target.type !== 'checkbox' || eventLocks.togglePluginState === true) {
             return false;
         }
+
+        eventLocks.togglePluginState = true;
+        viewFrame.setLoaderSteps(1);
 
         const endpoint = `/services/${scope.serviceId}/plugins/${target.value}`;
         const request = restClient.patch(endpoint, {enabled: target.checked});
@@ -379,10 +388,24 @@ export default function ServiceEditController(scope, location, routeParams, rest
             toast.error('Unable to change plugin state.');
         });
 
+        request.finally(() => {
+            eventLocks.togglePluginState = false;
+            viewFrame.incrementLoader();
+        });
+
         return true;
     };
 
-    viewFrame.clearBreadcrumbs();
+    if (isText(routeParams.certId)) {
+        restConfig.endpoint = `/certificates/${routeParams.certId}${restConfig.endpoint}`;
+
+        scope.pbCertId = routeParams.certId;
+        scope.serviceModel.client_certificate = routeParams.certId;
+    } else {
+        scope.fetchPublicCertificates();
+        viewFrame.clearBreadcrumbs();
+    }
+
     viewFrame.addBreadcrumb('#!/services', 'Services');
 
     switch (routeParams.serviceId) {
@@ -408,9 +431,9 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
         request.then(({data: response}) => {
             const {id, name} = response;
-            populateServiceModel(scope.serviceModel, response);
+            refreshServiceModel(scope.serviceModel, response);
 
-            viewFrame.addBreadcrumb(`#!/services/${id}`, isText(name) ? name : objectName(id));
+            viewFrame.addBreadcrumb(`#!/services/${id}`, isText(name) ? name : simplifyObjectId(id));
             viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 
@@ -429,6 +452,5 @@ export default function ServiceEditController(scope, location, routeParams, rest
         scope.fetchAppliedPlugins();
     }
 
-    scope.fetchPublicCertificates();
     scope.fetchCACertificates();
 }

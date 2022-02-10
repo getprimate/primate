@@ -7,10 +7,27 @@
 
 'use strict';
 
-import {isText, deepClone, explode} from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {isText, isEmpty, deepClone, explode, isNil} from '../../lib/core-toolkit.js';
+import {
+    urlQuery,
+    urlOffset,
+    deleteMethodInitiator,
+    simplifyObjectId,
+    editViewURL,
+    tagsToText
+} from '../helpers/rest-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import certModel from '../models/certificate-model.js';
 
-import certModel from '../models/certificate-model';
+function refreshCertModel(model, source) {
+    const keys = Object.keys(source);
+
+    for (let key of keys) {
+        if (typeof model[key] === 'undefined' || isNil(source[key])) continue;
+
+        model[key] = source[key];
+    }
+}
 
 /**
  * Provides controller constructor for editing certificate objects.
@@ -41,6 +58,9 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.upstreamList = [];
     scope.upstreamNext = {offset: ''};
 
+    scope.serviceList = [];
+    scope.serviceNext = {offset: ''};
+
     /**
      * Retrieves the SNIs associated with the current certificate.
      *
@@ -50,18 +70,19 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.fetchSniList = (filters = null) => {
         const request = restClient.get(`/certificates/${scope.certId}/snis` + urlQuery(filters));
 
+        viewFrame.setLoaderSteps(1);
+
         request.then(({data: response}) => {
             scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
-                sni.tags = sni.tags.length >= 1 ? sni.tags.join(', ') : 'No tags added.';
-
+                sni.subTagsText = isEmpty(sni.tags) ? epochToDate(sni.created_at) : tagsToText(sni.tags);
                 scope.sniList.push(sni);
             }
         });
 
         request.catch(() => {
-            toast.error('Could not load SNIs.');
+            toast.warning('Unable to fetch SNIs.');
         });
 
         request.finally(() => {
@@ -80,16 +101,52 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.fetchUpstreamList = (filters = null) => {
         const request = restClient.get(`/certificates/${scope.certId}/upstreams` + urlQuery(filters));
 
+        viewFrame.setLoaderSteps(1);
+
         request.then(({data: response}) => {
             scope.upstreamNext = urlOffset(response.next);
 
             for (let upstream of response.data) {
-                scope.upstreamList.push(upstream);
+                scope.upstreamList.push({
+                    id: upstream.id,
+                    displayText: isText(upstream.name) ? upstream.name : simplifyObjectId(upstream.id),
+                    subTagsText: isEmpty(upstream.tags) ? epochToDate(upstream.created_at) : tagsToText(upstream.tags)
+                });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load upstreams.');
+            toast.warning('Unable to fetch upstreams.');
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+    };
+
+    scope.fetchServiceList = function (filters = null) {
+        const request = restClient.get(`/certificates/${scope.certId}/services` + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
+
+        request.then(({data: response}) => {
+            scope.serviceNext = urlOffset(response.next);
+
+            for (let service of response.data) {
+                scope.serviceList.push({
+                    id: service.id,
+                    displayText: isText(service.name) ? service.name : `${service.host}:${service.port}`,
+                    subTagsText: isEmpty(service.tags) ? epochToDate(service.created_at) : tagsToText(service.tags)
+                });
+            }
+
+            delete response.data;
+        });
+
+        request.catch(() => {
+            toast.warning('Unable to fetch services.');
         });
 
         request.finally(() => {
@@ -101,10 +158,12 @@ export default function CertificateEditController(scope, location, routeParams, 
      * Builds certificate object from the model and submits the form.
      *
      * @param {Event} event - The current event object.
-     * @returns {boolean} False always.
+     * @returns {boolean} True if request could be made, false otherwise.
      */
     scope.submitCertificateForm = function (event) {
         event.preventDefault();
+
+        if (eventLocks.submitCertForm === true) return false;
 
         if (scope.certModel.cert.length <= 10) {
             toast.error('Please paste a valid certificate.');
@@ -116,9 +175,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             return false;
         }
 
-        if (eventLocks.submitCertForm === true) return false;
-        else eventLocks.submitCertForm = true;
-
+        eventLocks.submitCertForm = true;
         viewFrame.setLoaderSteps(1);
 
         const payload = deepClone(scope.certModel);
@@ -133,19 +190,13 @@ export default function CertificateEditController(scope, location, routeParams, 
         const request = restClient.request({method: restConfig.method, resource: restConfig.endpoint, data: payload});
 
         request.then(({data: response}) => {
-            switch (scope.certId) {
-                case '__none__':
-                    toast.success('New certificate added');
-                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                    break;
+            toast.success('Certificate details saved successfully.');
 
-                default:
-                    toast.info('Certificate details updated');
-            }
+            if (scope.certId === '__none__') window.location.href = editViewURL(location.path(), response.id);
         });
 
-        request.catch(({data: response}) => {
-            toast.error(response.data);
+        request.catch(() => {
+            toast.error('Unable to save certificate details.');
         });
 
         request.finally(() => {
@@ -153,7 +204,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             viewFrame.incrementLoader();
         });
 
-        return false;
+        return true;
     };
 
     /**
@@ -165,13 +216,12 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.submitSNIForm = function (event) {
         event.preventDefault();
 
-        const exploded = explode(scope.sniModel.shorthand);
+        if (eventLocks.submitSNIForm === true) return false;
 
+        const exploded = explode(scope.sniModel.shorthand);
         if (exploded.length <= 0) return false;
 
-        if (eventLocks.submitSNIForm === true) return false;
-        else eventLocks.submitSNIForm = true;
-
+        eventLocks.submitSNIForm = true;
         viewFrame.setLoaderSteps(1);
 
         const payload = {name: exploded[0], certificate: {id: scope.certId}, tags: []};
@@ -189,8 +239,8 @@ export default function CertificateEditController(scope, location, routeParams, 
             toast.success(`Added new SNI ${response.name}.`);
         });
 
-        request.catch(({status, data: error}) => {
-            toast.error(status === 409 ? 'SNI already added to this certificate' : error);
+        request.catch(({status}) => {
+            toast.error(status === 409 ? 'SNI already added to this certificate.' : 'Unable to save SNI.');
         });
 
         request.finally(() => {
@@ -204,6 +254,24 @@ export default function CertificateEditController(scope, location, routeParams, 
     };
 
     /**
+     * Resets certificate details form if the user confirms the prompt.
+     *
+     * @param {Event} event - The current event object.
+     * @returns {boolean} True if form has been reset, false otherwise.
+     */
+    scope.resetCertForm = function (event) {
+        event.preventDefault();
+
+        if (eventLocks.submitCertForm === true) return false;
+
+        const proceed = confirm('Proceed to clear the form?');
+
+        if (proceed) scope.certModel = deepClone(certModel);
+
+        return proceed;
+    };
+
+    /**
      * Deletes the table row entry upon clicking the bin icon.
      *
      * @type {function(Event): boolean}
@@ -213,12 +281,7 @@ export default function CertificateEditController(scope, location, routeParams, 
         else toast.success(`${properties.target} deleted successfully.`);
     });
 
-    if (typeof routeParams.upstreamId === 'string') {
-        restConfig.endpoint = `/upstreams/${routeParams.upstreamId}/client_certificate`;
-    } else {
-        viewFrame.clearBreadcrumbs();
-    }
-
+    viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
 
     switch (routeParams.certId) {
@@ -240,21 +303,10 @@ export default function CertificateEditController(scope, location, routeParams, 
     if (restConfig.method === 'PATCH' && scope.certId !== '__none__') {
         const request = restClient.get(restConfig.endpoint);
 
-        viewFrame.setLoaderSteps(3);
+        viewFrame.setLoaderSteps(4);
 
         request.then(({data: response}) => {
-            for (let key of Object.keys(response)) {
-                if (typeof scope.certModel[key] === 'undefined') {
-                    continue;
-                }
-
-                if (response[key] === null) {
-                    scope.certModel[key] = '';
-                    continue;
-                }
-
-                scope.certModel[key] = Array.isArray(response[key]) ? response[key].join(', ') : response[key];
-            }
+            refreshCertModel(scope.certModel, response);
 
             viewFrame.addAction(
                 'Delete',
@@ -277,6 +329,7 @@ export default function CertificateEditController(scope, location, routeParams, 
         });
 
         scope.fetchSniList();
+        scope.fetchServiceList();
         scope.fetchUpstreamList();
     }
 }

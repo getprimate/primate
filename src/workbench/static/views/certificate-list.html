@@ -19,7 +19,7 @@
             <tbody class="hero-placeholder" data-ng-if="certList.length===0">
             <tr><td><span class="material-icons hero">local_police</span></td></tr>
             <tr><td>Looks like no certificates are present!</td></tr>
-            <tr><td><a href="#!/trusted-cas/__create__" class="btn default">Add Certificate</a></td></tr>
+            <tr><td><a href="#!/certificates/__create__" class="btn success">Add Certificate</a></td></tr>
             </tbody><!-- .hero-placeholder -->
 
             <tfoot class="pagination" data-ng-if="certNext.offset.length>=5">
@@ -47,7 +47,7 @@
             <tbody class="hero-placeholder" data-ng-if="caList.length===0">
             <tr><td><span class="material-icons hero">security</span></td></tr>
             <tr><td>Looks like no trusted CAs are present!</td></tr>
-            <tr><td><a href="#!/trusted-cas/__create__" class="btn default">Add Trusted CA</a></td></tr>
+            <tr><td><a href="#!/trusted-cas/__create__" class="btn success">Add Trusted CA</a></td></tr>
             </tbody><!-- .hero-placeholder -->
 
             <tfoot class="pagination" data-ng-if="caNext.offset.length>=5">
@@ -66,12 +66,12 @@
                 <thead data-ng-if="sniList.length>=1"><tr><th>Certificate</th><th>SNI Name</th></tr></thead>
                 <tbody data-ng-if="sniList.length>=1" data-ng-click="deleteTableRow($event)">
                 <tr data-ng-repeat="sni in sniList">
-                    <td><a href="#!/certificates/{{sni.certificate.id}}">{{sni.certificate.name}}</a></td>
+                    <td><a href="#!/certificates/{{sni.certificate.id}}">{{sni.certificate.displayText}}</a></td>
                     <td>{{sni.name}}</td>
                 </tr>
                 </tbody>
 
-                <tbody data-ng-if="sniList.length===0"><tr><th colspan="2">No SNIs are added yet.</th></tr></tbody>
+                <tbody data-ng-if="sniList.length===0"><tr><td colspan="2">No SNIs are added yet!</td></tr></tbody>
 
                 <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
                     <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>

@@ -22,8 +22,8 @@
 
     --theme__border-fg: #35383b;
 
-    --theme__widget-corner: 10px;
-    --theme__input-corner: 5px;
+    --theme__widget-corner: 12px;
+    --theme__input-corner: 10px;
 
     --widget__primary-bg: var(--theme__primary-bg);
     --widget__accent-bg: #2a2c38;

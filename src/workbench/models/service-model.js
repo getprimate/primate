@@ -29,9 +29,9 @@
 /**
  * Defines the service object with default values.
  *
- * @type ServiceModel
+ * @type {ServiceModel}
  */
-const ServiceModel = {
+const serviceModel = {
     name: '',
     enabled: true,
     retries: 5,
@@ -42,11 +42,11 @@ const ServiceModel = {
     connect_timeout: 60000,
     write_timeout: 60000,
     read_timeout: 60000,
-    client_certificate: '',
+    client_certificate: '__none__',
     tls_verify: 'nginx',
     tls_verify_depth: -1,
     ca_certificates: [],
     tags: []
 };
 
-export default ServiceModel;
+export default serviceModel;

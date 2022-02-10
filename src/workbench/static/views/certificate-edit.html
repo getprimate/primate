@@ -4,28 +4,28 @@
 
     <!-- ==--==--==--==--==--==--==--==--==--== Certificate Details ==--==--==--==--==--==--==--==--==--== -->
     <div class="panel panel-border info">
-    <div class="panel__heading">Certificate Details</div>
+    <div class="panel__heading"><span class="title">Certificate Details</span> <span data-ng-if="certId.length >= 10" class="clipboard clickable" data-clipboard-text="{{certId}}">{{certId}}</span></div>
     <div class="panel__body">
         <form id="cf-ed__frm01" class="form" method="post" data-ng-submit="submitCertificateForm($event)">
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa01" class="field-label">Main Certificate <span title="PEM-encoded public certificate chain of the SSL key pair." class="tooltip material-icons">help_outline</span></label>
+                        <label for="cf-ed__txa01" class="field-label">Main Certificate</label>
                         <div class="field-input"><textarea id="cf-ed__txa01" name="mainCert" data-ng-model="certModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
 
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa02" class="field-label">Main Key <span title="PEM-encoded private key of the SSL key pair." class="tooltip material-icons">help_outline</span></label>
+                        <label for="cf-ed__txa02" class="field-label">Main Key</label>
                         <div class="field-input"><textarea id="cf-ed__txa02" name="mainKey" data-ng-model="certModel.key" required="required" placeholder="-----BEGIN RSA PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
             </div><!-- .row -->
 
             <div data-ng-if="certId=='__none__'" class="form__field">
-                <label class="field-label">SNIs (optional) <span title="An array of zero or more hostnames to associate with this certificate as SNIs." class="tooltip material-icons">help_outline</span></label>
-                <div class="field-input"><token-input name="snis" data-ng-model="certModel.snis" data-placeholder="Example: sni1.hostname.com, sni2.hostname.com"></token-input></div>
+                <label class="field-label">Optional SNIs</label>
+                <div class="field-input"><token-input name="snis" data-ng-model="certModel.snis" data-placeholder="sni1.example.com, sni2.example.com"></token-input></div>
                 <div class="field-note">* Press enter key after typing the SNIs.</div>
             </div>
 
@@ -33,13 +33,13 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa03" class="field-label">Alternate Certificate <span title="PEM-encoded public certificate chain of the alternate SSL key pair. This should only be set if you have both RSA and ECDSA types of certificate available and would like Kong to prefer serving using ECDSA certs when client advertises support for it." class="tooltip material-icons">help_outline</span></label>
+                        <label for="cf-ed__txa03" class="field-label">Alternate Certificate</label>
                         <div class="field-input"><textarea id="cf-ed__txa03" name="altCert" data-ng-model="certModel.cert_alt" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa04" class="field-label">Alternate Key <span title="PEM-encoded private key of the alternate SSL key pair. This should only be set if you have both RSA and ECDSA types of certificate available and would like Kong to prefer serving using ECDSA certs when client advertises support for it." class="tooltip material-icons">help_outline</span></label>
+                        <label for="cf-ed__txa04" class="field-label">Alternate Key</label>
                         <div class="field-input"><textarea id="cf-ed__txa04" name="altKey" data-ng-model="certModel.key_alt" placeholder="-----BEGIN EC PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
@@ -47,15 +47,20 @@
 
             <div class="panel__split"><span>Certificate Tags</span></div>
             <div class="form__field">
-                <div class="field-input"><token-input name="tags" data-ng-model="certModel.tags" data-placeholder="Example: user-level, low-priority"></token-input></div>
+                <div class="field-input"><token-input name="tags" data-ng-model="certModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div>
 
-            <div class="form__field" data-ng-switch="certId">
-                <a class="btn default" href="#!/certificates">Cancel</a>
-                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
-                <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
-            </div><!-- .form__field -->
+            <div class="row">
+                <div class="col md-6">&nbsp;</div>
+                <div class="col md-6">
+                    <div class="form__field align-right" data-ng-switch="certId">
+                        <button class="btn default" data-ng-click="resetCertForm($event)">Reset</button>
+                        <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
+                        <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+            </div><!-- .row -->
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel.panel-border.info -->
@@ -66,13 +71,12 @@
     <div class="well">
         <div class="well__heading">SNIs</div>
 
+        <div class="well__scroll-area">
         <table id="sniListTable" class="board">
-            <tbody>
+            <tbody data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="sni in sniList">
-                <td><strong>{{sni.name}}</strong><br />{{sni.tags}}</td>
-                <td><div class="action-group">
-                    <i class="material-icons critical delete" data-target="host name" data-url="/snis/{{name}}">delete_forever</i>
-                </div></td>
+                <td><strong>{{sni.name}}</strong><br />{{sni.subTagsText}}</td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="SNI" data-endpoint="/snis/{{sni.name}}">delete_forever</span></td>
             </tr>
             </tbody>
 
@@ -82,28 +86,78 @@
                 <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
-        <form data-ng-if="certId!=='__none__'" id="cf-ed__frm02" class="form no-margin hidden" method="post" data-ng-submit="submitSNIForm($event)">
-            <div class="hpadding-10 pad-top-10">
-                <input data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="Type host name and press enter..." />
-            </div>
-        </form>
+        </div><!-- .well__scroll-area -->
+
+        <form data-ng-if="certId!=='__none__'" id="cf-ed__frm02" class="form" method="post" data-ng-submit="submitSNIForm($event)">
+            <div class="form__field">
+                <ul class="field-input linked">
+                    <li class="stretch"><input id="cf-ed__txt01" data-ng-model="sniModel.shorthand" type="text" name="sniHost" placeholder="sni.example.com, user-level, low-priority" /></li>
+                    <li><button type="submit" class="success icon"><span class="material-icons">add_circle</span></button></li>
+                </ul>
+                <label for="cf-ed__txt01" class="field-note">Type <strong>SNI host, tags</strong> and press enter...</label>
+            </div><!-- .form__field -->
+        </form><!-- .form -->
+    </div><!-- .well -->
+
+    <!-- ==--==--==--==--==--==--==--==--==--== Service List ==--==--==--==--==--==--==--==--==--== -->
+    <div class="well">
+        <div class="well__heading">Services
+            <div data-ng-if="certId!=='__none__'" class="pull-right">
+                <a title="Create new service with this certificate." href="#!/certificates/{{certId}}/services/__create__"><span class="material-icons">launch</span> New</a>
+            </div><!-- .pull-right -->
+        </div><!-- .well__heading -->
+
+        <table class="board">
+            <tbody data-ng-if="serviceList.length>=1" data-ng-click="deleteTableRow($event)">
+            <tr data-ng-repeat="service in serviceList">
+                <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a>
+                    <br />{{service.subTagsText}}</td>
+                <td class="row-actions">
+                    <span class="material-icons critical delete" data-target="service" data-endpoint="/certificates/{{certId}}/services/{{service.id}}">delete_forever</span>
+                </td><!-- .row-actions -->
+            </tr>
+            </tbody>
+
+            <tbody data-ng-if="serviceList.length === 0" class="info-placeholder">
+            <tr data-ng-switch="certId">
+                <td><span class="material-icons">settings_input_component</span></td>
+                <td data-ng-switch-when="__none__">Services that use this certificate will be listed here.</td>
+                <td data-ng-switch-default>No services use this certificate.</td>
+            </tr>
+            </tbody>
+
+            <tfoot class="pagination" data-ng-if="serviceNext.length>=5">
+            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchServiceList(serviceNext)">Load Next</button></th></tr>
+            </tfoot>
+        </table>
     </div><!-- .well -->
 
     <!-- ==--==--==--==--==--==--==--==--==--== Upstream List ==--==--==--==--==--==--==--==--==--== -->
     <div class="well">
-        <div class="well__heading">Upstreams</div>
+        <div class="well__heading">Upstreams
+            <div data-ng-if="certId!=='__none__'" class="pull-right">
+                <a title="Create new upstream with this certificate." href="#!/certificates/{{certId}}/upstreams/__create__"><span class="material-icons">launch</span> New</a>
+            </div><!-- .pull-right -->
+        </div><!-- .well__heading -->
 
-        <table id="cf-ed__tab02" class="board">
-            <tbody>
+        <table class="board">
+            <tbody data-ng-if="upstreamList.length>=1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="upstream in upstreamList">
-                <td><a href="#!/certificates/{{certId}}/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
-                <td><div class="action-group">
-                    <i class="material-icons critical delete" data-target="upstream" data-url="/certificates/{{certId}}/upstreams/{{upstream.id}}">delete_forever</i>
-                </div></td>
+                <td><a href="#!/upstreams/{{upstream.id}}">{{upstream.displayText}}</a>
+                    <br />{{upstream.subTagsText}}</td>
+                <td class="row-actions">
+                    <span class="material-icons critical delete" data-target="upstream" data-endpoint="/certificates/{{certId}}/upstreams/{{upstream.id}}">delete_forever</span>
+                </td><!-- .row-actions -->
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="upstreamList.length<=0"><tr><th colspan="2">No upstreams added yet.</th></tr></tfoot>
+            <tbody data-ng-if="upstreamList.length===0" class="info-placeholder">
+            <tr data-ng-switch="certId">
+                <td><span class="material-icons">backup</span></td>
+                <td data-ng-switch-when="__none__">Upstreams that use this certificate will be listed here.</td>
+                <td data-ng-switch-default>No upstreams use this certificate.</td>
+            </tr>
+            </tbody>
 
             <tfoot class="pagination" data-ng-if="upstreamNext.length>=5">
             <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next</button></th></tr>
