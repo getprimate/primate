@@ -9,8 +9,7 @@
 
 import {isText} from '../../lib/core-toolkit.js';
 import {toDateText} from '../helpers/date-lib.js';
-import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing services.
@@ -37,7 +36,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
         const {target} = event;
         const {attribute, serviceId} = target.dataset;
 
-        viewFrame.setLoaderSteps(2).incrementLoader();
+        viewFrame.setLoaderSteps(1);
 
         const request = restClient.patch(`/services/${serviceId}`, {[attribute]: target.checked});
 
@@ -76,7 +75,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
     scope.fetchServiceList = function (filters = null) {
         const request = restClient.get('/services' + urlQuery(filters));
 
-        viewFrame.setLoaderSteps(2).incrementLoader();
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             scope.serviceNext.offset = urlOffset(response.next);
