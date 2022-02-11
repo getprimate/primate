@@ -12,7 +12,7 @@ import {
     deleteMethodInitiator,
     editViewURL,
     simplifyObjectId,
-    tagsToText,
+    implode,
     urlOffset,
     urlQuery
 } from '../helpers/rest-toolkit.js';
@@ -238,7 +238,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
-                    displayText: simplifyObjectId(current.id) + ' - ' + tagsToText(current.tags, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + implode(current.tags, 64)
                 });
             }
 
@@ -273,7 +273,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 certificates.push({
                     nodeValue: current.id,
-                    displayText: simplifyObjectId(current.id) + ' - ' + tagsToText(current.tags, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + implode(current.tags, 64)
                 });
 
                 scope.caCertList = certificates;
@@ -311,7 +311,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
                 scope.routeList.push({
                     id: route.id,
                     displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
-                    subTagsText: isEmpty(route.tags) ? epochToDate(route.created_at) : tagsToText(route.tags)
+                    subTagsText: isEmpty(route.tags) ? epochToDate(route.created_at) : implode(route.tags)
                 });
             }
 
@@ -347,7 +347,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
                 scope.pluginList.push({
                     id: plugin.id,
                     displayText: plugin.name,
-                    subTagsText: isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : tagsToText(plugin.tags),
+                    subTagsText: isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : implode(plugin.tags),
                     enabled: plugin.enabled
                 });
             }

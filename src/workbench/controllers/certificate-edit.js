@@ -14,7 +14,7 @@ import {
     deleteMethodInitiator,
     simplifyObjectId,
     editViewURL,
-    tagsToText
+    implode
 } from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import certModel from '../models/certificate-model.js';
@@ -76,7 +76,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
-                sni.subTagsText = isEmpty(sni.tags) ? epochToDate(sni.created_at) : tagsToText(sni.tags);
+                sni.subTagsText = isEmpty(sni.tags) ? epochToDate(sni.created_at) : implode(sni.tags);
                 scope.sniList.push(sni);
             }
         });
@@ -110,7 +110,7 @@ export default function CertificateEditController(scope, location, routeParams, 
                 scope.upstreamList.push({
                     id: upstream.id,
                     displayText: isText(upstream.name) ? upstream.name : simplifyObjectId(upstream.id),
-                    subTagsText: isEmpty(upstream.tags) ? epochToDate(upstream.created_at) : tagsToText(upstream.tags)
+                    subTagsText: isEmpty(upstream.tags) ? epochToDate(upstream.created_at) : implode(upstream.tags)
                 });
             }
 
@@ -138,7 +138,7 @@ export default function CertificateEditController(scope, location, routeParams, 
                 scope.serviceList.push({
                     id: service.id,
                     displayText: isText(service.name) ? service.name : `${service.host}:${service.port}`,
-                    subTagsText: isEmpty(service.tags) ? epochToDate(service.created_at) : tagsToText(service.tags)
+                    subTagsText: isEmpty(service.tags) ? epochToDate(service.created_at) : implode(service.tags)
                 });
             }
 

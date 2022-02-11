@@ -2,35 +2,33 @@
 
 <div class="well">
 <div class="well__heading">List of Routes</div>
-<table id="sv-ls__tab01" class="table">
-    <thead data-ng-if="routeList.length>0"><tr> <th>Name</th> <th>Protocols</th> <th>Path Handling</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
+<table class="table">
+    <thead data-ng-if="routeList.length>=1"><tr> <th>Name</th> <th>Protocols</th> <th>Path Handling</th> <th>Created On</th> <th class="row-actions">Actions</th></tr></thead>
 
-    <tbody>
-        <tr data-ng-repeat="route in routeList">
-            <td><a href="#!/routes/{{route.id}}">{{route.displayText}}</a></td>
-            <td>{{route.protocols}}</td>
-            <td>{{route.path_handling}}</td>
-            <td>{{route.created_at | date: 'medium'}}</td>
-            <td class="align-right">
-                <a href="#!/routes/{{route.id}}"><span class="material-icons warning">edit</span></a>
-                <span class="material-icons critical delete" data-target="route" data-url="/routes/{{route.id}}">delete_forever</span>
-            </td>
-        </tr>
+    <tbody data-ng-if="routeList.length>=1" data-ng-click="deleteTableRow($event)">
+    <tr data-ng-repeat="route in routeList">
+        <td><a href="#!/routes/{{route.id}}">{{route.displayText}}</a></td>
+        <td>{{route.protocols}}</td>
+        <td>{{route.pathHandling}}</td>
+        <td>{{route.createdAt}}</td>
+        <td class="row-actions">
+            <a href="#!/routes/{{route.id}}"><span class="material-icons warning">edit</span></a>
+            <span class="material-icons critical delete" data-target="route" data-endpoint="/routes/{{route.id}}">delete_forever</span>
+        </td>
+    </tr>
     </tbody>
 
-    <!-- ==-==-==-==-== Display this footer if no route objects are added yet. ==-==-==-==-== -->
-    <tfoot data-ng-if="routeList.length===0" class="align-center">
-        <tr><th colspan="4">&nbsp;</th></tr>
-        <tr><th colspan="4"><span class="material-icons">directions</span></th></tr>
-        <tr><th colspan="4">No route objects are created yet.</th></tr>
-        <tr><th colspan="4"><a href="#!/routes/__create__" class="btn default">Create New Route</a></th></tr>
-        <tr><th colspan="4">&nbsp;</th></tr>
-    </tfoot>
-</table><!-- #sv-ls__tab01.table -->
+    <!-- ==-==-==-==-== Display this body if no routes are present. ==-==-==-==-== -->
+    <tbody class="hero-placeholder" data-ng-if="routeList.length===0">
+    <tr><td><span class="material-icons hero">directions</span></td></tr>
+    <tr><td>Looks like no routes are present!</td></tr>
+    <tr><td><a href="#!/routes/__create__" class="btn success">Create Route</a></td></tr>
+    </tbody><!-- .hero-placeholder -->
+</table><!-- .table -->
 </div><!-- .well -->
 
 <div data-ng-if="routeNext.offset.length>=5" class="pagination">
-    <button class="text" data-ng-click="fetchrouteList(routeNext)">Load More<span class="material-icons">navigate_next</span></button>
+    <button class="text" data-ng-click="fetchRouteList(routeNext)">Load More<span class="material-icons">navigate_next</span></button>
 </div><!-- .pagination -->
 
 </div><!-- .container -->

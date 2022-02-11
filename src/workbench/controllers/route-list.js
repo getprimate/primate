@@ -7,8 +7,9 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {isText} from '../../lib/core-toolkit.js';
+import {implode, urlQuery, urlOffset, simplifyObjectId, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {toDateText} from '../helpers/date-lib.js';
 
 /**
  * Provides controller constructor for listing routes.
@@ -39,10 +40,13 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
             scope.routeNext.offset = urlOffset(response.next);
 
             for (let route of response.data) {
-                route.displayText = typeof route.name === 'string' ? route.name : _.objectName(route.id);
-                route.protocols = Array.isArray(route.protocols) ? route.protocols.join(', ').toUpperCase() : 'None';
-
-                scope.routeList.push(route);
+                scope.routeList.push({
+                    id: route.id,
+                    displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
+                    protocols: implode(route.protocols),
+                    createdAt: toDateText(route.created_at, viewFrame.getFrameConfig('dateFormat')),
+                    pathHandling: route.path_handling
+                });
             }
         });
 
@@ -56,6 +60,16 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
 
         return true;
     };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (isText(err)) toast.error(err);
+        else toast.success('Route deleted successfully.');
+    });
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Routes');

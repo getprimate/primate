@@ -9,7 +9,7 @@
 
 import {isEmpty, isText} from '../../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {simplifyObjectId, urlQuery, urlOffset, tagsToText, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {simplifyObjectId, urlQuery, urlOffset, implode, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
@@ -41,7 +41,7 @@ export default function CertificateListController(scope, restClient, viewFrame, 
         const request = restClient.get('/certificates' + urlQuery(filters));
 
         viewFrame.setLoaderSteps(1);
-        
+
         request.then(({data: response}) => {
             scope.certNext.offset = urlOffset(response.next);
 
@@ -51,7 +51,7 @@ export default function CertificateListController(scope, restClient, viewFrame, 
                     displayText: simplifyObjectId(certificate.id),
                     subTagsText: isEmpty(certificate.tags)
                         ? epochToDate(certificate.created_at)
-                        : tagsToText(certificate.tags)
+                        : implode(certificate.tags)
                 });
             }
 
@@ -87,7 +87,7 @@ export default function CertificateListController(scope, restClient, viewFrame, 
                 scope.caList.push({
                     id: ca.id,
                     displayText: simplifyObjectId(ca.id),
-                    subTagsText: isEmpty(ca.tags) ? epochToDate(ca.created_at) : tagsToText(ca.tags)
+                    subTagsText: isEmpty(ca.tags) ? epochToDate(ca.created_at) : implode(ca.tags)
                 });
             }
 

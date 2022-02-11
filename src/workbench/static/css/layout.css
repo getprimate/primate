@@ -771,6 +771,7 @@ header#mainHeader ul.breadcrumbs li {
     height: 100%;
     padding: 5px 1px;
     margin-right: 5px;
+    text-transform: lowercase;
 }
 
 header#mainHeader ul.breadcrumbs li > a {

@@ -131,10 +131,10 @@ export function urlQuery(options) {
     return '';
 }
 
-export function tagsToText(tags, maxLen = 50) {
-    if (isEmpty(tags) || !Array.isArray(tags)) return '';
+export function implode(keywords, maxLen = 50) {
+    if (isEmpty(keywords) || !Array.isArray(keywords)) return '';
 
-    const text = tags.join(', ');
+    const text = keywords.join(', ');
 
     if (text.length <= maxLen) return text;
 
