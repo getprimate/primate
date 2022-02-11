@@ -17,6 +17,7 @@
  * @property {(function(redirect: string, displayText: string):void)} addBreadcrumb - Adds an entry to the route history.
  * @property {(function(void):void)} clearBreadcrumbs - Clears the route history stack.
  * @property {(function(void): string[])} getBreadcrumbs - Returns the route history stack.
+ * @property {(function(void): Object)} popBreadcrumb - Pops the last breadcrumb.
  * @property {(function(shouldPop: boolean=): string)} previousRoute - Pops the next route from history stack.
  * @property {(function(void): boolean)} hasBreadcrumbs - Tells if the breadcrumbs are present.
  * @property {(function(string): void)} setSessionTheme - Sets the session theme color.
@@ -133,6 +134,10 @@ function buildViewFrameFactory(timeoutFn) {
 
         hasBreadcrumbs() {
             return frameState.breadcrumbs.length >= 1;
+        },
+
+        popBreadcrumb() {
+            return frameState.breadcrumbs.pop();
         },
 
         previousRoute(shouldPop = true) {

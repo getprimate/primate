@@ -7,11 +7,20 @@
 
 'use strict';
 
-import {isText, isEmpty, isNil, deepClone} from '../../lib/core-toolkit.js';
-import {editViewURL, simplifyObjectId, tagsToText, urlOffset, urlQuery} from '../helpers/rest-toolkit.js';
+import {isText, isEmpty, isNil, deepClone, isNone} from '../../lib/core-toolkit.js';
+import {
+    deleteMethodInitiator,
+    editViewURL,
+    simplifyObjectId,
+    tagsToText,
+    urlOffset,
+    urlQuery
+} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 
 import serviceModel from '../models/service-model.js';
+
+const optionalFields = ['ca_certificates', 'client_certificate', 'tls_verify', 'tls_verify_depth'];
 
 /**
  * Holds the list of available protocols and their configuration,
@@ -26,13 +35,14 @@ import serviceModel from '../models/service-model.js';
  * }}
  */
 const ENUM_PROTOCOL = {
-    http: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth']},
+    http: {excluded: optionalFields},
     https: {excluded: []},
-    grpc: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
-    tcp: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
-    udp: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
-    tls: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth', 'path']},
-    tls_passthrough: {excluded: ['ca_certificates', 'tls_verify', 'tls_verify_depth']}
+    grpc: {excluded: [...optionalFields, 'path']},
+    grpcs: {excluded: [...optionalFields, 'path']},
+    tcp: {excluded: [...optionalFields, 'path']},
+    udp: {excluded: [...optionalFields, 'path']},
+    tls: {excluded: [...optionalFields, 'path']},
+    tls_passthrough: {excluded: optionalFields}
 };
 
 /**
@@ -48,15 +58,17 @@ function refreshServiceModel(model, source = {}) {
     const fieldList = Object.keys(source);
 
     for (let field of fieldList) {
-        if (isNil(model[field]) || isNil(source[field])) continue;
+        if (isNil(model[field]) || isNil(source[field])) {
+            continue;
+        }
 
         switch (field) {
             case 'tls_verify':
-                model[field] = source[field] === null ? 'default' : String(source[field]);
+                model[field] = isNil(source[field]) ? '__none__' : String(source[field]);
                 break;
 
             case 'tls_verify_depth':
-                model[field] = source[field] === null ? -1 : source[field];
+                model[field] = isNil(source[field]) ? -1 : source[field];
                 break;
 
             case 'client_certificate':
@@ -85,12 +97,16 @@ function refreshServiceModel(model, source = {}) {
  * @return {Object} The prepared service object
  */
 function prepareServiceObject(model) {
-    if (model.host.length === 0) {
-        throw new Error('Please provide a valid host.');
+    if (isNone(model.protocol) || model.host.length === 0) {
+        throw new Error('Please provide a valid protocol and host combination.');
     }
 
     const payload = deepClone(model);
     const {excluded} = ENUM_PROTOCOL[payload.protocol];
+
+    if (model.name.length === 0) {
+        delete payload.name;
+    }
 
     delete payload.client_certificate;
 
@@ -112,7 +128,7 @@ function prepareServiceObject(model) {
 
     if (Array.isArray(excluded)) {
         for (let field of excluded) {
-            delete payload[field];
+            payload[field] = null;
         }
     }
 
@@ -160,13 +176,63 @@ export default function ServiceEditController(scope, location, routeParams, rest
     scope.pluginNext = {offset: ''};
 
     /**
+     * Handles click events on action buttons on table rows.
+     *
+     * @private
+     * @param {Event} event - The event object.
+     * @param {HTMLInputElement} event.target - The input HTML element.
+     * @return {boolean} True if event handled, false otherwise.
+     */
+    scope._togglePluginState = function (event) {
+        const {target} = event;
+
+        if (eventLocks.togglePluginState === true) {
+            return false;
+        }
+
+        eventLocks.togglePluginState = true;
+        viewFrame.setLoaderSteps(1);
+
+        const endpoint = `/services/${scope.serviceId}/plugins/${target.value}`;
+        const request = restClient.patch(endpoint, {enabled: target.checked});
+
+        request.then(() => {
+            toast.success('Plugin ' + (target.checked ? 'enabled.' : 'disabled.'));
+        });
+
+        request.catch(() => {
+            toast.error('Unable to change plugin state.');
+        });
+
+        request.finally(() => {
+            eventLocks.togglePluginState = false;
+            viewFrame.incrementLoader();
+        });
+
+        return true;
+    };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @private
+     * @type {function(Event): boolean}
+     */
+    scope._deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
+        if (isText(err)) toast.error(err);
+        else toast.success(`${properties.target} deleted successfully.`);
+    });
+
+    /**
      * Retrieves the public client certificates.
      *
-     * @param {string} endpoint - The resource endpoint
-     * @return boolean - True if request could be made, false otherwise
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchPublicCertificates = function (endpoint = '/certificates') {
-        const request = restClient.get(endpoint);
+    scope.fetchPublicCertificates = function (filters = null) {
+        const request = restClient.get('/certificates' + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             for (let current of response.data) {
@@ -175,10 +241,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
                     displayText: simplifyObjectId(current.id) + ' - ' + tagsToText(current.tags, 64)
                 });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load public certificates.');
+            toast.warning('Unable to populate public certificates.');
         });
 
         request.finally(() => {
@@ -191,11 +259,13 @@ export default function ServiceEditController(scope, location, routeParams, rest
     /**
      * Retrieves the CA certificates.
      *
-     * @param {string} endpoint - The resource endpoint
-     * @return boolean - True if request could be made, false otherwise
+     * @param {string|object|null} filters - Filters to the Admin API.
+     * @return {boolean} True if request could be made, false otherwise.
      */
-    scope.fetchCACertificates = (endpoint = '/ca_certificates') => {
-        const request = restClient.get(endpoint);
+    scope.fetchCACertificates = (filters = null) => {
+        const request = restClient.get('/ca_certificates' + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             const certificates = [];
@@ -208,10 +278,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
                 scope.caCertList = certificates;
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load CA certificates.');
+            toast.warning('Unable to populate CA certificates.');
         });
 
         request.finally(() => {
@@ -247,7 +319,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
         });
 
         request.catch(() => {
-            toast.error('Could not load routes under the service.');
+            toast.warning('Unable to fetch mapped routes.');
         });
 
         request.finally(() => {
@@ -279,10 +351,12 @@ export default function ServiceEditController(scope, location, routeParams, rest
                     enabled: plugin.enabled
                 });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load applied plugins.');
+            toast.error('Unable to fetch applied plugins.');
         });
 
         request.finally(() => {
@@ -304,11 +378,15 @@ export default function ServiceEditController(scope, location, routeParams, rest
     scope.submitServiceForm = function (event) {
         event.preventDefault();
 
-        if (eventLocks.submitServiceForm === true) return false;
+        if (eventLocks.submitServiceForm === true) {
+            return false;
+        }
 
-        Object.keys(scope.serviceModel).forEach((key) => {
-            if (isText(scope.serviceModel[key])) scope.serviceModel[key] = scope.serviceModel[key].trim();
-        });
+        for (let key of Object.keys(scope.serviceModel)) {
+            if (isText(scope.serviceModel[key])) {
+                scope.serviceModel[key] = scope.serviceModel[key].trim();
+            }
+        }
 
         let payload = null;
 
@@ -325,9 +403,20 @@ export default function ServiceEditController(scope, location, routeParams, rest
         const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
 
         request.then(({data: response}) => {
-            toast.success('Service details saved successfully.');
+            const redirectURL = editViewURL(location.path(), response.id);
+            const displayText = isText(response.name) ? response.name : `${response.host}:${response.port}`;
 
-            if (scope.serviceId === '__none__') window.location.href = editViewURL(location.path(), response.id);
+            if (scope.serviceId === '__none__') {
+                scope.serviceId = response.id;
+
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.serviceId}`;
+            }
+
+            viewFrame.popBreadcrumb();
+            viewFrame.addBreadcrumb(redirectURL, displayText);
+
+            toast.success('Service details saved successfully.');
         });
 
         request.catch(() => {
@@ -353,47 +442,30 @@ export default function ServiceEditController(scope, location, routeParams, rest
     scope.resetServiceForm = function (event) {
         event.preventDefault();
 
-        if (eventLocks.submitServiceForm === true) return false;
+        if (eventLocks.submitServiceForm === true) {
+            return false;
+        }
 
         const proceed = confirm('Proceed to clear the form?');
-        if (proceed) scope.serviceModel = deepClone(serviceModel);
+
+        if (proceed) {
+            scope.serviceModel = deepClone(serviceModel);
+        }
 
         return proceed;
     };
 
     /**
-     * Toggles plugin state to enabled or disabled.
+     * Handles click events on the table widgets.
      *
-     * The event listener is attached to plugin list table.
-     *
-     * @param {HTMLInputElement} target - The target checkbox element.
-     * @returns {boolean} True if action completed, false otherwise.
+     * @param {Event} event - The current event object
+     * @return {boolean} True if event handled, false otherwise
      */
-    scope.togglePluginState = function ({target}) {
-        if (target.nodeName !== 'INPUT' || target.type !== 'checkbox' || eventLocks.togglePluginState === true) {
-            return false;
-        }
+    scope.handleTableClickEvents = function (event) {
+        const {target} = event;
 
-        eventLocks.togglePluginState = true;
-        viewFrame.setLoaderSteps(1);
-
-        const endpoint = `/services/${scope.serviceId}/plugins/${target.value}`;
-        const request = restClient.patch(endpoint, {enabled: target.checked});
-
-        request.then(() => {
-            toast.success('Plugin ' + (target.checked ? 'enabled.' : 'disabled.'));
-        });
-
-        request.catch(() => {
-            toast.error('Unable to change plugin state.');
-        });
-
-        request.finally(() => {
-            eventLocks.togglePluginState = false;
-            viewFrame.incrementLoader();
-        });
-
-        return true;
+        if (target.nodeName === 'INPUT' && target.type === 'checkbox') return scope._togglePluginState(event);
+        else return scope._deleteTableRow(event);
     };
 
     if (isText(routeParams.certId)) {
@@ -401,6 +473,13 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
         scope.pbCertId = routeParams.certId;
         scope.serviceModel.client_certificate = routeParams.certId;
+
+        /* If certificate is set, then the only available protocol is HTTPS. */
+        scope.serviceModel.protocol = 'https';
+        scope.ENUM_PROTOCOL.length = 0;
+        scope.ENUM_PROTOCOL = [scope.serviceModel.protocol];
+
+        loaderSteps--;
     } else {
         scope.fetchPublicCertificates();
         viewFrame.clearBreadcrumbs();

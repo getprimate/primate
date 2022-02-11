@@ -316,7 +316,7 @@ export default function CertificateEditController(scope, location, routeParams, 
                 `/certificates/${scope.certId}`
             );
 
-            viewFrame.addBreadcrumb(location.path(), simplifyObjectId(response.id));
+            viewFrame.addBreadcrumb('#!' + location.path(), simplifyObjectId(response.id));
         });
 
         request.catch(() => {

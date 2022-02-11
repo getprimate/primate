@@ -31,7 +31,7 @@
  *
  * @type {ServiceModel}
  */
-const serviceModel = {
+export default {
     name: '',
     enabled: true,
     retries: 5,
@@ -43,10 +43,8 @@ const serviceModel = {
     write_timeout: 60000,
     read_timeout: 60000,
     client_certificate: '__none__',
-    tls_verify: 'nginx',
+    tls_verify: '__none__',
     tls_verify_depth: -1,
     ca_certificates: [],
     tags: []
 };
-
-export default serviceModel;

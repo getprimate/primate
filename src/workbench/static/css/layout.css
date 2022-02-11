@@ -1024,8 +1024,8 @@ table .action-group .material-icons {
 
 table .action-group { text-align: right; }
 
-table.table tfoot.pagination button.btn.pagination,
-table.board tfoot.pagination button.btn.pagination {
+table.table tfoot.pagination button,
+table.board tfoot.pagination button {
     width: 100%;
     text-align: center;
     vertical-align: middle;
@@ -1107,11 +1107,6 @@ form.form .field-note {
     padding: 6px 12px 0 2px;
 }
 
-.panel__split + .field-note {
-    padding-left: 0 !important;
-    margin-bottom: 25px !important;
-}
-
 form.form .form__field .field-input {
     margin: 5px 0 0 0;
 }
@@ -1122,6 +1117,10 @@ form.form .form__field ul.field-input {
     justify-content: flex-start;
     margin: 5px 0 0 0;
     padding: 0;
+}
+
+form.form .form__field ul.field-input.named-group {
+    margin-top: 12px;
 }
 
 form.form .form__field ul.field-input > li {
@@ -1161,21 +1160,21 @@ form.form ul.field-input.linked > li > select {
     display: inline-block;
     width: 100%;
     height: 100%;
-    border-width: 0;
+    border-width: var(--input__border-size) 0;
+    border-style: solid;
+    border-color: var(--input__border-fg);
     border-radius: 0;
 }
 
 form.form ul.field-input.linked > li:first-child > input,
 form.form ul.field-input.linked > li:first-child > select {
-    border: var(--input__border-size) solid var(--input__border-fg);
-    border-right-width: 0;
+    border-left-width: var(--input__border-size);
     border-radius: var(--theme__input-corner) 0 0 var(--theme__input-corner);
 }
 
 form.form ul.field-input.linked > li:last-child > input,
 form.form ul.field-input.linked > li:last-child > select{
-    border: var(--input__border-size) solid var(--input__border-fg);
-    border-left-width: 0;
+    border-right-width: var(--input__border-size);
     border-radius: 0 var(--theme__input-corner) var(--theme__input-corner) 0;
 }
 
@@ -1282,12 +1281,31 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
     border-radius: 0 0 var(--theme__widget-corner) var(--theme__widget-corner);
 }
 .panel .panel__split {
-    margin  : 15px var(--vw-max__n20);
-    padding : 10px var(--vw-min__p20);
-    border-bottom: 2px dashed var(--input__border-fg);
+    margin: 20px var(--vw-max__n20) 30px var(--vw-max__n20);
+    padding-left: var(--vw-min__p20);
+    padding-right: var(--vw-min__p20);
+    border-top: var(--input__border-size) dashed var(--input__border-fg);
+}
+
+.panel .panel__split > span:last-child {
+    display: block;
+    color: var(--theme__default-fg);
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.panel .panel__split > span:first-child,
+.panel .panel__split > span:only-child {
+    display: block;
     color: var(--theme__default-fg);
     font-size: 1.1rem;
     font-weight: 500;
+    margin-bottom: 5px;
+    padding-top: 25px;
+}
+
+.panel .panel__split > span:only-child {
+    margin-bottom: 0 ;
 }
 
 .panel.panel-border.primary { border-image: linear-gradient(to right, transparent 5%, var(--std__primary) 50%, transparent 95%) 30 stretch; }
@@ -1672,17 +1690,25 @@ table.board.clickable tbody tr:hover {
 
 table tbody.hero-placeholder {
     text-align: center;
-    background-color: transparent;
+    background-color: transparent !important;
     border-spacing: 0;
 }
 
-table.board tbody.hero-placeholder tr,
-table.board tbody.hero-placeholder td {
-    background-color: transparent;
+table tbody.hero-placeholder tr,
+table tbody.hero-placeholder td {
+    background-color: transparent !important;
 }
 
 table.board .hero-placeholder .material-icons.hero {
     font-size: 6.5rem;
+}
+
+table.table tbody.hero-placeholder tr:first-child td {
+    padding-top: 35px;
+}
+
+table.table tbody.hero-placeholder tr:last-child td {
+    padding-bottom: 35px;
 }
 
 .capitalize { text-transform: capitalize; }

@@ -4,19 +4,19 @@
     <div class="panel panel-border {{serviceId === '__none__' ? 'success' : 'primary'}}">
     <div class="panel__heading">Service Details</div>
     <div class="panel__body">
-        <form id="sv-ed__frm01" class="form" method="post" data-ng-submit="submitServiceForm($event)">
+        <form class="form" method="post" data-ng-submit="submitServiceForm($event)">
             <div class="row">
             <div class="col md-12">
                 <div class="form__field">
                     <ul class="field-input linked">
                         <li class="md-2">
-                            <select id="sv-ed__sel01" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required">
-                            <option value="null">- Protocol -</option>
+                            <select id="sv-ed__sel01" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required" data-placeholder="Protocol">
+                            <option value="__none__">- Protocol -</option>
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                             </select>
                         </li>
-                        <li class="stretch"><input id="sv-ed__txt01" type="text" name="serviceHost" data-ng-model="serviceModel.host" required="required" placeholder="Upstream host" /></li>
-                        <li class="md-2"><input id="sv-ed__txt02" type="number" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Port" /></li>
+                        <li class="stretch"><input type="text" name="serviceHost" data-ng-model="serviceModel.host" required="required" placeholder="example.com" title="Host (case-sensitive)" /></li>
+                        <li class="md-2"><input type="number" min="0" max="65535" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Default: 80" title="Port" /></li>
                     </ul><!-- .linked -->
                 </div>
             </div><!-- .col.md-12 -->
@@ -25,8 +25,8 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label for="sv-ed__txt03" class="field-label">Service Name (optional)</label>
-                        <div class="field-input"><input id="sv-ed__txt03" type="text" name="serviceName" value="" data-ng-model="serviceModel.name" placeholder="Eg: my-service" /></div>
+                        <label for="sv-ed__txt03" class="field-label">Service Name</label>
+                        <div class="field-input"><input id="sv-ed__txt03" type="text" name="serviceName" value="" data-ng-model="serviceModel.name" placeholder="my-service" /></div>
                     </div><!-- .form__field -->
                 </div><!-- .col-md-8 -->
 
@@ -43,45 +43,51 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label for="sv-ed__txt04" class="field-label">Request Path (optional)</label>
-                        <div class="field-input"><input id="sv-ed__txt04" type="text" name="servicePath" value="" data-ng-model="serviceModel.path" placeholder="Eg: /upstream-path" /></div>
+                        <label for="sv-ed__txt04" class="field-label">Request Path</label>
+                        <div class="field-input"><input id="sv-ed__txt04" type="text" name="servicePath" value="" data-ng-model="serviceModel.path" placeholder="/some-path" /></div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-8 -->
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__rge01" class="field-label">Retries <output class="label-legend">{{serviceModel.retries}}</output></label>
+                        <label for="sv-ed__txt08" class="field-label">Retries</label>
                         <div class="field-input">
-                            <input id="sv-ed__rge01" type="range" min="0" max="100" name="retries" value="5" data-ng-model="serviceModel.retries" />
+                            <input id="sv-ed__txt08" type="number" min="0" max="32767" name="retries" value="5" data-ng-model="serviceModel.retries" placeholder="Default: 5" />
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="panel__split"><span>Timeout</span></div>
+            <div class="panel__split"></div>
             <div class="row">
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt05" class="field-label">Connect Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt05" type="number" name="connectTimeout" value="60000" data-ng-model="serviceModel.connect_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt05" type="number" name="connectTimeout" value="60000" data-ng-model="serviceModel.connect_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
+                        <div class="field-note">The timeout for server connection.</div>
                     </div>
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt06" class="field-label">Read Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt06" type="number" name="readTimeout" value="60000" data-ng-model="serviceModel.read_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt06" type="number" name="readTimeout" value="60000" data-ng-model="serviceModel.read_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
+                        <div class="field-note">The timeout between read operations.</div>
                     </div>
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
                         <label for="sv-ed__txt07" class="field-label">Write Timeout</label>
-                        <div class="field-input"><input id="sv-ed__txt07" type="number" name="writeTimeout" value="60000" data-ng-model="serviceModel.write_timeout" placeholder="Default: 60000 ms" /></div>
+                        <div class="field-input"><input id="sv-ed__txt07" type="number" name="writeTimeout" value="60000" data-ng-model="serviceModel.write_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
+                        <div class="field-note">The timeout between write operations.</div>
                     </div>
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="panel__split"><span>Certificates</span></div>
+            <div class="panel__split">
+                <span>Certificates</span>
+                <span>Applicable only if the selected protocol is https.</span>
+            </div><!-- .panel__split -->
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
@@ -100,11 +106,12 @@
                 <div class="col md-4">
                     <div class="form__field">
                         <label class="field-label">TLS Verification</label>
-                        <ul class="field-input">
-                            <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="default" checked /> Default</label></li>
+                        <ul class="field-input named-group">
+                            <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="__none__" /> Default</label></li>
                             <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="true" />  On</label></li>
                             <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="false"/> Off</label></li>
                         </ul><!-- .field-input -->
+                        <div class="field-note">If set to Default, then Nginx default is respected.</div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
@@ -130,15 +137,16 @@
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="panel__split">&nbsp;</div>
+            <div class="panel__split"></div>
             <div class="form__field">
                 <label class="field-label">Service Tags</label>
-                <div class="field-input"><token-input data-ng-model="serviceModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="serviceModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div data-ng-switch="serviceId" class="form__field">
                 <button class="btn default" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
-                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Save</button>
+                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
                 <button data-ng-switch-default="" class="btn info" type="submit" name="action" value="update">Update</button>
             </div>
         </form>
@@ -149,31 +157,29 @@
 <div class="col md-4">
     <div class="well">
         <div class="well__heading">Routes
-            <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__"><span class="material-icons">launch</span> Add Route</a></div>
+            <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__"><span class="material-icons">launch</span> New</a></div>
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
-            <table id="sv-edit__tab01" class="board">
-                <tbody>
+            <table class="board">
+                <tbody data-ng-if="routeList.length>=1" data-ng-click="handleTableClickEvents($event)">
                 <tr data-ng-repeat="route in routeList">
-                    <td><a href="#!/services/{{serviceId}}/routes/{{route.id}}">{{route.displayText}}</a>
+                    <td><a href="#!/routes/{{route.id}}">{{route.displayText}}</a>
                         <br>{{route.subTagsText}}</td>
-                    <td class="row-actions">
-                        <a href="#!/services/{{serviceId}}/routes/{{route.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="route" data-url="/services/{{serviceId}}/routes/{{route.id}}">delete_forever</i>
-                    </td>
+                    <td class="row-actions"><span class="material-icons critical delete" data-target="route" data-endpoint="/services/{{serviceId}}/routes/{{route.id}}">delete_forever</span></td>
                 </tr>
                 </tbody>
 
-                <tfoot data-ng-if="routeList.length===0">
-                    <tr data-ng-switch="serviceId">
-                        <th data-ng-switch-when="__none__" colspan="3">Routes can be added here after creating the service.</th>
-                        <th data-ng-switch-default="" colspan="3">No routes added under service.</th>
-                    </tr><!-- data-ng-switch -->
-                </tfoot>
+                <tbody data-ng-if="routeList.length===0" class="info-placeholder">
+                <tr data-ng-switch="serviceId">
+                    <td><span class="material-icons">directions</span></td>
+                    <td data-ng-switch-when="__none__">Routes attached to this service will be listed here.</td>
+                    <td data-ng-switch-default>No routes are attached to this service.</td>
+                </tr>
+                </tbody>
 
                 <tfoot data-ng-if="routeNext.offset.length>=5" class="pagination">
-                    <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchMappedRoutes(routeNext)">Load Next</button></th></tr>
+                    <tr><th colspan="2"><button data-ng-click="fetchMappedRoutes(routeNext)">Load Next</button></th></tr>
                 </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
@@ -181,28 +187,30 @@
 
     <div class="well">
     <div class="well__heading">Applied Plugins
-        <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
+        <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new plugin" href="#!/services/{{serviceId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
     </div><!-- .well__heading -->
 
     <div class="well__scroll-area">
-        <table id="sv-edit__tab02" class="board" data-ng-click="togglePluginState($event)">
-            <tbody>
+        <table class="board">
+            <tbody data-ng-if="pluginList.length>=1" data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="success plugin-state" data-ng-checked="plugin.enabled===true" title="Enable or disable plugin." /></td>
-                <td><a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}">{{plugin.displayText}}</a>
+                <td><a href="#!/plugins/{{plugin.id}}">{{plugin.displayText}}</a>
                     <br />{{plugin.subTagsText}}</td>
-                <td class="row-actions">
-                    <a href="#!/services/{{serviceId}}/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                    <i class="material-icons critical delete" data-target="plugin" data-url="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</i>
-                </td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="plugin" data-endpoint="/services/{{serviceId}}/plugins/{{plugin.id}}">delete_forever</span></td>
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="pluginList.length<=0">
-                <tr data-ng-switch="serviceId">
-                    <th data-ng-switch-when="__none__" colspan="3">Plugins can be applied after creating the service.</th>
-                    <th data-ng-switch-default="" colspan="3">No plugins applied on this service.</th>
-                </tr>
+            <tbody data-ng-if="pluginList.length===0" class="info-placeholder">
+            <tr data-ng-switch="serviceId">
+                <td><span class="material-icons">extension</span></td>
+                <td data-ng-switch-when="__none__">Plugins applied on this service will be listed here.</td>
+                <td data-ng-switch-default>No plugins are applied on this service.</td>
+            </tr>
+            </tbody>
+
+            <tfoot data-ng-if="pluginNext.offset.length>=5" class="pagination">
+            <tr><th colspan="3"><button data-ng-click="fetchAppliedPlugins(pluginNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
     </div><!-- .well__scroll-area -->
