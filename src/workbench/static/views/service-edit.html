@@ -2,7 +2,7 @@
 <div class="row">
 <div class="col md-8">
     <div class="panel panel-border {{serviceId === '__none__' ? 'success' : 'primary'}}">
-    <div class="panel__heading">Service Details</div>
+    <div class="panel__heading"><span class="title">Service Details</span> <span data-ng-if="serviceId.length>=10" class="clipboard clickable" data-clipboard-text="{{serviceId}}">{{serviceId}}</span></div>
     <div class="panel__body">
         <form class="form" method="post" data-ng-submit="submitServiceForm($event)">
             <div class="row">
