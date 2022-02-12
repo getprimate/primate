@@ -7,15 +7,14 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
-import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {isNil, isText} from '../../lib/core-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
  *
  * @constructor
- *
  * @param {Object} scope - Injected scope object.
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
@@ -34,21 +33,17 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     scope.fetchConsumerList = function (filters = null) {
         const request = restClient.get('/consumers' + urlQuery(filters));
 
-        viewFrame.setLoaderSteps(2);
-        viewFrame.incrementLoader();
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             scope.consumerNext.offset = urlOffset(response.next);
 
             for (let consumer of response.data) {
-                let createdAt = new Date(consumer.created_at);
-
-                if (consumer.custom_id === null) {
+                if (isNil(consumer.custom_id)) {
                     consumer.custom_id = 'Not Provided';
                 }
 
-                consumer.created_at = createdAt.toLocaleString();
-
+                consumer.createdAt = epochToDate(consumer.created_at, viewFrame.getFrameConfig('dateFormat'));
                 scope.consumerList.push(consumer);
             }
         });
@@ -70,8 +65,8 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
      * @type {function(Event): boolean}
      */
     scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
-        if (_.isText(err)) toast.error(err);
-        else toast.success('Deleted consumer and credentials.');
+        if (isText(err)) toast.error(err);
+        else toast.success('Consumer deleted successfully.');
     });
 
     viewFrame.clearBreadcrumbs();
@@ -80,4 +75,12 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
     scope.fetchConsumerList();
+
+    scope.$on('$destroy', () => {
+        scope.consumerList.length = 0;
+
+        delete scope.consumerList;
+        delete scope.fetchConsumerList;
+        delete scope.deleteTableRow;
+    });
 }
