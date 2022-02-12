@@ -8,8 +8,10 @@
 'use strict';
 
 import * as _ from '../../lib/core-toolkit.js';
-import RouteModel from '../models/route-model.js';
-import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {urlOffset, urlQuery, implode, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
+
+import routeModel from '../models/route-model.js';
 
 /**
  * Holds the list of available protocols and their configuration.
@@ -18,12 +20,7 @@ import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
  * for a particular protocol. Also, the fields required to be removed
  * can be obtained from the _exclusive_ property, to avoid validation errors.
  *
- * @type {{
- *      _exclusive_: string[], http: {required: string[]},
- *      https: string[], tcp: {required: string[]},
- *      tls: string[], tls_passthrough: {required: string[]},
- *      grpc: string[], grpcs: {required: string[]}
- * }}
+ * @type {Object}
  */
 const PROTOCOL_CONFIG = {
     _exclusive_: ['methods', 'hosts', 'headers', 'paths', 'sources', 'destinations'],
@@ -45,7 +42,7 @@ const PROTOCOL_CONFIG = {
  * @param {string[]} sources - An array of IP addresses.
  * @returns {[{ip: string, port: number}]} Array of exploded IP addresses.
  */
-function _explodeAddress(sources = []) {
+function explodeAddress(sources = []) {
     return sources.reduce((collection, current) => {
         let [ip, port = '-1'] = current.split(':');
         let item = {ip: ip.trim(), port: parseInt(port)};
@@ -65,12 +62,12 @@ function _explodeAddress(sources = []) {
 /**
  * Implodes the internet addresses.
  *
- * This function reverses {@link _explodeAddress}.
+ * This function reverses {@link explodeAddress}.
  *
  * @param {string[]} sources - The input IP addresses.
  * @returns {string[]} Array of imploded IP addresses.
  */
-function _implodeAddress(sources = []) {
+function implodeAddress(sources = []) {
     return sources.map((current) => {
         let {ip, port} = current;
 
@@ -86,23 +83,23 @@ function _implodeAddress(sources = []) {
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#route-object
  *
  * @param {Object} source - The route object from which route model is to be built.
- * @param {App_RouteModel} model - The route model which needs to be populated.
- * @returns {App_RouteModel} The populated route model.
+ * @param {RouteModel} model - The route model which needs to be populated.
+ * @returns {RouteModel} The populated route model.
  */
-function _refreshRouteModel(source, model) {
+function refreshRouteModel(model, source) {
     for (let key of Object.keys(source)) {
-        if (typeof model[key] === 'undefined' || source[key] === null) {
+        if (_.isNil(model[key]) || _.isNil(source[key])) {
             continue;
         }
 
         switch (key) {
             case 'sources':
             case 'destinations':
-                model[key] = _implodeAddress(source[key]);
+                model[key] = implodeAddress(source[key]);
                 break;
 
             case 'service':
-                model[key] = _.get(source[key], 'id', '');
+                model[key] = _.get(source[key], 'id', '__none__');
                 break;
 
             case 'https_redirect_status_code':
@@ -121,42 +118,51 @@ function _refreshRouteModel(source, model) {
 /**
  * Builds route object after sanitising values in a specified route model.
  *
- * Technically, this function does the inverse of {@link _refreshRouteModel} function.
+ * Technically, this function does the inverse of {@link refreshRouteModel} function.
  * The function validates route model before preparing the payload. Throws an error
  * if the validation fails.
  *
  * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#route-object
- * @private
  *
- * @param {App_RouteModel} model - The source route model.
+ * @private
+ * @param {RouteModel} model - The source route model.
  * @returns {Object} The route object.
  */
-function _buildRouteObject(model) {
+function buildRouteObject(model) {
     if (model.protocols.length === 0) {
-        throw 'Please check at least one protocol frolet loaderFactor = 2;m the list.';
+        throw 'Please check at least one protocol from the list.';
     }
 
-    const payload = Object.assign({}, model);
+    const payload = _.deepClone(model);
+    const fields = Object.keys(model);
 
-    for (let key of Object.keys(model)) {
-        if (typeof model[key] === 'string') {
-            model[key] = model[key].trim();
+    /* TODO : Handle headers payload using token input directive. */
+    delete payload['headers'];
+
+    for (let field of fields) {
+        if (_.isText(model[field])) {
+            model[field] = model[field].trim();
         }
 
-        switch (key) {
+        switch (field) {
             case 'sources':
             case 'destinations':
-                delete payload[key];
-                payload[key] = _explodeAddress(model[key]);
+                payload[field] = explodeAddress(model[field]);
                 break;
 
             case 'https_redirect_status_code':
-                payload[key] = parseInt(model[key]);
+                payload[field] = parseInt(model[field]);
+                break;
+
+            case 'headers':
                 break;
 
             case 'service':
-                delete payload[key];
-                if (model[key].length >= 5) payload[key] = {id: model[key]};
+                payload['service'] = null;
+
+                if (model[field].length >= 10) {
+                    payload[field] = {id: model[field]};
+                }
                 break;
 
             default:
@@ -164,10 +170,11 @@ function _buildRouteObject(model) {
         }
     }
 
-    for (let current of model.protocols) {
+    for (let protocol of model.protocols) {
+        let inputFields = PROTOCOL_CONFIG[protocol]['required'];
         let isValidated = false;
 
-        for (let field of PROTOCOL_CONFIG[current]['required']) {
+        for (let field of inputFields) {
             if (Array.isArray(model[field]) && model[field].length >= 1) {
                 isValidated = true;
                 break;
@@ -175,13 +182,10 @@ function _buildRouteObject(model) {
         }
 
         if (isValidated === false) {
-            throw (
-                'At least one of <strong>' +
-                PROTOCOL_CONFIG[current]['required'].join(', ') +
-                '</strong> is required if ' +
-                current.toUpperCase() +
-                ' is selected.'
-            );
+            let required = inputFields.join(', ');
+            let selected = protocol.toUpperCase();
+
+            throw new Error(`At least one of ${required} is required, if ${selected} is selected.`);
         }
 
         /* Remove the mutually exclusive fields depending on the protocols to avoid a validation error.
@@ -191,7 +195,7 @@ function _buildRouteObject(model) {
          *
          * Similarly, the payload should not contain "sources" and "destinations" fields
          * if HTTP, HTTPS, GRPC or GRPCS are selected. */
-        switch (current) {
+        switch (protocol) {
             case 'grpc':
             case 'grpcs':
                 delete payload.strip_path;
@@ -199,11 +203,14 @@ function _buildRouteObject(model) {
         }
 
         const excluded = PROTOCOL_CONFIG._exclusive_.filter((item) => {
-            return !PROTOCOL_CONFIG[current]['required'].includes(item);
+            return inputFields.includes(item) === false;
         });
 
         for (let field of excluded) {
-            if (typeof payload[field] === 'undefined') continue;
+            if (_.isNil(payload[field])) {
+                continue;
+            }
+
             delete payload[field];
         }
     }
@@ -227,7 +234,9 @@ function _buildRouteObject(model) {
  * @param {ToastFactory} toast - Custom toast message service.
  */
 export default function RouteEditController(scope, location, routeParams, restClient, viewFrame, toast) {
-    const ajaxConfig = {method: 'POST', endpoint: '/routes'};
+    const restConfig = {method: 'POST', endpoint: '/routes'};
+    const eventLocks = {submitRouteForm: false, togglePluginState: false};
+
     let loaderSteps = 0;
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
@@ -237,7 +246,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
     scope.currentPath = location.path();
 
     scope.routeId = '__none__';
-    scope.routeModel = _.deepClone(RouteModel);
+    scope.routeModel = _.deepClone(routeModel);
 
     scope.serviceId = '__none__';
     scope.serviceList = [];
@@ -255,40 +264,57 @@ export default function RouteEditController(scope, location, routeParams, restCl
      * @returns {boolean} True if the form could be submitted, false otherwise.
      */
     scope.submitRouteForm = function (event) {
-        if (typeof event === 'undefined') {
+        event.preventDefault();
+
+        if (eventLocks.submitRouteForm === true) {
             return false;
         }
 
-        event.preventDefault();
+        let payload = null;
 
         try {
-            const payload = _buildRouteObject(scope.routeModel);
-            const request = restClient.request({
-                method: ajaxConfig.method,
-                endpoint: ajaxConfig.endpoint,
-                payload
-            });
+            payload = buildRouteObject(scope.routeModel);
+            eventLocks.submitRouteForm = true;
 
-            request.then(({data: response}) => {
-                switch (scope.routeId) {
-                    case '__none__':
-                        toast.success('New route added.');
-                        window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                        break;
-
-                    default:
-                        toast.info('Route details updated.');
-                }
-            });
-
-            request.catch(() => {
-                toast.error('Could not save route details.');
-            });
+            viewFrame.incrementLoader();
         } catch (error) {
-            toast.error(`${error}`);
+            toast.error(error.message);
+            return false;
         }
 
-        return false;
+        const request = restClient.request({
+            method: restConfig.method,
+            endpoint: restConfig.endpoint,
+            payload
+        });
+
+        request.then(({data: response}) => {
+            const redirectURL = editViewURL(location.path(), response.id);
+            const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
+
+            if (scope.routeId === '__none__') {
+                scope.routeId = response.id;
+
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.routeId}`;
+            }
+
+            viewFrame.popBreadcrumb();
+            viewFrame.addBreadcrumb(redirectURL, displayText);
+
+            toast.success('Route details saved successfully.');
+        });
+
+        request.catch(() => {
+            toast.error('Unable to save route details.');
+        });
+
+        request.finally(() => {
+            eventLocks.submitRouteForm = false;
+            viewFrame.incrementLoader();
+        });
+
+        return true;
     };
 
     /**
@@ -300,13 +326,19 @@ export default function RouteEditController(scope, location, routeParams, restCl
      * @return boolean - True if reset confirmed, false otherwise.
      */
     scope.resetRouteForm = function (event) {
-        if (confirm('Proceed to clear the form?')) {
-            scope.routeModel = _.deepClone(RouteModel);
-            return true;
+        event.preventDefault();
+
+        if (eventLocks.submitRouteForm === true) {
+            return false;
         }
 
-        event.preventDefault();
-        return false;
+        const proceed = confirm('Proceed to clear the form?');
+
+        if (proceed) {
+            scope.routeModel = _.deepClone(routeModel);
+        }
+
+        return proceed;
     };
 
     /**
@@ -315,20 +347,21 @@ export default function RouteEditController(scope, location, routeParams, restCl
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchServiceList = function () {
-        if (scope.serviceId !== '__none__') return false;
-
         const request = restClient.get('/services');
 
         request.then(({data: response}) => {
             for (let service of response.data) {
-                service.displayText =
-                    typeof service.name === 'string' ? service.name : `${service.host}:${service.port}`;
-                scope.serviceList.push(service);
+                let displayText = _.isText(service.name) ? service.name : `${service.host}:${service.port}`;
+                let subTagsText = _.isEmpty(service.tags) ? epochToDate(service.created_at) : implode(service.tags);
+
+                scope.serviceList.push({id: service.id, displayText, subTagsText});
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not load list of services.');
+            toast.warning('Unable to fetch services.');
         });
 
         request.finally(() => {
@@ -345,8 +378,6 @@ export default function RouteEditController(scope, location, routeParams, restCl
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchPluginList = function (filters = null) {
-        if (scope.routeId === '__none__') return false;
-
         const request = restClient.get(`/routes/${scope.routeId}/plugins` + urlQuery(filters));
 
         request.then(({data: response}) => {
@@ -355,14 +386,17 @@ export default function RouteEditController(scope, location, routeParams, restCl
             for (let plugin of response.data) {
                 scope.pluginList.push({
                     id: plugin.id,
-                    name: plugin.name,
-                    enabled: plugin.enabled
+                    enabled: plugin.enabled,
+                    displayText: plugin.name,
+                    subTagsText: _.isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : implode(plugin.tags)
                 });
             }
+
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.warning('Could not fetch route plugins.');
+            toast.warning('Unable to fetch route plugins.');
         });
 
         request.finally(() => {
@@ -370,13 +404,11 @@ export default function RouteEditController(scope, location, routeParams, restCl
         });
     };
 
-    if (typeof routeParams.serviceId === 'string') {
-        ajaxConfig.endpoint = `/services/${routeParams.serviceId}/routes`;
+    if (_.isText(routeParams.serviceId)) {
+        restConfig.endpoint = `/services/${routeParams.serviceId}/routes`;
 
         scope.serviceId = routeParams.serviceId;
         scope.routeModel.service = {id: routeParams.serviceId};
-    } else if (typeof routeParams.pluginId === 'string') {
-        // TODO add stuff
     } else {
         viewFrame.clearBreadcrumbs();
         loaderSteps++;
@@ -391,42 +423,39 @@ export default function RouteEditController(scope, location, routeParams, restCl
             break;
 
         default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.routeId}`;
-            scope.routeId = routeParams.routeId;
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.routeId}`;
 
+            scope.routeId = routeParams.routeId;
             viewFrame.setTitle('Edit Route');
+
             loaderSteps = loaderSteps + 2;
             break;
     }
 
-    if (_.isNone(scope.serviceId)) {
-        scope.fetchServiceList();
-    }
-
     viewFrame.setLoaderSteps(loaderSteps);
 
-    if (ajaxConfig.method === 'PATCH' && !_.isNone(scope.routeId)) {
-        const request = restClient.get(ajaxConfig.endpoint);
+    if (restConfig.method === 'PATCH' && !_.isNone(scope.routeId)) {
+        const request = restClient.get(restConfig.endpoint);
 
         request.then(({data: response}) => {
             const {id, name} = response;
-            _refreshRouteModel(response, scope.routeModel);
+            refreshRouteModel(scope.routeModel, response);
 
             viewFrame.addAction(
                 'Delete',
                 viewFrame.previousRoute(false),
                 'critical delete',
                 'route',
-                ajaxConfig.endpoint
+                restConfig.endpoint
             );
 
             viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : _.objectName(id));
         });
 
         request.catch(() => {
-            toast.error('Could not load route details.');
-            window.location.href = viewFrame.previousRoute();
+            toast.error('Unable to fetch route details.');
+            window.location.href = '#!/routes';
         });
 
         request.finally(() => {
@@ -434,5 +463,9 @@ export default function RouteEditController(scope, location, routeParams, restCl
         });
 
         scope.fetchPluginList();
+    }
+
+    if (_.isNone(scope.serviceId)) {
+        scope.fetchServiceList();
     }
 }

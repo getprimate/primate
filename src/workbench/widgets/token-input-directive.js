@@ -15,6 +15,7 @@ const {document} = window;
  */
 function attachListNodes(scope, element, tokens) {
     const shouldAppend = isText(tokens);
+    /* TODO : Skip splitting tokens by comma, if the feature is disabled using data-disable-parser="true". */
     const tokenList = shouldAppend === true ? tokens.split(',') : [...scope.tokenList];
 
     for (let token of tokenList) {
