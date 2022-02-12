@@ -1,5 +1,7 @@
 'use strict';
 
+import {isNil, isText} from '../../lib/core-toolkit.js';
+
 const {document} = window;
 
 /**
@@ -11,8 +13,8 @@ const {document} = window;
  * @param {Array|string} tokens - tokens to be appended
  * @return {{append: function}} the element object
  */
-const _attachListNodes = (scope, element, tokens) => {
-    const shouldAppend = typeof tokens === 'string';
+function attachListNodes(scope, element, tokens) {
+    const shouldAppend = isText(tokens);
     const tokenList = shouldAppend === true ? tokens.split(',') : [...scope.tokenList];
 
     for (let token of tokenList) {
@@ -30,7 +32,7 @@ const _attachListNodes = (scope, element, tokens) => {
     }
 
     return element;
-};
+}
 
 /**
  * Directive constructor for token-input widgets.
@@ -55,7 +57,7 @@ export default function TokenInputDirective() {
 
         /**
          *
-         * @param {{tokenList: Array, isInitialised: boolean, $watch: function}} scope - the ng-model of the element
+         * @param {Object} scope - the ng-model of the element
          * @param {{children: function, addClass: function, on: function}} element - a jqLite instance of the element
          * @param {Object} attrs - the element attributes
          * @returns {boolean} true on linking, false otherwise
@@ -86,13 +88,13 @@ export default function TokenInputDirective() {
                 (current, previous) => {
                     if (scope.isInitialised === false) {
                         scope.isInitialised = true;
-                        _attachListNodes(scope, itemNode, scope.tokenList);
+                        attachListNodes(scope, itemNode, scope.tokenList);
 
                         return scope.isInitialised;
                     }
 
                     if (Array.isArray(previous) && Array.isArray(current) && previous.length !== current.length) {
-                        _attachListNodes(scope, itemNode, current);
+                        attachListNodes(scope, itemNode, current);
 
                         return true;
                     }
@@ -106,12 +108,17 @@ export default function TokenInputDirective() {
 
             itemNode.addEventListener('click', (event) => {
                 const {target} = event;
+                let element = target;
 
-                if (target.nodeName !== 'LI' || target.nodeName !== 'SPAN') {
+                if (target.nodeName === 'UL') {
                     return false;
                 }
 
-                target.remove();
+                if (target.nodeName === 'SPAN' && target.classList.contains('material-icons')) {
+                    element = target.closest('li');
+                }
+
+                element.remove();
 
                 if (Array.isArray(scope.tokenList)) {
                     scope.tokenList.splice(0);
@@ -126,8 +133,7 @@ export default function TokenInputDirective() {
                 }
             });
 
-            textNode.placeholder =
-                typeof attrs.placeholder === 'string' ? attrs.placeholder : 'Type and press enter...';
+            textNode.placeholder = isText(attrs.placeholder) ? attrs.placeholder : 'Type and press enter...';
 
             textNode.addEventListener('keyup', (event) => {
                 const {target} = event;
@@ -137,7 +143,7 @@ export default function TokenInputDirective() {
                     let value = target.value.trim();
 
                     if (value.length >= 1) {
-                        _attachListNodes(scope, itemNode, target.value.trim());
+                        attachListNodes(scope, itemNode, target.value.trim());
                     }
 
                     target.value = '';
