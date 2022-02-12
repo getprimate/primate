@@ -7,7 +7,7 @@
 
 'use strict';
 
-const UserAuthModel = {
+export default {
     keyAuth: {
         key: '',
         ttl: 0,
@@ -44,5 +44,3 @@ const UserAuthModel = {
         tags: []
     }
 };
-
-export default UserAuthModel;

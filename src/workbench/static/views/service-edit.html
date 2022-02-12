@@ -144,11 +144,17 @@
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
-            <div data-ng-switch="serviceId" class="form__field">
-                <button class="btn default" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
-                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
-                <button data-ng-switch-default="" class="btn info" type="submit" name="action" value="update">Update</button>
-            </div>
+            <div class="row">
+                <div class="col md-6">&nbsp;</div><!-- .col.md-6 -->
+                <div class="col md-6">
+                    <div data-ng-switch="serviceId" class="form__field align-right">
+                        <button class="default" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
+                        <button data-ng-switch-when="__none__" class="success" type="submit" name="action" value="create">Create</button>
+                        <button data-ng-switch-default="" class="info" type="submit" name="action" value="update">Update</button>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+            </div><!-- .row -->
+
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel__heading -->

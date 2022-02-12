@@ -8,7 +8,7 @@
 'use strict';
 
 import {isNil, isText} from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 
 /**
@@ -39,8 +39,10 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
             scope.consumerNext.offset = urlOffset(response.next);
 
             for (let consumer of response.data) {
+                consumer.displayText = isText(consumer.username) ? consumer.username : simplifyObjectId(consumer.id);
+
                 if (isNil(consumer.custom_id)) {
-                    consumer.custom_id = 'Not Provided';
+                    consumer.custom_id = '- Not Provided -';
                 }
 
                 consumer.createdAt = epochToDate(consumer.created_at, viewFrame.getFrameConfig('dateFormat'));

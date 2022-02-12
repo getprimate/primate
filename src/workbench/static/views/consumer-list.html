@@ -1,28 +1,28 @@
 <div class="container">
 
-<!-- ==-==-==-==-== Display this section if consumer list is empty. ==-==-==-==-== -->
-<div data-ng-if="consumerList.length===0" class="view-hero">
-    <p><span class="material-icons hero">person_pin</span></p>
-    <p>Seems like no consumers are added yet!</p>
-    <p><a href="#!/consumers/__create__" class="btn default">Add New Consumer</a></p>
-</div><!-- .view-hero -->
-
-<div data-ng-if="consumerList.length>=1" class="well">
+<div class="well">
 <div class="well__heading">List of consumers</div>
-<table id="cs-ed__tab01" class="table data-table">
-    <thead><tr><th>Username</th><th>Custom Id</th><th>Created At</th><th class="align-right">Actions</th></tr></thead>
+<table class="table data-table">
+    <thead data-ng-if="consumerList.length>=1"><tr><th>Username</th><th>Custom Id</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 
-    <tbody data-ng-click="deleteTableRow($event)">
+    <tbody data-ng-if="consumerList.length>=1" data-ng-click="deleteTableRow($event)">
     <tr data-ng-repeat="consumer in consumerList">
-        <td><a href="#!/consumers/{{consumer.id}}">{{consumer.username}}</a></td>
+        <td><a href="#!/consumers/{{consumer.id}}">{{consumer.displayText}}</a></td>
         <td>{{consumer.custom_id}}</td>
-        <td>{{consumer.created_at}}</td>
-        <td class="align-right">
+        <td>{{consumer.createdAt}}</td>
+        <td class="row-actions">
             <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><span class="material-icons warning">edit</span></a>
             <span title="Delete Consumer" class="material-icons critical delete" data-target="consumer" data-endpoint="/consumers/{{consumer.id}}">delete_forever</span>
         </td>
     </tr>
     </tbody>
+
+    <!-- ==-==-==-==-== Display this body if no consumers are present. ==-==-==-==-== -->
+    <tbody class="hero-placeholder" data-ng-if="consumerList.length===0">
+    <tr><td><span class="material-icons hero">person_pin</span></td></tr>
+    <tr><td>Looks like no consumers are present!</td></tr>
+    <tr><td><a href="#!/consumers/__create__" class="btn success">Create Consumer</a></td></tr>
+    </tbody><!-- .hero-placeholder -->
 </table>
 </div><!-- .well -->
 

@@ -8,7 +8,7 @@
 'use strict';
 
 /**
- * @typedef {Object} App_ConsumerModel - The consumer model to be attached to the scope.
+ * @typedef {Object} ConsumerModel - The consumer model to be attached to the scope.
  *
  * @property {string} username - The unique username of the consumer.
  * @property {string} custom_id - Field for storing an existing unique id for the consumer.
@@ -18,12 +18,10 @@
 /**
  * Defines a consumer model with default values.
  *
- * @type {App_ConsumerModel}
+ * @type {ConsumerModel}
  */
-const ConsumerModel = {
+export default {
     username: '',
     custom_id: '',
     tags: []
 };
-
-export default ConsumerModel;

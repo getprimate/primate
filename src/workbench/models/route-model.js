@@ -8,23 +8,24 @@
 'use strict';
 
 /**
- * @typedef {Object} App_RouteModel - The route model to be attached to the scope.
+ * @typedef {Object} RouteModel - The route model to be attached to the scope.
  *
  * @property {string} name - The route name.
+ * @property {string[]} protocols - An array of applicable protocols.
  */
 
 /**
  * Defines the route model with default values.
  *
- * @type {App_RouteModel}
+ * @type {RouteModel}
  */
 const RouteModel = {
-    name: 'my-route',
+    name: '',
     protocols: [],
     methods: [],
     hosts: [],
     paths: [],
-    headers: {},
+    headers: [],
     https_redirect_status_code: '426',
     regex_priority: 0,
     strip_path: true,
@@ -32,11 +33,11 @@ const RouteModel = {
     preserve_host: false,
     request_buffering: true,
     response_buffering: true,
-    tags: [],
-    service: '',
+    service: '__none__',
     snis: [],
     sources: [],
-    destinations: []
+    destinations: [],
+    tags: []
 };
 
 export default RouteModel;

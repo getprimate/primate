@@ -25,7 +25,7 @@
     <div class="panel__split"><span>Consumer Tags</span></div>
     <div class="form__field">
         <div class="field-input"><token-input data-ng-model="consumerModel.tags" data-placeholder="primary-consumer, high-priority"></token-input></div>
-        <div class="field-note">Press enter key to apply tags.</div>
+        <div class="field-note">* Press enter key after typing the tags.</div>
     </div><!-- .form__field -->
 
     <div data-ng-switch="consumerId" class="form__field">
@@ -38,7 +38,7 @@
 </div><!-- .panel__body -->
 </div><!-- .panel.panel-border -->
 
-<div id="cs-ed__nbk01" class="well notebook" data-ng-show="consumerId!=='__none__'">
+<div class="notebook" data-ng-show="consumerId!=='__none__'">
 <ul class="notebook__tab" data-ng-click="switchAuthTab($event)">
     <li data-auth-method="key-auth" data-page-id="#cs-ed__npg01" class="active">Key Auth</li>
     <li data-auth-method="basic-auth" data-page-id="#cs-ed__npg02">Basic Auth</li>
@@ -49,9 +49,10 @@
 </ul><!-- .notebook__tab -->
 
 <section id="cs-ed__npg01" class="notebook__page active">
+<div class="well">
+<div class="well__heading">Key Authentication</div>
     <div class="row">
     <div class="col md-6">
-        <article>
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="key-auth">
             <div class="form__field">
                 <label for="cs-ed__txt03" class="field-label">Authentication Key</label>
@@ -64,14 +65,20 @@
 
             <div class="form__field">
                 <label class="field-label">Tags</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.keyAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.keyAuth.tags" data-placeholder="user-level, low-priority."></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
-            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
-        </form>
-        </article>
-    </div>
+            <div class="form__field">
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="key-auth" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
+    </div><!-- .col.md-6 -->
     <div class="col md-6">
+        <div class="well__scroll-area">
         <table class="board data-table">
             <tbody data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
@@ -82,55 +89,70 @@
             </tbody>
             <tfoot data-ng-if="userAuthList.keyAuth.length===0"><tr><th colspan="3">No keys added yet.</th></tr></tfoot>
         </table>
-    </div>
+        </div><!-- .well__scroll-area -->
+    </div><!-- .col.md-6 -->
     </div><!--.row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg01.notebook__page -->
 
 <section id="cs-ed__npg02" class="notebook__page" data-auth-method="basic-auth">
+<div class="well">
+<div class="well__heading">Basic Authentication</div>
     <div class="row">
     <div class="col md-6">
-    <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
-        <div class="form__field">
-            <label for="cs-ed__txt05" class="field-label">Username</label>
-            <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="Example: jane-doe" required /></div>
-        </div><!-- .form__field -->
+        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
+            <div class="form__field">
+                <label for="cs-ed__txt05" class="field-label">Username</label>
+                <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="jane-doe" required /></div>
+            </div><!-- .form__field -->
 
-        <div class="form__field">
-            <label for="cs-ed__txt06" class="field-label">Password</label>
-            <div class="field-input"><input id="cs-ed__txt06" type="password" data-ng-model="userAuthModel.basicAuth.password" name="basicPassword" placeholder="Minimum 8 characters" minlength="8" required /></div>
-        </div><!-- .form__field -->
+            <div class="form__field">
+                <label for="cs-ed__txt06" class="field-label">Password</label>
+                <div class="field-input"><input id="cs-ed__txt06" type="password" data-ng-model="userAuthModel.basicAuth.password" name="basicPassword" placeholder="Minimum 8 characters" minlength="8" required /></div>
+            </div><!-- .form__field -->
 
-        <div class="form__field">
-            <label class="field-label">Tags</label>
-            <div class="field-input"><token-input data-ng-model="userAuthModel.basicAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
-        </div><!-- .form__field -->
+            <div class="form__field">
+                <label class="field-label">Tags</label>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.basicAuth.tags" data-placeholder="user-level, low-priority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
+            </div><!-- .form__field -->
 
-        <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div><!-- .form__field -->
-    </form>
+            <div class="form__field">
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="basic-auth" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
     </div><!-- col.md-7 -->
 
     <div class="col md-6">
-    <table class="board data-table">
-        <tbody data-ng-click="deleteTableRow($event)">
-        <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
-            <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
-            <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
-            <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</span></td>
-        </tr>
-        </tbody>
-        <tfoot data-ng-if="userAuthList.basicAuth.length===0"><tr><th colspan="3">No Basic authentication methods added yet.</th></tr></tfoot>
-    </table>
+        <div class="well__scroll-area">
+        <table class="board data-table">
+            <tbody data-ng-click="deleteTableRow($event)">
+            <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
+                <td class="md-1"><span class="material-icons success">fiber_manual_record</span></td>
+                <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</span></td>
+            </tr>
+            </tbody>
+            <tfoot data-ng-if="userAuthList.basicAuth.length===0"><tr><th colspan="3">No Basic authentication methods added yet.</th></tr></tfoot>
+        </table>
+        </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg02.notebook__page -->
 
 <section id="cs-ed__npg03" class="notebook__page" data-auth-method="oauth2">
+<div class="well">
+<div class="well__heading">OAuth2</div>
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
             <div class="form__field">
                 <label for="cs-ed__txt07" class="field-label">Application Name</label>
-                <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="Example: demo-application" required /></div>
+                <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="demo-application" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
@@ -155,19 +177,27 @@
 
             <div class="form__field">
                 <label class="field-label">Redirect URIs</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.redirect_uris" name="oauthRedirectURIs"></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.redirect_uris" name="oauthRedirectURIs" data-placeholder="/foo, /bar"></token-input></div>
+                <div class="field-note">* Press enter key after typing the URIs.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <label class="field-label">Tags</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.tags" data-placeholder="user-level, low-priority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
-            
-            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
-        </form>
+
+            <div class="form__field">
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="oauth2" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
     </div><!-- .col.md-7 -->
 
     <div class="col md-6">
+        <div class="well__scroll-area">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
@@ -178,17 +208,21 @@
             </tbody>
             <tfoot data-ng-if="userAuthList.oauth2.length===0"><tr><th colspan="3">No OAuth2 methods added yet.</th></tr></tfoot>
         </table>
+        </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg03.notebook__page -->
 
 <section id="cs-ed__npg04" class="notebook__page" data-auth-method="hmac-auth">
+<div class="well">
+<div class="well__heading">HMAC Authentication</div>
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
             <div class="form__field">
                 <label for="cs-ed__txt11" class="field-label">Username</label>
-                <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="Example: John-Doe" required /></div>
+                <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="john-doe" required /></div>
             </div><!-- .form__field -->
             <div class="form__field">
                 <label for="cs-ed__txt12" class="field-label">Secret</label>
@@ -197,13 +231,21 @@
 
             <div class="form__field">
                 <label class="field-label">Tags</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.hmacAuth.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.hmacAuth.tags" data-placeholder="user-level, lowpriority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
-            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
-        </form>
+
+            <div class="form__field">
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="hmac-auth" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
     </div><!-- .col.md-7 -->
 
     <div class="col md-6">
+        <div class="well__scroll-area">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
@@ -214,11 +256,15 @@
             </tbody>
             <tfoot data-ng-if="userAuthList.hmacAuth.length===0"><tr><th colspan="3">No HMAC methods added yet.</th></tr></tfoot>
         </table>
+        </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg04.notebook__page -->
 
 <section id="cs-ed__npg05" class="notebook__page" data-auth-method="jwt">
+<div class="well">
+<div class="well__heading">JWT Authentication</div>
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
@@ -248,15 +294,21 @@
 
             <div class="form__field">
                 <label class="field-label">Tags</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.jwt.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.jwt.tags" data-placeholder="user-level, low-priority."></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <button class="btn success" type="submit" name="action" value="add">Save</button></div>
-        </form>
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="jwt" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
     </div><!-- .col.md-7 -->
 
     <div class="col md-6">
+        <div class="well__scroll-area">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
@@ -267,28 +319,40 @@
             </tbody>
             <tfoot data-ng-if="userAuthList.jwt.length===0"><tr><th colspan="3">No web tokens added yet.</th></tr></tfoot>
         </table>
+        </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg05.notebook__page -->
 
 <section id="cs-ed__npg06" class="notebook__page" data-auth-name="acls">
+<div class="well">
+<div class="well__heading">Access Control Lists</div>
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
             <div class="form__field">
                 <label for="cs-ed__txt15" class="field-label">Group Name</label>
-                <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="Example: admin-group" value="" required /></div>
+                <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="admin-group" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <label class="field-label">Tags</label>
-                <div class="field-input"><token-input data-ng-model="userAuthModel.acls.tags" placeholder="Type tags separated by comma and press enter key."></token-input></div>
+                <div class="field-input"><token-input data-ng-model="userAuthModel.acls.tags" data-placeholder="user-level, low-priority"></token-input></div>
+                <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
-            <div class="form__field"><button class="btn success" type="submit" name="action" value="add">Save</button></div>
-        </form>
+
+            <div class="form__field">
+                <div class="field-input align-right">
+                    <button class="default" type="button" name="resetTarget" value="acls" data-ng-click="clearAuthForm($event)">Clear</button>
+                    <button class="success" type="submit" name="action" value="save">Save</button>
+                </div><!-- .field-input.align-right -->
+            </div><!-- .form__field -->
+        </form><!-- .form.form-new-auth -->
     </div><!-- .col.md-7 -->
 
     <div class="col md-6">
+        <div class="well__scroll-area">
         <table class="board data-table">
             <tbody>
             <tr data-ng-repeat="acl in userAuthList.acls">
@@ -299,8 +363,10 @@
             </tbody>
             <tfoot data-ng-if="userAuthList.acls.length===0"><tr><th colspan="3">No groups added yet.</th></tr></tfoot>
         </table>
+        </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
+</div><!-- .well -->
 </section><!-- #cs-ed__npg06.notebook__page -->
 </div><!-- .well.notebook -->
 </div><!-- .col.md-8 -->
@@ -308,33 +374,26 @@
 <div class="col md-4">
     <div class="well">
         <div class="well__heading">Consumer Plugins
-            <div data-ng-if="consumerId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
+            <div data-ng-if="consumerId!=='__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
         </div><!-- .well__heading -->
 
         <table class="board">
-            <thead data-ng-if="pluginList.length>0"><tr><th class="md-2">Enabled</th><th>Name</th><th class="md-3">Actions</th></tr> </thead>
-
-            <tbody data-ng-click="deleteTableRow($event)">
+            <tbody data-ng-if="pluginList.length>=0" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state success" data-ng-checked="plugin.enabled===true" /></td>
 
-                <td><a href="#!/consumers/{{consumerId}}/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
-                <td>
-                    <div class="action-group" data-service-id="{{service.id}}">
-                        <a href="#!/plugins/{{plugin.id}}"><i class="material-icons warning">edit</i></a>
-                        <i class="material-icons critical delete" data-target="plugin" data-endpoint="/consumers/{{consumerId}}/plugins/{{plugin.id}}">delete_forever</i>
-                    </div>
-                </td>
+                <td><a href="#!/plugins/{{plugin.id}}"><b>{{plugin.name}}</b></a></td>
+                <td class="row-actions"><span class="material-icons critical delete" data-target="plugin" data-endpoint="/consumers/{{consumerId}}/plugins/{{plugin.id}}">delete_forever</span></td>
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="pluginList.length === 0" class="placebo">
-                <tr data-ng-switch="consumerId">
-                    <th><span class="material-icons">extension</span></th>
-                    <th data-ng-switch-when="__none__">Enables after creating the consumer.</th>
-                    <th data-ng-switch-default>No plugins applied for this consumer.</th>
-                </tr>
-            </tfoot>
+            <tbody data-ng-if="pluginList.length===0" class="info-placeholder">
+            <tr data-ng-switch="routeId">
+                <td><span class="material-icons">extension</span></td>
+                <td data-ng-switch-when="__none__">Plugins applied on this consumer will be listed here.</td>
+                <td data-ng-switch-default>No plugins are applied on this consumer.</td>
+            </tr>
+            </tbody><!-- .info-placeholder -->
         </table>
     </div><!-- .well -->
 </div><!-- .col.md-4 -->

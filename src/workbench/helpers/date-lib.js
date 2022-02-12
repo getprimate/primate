@@ -7,15 +7,21 @@
 
 'use strict';
 
-export function toDateText(seconds, format = 'date') {
+/**
+ * Formats UNIX-timestamp to human-readable date text.
+ *
+ * @param {number} seconds - Unix timestamp in seconds.
+ * @param {('date'|'utc')} format - Format specifier.
+ * @return {string}
+ */
+export function epochToDate(seconds, format = 'date') {
     const date = new Date(seconds * 1000);
 
     switch (format) {
         case 'date':
             return date.toDateString();
 
-        case 'UTC':
-        case 'GMT':
+        case 'utc':
             return date.toUTCString();
 
         default:
@@ -23,7 +29,12 @@ export function toDateText(seconds, format = 'date') {
     }
 }
 
-export function epochToDate(seconds, format = 'date') {
-    /** TODO : Make this the primary export. Remove toDateText() and its usages. */
-    return toDateText(seconds, format);
+/**
+ * @deprecated Use epochToDate instead.
+ * @param seconds
+ * @param format
+ * @return {string}
+ */
+export function toDateText(seconds, format = 'date') {
+    return epochToDate(seconds, format);
 }

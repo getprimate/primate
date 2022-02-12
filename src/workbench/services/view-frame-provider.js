@@ -30,7 +30,7 @@
  * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
  * @property {function(void):ViewFrameFactory} incrementLoader - Increments loader width by adding loader step.
- * @property {(function(name: string): void)} getFrameConfig - Finds the configuration value by name.
+ * @property {(function(name: string): string)} getFrameConfig - Finds the configuration value by name.
  */
 
 /**

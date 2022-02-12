@@ -8,11 +8,11 @@
 'use strict';
 
 import * as _ from '../../lib/core-toolkit.js';
-import {urlOffset, urlQuery} from '../../lib/rest-utils.js';
-import {deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlOffset, urlQuery, deleteMethodInitiator, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {switchTabInitiator} from '../helpers/notebook.js';
 
-import ConsumerModel from '../models/consumer-model.js';
-import UserAuthModel from '../models/user-auth-model.js';
+import consumerModel from '../models/consumer-model.js';
+import userAuthModel from '../models/user-auth-model.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
@@ -30,16 +30,16 @@ import UserAuthModel from '../models/user-auth-model.js';
  * @param {ToastFactory} toast - Custom toast message service.
  */
 export default function ConsumerEditController(scope, location, routeParams, restClient, viewFrame, toast) {
-    const ajaxConfig = {method: 'POST', endpoint: '/consumers'};
+    const restConfig = {method: 'POST', endpoint: '/consumers'};
     const eventLocks = {submitConsumerForm: false, submitAuthForm: false};
 
-    let loaderSteps = 1;
+    let loaderSteps = 0;
 
     scope.ENUM_JWT_ALGO = ['HS256', 'HS384', 'HS512', 'RS256', 'ES256'];
 
     scope.consumerId = '__none__';
-    scope.consumerModel = _.deepClone(ConsumerModel);
-    scope.userAuthModel = _.deepClone(UserAuthModel);
+    scope.consumerModel = _.deepClone(consumerModel);
+    scope.userAuthModel = _.deepClone(userAuthModel);
 
     scope.userAuthList = {
         keyAuth: [],
@@ -60,28 +60,59 @@ export default function ConsumerEditController(scope, location, routeParams, res
      * @returns {boolean} True if request could be made, false otherwise.
      */
     scope.submitConsumerForm = function (event) {
-        if (eventLocks.submitConsumerForm === true) return false;
-        else eventLocks.submitConsumerForm = true;
-
         event.preventDefault();
-        viewFrame.setLoaderSteps(2);
+
+        if (eventLocks.submitConsumerForm === true) {
+            return false;
+        }
+
+        const fields = Object.keys(scope.consumerModel);
+
+        for (let field of fields) {
+            if (_.isText(scope.consumerModel[field])) {
+                scope.consumerModel[field] = scope.consumerModel[field].trim();
+            }
+        }
+
+        if (_.isEmpty(scope.consumerModel.username) && _.isEmpty(scope.consumerModel.custom_id)) {
+            toast.error('Please provide either username or consumer id.');
+            return false;
+        }
 
         const payload = _.deepClone(scope.consumerModel);
-        const request = restClient.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, payload});
 
-        viewFrame.incrementLoader();
+        eventLocks.submitConsumerForm = true;
+        viewFrame.setLoaderSteps(1);
+
+        if (_.isEmpty(scope.consumerModel.custom_id)) {
+            payload.custom_id = null;
+        }
+
+        if (_.isEmpty(scope.consumerModel.username)) {
+            payload.username = null;
+        }
+
+        const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
+
         request.then(({data: response}) => {
-            const level = scope.consumerId === '__none__' ? 'SUCCESS' : 'INFO';
+            const redirectURL = editViewURL(location.path(), response.id);
+            const displayText = _.isText(response.username) ? response.username : simplifyObjectId(response.id);
 
-            toast.message(level, 'Consumer details saved.');
+            if (_.isNone(scope.consumerId)) {
+                scope.consumerId = response.id;
 
-            if (level === 'SUCCESS') {
-                window.location.href = _.editPath(location.path(), response.id);
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.consumerId}`;
             }
+
+            viewFrame.popBreadcrumb();
+            viewFrame.addBreadcrumb(redirectURL, displayText);
+
+            toast.success('Consumer details saved successfully.');
         });
 
         request.catch(() => {
-            toast.error('Could not save consumer details.');
+            toast.error('Unable to save consumer details.');
         });
 
         request.finally(() => {
@@ -99,20 +130,17 @@ export default function ConsumerEditController(scope, location, routeParams, res
      * @returns {boolean} True if form has been reset, false otherwise.
      */
     scope.resetConsumerForm = function (event) {
+        event.preventDefault();
+
         if (eventLocks.submitConsumerForm === true) return false;
 
-        if (confirm('Proceed to clear the form?')) {
-            eventLocks.submitConsumerForm = false;
+        const proceed = confirm('Proceed to clear the form?');
 
-            scope.consumerModel = _.deepClone(ConsumerModel);
-
-            eventLocks.submitConsumerForm = true;
-
-            return true;
+        if (proceed) {
+            scope.consumerModel = _.deepClone(consumerModel);
         }
 
-        event.preventDefault();
-        return false;
+        return proceed;
     };
 
     /**
@@ -149,7 +177,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
             scope.userAuthList[authName].push(response);
 
             /* Clear the form */
-            scope.userAuthModel[authName] = _.deepClone(UserAuthModel[authName]);
+            scope.userAuthModel[authName] = _.deepClone(userAuthModel[authName]);
 
             toast.success('Authentication method saved.');
         });
@@ -159,7 +187,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
         });
 
         request.finally(() => {
-            eventLocks.submitConsumerForm = false;
+            eventLocks.submitAuthForm = false;
             viewFrame.incrementLoader();
         });
 
@@ -175,7 +203,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
     scope.fetchAuthList = function (method) {
         const authName = _.dashToCamel(method);
 
-        if (typeof scope.userAuthList[authName] === 'undefined') {
+        if (_.isNil(scope.userAuthList[authName])) {
             return false;
         }
 
@@ -186,7 +214,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
         });
 
         request.catch(() => {
-            toast.error('Could not load authentication details');
+            toast.error(`Unable to fetch ${method} authentication details.`);
         });
 
         return true;
@@ -213,7 +241,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
         });
 
         request.catch(() => {
-            toast.warning('Could not fetch consumer plugins.');
+            toast.warning('Unable to fetch consumer plugins.');
         });
 
         request.finally(() => {
@@ -223,34 +251,11 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
     /**
      * Switches between authentication forms.
-     *
-     * @param {EventTarget} event - Current event object.
      */
-    scope.switchAuthTab = function (event) {
-        const {target, currentTarget: tabList} = event;
-
-        if (target.nodeName !== 'LI' || _.isNil(target.dataset.pageId) || _.isNil(target.dataset.authMethod)) {
-            return false;
-        }
-
-        const {parentNode: notebook, children: pages} = tabList;
-        const {pageId, authMethod} = target.dataset;
-
+    scope.switchAuthTab = switchTabInitiator((dataset) => {
+        const {authMethod} = dataset;
         scope.fetchAuthList(authMethod);
-
-        for (let page of pages) {
-            page.classList.remove('active');
-        }
-
-        target.classList.add('active');
-
-        for (let section of notebook.querySelectorAll('section.notebook__page')) {
-            section.classList.remove('active');
-        }
-
-        notebook.querySelector(pageId).classList.add('active');
-        return true;
-    };
+    });
 
     /**
      * Deletes the table row entry upon clicking the bin icon.
@@ -259,7 +264,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
      */
     scope.deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
         if (_.isText(err)) toast.error(err);
-        else toast.success(`Deleted ${properties.target}.`);
+        else toast.success(`${properties.target} deleted successfully.`);
     });
 
     viewFrame.clearBreadcrumbs();
@@ -272,8 +277,8 @@ export default function ConsumerEditController(scope, location, routeParams, res
             break;
 
         default:
-            ajaxConfig.method = 'PATCH';
-            ajaxConfig.endpoint = `${ajaxConfig.endpoint}/${routeParams.consumerId}`;
+            restConfig.method = 'PATCH';
+            restConfig.endpoint = `${restConfig.endpoint}/${routeParams.consumerId}`;
             scope.consumerId = routeParams.consumerId;
             viewFrame.setTitle('Edit Consumer');
 
@@ -285,14 +290,14 @@ export default function ConsumerEditController(scope, location, routeParams, res
     viewFrame.setLoaderSteps(loaderSteps);
     viewFrame.incrementLoader();
 
-    if (ajaxConfig.method === 'PATCH' && scope.consumerId !== '__none__') {
+    if (restConfig.method === 'PATCH' && scope.consumerId !== '__none__') {
         const request = restClient.get(`/consumers/${scope.consumerId}`);
 
         request.then(({data: response}) => {
-            const {username, custom_id: customId} = response;
+            const fieldList = Object.keys(response);
 
-            for (let field in response) {
-                if (typeof scope.consumerModel[field] === 'undefined' || response[field] === null) {
+            for (let field of fieldList) {
+                if (_.isNil(scope.consumerModel[field]) || _.isNil(response[field])) {
                     continue;
                 }
 
@@ -307,11 +312,15 @@ export default function ConsumerEditController(scope, location, routeParams, res
                 `/consumers/${scope.consumerId}`
             );
 
-            viewFrame.addBreadcrumb(location.path(), _.isText(username) ? username : customId);
+            viewFrame.addBreadcrumb(
+                location.path(),
+                _.isText(response.username) ? response.username : simplifyObjectId(response.id)
+            );
         });
 
         request.catch(() => {
             toast.error('Unable to fetch consumer details.');
+            window.location.href = '#!/consumers';
         });
 
         request.finally(() => {

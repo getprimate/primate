@@ -1298,7 +1298,7 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
 .panel .panel__split > span:first-child,
 .panel .panel__split > span:only-child {
     display: block;
-    color: var(--theme__default-fg);
+    color: var(--theme__primary-fg);
     font-size: 1.1rem;
     font-weight: 500;
     margin-bottom: 5px;
@@ -1376,6 +1376,18 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
 .well > form.form {
     padding-left: 20px;
     padding-right: 20px;
+}
+
+.row .col:first-child > form.form {
+    padding-left: 20px;
+}
+
+.row .col:last-child > form.form {
+    padding-right: 20px;
+}
+
+.well .row .col > form.form {
+    padding-top: 20px;
 }
 
 /**
