@@ -8,11 +8,19 @@
 'use strict';
 
 import * as _ from '../../lib/core-toolkit.js';
-import {urlOffset, urlQuery, deleteMethodInitiator, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {
+    editViewURL,
+    urlOffset,
+    urlQuery,
+    simplifyObjectId,
+    patchMethodInitiator,
+    deleteMethodInitiator
+} from '../helpers/rest-toolkit.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
 
 import consumerModel from '../models/consumer-model.js';
 import userAuthModel from '../models/user-auth-model.js';
+import {epochToDate} from '../helpers/date-lib.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
@@ -52,6 +60,31 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
     scope.pluginList = [];
     scope.pluginNext = {offset: ''};
+
+    scope.metadata = {createdAt: ''};
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope._deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
+        if (_.isText(err)) toast.error(err);
+        else toast.success(`${properties.target} deleted successfully.`);
+    });
+
+    /**
+     * Handles click events on action buttons on table rows.
+     *
+     * @private
+     * @param {Event} event - The event object.
+     * @param {HTMLInputElement} event.target - The input HTML element.
+     * @return {boolean} True if event handled, false otherwise.
+     */
+    scope._togglePluginState = patchMethodInitiator(restClient, (err) => {
+        if (_.isText(err)) toast.error('Unable to update plugin state.');
+        else toast.success('Plugin state updated successfully.');
+    });
 
     /**
      * Submits the consumer form data.
@@ -99,7 +132,10 @@ export default function ConsumerEditController(scope, location, routeParams, res
             const displayText = _.isText(response.username) ? response.username : simplifyObjectId(response.id);
 
             if (_.isNone(scope.consumerId)) {
+                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+
                 scope.consumerId = response.id;
+                scope.metadata.createdAt = `Created on ${createdAt}`;
 
                 restConfig.method = 'PATCH';
                 restConfig.endpoint = `${restConfig.endpoint}/${scope.consumerId}`;
@@ -124,26 +160,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
     };
 
     /**
-     * Resets consumer details form if the user confirms the prompt.
-     *
-     * @param {Event} event - The current event object.
-     * @returns {boolean} True if form has been reset, false otherwise.
-     */
-    scope.resetConsumerForm = function (event) {
-        event.preventDefault();
-
-        if (eventLocks.submitConsumerForm === true) return false;
-
-        const proceed = confirm('Proceed to clear the form?');
-
-        if (proceed) {
-            scope.consumerModel = _.deepClone(consumerModel);
-        }
-
-        return proceed;
-    };
-
-    /**
      * Submits the user authentication method form.
      *
      * @param {Event} event - The current event object.
@@ -154,7 +170,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
         else eventLocks.submitAuthForm = true;
 
         event.preventDefault();
-        viewFrame.setLoaderSteps(2);
+        viewFrame.setLoaderSteps(1);
 
         const {target} = event;
         const {authMethod} = target.dataset;
@@ -165,25 +181,24 @@ export default function ConsumerEditController(scope, location, routeParams, res
         const payload = _.deepClone(authWrap);
 
         for (let field in authWrap) {
-            if (typeof authWrap[field] === 'string' && authWrap[field].length === 0) {
+            if (_.isText(authWrap[field]) && authWrap[field].length === 0) {
                 delete payload[field];
             }
         }
 
         const request = restClient.post(`/consumers/${scope.consumerId}/${authMethod}`, payload);
 
-        viewFrame.incrementLoader();
         request.then(({data: response}) => {
             scope.userAuthList[authName].push(response);
 
             /* Clear the form */
             scope.userAuthModel[authName] = _.deepClone(userAuthModel[authName]);
 
-            toast.success('Authentication method saved.');
+            toast.success('Authentication method saved successfully.');
         });
 
         request.catch(() => {
-            toast.error('Could not save authentication method.');
+            toast.error('Unable to save authentication method.');
         });
 
         request.finally(() => {
@@ -192,6 +207,47 @@ export default function ConsumerEditController(scope, location, routeParams, res
         });
 
         return false;
+    };
+
+    /**
+     * Resets all form elements in a generic way.
+     *
+     * @param {Event} event - The reset button click event.
+     * @return {boolean} True if reset, false otherwise.
+     */
+    scope.resetGenericForm = function (event) {
+        event.preventDefault();
+
+        const {target} = event;
+
+        if (target.nodeName !== 'BUTTON') {
+            return false;
+        }
+
+        const {value: modelField} = target;
+        const proceed = confirm('Proceed to clear the form?');
+
+        if (proceed === false) {
+            return proceed;
+        }
+
+        if (modelField === 'consumerModel') {
+            if (eventLocks.submitConsumerForm === true) {
+                return false;
+            }
+
+            scope.consumerModel = _.deepClone(consumerModel);
+        } else if (_.isObject(scope.userAuthModel[modelField])) {
+            if (eventLocks.submitAuthForm === true) {
+                return false;
+            }
+
+            scope.userAuthModel[modelField] = _.deepClone(userAuthModel[modelField]);
+        } else {
+            return false;
+        }
+
+        return proceed;
     };
 
     /**
@@ -209,12 +265,24 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
         const request = restClient.get(`/consumers/${scope.consumerId}/${method}`);
 
+        viewFrame.setLoaderSteps(1);
+
         request.then(({data: response}) => {
+            for (let authItem of response.data) {
+                if (Array.isArray(authItem.redirect_uris)) {
+                    authItem.redirect_uris = authItem.redirect_uris.join(', ');
+                }
+            }
+
             scope.userAuthList[authName] = response.data;
         });
 
         request.catch(() => {
             toast.error(`Unable to fetch ${method} authentication details.`);
+        });
+
+        request.finally(() => {
+            viewFrame.incrementLoader();
         });
 
         return true;
@@ -223,7 +291,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
     /**
      * Retrieves the list of plugins applied on this consumer.
      */
-    scope.fetchPluginList = function (filters = null) {
+    scope.fetchAppliedPlugins = function (filters = null) {
         const request = restClient.get(`/consumers/${scope.consumerId}/plugins` + urlQuery(filters));
 
         viewFrame.setLoaderSteps(1);
@@ -234,8 +302,9 @@ export default function ConsumerEditController(scope, location, routeParams, res
             for (let plugin of response.data) {
                 scope.pluginList.push({
                     id: plugin.id,
-                    name: plugin.name,
-                    enabled: plugin.enabled
+                    enabled: plugin.enabled,
+                    displayText: plugin.name,
+                    subTagsText: _.isEmpty(plugin.tags) ? 'No associated tags.' : _.implode(plugin.tags)
                 });
             }
         });
@@ -258,14 +327,22 @@ export default function ConsumerEditController(scope, location, routeParams, res
     });
 
     /**
-     * Deletes the table row entry upon clicking the bin icon.
+     * Handles click events on the table widgets.
      *
-     * @type {function(Event): boolean}
+     * @param {Event} event - The current event object
+     * @return {boolean} True if event handled, false otherwise
      */
-    scope.deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
-        if (_.isText(err)) toast.error(err);
-        else toast.success(`${properties.target} deleted successfully.`);
-    });
+    scope.handleTableClickEvents = function (event) {
+        const {target} = event;
+
+        switch (target.nodeName) {
+            case 'INPUT':
+                return scope._togglePluginState(event);
+
+            default:
+                return scope._deleteTableRow(event);
+        }
+    };
 
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/consumers', 'Consumers');
@@ -295,6 +372,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
         request.then(({data: response}) => {
             const fieldList = Object.keys(response);
+            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
 
             for (let field of fieldList) {
                 if (_.isNil(scope.consumerModel[field]) || _.isNil(response[field])) {
@@ -303,6 +381,8 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
                 scope.consumerModel[field] = response[field];
             }
+
+            scope.metadata.createdAt = `Created on ${createdAt}`;
 
             viewFrame.addAction(
                 'Delete',
@@ -328,6 +408,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
         });
 
         scope.fetchAuthList('key-auth');
-        scope.fetchPluginList(`/consumers/${scope.consumerId}/plugins`);
+        scope.fetchAppliedPlugins(`/consumers/${scope.consumerId}/plugins`);
     }
 }
