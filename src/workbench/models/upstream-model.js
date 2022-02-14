@@ -7,6 +7,25 @@
 
 'use strict';
 
+/**
+ * The upstream model object.
+ *
+ * @typedef {Object} UpstreamModel
+ * @property {string} name - Name
+ * @property {string} hash_on - Hash on
+ * @property {string} hash_on_value - Hash on value
+ * @property {string} hash_fallback_value - Hash fallback value
+ * @property {string} hash_fallback - Hash on
+ * @property {string|Object} host_header - Hash on
+ * @property {string[]} tags - Tags
+ * @property {{active: { healthy: Object, unhealthy: Object },
+ *      passive: { healthy: Object, unhealthy: Object }}} healthchecks - Health check options
+ * @property {string|Object} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
+ */
+
+/**
+ * @type {UpstreamModel}
+ */
 const upstreamModel = {
     name: '',
     algorithm: 'round-robin',

@@ -67,6 +67,13 @@ export function isEmpty(value) {
     }
 }
 
+/**
+ * Clones the provided value recursively.
+ *
+ * @template T
+ * @param {T} value - The object to be cloned.
+ * @returns {T} The cloned object
+ */
 export function deepClone(value) {
     return _baseClone(value);
 }
@@ -92,6 +99,9 @@ export function explode(input = '', separator = ',') {
     }, []);
 }
 
+/**
+ * @deprecated Use simplifyObjectId function instead.
+ */
 export function objectName(input) {
     if (typeof input !== 'string' || input.length === 0) {
         return 'None';
@@ -112,35 +122,6 @@ export function objectName(input) {
     }
 
     return input.substr(position + 1).toUpperCase();
-}
-
-export function typeCast(input = '') {
-    switch (input) {
-        case 'true':
-            return true;
-
-        case 'false':
-            return false;
-
-        case 'null':
-            return null;
-
-        default:
-            break;
-    }
-
-    const numeric = parseInt(input);
-    return isNaN(numeric) ? input : numeric;
-}
-
-export function editPath(current, id = '') {
-    let replaced = current.replace('/__create__', `/${id}`);
-
-    if (replaced.charAt(0) !== '/') {
-        replaced = `/${replaced}`;
-    }
-
-    return `#!${replaced}`;
 }
 
 /**
@@ -189,4 +170,34 @@ export function implode(keywords, maxLen = 50) {
     if (text.length <= maxLen) return text;
 
     return text.substring(0, maxLen - 1) + '...';
+}
+
+/**
+ * Returns the first element in an array.
+ *
+ * @param {Array} values - An array of values
+ * @return {any} The first element in the array.
+ */
+export function first(values) {
+    return Array.isArray(values) && values.length >= 1 ? values[0] : null;
+}
+
+/**
+ * Returns the last element in an array.
+ *
+ * @param {Array} values - An array of values
+ * @return {any} The first element in the array.
+ */
+export function last(values) {
+    const length = Array.isArray(values) ? values.length : 0;
+    return length === 0 ? null : values[length - 1];
+}
+
+/**
+ *
+ * @param {string} text
+ * @param {any} fallback
+ */
+export function trim(text, fallback = null) {
+    return typeof text === 'string' ? text.trim() : fallback;
 }

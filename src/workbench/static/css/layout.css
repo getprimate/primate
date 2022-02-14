@@ -1234,6 +1234,8 @@ form.form label.checkbox {
 
 form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--theme__primary-fg); }
 
+form.form p.metadata { margin: 0; padding-top: 13px; }
+
 /**
  * Panel widget styles.
  *
@@ -1273,8 +1275,9 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
 .panel  .panel__heading .clickable.clipboard {
     display: inline-block;
     color: var(--theme__default-fg);
-    font-size: var(--widget__heading-sz);
+    font-size: 1rem;
     font-weight: 400;
+    text-transform: uppercase;
 }
 
 .panel .panel__body {
@@ -1361,6 +1364,10 @@ form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--t
     padding: 0;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.well .well__scroll-area.pad-top-20 {
+    padding-top: 20px;
 }
 
 .well .well__scroll-area.large {

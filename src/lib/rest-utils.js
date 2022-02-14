@@ -9,6 +9,11 @@
 
 import * as _ from './core-toolkit.js';
 
+/**
+ * @deprecated Moved to rest toolkit helpers.
+ * @param location
+ * @return {string|string|string}
+ */
 export function urlOffset(location) {
     if (!_.isText(location)) return '';
 
@@ -18,6 +23,11 @@ export function urlOffset(location) {
     return params.has('offset') ? params.get('offset') : '';
 }
 
+/**
+ * @deprecated Moved to rest toolkit helpers.
+ * @param options
+ * @return {string}
+ */
 export function urlQuery(options) {
     if (_.isObject(options)) {
         const params = new URLSearchParams();

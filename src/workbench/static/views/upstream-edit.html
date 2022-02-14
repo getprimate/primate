@@ -1,8 +1,8 @@
-<div class="container" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div class="container">
 <div class="row">
 <div class="col md-8">
     <div class="panel panel-border info">
-    <div class="panel__heading">Upstream Details</div>
+    <div class="panel__heading"><span class="title">Upstream Details</span> <span data-ng-if="upstreamId.length>=12" class="clipboard clickable" data-clipboard-text="{{upstreamId}}">{{upstreamId}}</span></div>
     <div class="panel__body">
         <form id="us-edit__form01" class="form" method="post" data-ng-submit="submitUpstreamForm($event)">
             <!-- Wraps upstream name -->
@@ -52,7 +52,7 @@
                             <select data-ng-switch-when="__none__" class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
                                 <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
                             </select><!-- #up-ed__sel01 -->
-                            <div data-ng-switch-default class="label default" >{{upstreamModel.client_certificate}}</div>
+                            <article data-ng-switch-default>{{upstreamModel.client_certificate}}</article>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-8 -->
@@ -74,7 +74,7 @@
                     <div class="form__field">
                         <label for="up-ed__sel02" class="field-label">Primary Hash Input</label>
                         <div class="field-input">
-                            <select class="stretch" id="up-ed__sel02" name="hashInput" data-ng-model="upstreamModel.hash_on" data-ng-selected="upstreamModel.hash_on">
+                            <select class="stretch" id="up-ed__sel02" name="hashInput" data-ng-model="upstreamModel.hash_on" data-ng-selected="upstreamModel.hash_on" data-ng-change="updateInputHint('up-ed__txt04')">
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel01 -->
                         </div><!-- .field-input -->
@@ -84,7 +84,7 @@
                 <div class="col md-8">
                     <div class="form__field">
                         <label class="field-label">Primary Hash Value</label>
-                        <div class="field-input"><input id="up-ed__txt04" type="text" name="primaryHashValue" value="" data-ng-model="upstreamModel.hash_on_value" placeholder="" /></div><!-- .field-input -->
+                        <div class="field-input"><input id="up-ed__txt04" type="text" name="primaryHashValue" value="" data-ng-model="upstreamModel.hash_on_value" placeholder="Not required when set to 'none'" /></div><!-- .field-input -->
                         <div class="field-note">Required only if primary hash input is <strong>header</strong> or <strong>cookie</strong>.</div>
                     </div>
                 </div><!-- .col.md-4 -->
@@ -95,7 +95,7 @@
                     <div class="form__field">
                         <label for="up-ed__sel03" class="field-label">Fallback Hash Input</label>
                         <div class="field-input">
-                            <select class="stretch" id="up-ed__sel03" name="fallbackInput" data-ng-model="upstreamModel.hash_fallback" data-ng-selected="upstreamModel.hash_fallback">
+                            <select class="stretch" id="up-ed__sel03" name="fallbackInput" data-ng-model="upstreamModel.hash_fallback" data-ng-selected="upstreamModel.hash_fallback" data-ng-change="updateInputHint('up-ed__txt05')">
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel03 -->
                         </div><!-- .field-input -->
@@ -107,7 +107,7 @@
                     <div class="form__field">
                         <label class="field-label">Fallback Hash Value</label><!-- .field-label -->
                         <div class="field-input">
-                            <div class="field-input"><input id="up-ed__txt05" type="text" name="fallbackHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="" /></div><!-- .field-input -->
+                            <div class="field-input"><input id="up-ed__txt05" type="text" name="fallbackHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="Not required when set to 'none'" /></div><!-- .field-input -->
                             <div class="field-note">Required only if fallback hash input is <strong>header</strong> or <strong>cookie</strong>.</div>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
@@ -180,20 +180,20 @@
                     </div><!-- .form__field -->
 
                     <div class="form__field">
-                        <label for="up-ed__txt07" class="field-label">HTTP Path <span class="material-icons">info_outline</span></label>
+                        <label for="up-ed__txt07" class="field-label">HTTP Path</label>
                         <div class="field-input"><input id="up-ed__txt07" type="text" name="hcaHttpPath" value="" data-ng-model="upstreamModel.healthchecks.active.http_path" placeholder="/" /></div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label class="field-label">Healthy HTTP Status Codes</label>
                         <div class="field-input"><token-input name="hcaHealthyCodes" data-ng-model="upstreamModel.healthchecks.active.healthy.http_statuses" data-placeholder="200, 201, 202"></token-input></div><!-- .field-input -->
-                        <div class="field-note">Leave blank to apply the default values.</div>
+                        <div class="field-note">* Press enter key after typing the status codes. Leave blank to apply the default values.</div>
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label class="field-label">Unhealthy HTTP Status Codes</label>
                         <div class="field-input"><token-input name="hcaUnhealthyCodes" data-ng-model="upstreamModel.healthchecks.active.unhealthy.http_statuses" placeholder="400, 404, 500"></token-input></div><!-- .field-input -->
-                        <div class="field-note">Leave blank to apply the default values.</div>
+                        <div class="field-note">Leave blank to apply the default values.<br />* Press enter key after typing the status codes.</div>
                     </div><!-- .form__field -->
                 </div><!-- .col --md-8 -->
 
@@ -254,13 +254,13 @@
                     <div class="form__field">
                         <label class="field-label">Healthy HTTP Status Codes</label>
                         <div class="field-input"><token-input data-ng-model="upstreamModel.healthchecks.passive.healthy.http_statuses" data-placeholder="200, 201, 202"></token-input></div><!-- .field-input -->
-                        <div class="field-note">Leave blank to apply the default values.</div>
+                        <div class="field-note">Leave blank to apply the default values.<br />* Press enter key after typing the status codes.</div>
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label class="field-label">Unhealthy HTTP Status Codes</label>
                         <div class="field-input"><token-input data-ng-model="upstreamModel.healthchecks.passive.unhealthy.http_statuses" data-placeholder="400, 404, 500"></token-input></div><!-- .field-input -->
-                        <div class="field-note">Leave blank to apply the default values.</div>
+                        <div class="field-note">Leave blank to apply the default values.<br />* Press enter key after typing the status codes.</div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
                 <div class="col md-4">&nbsp;
@@ -298,16 +298,23 @@
                 </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
-            <div class="panel__split">Upstream Tags</div>
+            <div class="panel__split"></div>
             <div class="form__field">
+                <label class="field-label">Upstream Tags</label>
                 <div class="field-input"><token-input name="tags" data-ng-model="upstreamModel.tags" data-placeholder="user-level, high-priority"></token-input></div><!-- .field-input -->
+                <div class="field-note">* Press enter key after typing the status codes.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
-            <div class="form__field" data-ng-switch="upstreamId">
-                <a class="btn default" href="#!/upstreams">Cancel</a>
-                <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
-                <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
-            </div><!-- .form__field -->
+            <div class="row">
+                <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div><!-- .col.md-6 -->
+                <div class="col md-6">
+                    <div class="form__field align-right" data-ng-switch="upstreamId">
+                        <button type="button" class="default" name="resetForm" data-ng-click="resetUpstreamForm($event)">Clear</button>
+                        <button data-ng-switch-when="__none__" class="success" type="submit" name="action" value="create">Create</button>
+                        <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                    </div><!-- .form__field -->
+                </div><!-- .col.md-6 -->
+            </div><!-- .row -->
         </form>
     </div><!-- .panel__body -->
     </div><!-- .panel__heading -->
@@ -315,35 +322,40 @@
 
 <div class="col md-4">
     <div class="well">
-        <div class="well__heading">Targets <div data-ng-if="upstreamId!=='__none__'" class="pull-right"><a title="Manage Targets" href="#!/upstreams/{{upstreamId}}/targets"><span class="material-icons">launch</span> Manage Targets</a></div></div>
+        <div class="well__heading">Targets <div data-ng-if="upstreamId!=='__none__'" class="pull-right"><a title="Manage Targets" href="#!/upstreams/{{upstreamId}}/targets"><span class="material-icons">launch</span> Manage</a></div></div>
 
         <div class="well__scroll-area">
             <table id="targetsTable" class="board">
-                <tbody>
+                <tbody data-ng-if="targetList.length >= 1" data-ng-click="deleteTableRow($event)">
                 <tr data-ng-repeat="tg in targetList">
                     <td>{{tg.target}}</td>
                     <td>{{tg.weight}}</td>
                     <td><div class="action-group ">
-                        <i class="material-icons critical delete" data-target="target" data-url="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Delete target">delete_forever</i>
+                        <span class="material-icons critical delete" data-target="target" data-endpoint="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Delete target">delete_forever</span>
                     </div></td>
                 </tr>
                 </tbody>
 
-                <tfoot data-ng-if="targetList.length<=0"><tr data-ng-switch="upstreamId">
-                    <th data-ng-switch-when="__none__" colspan="3">Targets can be added once upstream is created.</th>
-                    <th data-ng-switch-default colspan="3">No targets added for this upstream.</th>
-                </tr></tfoot>
+                <tbody data-ng-if="targetList.length === 0" class="info-placeholder">
+                <tr data-ng-switch="upstreamId">
+                    <td><span class="material-icons">track_changes</span></td>
+                    <td data-ng-switch-when="__none__">Targets attached to this upstream will be listed here.</td>
+                    <td data-ng-switch-default>No targets are attached to this upstream.</td>
+                </tr>
+                </tbody>
 
-                <tfoot class="pagination" data-ng-if="targetNext.length>=5">
+                <tfoot class="pagination" data-ng-if="targetNext.offset.length>=12">
                     <tr><th colspan="3"><button class="btn pagination" data-ng-click="fetchTargetList(targetNext)">Load Next</button></th></tr>
                 </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
-        <form id="us-edit__form02" class="form hidden no-margin hpadding-15 vpadding-10" method="post" data-ng-submit="submitTargetForm($event)">
+        <form data-ng-if="upstreamId.length >= 12" class="form" method="post" data-ng-submit="submitTargetForm($event)">
             <div class="form__field">
-                <label class="field-label">Quick Create Target</label>
-                <div class="field-input"><input id="up-ed__txt10" type="text" name="target" placeholder="example.com:80, 15, user-level, low-priority" data-ng-model="targetModel.properties" /></div>
-                <div class="field-note">Type <strong>target</strong>, <strong>weight</strong>, <strong>tags...</strong></div>
+                <ul class="field-input linked">
+                    <li class="stretch"><input id="up-ed__txt10" type="text" name="target" placeholder="example.com:80, 15, user-level, low-priority" data-ng-model="targetModel.properties" /></li>
+                    <li><button type="submit" class="success icon"><span class="material-icons">add_circle</span></button></li>
+                </ul><!-- .field-input.linked -->
+                <label for="up-ed__txt10" class="field-note">Type <strong>target</strong>, <strong>weight</strong>, <strong>tags...</strong></label>
             </div><!-- .form__field -->
         </form>
     </div>

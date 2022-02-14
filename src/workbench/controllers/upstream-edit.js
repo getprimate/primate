@@ -1,5 +1,3 @@
-/** TODO : Refactor the whole file. */
-
 /**
  * Copyright (c) Ajay Sreedhar. All rights reserved.
  *
@@ -8,67 +6,160 @@
  */
 'use strict';
 
-/**
- * @typedef {Object} UpstreamBaseModel
- * @property {string} name - Name
- * @property {string} hash_on - Hash on
- * @property {string} hash_on_value - Hash on value
- * @property {string} hash_fallback_value - Hash fallback value
- * @property {string} hash_fallback - Hash on
- * @property {string} host_header - Hash on
- * @property {string[]} tags - Tags
- * @property {{active: { healthy: Object, unhealthy: Object }, passive: { healthy: Object, unhealthy: Object }}} healthchecks - Health check options
- */
-
-/**
- * @typedef {UpstreamBaseModel} UpstreamScopeModel
- * @property {string} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
- */
-
-/**
- * @typedef {UpstreamBaseModel} UpstreamPayload
- * @property {string} hash_on_header - Hash on
- * @property {string} hash_fallback_header - Hash on
- * @property {string} hash_on_cookie - Hash on
- * @property {string} hash_on_cookie_path - Hash on
- * @property {{id: string}} client_certificate - The certificate to be used as client certificate while TLS handshaking to the upstream server
- */
-
 import * as _ from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {urlQuery, urlOffset, simplifyObjectId, editViewURL, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 import upstreamModel from '../models/upstream-model.js';
 
 /**
+ * Populates upstream model after sanitising values in the service object.
  *
- * @param to
- * @param from
- * @returns {{}}
+ * Health check attributes are populated recursively.
+ *
+ * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#upstream-object
+ *
+ * @param {Object} model - An upstream model object or a sub object.
+ * @param {Object} source - The source object.
+ * @return {UpstreamModel} The updated upstream model.
  */
-const _buildFromResponse = (to = {}, from = {}) => {
-    for (let key of Object.keys(from)) {
-        if (typeof to[key] === 'undefined' || from[key] === null) {
+function refreshUpstreamModel(model, source = {}) {
+    const fieldList = Object.keys(source);
+
+    for (let field of fieldList) {
+        if (_.isNil(model[field]) || _.isNil(source[field])) {
             continue;
         }
 
-        let current = from[key];
+        let current = source[field];
 
-        if (typeof current === 'string' || typeof current === 'boolean' || typeof current === 'number') {
-            to[key] = current;
+        if (_.isText(current) || typeof current === 'boolean' || typeof current === 'number') {
+            model[field] = current;
             continue;
         }
 
         if (Array.isArray(current)) {
-            to[key] = current.map((value) => {
+            model[field] = current.map((value) => {
                 return `${value}`;
             });
         }
 
-        if (_.isObject(current)) _buildFromResponse(to[key], from[key]);
+        if (field === 'client_certificate') {
+            model.client_certificate = _.get(source.client_certificate, 'id', '');
+        }
+
+        if (_.isObject(current)) {
+            refreshUpstreamModel(model[field], source[field]);
+        }
     }
 
-    return to;
-};
+    const hashFields = ['hash_on', 'hash_fallback'];
+
+    for (let field of hashFields) {
+        if (source[field] === 'header') {
+            model[`${field}_value`] = source[`${field}_value`];
+            continue;
+        }
+
+        if (source[field] === 'cookie') {
+            model[`${field}_value`] = `${source.hash_on_cookie}, ${source.hash_on_cookie_path}`;
+        }
+    }
+
+    return model;
+}
+
+/**
+ *
+ * @param {UpstreamModel} model
+ * @return {Object}
+ */
+function buildUpstreamObject(model) {
+    if (model.name.length === 0) {
+        throw new Error('Please provide a name for this upstream.');
+    }
+
+    const payload = _.deepClone(model);
+
+    const hashFields = ['hash_on', 'hash_fallback'];
+
+    for (let field of hashFields) {
+        if (model[field] === 'header') {
+            payload[`${field}_header`] = model[`${field}_value`];
+            continue;
+        }
+
+        if (model[field] === 'cookie') {
+            let cookiePair = model[`${field}_value`].split(',', 2);
+
+            payload.hash_on_cookie = _.trim(_.first(cookiePair));
+            payload.hash_on_cookie_path = cookiePair.length >= 2 ? _.trim(_.last(cookiePair)) : '/';
+        }
+    }
+
+    /* Sanitise health check http statuses */
+    const statuses = [
+        ['active', 'healthy'],
+        ['active', 'unhealthy'],
+        ['passive', 'healthy'],
+        ['passive', 'unhealthy']
+    ];
+
+    for (let child of statuses) {
+        let type = _.first(child);
+        let state = _.last(child);
+
+        let current = model.healthchecks[type][state]['http_statuses'];
+
+        payload.healthchecks[type][state]['http_statuses'] = current.reduce((codes, value) => {
+            let code = parseInt(value.trim());
+
+            if (!isNaN(code) && code >= 200 && code <= 999) {
+                codes.push(code);
+            }
+
+            return codes;
+        }, []);
+
+        /* If status codes are empty, remove them from payload for defaults to be applied. */
+        if (payload.healthchecks[type][state]['http_statuses'].length === 0) {
+            delete payload.healthchecks[type][state]['http_statuses'];
+        }
+    }
+
+    payload.client_certificate = null;
+
+    if (model.client_certificate.length >= 12) {
+        payload.client_certificate = {id: model.client_certificate};
+    }
+
+    /* Split comma-separated list of tags into array and sanitise each tag. */
+    payload.tags = model.tags.reduce((tags, current) => {
+        current = current.trim();
+
+        if (current.length >= 1) {
+            tags.push(`${current}`);
+        }
+
+        return tags;
+    }, []);
+
+    /* Set optional fields to null if their values are empty. */
+    if (model.healthchecks.active.https_sni.length === 0) {
+        payload.healthchecks.active.https_sni = null;
+    }
+
+    if (model.host_header.length === 0) {
+        payload.host_header = null;
+    }
+
+    /* Remove the fields that are present in upstreamModel
+     * but not required to be sent in the request payload. */
+    delete payload.hash_on_value;
+    delete payload.hash_fallback_value;
+
+    return payload;
+}
 
 /**
  * Provides controller constructor for editing upstream and target objects.
@@ -87,15 +178,14 @@ const _buildFromResponse = (to = {}, from = {}) => {
  */
 export default function UpstreamEditController(scope, location, routeParams, restClient, viewFrame, toast) {
     const restConfig = {method: 'POST', endpoint: '/upstreams'};
+    const eventLocks = {submitUpstreamForm: false, submitTargetForm: false};
+
     let loaderSteps = 0;
 
     scope.ENUM_ALGORITHMS = ['consistent-hashing', 'least-connections', 'round-robin'];
     scope.ENUM_HASH_INPUTS = ['none', 'consumer', 'ip', 'header', 'cookie'];
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp'];
 
-    /**
-     * @type UpstreamScopeModel
-     */
     scope.upstreamModel = _.deepClone(upstreamModel);
     scope.upstreamId = '__none__';
 
@@ -106,6 +196,8 @@ export default function UpstreamEditController(scope, location, routeParams, res
     scope.certId = '__none__';
     scope.certList = [{id: '', displayName: '- None -'}];
     scope.certNext = {offset: ''};
+
+    scope.metadata = {createdAt: ''};
 
     scope.fetchTargetList = (endpoint) => {
         const request = restClient.get(endpoint);
@@ -119,7 +211,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         });
 
         request.catch(() => {
-            toast.error('Could not load targets.');
+            toast.warning('Unable to fetch upstream targets.');
         });
 
         request.finally(() => {
@@ -128,156 +220,93 @@ export default function UpstreamEditController(scope, location, routeParams, res
     };
 
     scope.submitUpstreamForm = function (event) {
-        scope.upstreamModel.name = scope.upstreamModel.name.trim();
-        scope.upstreamModel.host_header = scope.upstreamModel.host_header.trim();
-        scope.upstreamModel.healthchecks.active.https_sni = scope.upstreamModel.healthchecks.active.https_sni.trim();
-
         event.preventDefault();
 
-        if (scope.upstreamModel.name.length <= 0) {
-            toast.error('Please provide a name for this upstream.');
+        if (eventLocks.submitUpstreamForm === true) {
             return false;
         }
 
-        /**
-         * @type {UpstreamPayload}
-         */
-        const payload = _.deepClone(scope.upstreamModel);
+        const fieldList = Object.keys(scope.upstreamModel);
 
-        switch (scope.upstreamModel.hash_on) {
-            case 'header':
-                payload.hash_on_header = scope.upstreamModel.hash_on_value;
-                break;
-
-            case 'cookie':
-                payload.hash_on_cookie = scope.upstreamModel.hash_on_value;
-                payload.hash_on_cookie_path = '/';
-                break;
-
-            default:
-                break;
-        }
-
-        switch (scope.upstreamModel.hash_fallback) {
-            case 'header':
-                payload.hash_fallback_header = scope.upstreamModel.hash_fallback_value;
-                break;
-
-            case 'cookie':
-                payload.hash_on_cookie = scope.upstreamModel.hash_fallback_value;
-                payload.hash_on_cookie_path = '/';
-                break;
-
-            default:
-                break;
-        }
-
-        /* Sanitise health check http statuses */
-        const statuses = [
-            ['active', 'healthy'],
-            ['active', 'unhealthy'],
-            ['passive', 'healthy'],
-            ['passive', 'unhealthy']
-        ];
-
-        for (let child of statuses) {
-            let current = scope.upstreamModel.healthchecks[child[0]][child[1]]['http_statuses'];
-
-            payload.healthchecks[child[0]][child[1]]['http_statuses'] = current.reduce((codes, value) => {
-                let code = parseInt(value.trim());
-
-                if (!isNaN(code) && code >= 200 && code <= 999) {
-                    codes.push(code);
-                }
-
-                return codes;
-            }, []);
-
-            /* If status codes are empty, remove them from payload for defaults to be applied. */
-            if (payload.healthchecks[child[0]][child[1]]['http_statuses'].length === 0) {
-                delete payload.healthchecks[child[0]][child[1]]['http_statuses'];
+        for (let field of fieldList) {
+            if (_.isText(scope.upstreamModel[field])) {
+                scope.upstreamModel[field] = scope.upstreamModel[field].trim();
             }
         }
 
-        if (scope.upstreamModel.client_certificate.length > 5) {
-            payload.client_certificate = {id: scope.upstreamModel.client_certificate};
-        } else {
-            delete payload.client_certificate;
+        let payload = null;
+
+        try {
+            payload = buildUpstreamObject(scope.upstreamModel);
+
+            eventLocks.submitUpstreamForm = true;
+            viewFrame.setLoaderSteps(1);
+        } catch (error) {
+            toast.error(error.message);
+            return false;
         }
 
-        /* Split comma-separated list of tags into array and sanitise each tag. */
-        payload.tags = scope.upstreamModel.tags.reduce((tags, current) => {
-            current = current.trim();
-
-            if (current.length >= 1) {
-                tags.push(`${current}`);
-            }
-
-            return tags;
-        }, []);
-
-        /* Delete optional fields if their values are empty. */
-        if (scope.upstreamModel.healthchecks.active.https_sni.length === 0) {
-            delete payload.healthchecks.active.https_sni;
-        }
-
-        if (scope.upstreamModel.host_header.length === 0) {
-            delete payload.host_header;
-        }
-
-        /* Delete the fields that are present in upstreamModel
-         * but not required to be sent in the request payload. */
-        delete payload.hash_on_value;
-        delete payload.hash_fallback_value;
-
-        const request = restClient.request({
-            method: restConfig.method,
-            resource: restConfig.endpoint,
-            payload
-        });
-
-        viewFrame.setLoaderSteps(1);
+        const request = restClient.request({method: restConfig.method, resource: restConfig.endpoint, payload});
 
         request.then(({data: response}) => {
-            switch (scope.upstreamId) {
-                case '__none__':
-                    toast.success(`Created new upstream ${response.name}`);
-                    window.location.href = '#!' + location.path().replace('/__create__', `/${response.id}`);
-                    break;
+            const redirectURL = editViewURL(location.path(), response.id);
+            const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
 
-                default:
-                    toast.info(`Updated upstream ${payload.name}.`);
+            if (_.isNone(scope.upstreamId)) {
+                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+
+                scope.upstreamId = response.id;
+                scope.metadata.createdAt = `Created on ${createdAt}`;
+
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.upstreamId}`;
             }
+
+            viewFrame.popBreadcrumb();
+            viewFrame.addBreadcrumb(redirectURL, displayText);
+
+            toast.success('Upstream details saved successfully.');
         });
 
-        request.catch(({data: error}) => {
-            toast.error(
-                'Could not ' +
-                    (scope.upstreamId === '__none__' ? 'create new' : 'update') +
-                    ` upstream. ${error.message}`
-            );
+        request.catch(() => {
+            toast.error('Unable to save upstream details.');
         });
 
         request.finally(() => {
+            eventLocks.submitUpstreamForm = false;
             viewFrame.incrementLoader();
         });
 
-        return false;
+        return true;
     };
 
+    /**
+     * Creates new targets under the current upstream.
+     *
+     * @param {SubmitEvent} event - Current form submit event
+     * @return {boolean} True if the request could be made, false otherwise.
+     */
     scope.submitTargetForm = function (event) {
         event.preventDefault();
-        const payload = {target: '', weight: 100, tags: []};
 
-        if (scope.targetModel.properties.trim().length <= 0) {
+        if (eventLocks.submitTargetForm === true) {
             return false;
         }
 
-        const properties = scope.targetModel.properties.split(',');
-        payload.target = properties[0];
+        const payload = {target: '', weight: 100, tags: []};
+
+        if (scope.targetModel.properties.trim().length === 0) {
+            return false;
+        }
+
+        eventLocks.submitTargetForm = true;
+        viewFrame.setLoaderSteps(1);
+
+        const properties = _.explode(scope.targetModel.properties);
+        payload.target = _.first(properties);
 
         for (let index = 1; index < properties.length; index++) {
-            let current = properties[index].trim();
+            let current = properties[index];
 
             if (index === 1) {
                 let weight = parseInt(current);
@@ -291,18 +320,46 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.post(`/upstreams/${scope.upstreamId}/targets`, payload);
 
         request.then(({data: response}) => {
-            toast.success(`Added new target ${response.target}`);
+            toast.success(`New target ${response.target} saved successfully.`);
             scope.targetList.push(response);
         });
 
-        request.catch(({data: error}) => {
-            toast.error(error);
+        request.catch(() => {
+            toast.error('Unable to save target.');
         });
 
         request.finally(() => {
+            eventLocks.submitTargetForm = false;
             scope.targetModel.properties = '';
+
             viewFrame.incrementLoader();
         });
+
+        return true;
+    };
+
+    /**
+     * Handles form reset event.
+     *
+     * Displays confirmation dialog before clearing the form.
+     *
+     * @param {Event} event - The current event object
+     * @return boolean - True if reset confirmed, false otherwise
+     */
+    scope.resetServiceForm = function (event) {
+        event.preventDefault();
+
+        if (eventLocks.submitUpstreamForm === true) {
+            return false;
+        }
+
+        const proceed = confirm('Proceed to clear the form?');
+
+        if (proceed) {
+            scope.upstreamModel = _.deepClone(upstreamModel);
+        }
+
+        return proceed;
     };
 
     /**
@@ -318,19 +375,47 @@ export default function UpstreamEditController(scope, location, routeParams, res
             scope.certNext.offset = urlOffset(response.next);
 
             for (let cert of response.data) {
-                cert.displayName = (_.objectName(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
+                cert.displayName = (simplifyObjectId(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
                 scope.certList.push(cert);
             }
         });
 
         request.catch(() => {
-            toast.warning('Could not load certificates');
+            toast.warning('Unable to fetch certificates.');
         });
 
         return true;
     };
 
-    if (typeof routeParams.certId === 'string') {
+    scope.updateInputHint = function (inputId) {
+        const textInput = document.getElementById(inputId);
+        const hashField = inputId === 'up-ed__txt04' ? scope.upstreamModel.hash_on : scope.upstreamModel.hash_fallback;
+
+        switch (hashField) {
+            case 'header':
+                textInput.placeholder = 'X-Some-Header-Name';
+                return true;
+
+            case 'cookie':
+                textInput.placeholder = 'some_cookie_name, /cookie-path';
+                return true;
+        }
+
+        textInput.placeholder = `Not required when set to '${hashField}'`;
+        return true;
+    };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (_.isText(err)) toast.error(err);
+        else toast.success('Target deleted successfully.');
+    });
+
+    if (_.isText(routeParams.certId)) {
         restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
         scope.certId = routeParams.certId;
         scope.upstreamModel.client_certificate = routeParams.certId;
@@ -359,35 +444,26 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
     viewFrame.setLoaderSteps(loaderSteps);
 
-    if (restConfig.method === 'PATCH' && scope.upstreamId !== '__none__') {
+    if (restConfig.method === 'PATCH' && !_.isNone(scope.upstreamId)) {
         const request = restClient.get(restConfig.endpoint);
 
         request.then(({data: response}) => {
-            _buildFromResponse(scope.upstreamModel, response);
+            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
 
-            if (response.hash_on === 'header') {
-                scope.upstreamModel.hash_on_value = `${response.hash_on_header}`;
+            refreshUpstreamModel(scope.upstreamModel, response);
+
+            for (let hashField of ['up-ed__txt04', 'up-ed__txt05']) {
+                scope.updateInputHint(hashField);
             }
 
-            if (response.hash_fallback === 'header') {
-                scope.upstreamModel.hash_fallback_value =
-                    response.hash_fallback_header === null ? '' : `${response.hash_fallback_header}`;
-            }
-
-            if (response.hash_on === 'cookie' || response.hash_fallback === 'cookie') {
-                scope.upstreamModel.hash_fallback_value = `${response.hash_on_cookie}`;
-            }
-
-            if (response.client_certificate !== null && typeof response.client_certificate.id === 'string') {
-                scope.upstreamModel.client_certificate = response.client_certificate.id;
-            }
+            scope.metadata.createdAt = `Created on ${createdAt}`;
 
             viewFrame.addAction('Delete', '#!/upstreams', 'critical delete', 'upstream', restConfig.endpoint);
             viewFrame.addBreadcrumb(location.path(), response.name);
         });
 
         request.catch(() => {
-            toast.error('Could not load upstream details');
+            toast.error('Unable to fetch upstream details.');
             window.location.href = '#!/upstreams';
         });
 
@@ -395,7 +471,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
             viewFrame.incrementLoader();
         });
 
-        scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets?limit=5`);
+        scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets`);
     }
 
     scope.$on('$destroy', () => {
