@@ -1,8 +1,10 @@
 <div class="container">
 <div class="row">
 <div class="col md-8">
-<div class="panel panel-border {{consumerId === '__none__' ? 'success' : 'info'}}">
-<div class="panel__heading">Consumer Details</div>
+<div class="panel panel-border {{consumerId.length>= 12?'success':'info'}}">
+
+<div class="panel__heading"><span class="title">Consumer Details</span> <span data-ng-if="consumerId.length>=12" class="clipboard clickable" data-clipboard-text="{{consumerId}}">{{consumerId}}</span></div>
+
 <div class="panel__body">
     <form id="cs-ed__frm01" class="form" method="post" data-ng-submit="submitConsumerForm($event)">
     <div class="row">
@@ -46,7 +48,9 @@
 </div><!-- .panel__body -->
 </div><!-- .panel.panel-border -->
 
-<div class="notebook" data-ng-show="consumerId!=='__none__'">
+<div data-ng-show="consumerId.length>=12">
+<h2 class="light-text">Authentication Methods</h2>
+<div class="notebook">
 <ul class="notebook__tab" data-ng-click="switchAuthTab($event)">
     <li data-auth-method="key-auth" data-page-id="#cs-ed__npg01" class="active">Key Auth</li>
     <li data-auth-method="basic-auth" data-page-id="#cs-ed__npg02">Basic Auth</li>
@@ -88,7 +92,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody data-ng-click="deleteTableRow($event)">
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
@@ -146,7 +150,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody data-ng-click="deleteTableRow($event)">
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
@@ -225,7 +229,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody>
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
@@ -282,7 +286,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody>
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
@@ -355,7 +359,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody>
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
@@ -408,7 +412,7 @@
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
         <table class="board data-table">
-            <tbody>
+            <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="acl in userAuthList.acls">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{acl.group}}</strong><br>{{acl.created_at | date}}</td>
@@ -432,6 +436,8 @@
 </div><!-- .well -->
 </section><!-- #cs-ed__npg06.notebook__page -->
 </div><!-- .well.notebook -->
+
+</div><!-- .vpadding-20 -->
 </div><!-- .col.md-8 -->
 
 <div class="col md-4">

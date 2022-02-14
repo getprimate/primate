@@ -29,7 +29,10 @@
                 <div class="field-note">* Press enter key after typing the SNIs.</div>
             </div>
 
-            <div class="panel__split"><span>Optional Alternate Certificate</span></div>
+            <div class="panel__split">
+                <span>Alternate Certificate</span>
+                <span>Required if both RSA and ECDSA certificate are available.</span>
+            </div><!-- .panel__split -->
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
@@ -45,14 +48,15 @@
                 </div><!-- .col.md-6 -->
             </div><!-- .row -->
 
-            <div class="panel__split"><span>Certificate Tags</span></div>
+            <div class="panel__split"></div>
             <div class="form__field">
+                <label class="field-label">Certificate Tags</label>
                 <div class="field-input"><token-input name="tags" data-ng-model="certModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div>
 
             <div class="row">
-                <div class="col md-6">&nbsp;</div>
+                <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div>
                 <div class="col md-6">
                     <div class="form__field align-right" data-ng-switch="certId">
                         <button class="btn default" data-ng-click="resetCertForm($event)">Reset</button>

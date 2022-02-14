@@ -7,15 +7,8 @@
 
 'use strict';
 
-import {isText, isEmpty, deepClone, explode, isNil} from '../../lib/core-toolkit.js';
-import {
-    urlQuery,
-    urlOffset,
-    deleteMethodInitiator,
-    simplifyObjectId,
-    editViewURL,
-    implode
-} from '../helpers/rest-toolkit.js';
+import * as _ from '../../lib/core-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import certModel from '../models/certificate-model.js';
 
@@ -23,7 +16,7 @@ function refreshCertModel(model, source) {
     const keys = Object.keys(source);
 
     for (let key of keys) {
-        if (typeof model[key] === 'undefined' || isNil(source[key])) continue;
+        if (typeof model[key] === 'undefined' || _.isNil(source[key])) continue;
 
         model[key] = source[key];
     }
@@ -49,7 +42,9 @@ export default function CertificateEditController(scope, location, routeParams, 
     const eventLocks = {submitCertForm: false, submitSNIForm: false};
 
     scope.certId = '__none__';
-    scope.certModel = deepClone(certModel);
+    scope.certModel = _.deepClone(certModel);
+
+    scope.metadata = {createdAt: ''};
 
     scope.sniModel = {shorthand: ''};
     scope.sniList = [];
@@ -76,7 +71,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             scope.sniNext.offset = urlOffset(response.next);
 
             for (let sni of response.data) {
-                sni.subTagsText = isEmpty(sni.tags) ? epochToDate(sni.created_at) : implode(sni.tags);
+                sni.subTagsText = _.isEmpty(sni.tags) ? epochToDate(sni.created_at) : _.implode(sni.tags);
                 scope.sniList.push(sni);
             }
         });
@@ -109,8 +104,8 @@ export default function CertificateEditController(scope, location, routeParams, 
             for (let upstream of response.data) {
                 scope.upstreamList.push({
                     id: upstream.id,
-                    displayText: isText(upstream.name) ? upstream.name : simplifyObjectId(upstream.id),
-                    subTagsText: isEmpty(upstream.tags) ? epochToDate(upstream.created_at) : implode(upstream.tags)
+                    displayText: _.isText(upstream.name) ? upstream.name : simplifyObjectId(upstream.id),
+                    subTagsText: _.isEmpty(upstream.tags) ? epochToDate(upstream.created_at) : _.implode(upstream.tags)
                 });
             }
 
@@ -137,8 +132,8 @@ export default function CertificateEditController(scope, location, routeParams, 
             for (let service of response.data) {
                 scope.serviceList.push({
                     id: service.id,
-                    displayText: isText(service.name) ? service.name : `${service.host}:${service.port}`,
-                    subTagsText: isEmpty(service.tags) ? epochToDate(service.created_at) : implode(service.tags)
+                    displayText: _.isText(service.name) ? service.name : `${service.host}:${service.port}`,
+                    subTagsText: _.isEmpty(service.tags) ? epochToDate(service.created_at) : _.implode(service.tags)
                 });
             }
 
@@ -178,7 +173,7 @@ export default function CertificateEditController(scope, location, routeParams, 
         eventLocks.submitCertForm = true;
         viewFrame.setLoaderSteps(1);
 
-        const payload = deepClone(scope.certModel);
+        const payload = _.deepClone(scope.certModel);
 
         if (restConfig.method === 'PATCH') delete payload.snis;
 
@@ -190,9 +185,17 @@ export default function CertificateEditController(scope, location, routeParams, 
         const request = restClient.request({method: restConfig.method, resource: restConfig.endpoint, data: payload});
 
         request.then(({data: response}) => {
-            toast.success('Certificate details saved successfully.');
+            if (_.isNone(scope.certId)) {
+                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
 
-            if (scope.certId === '__none__') window.location.href = editViewURL(location.path(), response.id);
+                scope.certId = response.id;
+                scope.metadata.createdAt = `Created on ${createdAt}`;
+
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.certId}`;
+            }
+
+            toast.success('Certificate details saved successfully.');
         });
 
         request.catch(() => {
@@ -218,7 +221,7 @@ export default function CertificateEditController(scope, location, routeParams, 
 
         if (eventLocks.submitSNIForm === true) return false;
 
-        const exploded = explode(scope.sniModel.shorthand);
+        const exploded = _.explode(scope.sniModel.shorthand);
         if (exploded.length <= 0) return false;
 
         eventLocks.submitSNIForm = true;
@@ -266,7 +269,7 @@ export default function CertificateEditController(scope, location, routeParams, 
 
         const proceed = confirm('Proceed to clear the form?');
 
-        if (proceed) scope.certModel = deepClone(certModel);
+        if (proceed) scope.certModel = _.deepClone(certModel);
 
         return proceed;
     };
@@ -277,7 +280,7 @@ export default function CertificateEditController(scope, location, routeParams, 
      * @type {function(Event): boolean}
      */
     scope.deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
-        if (isText(err)) toast.error(err);
+        if (_.isText(err)) toast.error(err);
         else toast.success(`${properties.target} deleted successfully.`);
     });
 
@@ -306,6 +309,9 @@ export default function CertificateEditController(scope, location, routeParams, 
         viewFrame.setLoaderSteps(4);
 
         request.then(({data: response}) => {
+            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            scope.metadata.createdAt = `Created on ${createdAt}`;
+
             refreshCertModel(scope.certModel, response);
 
             viewFrame.addAction(
