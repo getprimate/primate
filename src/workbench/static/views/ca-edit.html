@@ -1,7 +1,7 @@
 <div class="container">
 <div class="row">
     <div class="col md-8">
-    <div class="{{caId === '__none__'?'panel panel-border success':'panel panel-border info'}}">
+    <div class="{{caId.length>=12?'panel panel-border success':'panel panel-border info'}}">
         <div class="panel__heading">
             <span class="title">CA Details</span>
             <span data-ng-if="caId.length>=10" class="clipboard clickable" data-clipboard-text="{{caId}}" title="Click to copy CA id">{{caId}}</span>
@@ -26,14 +26,15 @@
                     </div><!-- col.md-6 -->
                 </div><!-- .row -->
 
-                <div class="panel__split"><span>CA Tags</span></div>
+                <div class="panel__split"></div>
                 <div class="form__field">
+                    <label class="field-label">CA Tags</label>
                     <div class="field-input"><token-input data-ng-model="caModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                     <div class="field-note">* Press enter key after typing the tags.</div>
                 </div><!-- .form__field -->
 
                 <div class="row">
-                    <div class="col md-6">&nbsp;</div>
+                    <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div>
                     <div class="col md-6">
                         <div class="form__field align-right" data-ng-switch="caId">
                             <button class="btn default" type="button" data-ng-click="resetCAForm($event)">Reset</button>

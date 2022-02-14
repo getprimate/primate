@@ -7,8 +7,10 @@
 
 'use strict';
 
-import {deepClone, isNil} from '../../lib/core-toolkit.js';
-import {editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {deepClone, isNil, isNone} from '../../lib/core-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {simplifyObjectId} from '../helpers/rest-toolkit.js';
+
 import caModel from '../models/ca-model.js';
 
 function refreshCAModel(model, source) {
@@ -70,9 +72,17 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         const request = restClient.request({method: restConfig.method, endpoint: restConfig.endpoint, payload});
 
         request.then(({data: response}) => {
-            toast.success('CA details saved successfully.');
+            if (isNone(scope.caId)) {
+                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
 
-            if (scope.caId === '__none__') window.location.href = editViewURL(location.path(), response.id);
+                scope.caId = response.id;
+                scope.metadata.createdAt = `Created on ${createdAt}`;
+
+                restConfig.method = 'PATCH';
+                restConfig.endpoint = `${restConfig.endpoint}/${scope.caId}`;
+            }
+
+            toast.success('CA details saved successfully.');
         });
 
         request.catch(() => {
@@ -129,6 +139,9 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
+            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            scope.metadata.createdAt = `Created on ${createdAt}`;
+
             refreshCAModel(scope.caModel, response);
 
             viewFrame.addAction(
