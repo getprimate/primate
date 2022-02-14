@@ -10,9 +10,9 @@
 /**
  * A callback to be executed on completion.
  *
- * @callback GenericHandlerCallback
+ * @callback RESTHandlerCallback
  * @param {error: string|null} err - The error message if present.
- * @param {{target: string}=} properties - The property payload from the function.
+ * @param {{target?: string, attribute?: string}=} properties - The property payload from the function.
  */
 
 import {isText, isObject, isEmpty} from '../../lib/core-toolkit.js';
@@ -22,7 +22,7 @@ import {isText, isObject, isEmpty} from '../../lib/core-toolkit.js';
  *
  * @param {Event} event - The current event object.
  * @property {RESTClientFactory} _client - Customised HTTP REST client factory.
- * @property {GenericHandlerCallback} _callback - A callback to be executed on completion.
+ * @property {RESTHandlerCallback} _callback - A callback to be executed on completion.
  */
 function deleteMethodHandler(event) {
     if (typeof this._client === 'undefined') return false;
@@ -56,14 +56,62 @@ function deleteMethodHandler(event) {
 }
 
 /**
+ * Handles patch requests initiated from input boxes or icons.
+ *
+ * @param {Event} event - The click event object.
+ * @property {RESTClientFactory} _client - Customised HTTP REST client factory.
+ * @property {RESTHandlerCallback} _callback - A callback to be executed on completion.
+ */
+function patchMethodHandler(event) {
+    if (typeof this._client === 'undefined') return false;
+
+    const {target: element} = event;
+
+    if (element.nodeName === 'INPUT' && element.type === 'checkbox') {
+        const {target = 'Entity', endpoint, attribute} = element.dataset;
+
+        if (!isText(endpoint) || !isText(attribute)) {
+            return false;
+        }
+
+        const request = this._client.patch(endpoint, {[attribute]: element.checked});
+
+        request.then(() => {
+            if (typeof this._callback === 'function') {
+                this._callback.call(null, null, element.dataset);
+            }
+        });
+
+        request.catch(() => {
+            if (typeof this._callback === 'function') {
+                this._callback.call(null, `Unable to update ${target}.`, element.dataset);
+            }
+        });
+    }
+
+    return true;
+}
+
+/**
  * Binds {@link deleteMethodHandler} with the provided parameters.
  *
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
- * @param {GenericHandlerCallback} callback - A callback to be executed on completion.
+ * @param {RESTHandlerCallback} callback - A callback to be executed on completion.
  * @return {(function(Event): boolean)} The event handler function.
  */
 export function deleteMethodInitiator(restClient, callback) {
     return deleteMethodHandler.bind({_client: restClient, _callback: callback});
+}
+
+/**
+ * Binds {@link patchMethodHandler} with the provided parameters.
+ *
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
+ * @param {RESTHandlerCallback} callback - A callback to be executed on completion.
+ * @return {(function(Event): boolean)} The event handler function.
+ */
+export function patchMethodInitiator(restClient, callback) {
+    return patchMethodHandler.bind({_client: restClient, _callback: callback});
 }
 
 export function simplifyObjectId(objectId) {
@@ -86,22 +134,6 @@ export function simplifyObjectId(objectId) {
     }
 
     return objectId.substr(position + 1).toUpperCase();
-}
-
-export function epochToDate(seconds, format = 'date') {
-    const date = new Date(seconds * 1000);
-
-    switch (format) {
-        case 'date':
-            return date.toDateString();
-
-        case 'UTC':
-        case 'GMT':
-            return date.toUTCString();
-
-        default:
-            return date.toString();
-    }
 }
 
 export function urlOffset(location) {
@@ -131,6 +163,12 @@ export function urlQuery(options) {
     return '';
 }
 
+/**
+ * @deprecated Use implode in core-toolkit instead.
+ * @param keywords
+ * @param maxLen
+ * @return {string|*}
+ */
 export function implode(keywords, maxLen = 50) {
     if (isEmpty(keywords) || !Array.isArray(keywords)) return '';
 
