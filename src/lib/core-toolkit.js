@@ -180,3 +180,13 @@ export function snakeToDisplayText(value) {
 
     return displayText.trim();
 }
+
+export function implode(keywords, maxLen = 50) {
+    if (isEmpty(keywords) || !Array.isArray(keywords)) return '';
+
+    const text = keywords.join(', ');
+
+    if (text.length <= maxLen) return text;
+
+    return text.substring(0, maxLen - 1) + '...';
+}
