@@ -6,8 +6,9 @@
  */
 
 'use strict';
-
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import {isText} from '../../lib/core-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing upstream objects.
@@ -40,20 +41,30 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
                 scope.upstreamList.push({
                     id: upstream.id,
                     name: upstream.name,
-                    algorithm: upstream.algorithm,
-                    created_at: upstream.created_at
+                    algorithm: upstream.algorithm.toUpperCase(),
+                    createdAt: epochToDate(upstream.created_at, viewFrame.getFrameConfig('dateFormat'))
                 });
             }
         });
 
         request.catch(() => {
-            toast.error('Could not load upstreams');
+            toast.error('Unable to fetch upstreams');
         });
 
         request.finally(() => {
             viewFrame.incrementLoader();
         });
     };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @type {function(Event): boolean}
+     */
+    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (isText(err)) toast.error(err);
+        else toast.success('Upstream deleted successfully.');
+    });
 
     viewFrame.setTitle('Upstreams');
 
@@ -63,4 +74,11 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
     viewFrame.addAction('New Upstream', '#!/upstreams/__create__');
 
     scope.fetchUpstreamList('/upstreams');
+
+    scope.$on('$destroy', () => {
+        scope.upstreamList.length = 0;
+
+        delete scope.upstreamList;
+        delete scope.deleteTableRow;
+    });
 }

@@ -4,28 +4,29 @@
     <table id="upstreamTable" class="table">
         <thead data-ng-if="upstreamList.length>=1"><tr><th>Name</th><th>Algorithm</th><th>Slots</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 
-        <tbody>
+        <tbody data-ng-if="upstreamList.length>=1" data-ng-click="deleteTableRow($event)">
         <tr data-ng-repeat="upstream in upstreamList">
             <td><a href="#!/upstreams/{{upstream.id}}">{{upstream.name}}</a></td>
-            <td>{{upstream.algorithm | capitalise}}</td>
+            <td>{{upstream.algorithm}}</td>
             <td>{{upstream.slots}}</td>
-            <td>{{upstream.created_at | date}}</td>
+            <td>{{upstream.createdAt}}</td>
             <td class="row-actions">
                 <a href="#!/upstreams/{{upstream.id}}"><i class="material-icons warning">edit</i></a>
-                <i class="material-icons critical delete" data-target="Upstream" data-url="/upstreams/{{upstream.id}}">delete_forever</i>
+                <span class="material-icons critical delete" data-target="Upstream" data-endpoint="/upstreams/{{upstream.id}}">delete_forever</span>
             </td>
         </tr>
         </tbody>
-        <tfoot data-ng-if="upstreamList.length===0" class="align-center">
-            <tr><th colspan="5"><span class="material-icons hero">backup</span></th></tr>
-            <tr><th colspan="5">No upstream objects are created yet.</th></tr>
-            <tr><th colspan="5"><a href="#!/upstreams/__create__" class="btn default">Create New Upstream</a></th></tr>
-            <tr><th colspan="5">&nbsp;</th></tr>
-        </tfoot>
+
+        <!-- ==-==-==-==-== Display this body if no upstreams are present. ==-==-==-==-== -->
+        <tbody class="hero-placeholder" data-ng-if="upstreamList.length===0">
+        <tr><td><span class="material-icons hero">backup</span></td></tr>
+        <tr><td>Looks like no upstreams are present!</td></tr>
+        <tr><td><a href="#!/upstreams/__create__" class="btn success">Create Upstream</a></td></tr>
+        </tbody><!-- .hero-placeholder -->
     </table>
 </div><!-- .well -->
 
-<div data-ng-if="upstreamNext.offset.length>=5" class="pagination">
+<div data-ng-if="upstreamNext.offset.length>=12" class="pagination">
     <button class="text" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next<span class="material-icons">navigate_next</span></button>
 </div><!-- .pagination -->
 </div><!-- .container -->
