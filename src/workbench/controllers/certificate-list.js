@@ -7,9 +7,9 @@
 
 'use strict';
 
-import {isEmpty, isText} from '../../lib/core-toolkit.js';
+import {isEmpty, isText, implode} from '../../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {simplifyObjectId, urlQuery, urlOffset, implode, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlQuery, urlOffset, simplifyObjectId, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing all certificates and SNIs.
