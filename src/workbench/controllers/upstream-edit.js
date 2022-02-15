@@ -53,7 +53,7 @@ function refreshUpstreamModel(model, source = {}) {
         }
     }
 
-    const hashFields = ['hash_on', 'hash_fallback'];
+    const hashFields = ['hash_fallback', 'hash_on'];
 
     for (let field of hashFields) {
         if (source[field] === 'header') {
@@ -70,9 +70,16 @@ function refreshUpstreamModel(model, source = {}) {
 }
 
 /**
+ * Prepares upstream object after sanitising values in a specified upstream model.
  *
- * @param {UpstreamModel} model
- * @return {Object}
+ * Technically, this function does the inverse of {@link refreshUpstreamModel} function.
+ * The function validates upstream model before preparing the payload.
+ * Throws an error if the validation fails.
+ *
+ * @see https://docs.konghq.com/gateway/2.7.x/admin-api/#upstream-object
+ *
+ * @param {UpstreamModel} model - The source upstream model.
+ * @return {Object} The prepared upstream object.
  */
 function buildUpstreamObject(model) {
     if (model.name.length === 0) {
@@ -81,7 +88,7 @@ function buildUpstreamObject(model) {
 
     const payload = _.deepClone(model);
 
-    const hashFields = ['hash_on', 'hash_fallback'];
+    const hashFields = ['hash_fallback', 'hash_on'];
 
     for (let field of hashFields) {
         if (model[field] === 'header') {
@@ -199,8 +206,16 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
     scope.metadata = {createdAt: ''};
 
-    scope.fetchTargetList = (endpoint) => {
-        const request = restClient.get(endpoint);
+    /**
+     * Retrieves target objects mapped under this upstream.
+     *
+     * @param {string|object|null} filters - Filters to the Admin API endpoint.
+     * @return boolean - True if request could be made, false otherwise
+     */
+    scope.fetchTargetList = (filters = null) => {
+        const request = restClient.get(`/upstreams/${scope.upstreamId}/targets` + urlQuery(filters));
+
+        viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
             scope.targetNext.offset = urlOffset(response.next);
@@ -219,6 +234,15 @@ export default function UpstreamEditController(scope, location, routeParams, res
         });
     };
 
+    /**
+     * Submits changes made to the upstream model.
+     *
+     * The upstream object payload is prepared and POST or PATCH
+     * requests are triggered create or edit mode respectively.
+     *
+     * @param {SubmitEvent} event - The form submit event.
+     * @return {boolean} True if the request could be made, false otherwise
+     */
     scope.submitUpstreamForm = function (event) {
         event.preventDefault();
 
@@ -339,12 +363,10 @@ export default function UpstreamEditController(scope, location, routeParams, res
     };
 
     /**
-     * Handles form reset event.
-     *
      * Displays confirmation dialog before clearing the form.
      *
-     * @param {Event} event - The current event object
-     * @return boolean - True if reset confirmed, false otherwise
+     * @param {Event} event - The button click event.
+     * @return boolean - True if reset confirmed, false otherwise.
      */
     scope.resetServiceForm = function (event) {
         event.preventDefault();
@@ -387,6 +409,12 @@ export default function UpstreamEditController(scope, location, routeParams, res
         return true;
     };
 
+    /**
+     * Updates input placeholders upon switching hash input select boxes.
+     *
+     * @param {string} inputId - The target input box id.
+     * @return {boolean} Always true.
+     */
     scope.updateInputHint = function (inputId) {
         const textInput = document.getElementById(inputId);
         const hashField = inputId === 'up-ed__txt04' ? scope.upstreamModel.hash_on : scope.upstreamModel.hash_fallback;
@@ -398,6 +426,15 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
             case 'cookie':
                 textInput.placeholder = 'some_cookie_name, /cookie-path';
+
+                if (inputId === 'up-ed__txt04') {
+                    scope.upstreamModel.hash_fallback = 'none';
+
+                    document.getElementById(
+                        'up-ed__txt05'
+                    ).placeholder = `Not required when set to '${scope.upstreamModel.hash_fallback}'`;
+                }
+
                 return true;
         }
 
@@ -416,11 +453,11 @@ export default function UpstreamEditController(scope, location, routeParams, res
     });
 
     if (_.isText(routeParams.certId)) {
-        restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
         scope.certId = routeParams.certId;
         scope.upstreamModel.client_certificate = routeParams.certId;
+
+        restConfig.endpoint = `/certificates/${routeParams.certId}/upstreams`;
     } else {
-        scope.fetchCertificates();
         viewFrame.clearBreadcrumbs();
     }
 
@@ -438,12 +475,14 @@ export default function UpstreamEditController(scope, location, routeParams, res
 
             scope.upstreamId = routeParams.upstreamId;
             viewFrame.setTitle('Edit Upstream');
+
             loaderSteps++;
             break;
     }
 
     viewFrame.setLoaderSteps(loaderSteps);
 
+    /* Fetch the upstream details if the view is in edit mode. */
     if (restConfig.method === 'PATCH' && !_.isNone(scope.upstreamId)) {
         const request = restClient.get(restConfig.endpoint);
 
@@ -471,7 +510,11 @@ export default function UpstreamEditController(scope, location, routeParams, res
             viewFrame.incrementLoader();
         });
 
-        scope.fetchTargetList(`/upstreams/${scope.upstreamId}/targets`);
+        scope.fetchTargetList();
+    }
+
+    if (!_.isNone(scope.certId)) {
+        scope.fetchCertificates();
     }
 
     scope.$on('$destroy', () => {
@@ -479,5 +522,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
         scope.targetList.length = 0;
 
         delete scope.upstreamModel;
+        delete scope.deleteTableRow;
     });
 }

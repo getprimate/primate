@@ -211,7 +211,7 @@ function buildRouteObject(model) {
                 continue;
             }
 
-            delete payload[field];
+            payload[field] = null;
         }
     }
 

@@ -114,7 +114,7 @@ KongDash.controller('HeaderController', ['$scope', 'restClient', 'viewFrame', 't
 KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
 
 /* Register node details controllers. */
-KongDash.controller('OverviewController', ['$scope', 'restClient', 'toast', 'viewFrame', OverviewController]);
+KongDash.controller('OverviewController', ['$scope', 'restClient', 'viewFrame', 'toast', OverviewController]);
 KongDash.controller('NodeStatusController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeStatusController]);
 
 /* Register object handler controllers. */

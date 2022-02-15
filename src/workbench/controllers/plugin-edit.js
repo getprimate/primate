@@ -8,7 +8,10 @@
 'use strict';
 
 import * as _ from '../../lib/core-toolkit.js';
-import PluginModel from '../models/plugin-model.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {simplifyObjectId} from '../helpers/rest-toolkit.js';
+
+import pluginModel from '../models/plugin-model.js';
 
 function _buildSchemaModel(fields) {
     const model = {};
@@ -50,7 +53,6 @@ function _sanitiseSchema(schema) {
 
     for (let field of fields) {
         for (let name of Object.keys(field)) {
-            console.log(name);
             let attributes = field[name];
             let checkEnum = true;
 
@@ -62,6 +64,7 @@ function _sanitiseSchema(schema) {
                     attributes.nodeType = 'input__number';
                     break;
 
+                case 'set':
                 case 'array':
                     attributes.nodeType = 'token-input';
                     if (typeof attributes.elements === 'object' && Array.isArray(attributes.elements.one_of)) {
@@ -81,7 +84,7 @@ function _sanitiseSchema(schema) {
                     break;
 
                 case 'record':
-                    attributes.nodeType = 'record';
+                    attributes.nodeType = 'static-record';
                     _sanitiseSchema(attributes);
                     break;
 
@@ -95,8 +98,6 @@ function _sanitiseSchema(schema) {
             }
         }
     }
-
-    console.log(JSON.stringify(schema, null, 4));
 
     return schema;
 }
@@ -170,11 +171,11 @@ export default function PluginEditController(scope, location, routeParams, restC
     const ajaxConfig = {method: 'POST', endpoint: '/plugins'};
     let loaderSteps = 4;
 
-    scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https'].map((protocol) => {
+    scope.ENUM_PROTOCOL = ['grpc', 'grpcs', 'http', 'https', 'tcp', 'udp', 'tls', 'tls_passthrough'].map((protocol) => {
         return {nodeValue: protocol, displayText: protocol.toUpperCase()};
     });
 
-    scope.pluginModel = _.deepClone(PluginModel);
+    scope.pluginModel = _.deepClone(pluginModel);
     scope.pluginList = [];
 
     scope.jsonText = 'Test';
@@ -275,15 +276,31 @@ export default function PluginEditController(scope, location, routeParams, restC
         return false;
     };
 
-    scope.fetchServiceList = function (endpoint = '/services') {
-        const request = restClient.get(endpoint);
+    /**
+     * Retrieves the list of services to populate the select box.
+     *
+     * @return {boolean} True if the request could be made, false otherwise.
+     */
+    scope.fetchServiceList = function () {
+        const request = restClient.get('/services');
 
         request.then(({data: response}) => {
-            scope.serviceList = Array.isArray(response.enabled_plugins) ? response.enabled_plugins : [];
+            const services = [];
+
+            for (let service of response.data) {
+                services.push({
+                    id: service.id,
+                    displayText: _.isText(service.name) ? service.name : `${service.host}:${service.port}`,
+                    subTagsText: _.isEmpty(service.tags) ? epochToDate(service.created_at) : _.implode(service.tags)
+                });
+            }
+
+            scope.serviceList = services;
+            delete response.data;
         });
 
         request.catch(() => {
-            toast.error('Could not fetch list of enabled plugins');
+            toast.warning('Unable to fetch services.');
         });
 
         request.finally(() => {
@@ -293,58 +310,99 @@ export default function PluginEditController(scope, location, routeParams, restC
         return true;
     };
 
+    /**
+     * Retrieves the list of consumers to populate the select box.
+     *
+     * @return {boolean} True if the request could be made, false otherwise.
+     */
     scope.fetchConsumerList = function () {
         const request = restClient.get('/consumers');
 
+        request.then(({data: response}) => {
+            const consumers = [];
+
+            for (let consumer of response.data) {
+                consumers.push({
+                    id: consumer.id,
+                    displayText: _.isText(consumer.username)
+                        ? `Username: ${consumer.username}`
+                        : `Custom Id: ${consumer.custom_id}`,
+                    subTagsText: _.isEmpty(consumer.tags) ? epochToDate(consumer.created_at) : _.implode(consumer.tags)
+                });
+            }
+
+            scope.consumerList = consumers;
+            delete response.data;
+        });
+
+        request.catch(() => {
+            toast.warning('Unable to fetch consumers.');
+        });
+
         request.finally(() => {
             viewFrame.incrementLoader();
         });
+
+        return true;
     };
 
+    /**
+     * Retrieves the list of routes to populate the select box.
+     *
+     * @return {boolean} True if the request could be made, false otherwise.
+     */
     scope.fetchRouteList = function () {
         const request = restClient.get('/routes');
 
+        request.then(({data: response}) => {
+            const routes = [];
+
+            for (let route of response.data) {
+                routes.push({
+                    id: route.id,
+                    displayText: _.isText(route.name) ? route.name : simplifyObjectId(route.id),
+                    subTagsText: _.isEmpty(route.tags) ? epochToDate(route.created_at) : _.implode(route.tags)
+                });
+            }
+
+            scope.routeList = routes;
+            delete response.data;
+        });
+
+        request.catch(() => {
+            toast.warning('Unable to fetch consumers.');
+        });
+
         request.finally(() => {
             viewFrame.incrementLoader();
         });
+
+        return true;
     };
 
-    /* Modify plugin resource endpoint according to the route parameters provided.
-     * IMPORTANT: The order of these conditional statements needs to be maintained. */
-    if (typeof routeParams.routeId === 'string') {
-        ajaxConfig.endpoint = `/routes/${routeParams.routeId}${ajaxConfig.endpoint}`;
+    /* Modify plugin resource endpoint according to the route parameters provided. */
+    for (let entity of ['route', 'service', 'consumer']) {
+        let idField = routeParams[`${entity}Id`];
 
-        scope.routeId = routeParams.routeId;
-        scope.pluginModel.route = scope.routeId;
+        if (_.isText(idField)) {
+            ajaxConfig.endpoint = `/${entity}s/${idField}/${ajaxConfig.endpoint}`;
 
-        loaderSteps--;
-    }
+            scope[`${entity}Id`] = idField;
+            scope.pluginModel[entity] = idField;
 
-    if (typeof routeParams.serviceId === 'string') {
-        if (scope.routeId === '__none__') {
-            ajaxConfig.endpoint = `/services/${routeParams.serviceId}${ajaxConfig.endpoint}`;
+            loaderSteps--;
         }
-
-        scope.serviceId = routeParams.serviceId;
-        scope.pluginModel.service = scope.serviceId;
-
-        loaderSteps--;
     }
 
-    if (typeof routeParams.consumerId === 'string') {
-        ajaxConfig.endpoint = `/consumers/${routeParams.consumerId}${ajaxConfig.endpoint}`;
-
-        scope.consumerId = routeParams.consumerId;
-        scope.pluginModel.consumer = scope.consumerId;
-
-        loaderSteps--;
-    }
+    viewFrame.clearBreadcrumbs();
+    viewFrame.addBreadcrumb('#!/plugins', 'Plugins');
 
     switch (routeParams.pluginId) {
         case '__create__':
             scope.pluginId = '__none__';
 
             viewFrame.setTitle('Apply Plugin');
+            viewFrame.addBreadcrumb(location.path(), 'Create +');
             break;
 
         default:
@@ -357,7 +415,6 @@ export default function PluginEditController(scope, location, routeParams, restC
             break;
     }
 
-    viewFrame.setTitle('Apply Plugin');
     viewFrame.setLoaderSteps(loaderSteps);
 
     if (ajaxConfig.method === 'PATCH' && scope.pluginId !== '__none__') {
@@ -367,6 +424,8 @@ export default function PluginEditController(scope, location, routeParams, restC
             _refreshPluginModel(scope.pluginModel, response);
 
             scope.fetchSchema(response.name, response.config);
+
+            viewFrame.addBreadcrumb(location.path(), response.name);
         });
 
         request.catch(() => {
@@ -379,4 +438,31 @@ export default function PluginEditController(scope, location, routeParams, restC
     } else {
         scope.fetchAvailablePlugins();
     }
+
+    for (let entity of ['Service', 'Route', 'Consumer']) {
+        let modelPrefix = entity.toLowerCase();
+
+        if (_.isNone(scope[`${modelPrefix}Id`])) {
+            let method = scope[`fetch${entity}List`];
+            method.call(null);
+        }
+    }
+
+    scope.$on('$destroy', () => {
+        scope.serviceList.length = 0;
+        scope.routeList.length = 0;
+        scope.consumerList.length = 0;
+
+        scope.pluginList.length = 0;
+
+        delete scope.pluginModel;
+        delete scope.schemaProps;
+        delete scope.schemaModel;
+
+        delete scope.serviceList;
+        delete scope.routeList;
+        delete scope.consumerList;
+
+        delete scope.jsonText;
+    });
 }

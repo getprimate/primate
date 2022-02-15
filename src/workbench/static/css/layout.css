@@ -937,6 +937,7 @@ table.table { border-collapse: collapse; }
 table.board { border-spacing: 0 5px; }
 
 table.table thead th,
+table.table tbody th,
 table.table tfoot th,
 table.board tfoot th {
     padding: 10px min(1.041vw, 20px);
@@ -955,10 +956,11 @@ table.table tfoot th {
     background: transparent none;
 }
 
-table.table tbody td {
+table.table tbody td,
+table.table tbody th {
     padding: 10px min(1.041vw, 20px);
     color: var(--theme__primary-fg);
-    font-size:1rem;
+    font-size: 1rem;
 }
 
 table.table tbody td b { font-weight: 500; }
@@ -972,11 +974,14 @@ table .row-actions .material-icons { cursor: pointer; }
 
 table.table i.state-highlight { font-size: 1.25rem; cursor: pointer; }
 
-    table.table tr:nth-child(odd) td { background-color: var(--widget__accent-bg); }
-    table.table tr:nth-child(even) td { background-color: var(--widget__primary-bg); }
+    table.table tbody tr:nth-child(odd) td,
+    table.table tbody tr:nth-child(odd) th { background-color: var(--widget__accent-bg); }
 
-    table.table tr:last-child td:first-child { border-bottom-left-radius: var(--theme__widget-corner); }
-    table.table tr:last-child td:last-child { border-bottom-right-radius: var(--theme__widget-corner); }
+    table.table tbody tr:nth-child(even) td,
+    table.table tbody tr:nth-child(even) th { background-color: var(--widget__primary-bg); }
+
+    table.table tbody tr:last-child td:first-child { border-bottom-left-radius: var(--theme__widget-corner); }
+    table.table tbody tr:last-child td:last-child { border-bottom-right-radius: var(--theme__widget-corner); }
 
 table.board {
     border-collapse: separate;
@@ -1760,3 +1765,13 @@ table.table tbody.hero-placeholder tr:last-child td {
 /* Fade animation */
 .ng-animate.fade.ng-enter { -webkit-animation: fadein 0.2s; }
 .ng-animate.fade.ng-leave { -webkit-animation: fadeout 0.1s; }
+
+
+canvas#chart_ServerStat {
+    width: 100%;
+    height: 400px;
+}
+
+canvas#chart_TimerStat {
+    height: 300px;
+}

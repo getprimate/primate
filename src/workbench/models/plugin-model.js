@@ -7,7 +7,7 @@
 
 'use strict';
 
-const PluginModel = {
+export default {
     name: '__none__',
     route: '__none__',
     service: '__none__',
@@ -17,5 +17,3 @@ const PluginModel = {
     enabled: true,
     tags: []
 };
-
-export default PluginModel;

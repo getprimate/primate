@@ -36,7 +36,7 @@
                 <div class="field-input" data-ng-switch="routeId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.route" data-ng-selected="pluginModel.route">
                         <option value="__none__">- All Routes -</option>
-                        <option data-ng-repeat="route in routeList" value="{{consumer.id}}">{{route.displayText}}</option>
+                        <option data-ng-repeat="route in routeList" value="{{route.id}}">{{route.displayText}} - {{route.subTagsText}}</option>
                     </select>
 
                     <article data-ng-switch-default>{{routeId}}</article>
@@ -48,7 +48,7 @@
                 <div class="field-input" data-ng-switch="serviceId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.service" data-ng-selected="pluginModel.service">
                         <option value="__none__">- All Services -</option>
-                        <option data-ng-repeat="service in serviceList" value="{{service.id}}">{{service.displayText}}</option>
+                        <option data-ng-repeat="service in serviceList" value="{{service.id}}">{{service.displayText}} - {{service.subTagsText}}</option>
                     </select>
 
                     <article data-ng-switch-default>{{serviceId}}</article>
@@ -60,7 +60,7 @@
                 <div class="field-input" data-ng-switch="consumerId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.consumer" data-ng-selected="pluginModel.consumer">
                         <option value="__none__">All Consumers</option>
-                        <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.username}}</option>
+                        <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.displayText}} - {{consumer.subTagsText}}</option>
                     </select>
 
                     <article data-ng-switch-default>{{consumerId}}</article>
@@ -79,7 +79,8 @@
         <div data-ng-if="pluginModel.name!=='__none__'" class="panel__split"><span>Configurations for {{pluginModel.name}} plugin</span></div>
 
         <div class="mg-bottom-10 border-bottom-solid" data-ng-repeat="fieldWrap in schemaProps.fields">
-            <div class="row" data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
+            <div class="container row-wrapper" data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
+            <div class="row" data-ng-if="fieldProp.nodeType !== 'static-record'">
                 <div class="col md-6">
                     <div class="form__field">
                         <label class="field-label">{{fieldProp.fieldName}}</label>
@@ -125,12 +126,15 @@
                         </div><!-- .field__input -->
                     </div><!-- .form__field -->
 
-                    <div data-ng-switch-when="record">
-                        <div><strong>{{fieldName | pgname}}</strong></div>
-                        <div data-ng-include="'views/plugin-static-record.html'"></div>
-                    </div>
-                </div><!-- .col.md-6 data-ng-switch -->
-            </div><!-- .row data-ng-repeat -->
+                    <div data-ng-switch-default=""><article>{{fieldProp.type}}</article></div>
+                </div><!-- .col.md-6 | data-ng-switch -->
+            </div><!-- .row -->
+
+            <div data-ng-if="fieldProp.nodeType === 'static-record'">
+                <div><strong>{{fieldName | pgname}}</strong></div>
+                <div data-ng-include="'views/plugin-static-record.html'"></div>
+            </div>
+            </div><!-- .container.row-wrapper | data-ng-repeat -->
         </div><!-- .mg-bottom-10 -->
 
         <div class="panel__split"><span>Plugin Tags</span></div>
