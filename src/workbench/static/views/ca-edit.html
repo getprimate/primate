@@ -4,7 +4,7 @@
     <div class="{{caId.length>=12?'panel panel-border success':'panel panel-border info'}}">
         <div class="panel__heading">
             <span class="title">CA Details</span>
-            <span data-ng-if="caId.length>=10" class="clipboard clickable" data-clipboard-text="{{caId}}" title="Click to copy CA id">{{caId}}</span>
+            <span data-ng-if="caId.length>=10" data-clipboard-text="{{caId}}" title="Click to copy CA id">{{caId}}</span>
         </div><!-- .panel__heading -->
 
         <div class="panel__body">

@@ -2,7 +2,7 @@
 <div class="row">
 <div class="col md-8">
     <div class="panel panel-border info">
-    <div class="panel__heading"><span class="title">Upstream Details</span> <span data-ng-if="upstreamId.length>=12" class="clipboard clickable" data-clipboard-text="{{upstreamId}}">{{upstreamId}}</span></div>
+    <div class="panel__heading"><span class="title">Upstream Details</span> <span data-ng-if="upstreamId.length>=12" data-clipboard-text="{{upstreamId}}">{{upstreamId}}</span></div>
     <div class="panel__body">
         <form id="us-edit__form01" class="form" method="post" data-ng-submit="submitUpstreamForm($event)">
             <!-- Wraps upstream name -->

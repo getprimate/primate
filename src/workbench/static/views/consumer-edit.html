@@ -3,7 +3,7 @@
 <div class="col md-8">
 <div class="panel panel-border {{consumerId.length>= 12?'success':'info'}}">
 
-<div class="panel__heading"><span class="title">Consumer Details</span> <span data-ng-if="consumerId.length>=12" class="clipboard clickable" data-clipboard-text="{{consumerId}}">{{consumerId}}</span></div>
+<div class="panel__heading"><span class="title">Consumer Details</span> <span data-ng-if="consumerId.length>=12" data-clipboard-text="{{consumerId}}">{{consumerId}}</span></div>
 
 <div class="panel__body">
     <form id="cs-ed__frm01" class="form" method="post" data-ng-submit="submitConsumerForm($event)">
@@ -97,7 +97,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Key: {{keyAuth.key}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Key: {{keyAuth.key}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="authentication key" data-endpoint="/consumers/{{consumerId}}/key-auth/{{keyAuth.id}}">delete_forever</span>
                 </td>
             </tr>
@@ -155,7 +155,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Username: {{basicAuth.username}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Username: {{basicAuth.username}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</span>
                 </td>
             </tr>
@@ -234,7 +234,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Application Name: {{oauth.name}} &#10; Client Id: {{oauth.client_id}} &#10; Client Secret: {{oauth.client_secret}} &#10; Redirect URIs: {{oauth.redirect_uris}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Application Name: {{oauth.name}} &#10; Client Id: {{oauth.client_id}} &#10; Client Secret: {{oauth.client_secret}} &#10; Redirect URIs: {{oauth.redirect_uris}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/oauth2/{{oauth.id}}">delete_forever</span>
                 </td>
             </tr>
@@ -291,7 +291,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Username: {{hmacAuth.username}} &#10; Secret: {{hmacAuth.secret}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Username: {{hmacAuth.username}} &#10; Secret: {{hmacAuth.secret}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/hmac-auth/{{hmacAuth.id}}">delete_forever</span>
                 </td>
             </tr>
@@ -364,7 +364,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Algorithm: {{jwtAuth.algorithm}} &#10; Key: {{jwtAuth.key}} &#10; Secret: {{jwtAuth.secret}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Algorithm: {{jwtAuth.algorithm}} &#10; Key: {{jwtAuth.key}} &#10; Secret: {{jwtAuth.secret}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="token" data-endpoint="/consumers/{{consumerId}}/jwt/{{jwtAuth.id}}">delete_forever</span>
                 </td>
             </tr>
@@ -417,7 +417,7 @@
                 <td class="md-1"><span class="material-icons success">badge</span></td>
                 <td><strong>{{acl.group}}</strong><br>{{acl.created_at | date}}</td>
                 <td class="row-actions">
-                    <span class="material-icons clickable" title="Click to copy" data-clipboard-text="Group Name: {{acl.group}}">content_copy</span>
+                    <span class="material-icons" title="Click to copy" data-clipboard-text="Group Name: {{acl.group}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="group" data-endpoint="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</span>
                 </td>
             </tr>
