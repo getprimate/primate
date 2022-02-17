@@ -22,7 +22,7 @@ function attachItemElements(listElement, tokens = []) {
 
         li.dataset.displayText = token;
         li.dataset.identifier = randomHex();
-        li.innerHTML = `${token} <span class ="material-icons">highlight_off</span>`;
+        li.innerHTML = `${token} <span class ="material-icons clickable">highlight_off</span>`;
 
         listElement.appendChild(li);
     }
@@ -75,21 +75,22 @@ function clearItemElements(listElement) {
  *
  * @param {Object} scope - The injected scope object.
  * @property {string=} scope.tokenList - An array of added tokens
- * @param {Object} jqElement - The parent element wrapped as jqLite object.
+ * @param {Object} element - The parent element wrapped as jqLite object.
  * @param {{disableParser?: string, placeholder?: string}} attributes - The element attributes.
  * @return {boolean} True if linking successful, false otherwise.
  */
-function link(scope, jqElement, attributes) {
+function link(scope, element, attributes) {
     /** @type HTMLElement */
-    const parentElement = jqElement[0];
+    const parentElement = element[0];
+    const childElements = {};
 
     /* Abort linking if the provided ngModel is not an array. */
     if (!Array.isArray(scope.tokenList)) {
         return false;
     }
 
-    const textElement = parentElement.querySelector('textarea.token-input__text');
-    const listElement = parentElement.querySelector('ul.token-input__list');
+    childElements.textElement = parentElement.querySelector('textarea.token-input__text');
+    childElements.listElement = parentElement.querySelector('ul.token-input__list');
 
     /**
      * Updates the UL element if a change in the model array is detected.
@@ -99,14 +100,14 @@ function link(scope, jqElement, attributes) {
      * @return {boolean} True if new LI items were added, false otherwise.
      */
     const onTokenListUpdated = (current, previous) => {
-        clearItemElements(listElement);
+        clearItemElements(childElements.listElement);
 
         if (!Array.isArray(current) || current.length === 0) {
             return false;
         }
 
         if (!Array.isArray(previous) || current.length !== previous.length) {
-            attachItemElements(listElement, current);
+            attachItemElements(childElements.listElement, current);
         }
 
         return true;
@@ -114,9 +115,11 @@ function link(scope, jqElement, attributes) {
 
     parentElement.classList.add('token-input');
 
-    textElement.placeholder = isText(attributes.placeholder) ? attributes.placeholder : 'Type and press enter...';
+    childElements.textElement.placeholder = isText(attributes.placeholder)
+        ? attributes.placeholder
+        : 'Type and press enter...';
 
-    textElement.addEventListener('keyup', (event) => {
+    childElements.textElement.addEventListener('keyup', (event) => {
         event.preventDefault();
 
         const {target} = event;
@@ -126,7 +129,7 @@ function link(scope, jqElement, attributes) {
 
             if (value.length >= 1) {
                 const tokens = isNil(attributes.disableParser) ? explode(value, ',') : [value];
-                const items = attachItemElements(listElement, tokens);
+                const items = attachItemElements(childElements.listElement, tokens);
 
                 scope.tokenList.push(...items);
             }
@@ -135,7 +138,7 @@ function link(scope, jqElement, attributes) {
         }
     });
 
-    listElement.addEventListener('click', (event) => {
+    childElements.listElement.addEventListener('click', (event) => {
         const {target} = event;
 
         if (target.nodeName !== 'LI' && target.nodeName !== 'SPAN') {
@@ -144,33 +147,52 @@ function link(scope, jqElement, attributes) {
 
         let itemNode = target;
 
-        if (target.nodeName === 'SPAN' && target.classList.contains('material-icons')) {
+        if (target.nodeName === 'SPAN' && target.classList.contains('clickable')) {
             itemNode = target.closest('li');
         }
 
-        const index = detachItemElement(listElement, itemNode);
+        const index = detachItemElement(childElements.listElement, itemNode);
         scope.tokenList.splice(index, 1);
     });
 
     scope.$watch('tokenList', onTokenListUpdated, false);
 
     scope.$on('$destroy', () => {
-        clearItemElements(listElement);
+        clearItemElements(childElements.listElement);
+
+        parentElement.removeChild(childElements.textElement);
+        parentElement.removeChild(childElements.listElement);
+
+        childElements.textElement = null;
+        childElements.listElement = null;
+
+        parentElement.remove();
     });
 }
 
-function controller(scope) {
-    scope.isInitialised = false;
-}
-
+/**
+ * Provides constructor for creating token input directive.
+ *
+ * HTML Element
+ * <token-input></token-input>
+ *
+ * Element Properties:
+ * - data-ng-model - The model reference. Should be an array.
+ * - data-disable-parser - If set, tokens will not be split by comma.
+ * - data-placeholder - A placeholder text to be displayed on the text area.
+ *
+ * @constructor
+ * @return {Object} The directive definition.
+ */
 export default function TokenInputDirective() {
+    const template = '<textarea class="token-input__text"></textarea><ul class="token-input__list"></ul>';
+
     return {
         transclude: false,
         restrict: 'E',
         require: 'ngModel',
-        template: '<textarea class="token-input__text"></textarea><ul class="token-input__list"></ul>',
         scope: {tokenList: '=ngModel'},
-        controller: ['$scope', controller],
-        link
+        link,
+        template
     };
 }
