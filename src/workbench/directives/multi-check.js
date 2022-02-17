@@ -108,6 +108,28 @@ function checkSelectedItems(listElement, selected) {
 }
 
 /**
+ * Unchecks all inputs in the list element.
+ *
+ * @param {HTMLUListElement} listElement - The parent UL element.
+ * @return {number} - The number of items unchecked.
+ */
+function uncheckAllItems(listElement) {
+    let counter = 0;
+
+    for (let child of listElement.children) {
+        let inputElement = child.querySelector('input[type="checkbox"]');
+
+        if (inputElement.checked === true) {
+            counter++;
+        }
+
+        inputElement.checked = false;
+    }
+
+    return counter;
+}
+
+/**
  * Initializes the multi-check directive.
  *
  * @param {Object} scope - The injected scope object.
@@ -128,8 +150,11 @@ function link(scope, element) {
     childElements.listElement = parentElement.querySelector('ul.multi-check__list');
 
     const onSelectedListUpdated = (current, previous) => {
+        uncheckAllItems(childElements.listElement);
+
         if (!Array.isArray(previous) || current.length !== previous.length) {
-            return checkSelectedItems(childElements.listElement, current);
+            checkSelectedItems(childElements.listElement, current);
+            return true;
         }
 
         return false;
@@ -167,6 +192,15 @@ function link(scope, element) {
 
     scope.$watch('selected', onSelectedListUpdated, false);
     scope.$watch('available', onAvailableListUpdated, false);
+
+    scope.$on('$destroy', () => {
+        clearItemElements(childElements.listElement);
+
+        parentElement.removeChild(childElements.listElement);
+        childElements.listElement = null;
+
+        parentElement.remove();
+    });
 }
 
 export default function MultiCheckDirective() {
