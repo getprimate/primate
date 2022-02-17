@@ -82,6 +82,13 @@ function link(scope, jqElement, attributes) {
     const textElement = parentElement.querySelector('textarea.token-input__text');
     const listElement = parentElement.querySelector('ul.token-input__list');
 
+    /**
+     * Updates the UL element if a change in the model array is detected.
+     *
+     * @param {string[]} current - The current array of tokens.
+     * @param {string[]} previous - The previous array of tokens.
+     * @return {boolean} True if new LI items were added, false otherwise.
+     */
     const onTokenListUpdated = (current, previous) => {
         clearItemElements(listElement);
 
