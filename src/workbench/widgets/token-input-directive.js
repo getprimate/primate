@@ -63,7 +63,7 @@ function detachItemElement(listElement, itemElement) {
 function clearItemElements(listElement) {
     const length = 0;
 
-    while (listElement.firstChild) {
+    while (listElement.firstChild !== null) {
         listElement.removeChild(listElement.lastChild);
     }
 
