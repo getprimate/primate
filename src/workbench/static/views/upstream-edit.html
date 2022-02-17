@@ -325,14 +325,14 @@
         <div class="well__heading">Targets <div data-ng-if="upstreamId!=='__none__'" class="pull-right"><a title="Manage Targets" href="#!/upstreams/{{upstreamId}}/targets"><span class="material-icons">launch</span> Manage</a></div></div>
 
         <div class="well__scroll-area">
-            <table id="targetsTable" class="board">
+            <table id="targetsTable" class="card-table">
                 <tbody data-ng-if="targetList.length >= 1" data-ng-click="deleteTableRow($event)">
                 <tr data-ng-repeat="tg in targetList">
                     <td>{{tg.target}}</td>
                     <td>{{tg.weight}}</td>
-                    <td><div class="action-group ">
+                    <td class="row-actions">
                         <span class="material-icons critical delete" data-target="target" data-endpoint="/upstreams/{{upstreamId}}/targets/{{tg.id}}" title="Delete target">delete_forever</span>
-                    </div></td>
+                    </td>
                 </tr>
                 </tbody>
 

@@ -76,7 +76,7 @@
         <div class="well__heading">SNIs</div>
 
         <div class="well__scroll-area">
-        <table id="sniListTable" class="board">
+        <table id="sniListTable" class="card-table">
             <tbody data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="sni in sniList">
                 <td><strong>{{sni.name}}</strong><br />{{sni.subTagsText}}</td>
@@ -111,7 +111,7 @@
             </div><!-- .pull-right -->
         </div><!-- .well__heading -->
 
-        <table class="board">
+        <table class="card-table">
             <tbody data-ng-if="serviceList.length>=1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="service in serviceList">
                 <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a>
@@ -144,7 +144,7 @@
             </div><!-- .pull-right -->
         </div><!-- .well__heading -->
 
-        <table class="board">
+        <table class="card-table">
             <tbody data-ng-if="upstreamList.length>=1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="upstream in upstreamList">
                 <td><a href="#!/upstreams/{{upstream.id}}">{{upstream.displayText}}</a>

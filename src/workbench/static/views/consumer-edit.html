@@ -91,7 +91,7 @@
     </div><!-- .col.md-6 -->
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -149,7 +149,7 @@
 
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -228,7 +228,7 @@
 
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -285,7 +285,7 @@
 
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -358,7 +358,7 @@
 
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -411,7 +411,7 @@
 
     <div class="col md-6">
         <div class="well__scroll-area pad-top-20">
-        <table class="board data-table">
+        <table class="card-table">
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="acl in userAuthList.acls">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
@@ -447,7 +447,7 @@
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
-        <table class="board">
+        <table class="card-table">
             <tbody data-ng-if="pluginList.length>=0" data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-endpoint="/consumers/{{consumerId}}/plugins/{{plugin.id}}" data-attribute="enabled" value="{{plugin.id}}" class="plugin-state success" data-ng-checked="plugin.enabled===true" title="Click to enable or disable plugin" /></td>

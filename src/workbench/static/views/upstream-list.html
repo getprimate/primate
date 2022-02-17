@@ -1,7 +1,7 @@
 <div class="container">
 <div class="well">
     <div class="well__heading">List of Upstreams</div>
-    <table id="upstreamTable" class="table">
+    <table id="upstreamTable" class="data-table">
         <thead data-ng-if="upstreamList.length>=1"><tr><th>Name</th><th>Algorithm</th><th>Slots</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 
         <tbody data-ng-if="upstreamList.length>=1" data-ng-click="deleteTableRow($event)">

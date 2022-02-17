@@ -1,34 +1,5 @@
 'use strict';
 
-/**
- * TODO:
- *
- * Main Chart: Server Connections
- * /status
- * - Connections handled
- * - Connections writing
- * - Connections accepted etc
- * ... etc.
- *
- * Doughnut chart: Timers
- * /
- * - Running
- * - Pending
- *
- * nginx_http_directives
- *
- * admin_listeners
- *
- * proxy_listeners
- *
- * Database
- *
- * hostname
- *
- * certificate file locations
- *
- */
-
 import {
     Chart,
     CategoryScale,
@@ -43,12 +14,23 @@ import {isNil, isObject} from '../../lib/core-toolkit.js';
 
 Chart.register(CategoryScale, LinearScale, BarElement, BarController, DoughnutController, ArcElement);
 
+const styles = window.getComputedStyle(window.document.documentElement);
+
 /**
  * @type {Object}
  * @property {Chart} server - The server chart instance.
  * @property {Chart} timer - The timer chart instance.
  */
 const CHARTS = {};
+
+const stdColors = {
+    stdDefault: styles.getPropertyValue('--std__default').trim(),
+    stdPrimary: styles.getPropertyValue('--std__primary').trim(),
+    stdSuccess: styles.getPropertyValue('--std__success').trim(),
+    stdInfo: styles.getPropertyValue('--std__info').trim(),
+    stdWarning: styles.getPropertyValue('--std__warning').trim(),
+    stdCritical: styles.getPropertyValue('--std__critical').trim()
+};
 
 function createChart(canvas, payload, context = '2d') {
     if (!isObject(payload)) {
@@ -76,14 +58,21 @@ function generateServerChart(chartData) {
     const datasets = [
         {
             backgroundColor: [
-                'rgba(24, 138, 226, 0.5)',
-                'rgba(16, 196, 105, 0.5)',
-                'rgba(128, 197, 218, 0.5)',
-                'rgba(248, 142, 15, 0.5)',
-                'rgba(207, 32, 241, 0.5)',
-                'rgba(91, 105, 188, 0.5)'
+                `${stdColors.stdSuccess}7F`,
+                `${stdColors.stdInfo}7F`,
+                `${stdColors.stdPrimary}7F`,
+                `${stdColors.stdCritical}7F`,
+                `${stdColors.stdInfo}7F`,
+                `${stdColors.stdWarning}7F`
             ],
-            borderColor: ['#188AE2', '#10C469', '#80C5DA', '#F88E0F', '#CF20F1', '#5B69BC'],
+            borderColor: [
+                stdColors.stdSuccess,
+                stdColors.stdInfo,
+                stdColors.stdPrimary,
+                stdColors.stdCritical,
+                stdColors.stdInfo,
+                stdColors.stdWarning
+            ],
             borderWidth: 1,
             label: 'Connections',
             data: chartData
@@ -109,7 +98,7 @@ function generateServerChart(chartData) {
 function generateTimerChart(chartData) {
     const datasets = [
         {
-            backgroundColor: ['rgba(24, 138, 226, 0.5)', 'rgba(16, 196, 105, 0.5)'],
+            backgroundColor: [stdColors.stdWarning, stdColors.stdCritical],
             label: 'Timers',
             data: chartData,
             hoverOffset: 4
@@ -151,6 +140,18 @@ export default function OverviewController(scope, restClient, viewFrame, toast) 
     scope.adminListeners = [];
     scope.proxyListeners = [];
     scope.memWorkerVMs = [];
+    scope.metadata = {
+        apiVersion: 'Loading...',
+        luaVersion: 'Loading...',
+        nodeId: 'Loading',
+        isDBLess: false,
+        database: {
+            server: 'DB-Less',
+            url: '',
+            dbName: '',
+            reachable: true
+        }
+    };
 
     scope.fetchServerInfo = function () {
         const request = restClient.get('/');
@@ -164,6 +165,19 @@ export default function OverviewController(scope, restClient, viewFrame, toast) 
 
             if (Array.isArray(configuration.proxy_listeners)) {
                 scope.proxyListeners = configuration.proxy_listeners;
+            }
+
+            scope.metadata.apiVersion = response.version;
+            scope.metadata.luaVersion = response.lua_version;
+            scope.metadata.nodeId = response.node_id;
+
+            if (configuration.database === 'off') {
+                scope.metadata.isDBLess = true;
+                scope.metadata.database.server = 'DB-Less Configuration';
+            } else if (configuration.database === 'postgres') {
+                scope.metadata.database.server = 'Postgres';
+                scope.metadata.database.url = `${configuration.pg_host}:${configuration.pg_port}`;
+                scope.metadata.database.dbName = configuration.pg_database;
             }
 
             generateTimerChart([timers.running, timers.pending]);

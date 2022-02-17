@@ -438,7 +438,12 @@ a.btn.warning { border-color: var(--std__warning); }
     }
 
 /* Labels */
-.label { border-radius: var(--theme__input-corner); display: inline-block; padding: 0 12px 0 12px; font-weight: 400; }
+.label {
+    display: inline-block;
+    padding: 2px 12px;
+    margin: 0 5px;
+    border-radius: var(--theme__input-corner);
+    font-weight: 400; }
 
 .upper-case { text-transform: uppercase; }
 
@@ -476,10 +481,15 @@ ul.list li {
     border-radius: 4px;
 }
 
-/* Content wrapper */
+/**
+ * Application static-layout styles.
+ *
+ * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-=
+ */
+
 .app-layout { width: 100%; height: 100%; }
 
-/* Sidebar navigation */
+/* =-=-=-=-=-= Left sidebar styles =-=-=-=-=-= */
 aside#sidebarMenu {
     --default-bg: #121418;
     --primary-bg: #181a23;
@@ -647,7 +657,7 @@ aside#sidebarMenu .drawer__base button.text {
     cursor: pointer;
 }
 
-    /* Main section */
+/* =-=-=-=-=-= Main wrapper styles =-=-=-=-=-= */
 main#mainWrapper {
     height: 100%;
     overflow: hidden;
@@ -663,6 +673,7 @@ aside#sidebarMenu + main#mainWrapper {
     padding: 0;
 }
 
+/* =-=-=-=-=-= Main header styles =-=-=-=-=-= */
 header#mainHeader {
     --primary-bg: transparent;
     --default-fg: var(--theme__default-fg);
@@ -800,6 +811,7 @@ main#mainWrapper section.content__wrapper {
     z-index: 10;
 }
 
+/* =-=-=-=-=-= Main footer styles =-=-=-=-=-= */
 footer#mainFooter.maximized + section.content__wrapper,
 
 main#mainWrapper section.content__wrapper.resized {
@@ -922,133 +934,7 @@ footer#mainFooter .footer__window .activity-log ul li > span.log-error {
     text-transform: uppercase;
 }
 
-/**
- * Custom table styles.
- *
- * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
- */
-table {
-    width: 100%;
-    text-align: left;
-}
 
-table.table { border-collapse: collapse; }
-
-table.board { border-spacing: 0 5px; }
-
-table.table thead th,
-table.table tbody th,
-table.table tfoot th,
-table.board tfoot th {
-    padding: 10px min(1.041vw, 20px);
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-table.table thead th {
-    background: transparent none;
-    color: var(--theme__default-fg);
-}
-
-table.table tfoot th {
-    color: var(--theme__default-fg);
-    font-weight: 500;
-    background: transparent none;
-}
-
-table.table tbody td,
-table.table tbody th {
-    padding: 10px min(1.041vw, 20px);
-    color: var(--theme__primary-fg);
-    font-size: 1rem;
-}
-
-table.table tbody td b { font-weight: 500; }
-
-table.table td > a,
-table.board td > a { color: var(--theme__accent-fg); font-weight: 500; }
-
-table .row-actions { text-align: right; } 
-
-table .row-actions .material-icons { cursor: pointer; }
-
-table.table i.state-highlight { font-size: 1.25rem; cursor: pointer; }
-
-    table.table tbody tr:nth-child(odd) td,
-    table.table tbody tr:nth-child(odd) th { background-color: var(--widget__accent-bg); }
-
-    table.table tbody tr:nth-child(even) td,
-    table.table tbody tr:nth-child(even) th { background-color: var(--widget__primary-bg); }
-
-    table.table tbody tr:last-child td:first-child { border-bottom-left-radius: var(--theme__widget-corner); }
-    table.table tbody tr:last-child td:last-child { border-bottom-right-radius: var(--theme__widget-corner); }
-
-table.board {
-    border-collapse: separate;
-    border-spacing: 0 min(1.041vw, 20px);
-}
-
-.well.notebook .notebook__page table.board { padding: 0 !important; }
-
-table.board tbody tr,
-table.board tfoot tr {
-    background: var(--widget__accent-bg) none;
-    border:1px solid transparent;
-    border-radius: var(--theme__widget-corner);
-}
-
-table.board.transparent tbody tr,
-table.board.transparent tfoot tr {
-    background: transparent none;
-    border-radius: 0;
-}
-
-table.board tbody tr td {
-    color: var(--theme__default-fg);
-    font-size: 0.95rem;
-}
-
-table.board tbody tr td strong {
-    color: var(--theme__primary-fg);
-    font-weight: 500;
-}
-
-table.board tbody tr td { padding: 10px; font-size: 0.95rem; }
-    table.board tbody tr td:first-child,
-    table.board tfoot tr th:first-child { border-radius: var(--theme__widget-corner) 0 0 var(--theme__widget-corner); }
-
-    table.board tbody tr td:last-child,
-    table.board tfoot tr th:last-child{ border-radius: 0 var(--theme__widget-corner) var(--theme__widget-corner) 0; }
-
-    table.board tbody tr td:only-child,
-    table.board tfoot tr th:only-child{ border-radius: var(--theme__widget-corner); }
-
-table .action-group .material-icons {
-    font-size: 1.48rem;
-    cursor: pointer;
-}
-
-table .action-group { text-align: right; }
-
-table.table tfoot.pagination button,
-table.board tfoot.pagination button {
-    width: 100%;
-    text-align: center;
-    vertical-align: middle;
-    background: var(--widget__accent-bg) none;
-    color: var(--theme__primary-fg);
-}
-
-table.table tfoot.pagination,
-table.board tfoot.pagination tr { background: transparent none; }
-
-table.board tfoot.pagination th { text-align: center; padding: 5px 0 5px 0 !important; margin: 0 !important; }
-
-table.board input[type="radio"],
-table.board input[type="checkbox"] {
-    background-color: var(--theme__primary-bg);
-    border-color: var(--theme__default-fg);
-}
 
 /* Custom input elements */
 ul.range-slider {
@@ -1383,7 +1269,7 @@ form.form p.metadata { margin: 0; padding-top: 13px; }
 
 .well .highlight { background-color: #34444d; }
 
-.well table.board { padding: 0 20px; }
+
 
 .well > form.form {
     padding-left: 20px;
@@ -1503,6 +1389,196 @@ form.form .row { margin-bottom: 0 !important; }
 .md-10 { width: 83.333% !important; }
 .md-11 { width: 91.666% !important; }
 .md-12 { width: 100% !important; }
+
+/**
+ * Table styles.
+ *
+ * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-=
+ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table th {
+    padding: 10px min(1.041vw, 20px);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--theme__default-fg);
+}
+
+table thead th,
+table tfoot th {
+    background: transparent none;
+}
+
+table tbody td,
+table tbody th {
+    padding: 10px min(1.041vw, 20px);
+    color: var(--theme__primary-fg);
+    font-size: 1rem;
+}
+
+table tbody td b,
+table tbody td strong { font-weight: 500; }
+
+table td > a {
+    color: var(--theme__accent-fg);
+    font-weight: 500;
+}
+
+table .row-actions { text-align: right; }
+table .row-actions .material-icons { cursor: pointer; }
+
+table tbody.info-placeholder td {
+    padding: 10px;
+    font-weight: normal;
+    color: var(--theme__default-fg);
+}
+
+table:not(.collapsed) tbody.info-placeholder tr > td:first-child{
+    width: 64px;
+    height: 64px;
+    text-align: center;
+}
+
+table tbody.info-placeholder .material-icons {
+    font-size: 2.5rem !important;
+}
+
+table tbody.hero-placeholder {
+    text-align: center;
+    background-color: transparent !important;
+    border-spacing: 0;
+}
+
+table tbody.hero-placeholder tr,
+table tbody.hero-placeholder td {
+    background-color: transparent !important;
+}
+
+table tfoot.pagination tr { background: transparent none; }
+
+table tfoot.pagination button {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    background: var(--widget__accent-bg) none;
+    color: var(--theme__primary-fg);
+}
+
+    table.data-table tbody tr:nth-child(odd) td,
+    table.data-table tbody tr:nth-child(odd) th { background-color: var(--widget__accent-bg); }
+
+    table.data-table tbody tr:nth-child(even) td,
+    table.data-table tbody tr:nth-child(even) th { background-color: var(--widget__primary-bg); }
+
+    table.data-table tbody.hero-placeholder tr:first-child td { padding-top: 35px; }
+    table.data-table tbody.hero-placeholder tr:last-child td { padding-bottom: 35px; }
+
+.well table.data-table tr:last-child td:first-child,
+.panel table.data-table tr:last-child td:first-child {
+    border-bottom-left-radius: var(--theme__widget-corner);
+}
+
+.well table.data-table tr:last-child td:last-child,
+.panel table.data-table tr:last-child td:last-child {
+    border-bottom-right-radius: var(--theme__widget-corner);
+}
+
+table.card-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.well table.card-table,
+.panel table.card-table {
+    border-spacing: 0 min(1.041vw, 20px);
+}
+
+table.card-table tr {
+    background: var(--widget__accent-bg) none;
+    border:1px solid transparent;
+    border-radius: var(--theme__widget-corner);
+}
+
+table.card-table td {
+    color: var(--theme__default-fg);
+    font-size: 0.95rem;
+}
+
+table.card-table.transparent tr {
+    background: transparent none;
+    border-radius: 0;
+}
+
+table.card-table.collapsed {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table.card-table.collapsed td {
+    padding: 10px 10px 0 10px;
+}
+
+    table.card-table.collapsed tr:last-child td { padding-bottom: 20px; }
+
+    table.card-table.collapsed tbody tr:first-child td:first-child { border-top-left-radius: var(--theme__widget-corner) }
+    table.card-table.collapsed tbody tr:first-child td:last-child { border-top-right-radius: var(--theme__widget-corner) }
+    table.card-table.collapsed tbody tr:last-child td:first-child { border-bottom-left-radius: var(--theme__widget-corner) }
+    table.card-table.collapsed tbody tr:last-child td:last-child { border-bottom-right-radius: var(--theme__widget-corner) }
+
+table.card-table td { padding: 10px; font-size: 0.95rem; }
+
+    table.card-table:not(.collapsed) td:first-child,
+    table.card-table:not(.collapsed) th:first-child {
+        border-radius: var(--theme__widget-corner) 0 0 var(--theme__widget-corner);
+    }
+
+    table.card-table:not(.collapsed) td:last-child,
+    table.card-table:not(.collapsed) th:last-child {
+        border-radius: 0 var(--theme__widget-corner) var(--theme__widget-corner) 0;
+    }
+
+    table.card-table:not(.collapsed) td:only-child,
+    table.card-table:not(.collapsed) th:only-child {
+        border-radius: var(--theme__widget-corner);
+    }
+
+table.card-table tfoot.pagination th {
+    margin: 0 !important;
+    padding: 5px 0 5px 0 !important;
+    text-align: center;
+}
+
+table.card-table strong {
+    color: var(--theme__primary-fg);
+    font-weight: 500;
+}
+
+table.card-table.clickable tbody tr td {
+    cursor: pointer;
+}
+
+table.card-table.clickable tbody tr:hover {
+    background-color: var(--input__primary-bg);
+}
+
+table.card-table input[type="radio"],
+table.card-table input[type="checkbox"] {
+    background-color: var(--theme__primary-bg);
+    border-color: var(--theme__default-fg);
+}
+
+table.card-table .hero-placeholder .material-icons.hero {
+    font-size: 6.5rem;
+}
+
+.well table.card-table { padding: 0 20px; }
+
+.well table.card-table.transparent,
+.panel table.card-table.transparent { border-spacing: 0; }
 
 /**
  * Widget helper classes.
@@ -1687,54 +1763,7 @@ section.notebook__page .row.only-grid > .col:last-child form.form {
 
 .clickable { cursor: pointer; }
 
-table tbody.info-placeholder td {
-    padding: 10px;
-    font-weight: normal;
-    color: var(--theme__default-fg);
-}
 
-table tbody.info-placeholder tr > td:first-child{
-    width: 64px;
-    height: 64px;
-    text-align: center;
-}
-
-table tbody.info-placeholder .material-icons {
-    font-size: 2.5rem !important;
-}
-
-#staticMessage a { color: #D2D2D2; }
-
-table.board.clickable tbody tr td {
-    cursor: pointer;
-}
-
-table.board.clickable tbody tr:hover {
-    background-color: var(--input__primary-bg);
-}
-
-table tbody.hero-placeholder {
-    text-align: center;
-    background-color: transparent !important;
-    border-spacing: 0;
-}
-
-table tbody.hero-placeholder tr,
-table tbody.hero-placeholder td {
-    background-color: transparent !important;
-}
-
-table.board .hero-placeholder .material-icons.hero {
-    font-size: 6.5rem;
-}
-
-table.table tbody.hero-placeholder tr:first-child td {
-    padding-top: 35px;
-}
-
-table.table tbody.hero-placeholder tr:last-child td {
-    padding-bottom: 35px;
-}
 
 .capitalize { text-transform: capitalize; }
 
@@ -1769,9 +1798,10 @@ table.table tbody.hero-placeholder tr:last-child td {
 
 canvas#chart_ServerStat {
     width: 100%;
-    height: 400px;
+    height: 350px;
 }
 
 canvas#chart_TimerStat {
-    height: 300px;
+    height: 220px;
+    max-height: 230px;
 }

@@ -201,3 +201,18 @@ export function last(values) {
 export function trim(text, fallback = null) {
     return typeof text === 'string' ? text.trim() : fallback;
 }
+
+export function randomHex(length = 16) {
+    const multiplier = ((Date.now() + 100 * Math.random()) / 1000) * Math.random();
+    let randomText = '';
+    let textLength = 0;
+
+    while (textLength <= length) {
+        let suffix = Math.floor(Math.random() * multiplier).toString(16);
+
+        randomText = `${randomText}${suffix}`;
+        textLength = textLength + suffix.length;
+    }
+
+    return randomText.substr(0, length);
+}

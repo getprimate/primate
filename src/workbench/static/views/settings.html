@@ -15,7 +15,7 @@
         <div class="row only-grid">
             <div class="col md-6">
                 <div class="well__scroll-area large">
-                    <table class="board clickable">
+                    <table class="card-table clickable">
                         <tbody data-ng-click="populateConnection($event)">
                         <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
                             <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
@@ -97,7 +97,7 @@
             </div><!-- .col.md-6 -->
             <div class="col md-6">
                 <div class="well__scroll-area large">
-                    <table class="board">
+                    <table class="card-table">
                         <tbody data-ng-click="setWorkbenchTheme($event)">
                         <tr data-ng-repeat="theme in themeDefs">
                             <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeNonce" value="{{theme.nonce}}" /></td>

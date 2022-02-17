@@ -131,7 +131,7 @@
 
             <div class="form__field">
                 <label class="field-label">Headers</label>
-                <div class="field-input"><token-input data-ng-model="routeModel.headers" data-placeholder="x-custom-header: foo, bar"></token-input></div>
+                <div class="field-input"><token-input data-ng-model="routeModel.headers" data-disable-parser="true" data-placeholder="x-custom-header: foo, bar"></token-input></div>
                 <div class="field-note">* Press enter key after typing <strong>each</strong> header.</div><!-- .field-note -->
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
@@ -194,7 +194,7 @@
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
-        <table id="pluginListTable" class="board">
+        <table id="pluginListTable" class="card-table">
             <tbody data-ng-if="pluginList.length>=1" data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="plugin-state" data-ng-checked="plugin.enabled===true" /></td>

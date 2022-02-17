@@ -167,7 +167,7 @@
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
-            <table class="board">
+            <table class="card-table">
                 <tbody data-ng-if="routeList.length>=1" data-ng-click="handleTableClickEvents($event)">
                 <tr data-ng-repeat="route in routeList">
                     <td><a href="#!/routes/{{route.id}}">{{route.displayText}}</a>
@@ -197,7 +197,7 @@
     </div><!-- .well__heading -->
 
     <div class="well__scroll-area">
-        <table class="board">
+        <table class="card-table">
             <tbody data-ng-if="pluginList.length>=1" data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="plugin in pluginList">
                 <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="success plugin-state" data-ng-checked="plugin.enabled===true" title="Enable or disable plugin." /></td>
