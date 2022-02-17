@@ -13,6 +13,7 @@ import KongDash from './kongdash.js';
 
 import TokenInputDirective from './directives/token-input.js';
 import MultiCheckDirective from './directives/multi-check.js';
+import ClipboardTextDirective from './directives/clipboard-text.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
@@ -105,8 +106,9 @@ ipcHandler.onRequestDone('Update-Theme', (payload) => {
 
 KongDash.config(['restClientProvider', 'viewFrameProvider', initFactories]);
 
-KongDash.directive('tokenInput', ['$window', TokenInputDirective]);
-KongDash.directive('multiCheck', ['$window', MultiCheckDirective]);
+KongDash.directive('tokenInput', [TokenInputDirective]);
+KongDash.directive('multiCheck', [MultiCheckDirective]);
+KongDash.directive('clipboardText', [ClipboardTextDirective]);
 
 /* Register sidebar, header and footer controllers. */
 KongDash.controller('SidebarController', ['$scope', 'restClient', 'viewFrame', 'toast', SidebarController]);

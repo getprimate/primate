@@ -181,7 +181,6 @@ function link(scope, element) {
 
         if (target.checked === true) {
             scope.selected.push(target.value);
-
         } else {
             const index = scope.selected.indexOf(target.value);
             scope.selected.splice(index, 1);
