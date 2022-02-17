@@ -9,7 +9,7 @@
 
 import * as _ from '../../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlOffset, urlQuery, implode, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {urlOffset, urlQuery, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
 
 import routeModel from '../models/route-model.js';
 
@@ -77,6 +77,60 @@ function implodeAddress(sources = []) {
 }
 
 /**
+ * Creates header name - value map from token list.
+ *
+ * @param {string[]} tokens - Array of tokens
+ * @return {{}} The header name - value map.
+ */
+function createHeaderMap(tokens) {
+    const headerMap = {};
+
+    for (let token of tokens) {
+        token = token.trim();
+
+        let index = token.indexOf(':');
+
+        if (index <= 0) {
+            continue;
+        }
+
+        let name = token
+            .substring(0, index)
+            .trim()
+            .replace(/[^-_a-zA-Z0-9]/g, '-');
+
+        if (name.length === 0) {
+            continue;
+        }
+
+        let value = index >= token.length - 1 ? '' : token.substring(index + 1);
+        headerMap[name] = _.explode(value, ',');
+    }
+
+    return headerMap;
+}
+
+/**
+ * Creates header tokens from name-value map.
+ *
+ * This function does the reverse of {@link createHeaderMap}.
+ *
+ * @param {Object} headers - The header key-value pair.
+ * @return {string[]} The token array.
+ */
+function implodeHeaders(headers) {
+    const nameList = Object.keys(headers);
+    const tokens = [];
+
+    for (let name of nameList) {
+        let values = headers[name];
+        tokens.push(`${name}: ` + (Array.isArray(values) ? values.join(', ') : ''));
+    }
+
+    return tokens;
+}
+
+/**
  * Populates the route model after sanitising values in the route object.
  *
  * @private
@@ -87,27 +141,33 @@ function implodeAddress(sources = []) {
  * @returns {RouteModel} The populated route model.
  */
 function refreshRouteModel(model, source) {
-    for (let key of Object.keys(source)) {
-        if (_.isNil(model[key]) || _.isNil(source[key])) {
+    const fieldList = Object.keys(source);
+
+    for (let field of fieldList) {
+        if (_.isNil(model[field]) || _.isNil(source[field])) {
             continue;
         }
 
-        switch (key) {
+        switch (field) {
             case 'sources':
             case 'destinations':
-                model[key] = implodeAddress(source[key]);
+                model[field] = implodeAddress(source[field]);
                 break;
 
             case 'service':
-                model[key] = _.get(source[key], 'id', '__none__');
+                model[field] = _.get(source[field], 'id', '__none__');
                 break;
 
             case 'https_redirect_status_code':
-                model[key] = `${source[key]}`;
+                model[field] = `${source[field]}`;
+                break;
+
+            case 'headers':
+                model[field] = implodeHeaders(source[field]);
                 break;
 
             default:
-                model[key] = source[key];
+                model[field] = source[field];
                 break;
         }
     }
@@ -136,8 +196,7 @@ function buildRouteObject(model) {
     const payload = _.deepClone(model);
     const fields = Object.keys(model);
 
-    /* TODO : Handle headers payload using token input directive. */
-    delete payload['headers'];
+    payload['headers'] = null;
 
     for (let field of fields) {
         if (_.isText(model[field])) {
@@ -155,6 +214,7 @@ function buildRouteObject(model) {
                 break;
 
             case 'headers':
+                payload.headers = createHeaderMap(model[field]);
                 break;
 
             case 'service':
@@ -352,7 +412,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
         request.then(({data: response}) => {
             for (let service of response.data) {
                 let displayText = _.isText(service.name) ? service.name : `${service.host}:${service.port}`;
-                let subTagsText = _.isEmpty(service.tags) ? epochToDate(service.created_at) : implode(service.tags);
+                let subTagsText = _.isEmpty(service.tags) ? epochToDate(service.created_at) : _.implode(service.tags);
 
                 scope.serviceList.push({id: service.id, displayText, subTagsText});
             }
@@ -388,7 +448,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
                     id: plugin.id,
                     enabled: plugin.enabled,
                     displayText: plugin.name,
-                    subTagsText: _.isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : implode(plugin.tags)
+                    subTagsText: _.isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : _.implode(plugin.tags)
                 });
             }
 
@@ -450,7 +510,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
                 restConfig.endpoint
             );
 
-            viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : _.objectName(id));
+            viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : simplifyObjectId(id));
         });
 
         request.catch(() => {
