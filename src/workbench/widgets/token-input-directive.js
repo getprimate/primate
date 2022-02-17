@@ -70,6 +70,15 @@ function clearItemElements(listElement) {
     return length;
 }
 
+/**
+ * Initializes the token input directive.
+ *
+ * @param {Object} scope - The injected scope object.
+ * @property {string=} scope.tokenList - An array of added tokens
+ * @param {Object} jqElement - The parent element wrapped as jqLite object.
+ * @param {{disableParser?: string, placeholder?: string}} attributes - The element attributes.
+ * @return {boolean} True if linking successful, false otherwise.
+ */
 function link(scope, jqElement, attributes) {
     /** @type HTMLElement */
     const parentElement = jqElement[0];
@@ -116,7 +125,7 @@ function link(scope, jqElement, attributes) {
             let value = target.value.trim();
 
             if (value.length >= 1) {
-                const tokens = isNil(attributes['disableParser']) ? explode(value, ',') : [value];
+                const tokens = isNil(attributes.disableParser) ? explode(value, ',') : [value];
                 const items = attachItemElements(listElement, tokens);
 
                 scope.tokenList.push(...items);
