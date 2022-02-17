@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, randomHex} from '../../lib/core-toolkit.js';
+import {isObject, isText, randomHex} from '../../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -44,6 +44,8 @@ function findItemIndex(listElement, inputElement) {
  * @return {Object[]} The added token array.
  */
 function attachItemElements(listElement, available, selected = []) {
+    const inputClass = listElement.parentElement.dataset.inputClass;
+
     for (let item of available) {
         let {nodeValue, displayText} = isObject(item) ? item : {nodeValue: item, displayText: item};
 
@@ -51,10 +53,11 @@ function attachItemElements(listElement, available, selected = []) {
         let inputElement = document.createElement('input');
         let labelElement = document.createElement('label');
 
-        itemElement.identifier = randomHex();
+        itemElement.dataset.identifier = randomHex();
 
         inputElement.type = 'checkbox';
         inputElement.value = nodeValue;
+        inputElement.classList.add(isText(inputClass) ? inputClass : 'success');
 
         if (selected.indexOf(nodeValue) >= 0) {
             inputElement.checked = true;
@@ -149,10 +152,17 @@ function link(scope, element) {
     const childElements = {};
     childElements.listElement = parentElement.querySelector('ul.multi-check__list');
 
+    /**
+     * Marks the checkboxes as checked or unchecked.
+     *
+     * @param {string[]} current - The current array of items.
+     * @param {string[]} previous - The previous array of items.
+     * @return {boolean} True if items were checked, false otherwise.
+     */
     const onSelectedListUpdated = (current, previous) => {
         uncheckAllItems(childElements.listElement);
 
-        if (!Array.isArray(previous) || current.length !== previous.length) {
+        if (!Array.isArray(previous) || current.length >= 1) {
             checkSelectedItems(childElements.listElement, current);
             return true;
         }
@@ -160,6 +170,13 @@ function link(scope, element) {
         return false;
     };
 
+    /**
+     * Updates the UL element if a change in the available items array is detected.
+     *
+     * @param {string[]} current - The current array of items.
+     * @param {string[]} previous - The previous array of items.
+     * @return {boolean} True if new LI items were added, false otherwise.
+     */
     const onAvailableListUpdated = (current, previous) => {
         clearItemElements(childElements.listElement);
 
@@ -167,13 +184,17 @@ function link(scope, element) {
             return false;
         }
 
-        if (!Array.isArray(previous) || current.length !== previous.length) {
+        if (!Array.isArray(previous) || current.length >= 1) {
             const items = attachItemElements(childElements.listElement, current, scope.selected);
             return items.length >= 1;
         }
 
         return false;
     };
+
+    if (scope.available.length >= 1) {
+        attachItemElements(childElements.listElement, scope.available, scope.selected);
+    }
 
     childElements.listElement.addEventListener('click', (event) => {
         const {target} = event;
@@ -203,6 +224,20 @@ function link(scope, element) {
     });
 }
 
+/**
+ * Provides constructor for creating multi check directive.
+ *
+ * HTML Element
+ * <multi-check></multi-check>
+ *
+ * Element Properties:
+ * - data-ng-model - The model reference. Should be an array.
+ * - data-disable-parser - If set, tokens will not be split by comma.
+ * - data-placeholder - A placeholder text to be displayed on the text area.
+ *
+ * @constructor
+ * @return {Object} The directive definition.
+ */
 export default function MultiCheckDirective() {
     const template = '<ul class="multi-check__list"></ul>';
 
