@@ -12,30 +12,6 @@ import {isObject, isText, randomHex} from '../../lib/core-toolkit.js';
 const {document} = window;
 
 /**
- * Finds the index of an LI element among its siblings.
- *
- * @param {HTMLUListElement} listElement - The parent UL element.
- * @param {HTMLInputElement} inputElement - The current checkbox input.
- * @return {number} The index.
- */
-function findItemIndex(listElement, inputElement) {
-    const liElement = inputElement.closest('li');
-    const {identifier} = liElement.dataset;
-
-    let index = 0;
-
-    for (let child in listElement.children) {
-        if (child.dataset.identifier === identifier) {
-            break;
-        }
-
-        index++;
-    }
-
-    return index;
-}
-
-/**
  * Creates LI nodes with token values under the specified UL element.
  *
  * @param {HTMLUListElement} listElement - The parent UL element.
@@ -205,9 +181,10 @@ function link(scope, element) {
 
         if (target.checked === true) {
             scope.selected.push(target.value);
+
         } else {
-            const position = findItemIndex(childElements.listElement, target);
-            scope.selected.splice(position, 1);
+            const index = scope.selected.indexOf(target.value);
+            scope.selected.splice(index, 1);
         }
     });
 
