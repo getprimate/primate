@@ -61,10 +61,10 @@ function detachItemElement(listElement, itemElement) {
  * @return {number} - The number of items removed.
  */
 function clearItemElements(listElement) {
-    const length = listElement.children.length;
+    const length = 0;
 
-    for (let li of listElement.children) {
-        li.remove();
+    while (listElement.firstChild) {
+        listElement.removeChild(listElement.lastChild);
     }
 
     return length;
