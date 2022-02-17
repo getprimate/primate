@@ -80,14 +80,14 @@ function clearItemElements(listElement) {
  * @return {boolean} True if linking successful, false otherwise.
  */
 function link(scope, element, attributes) {
-    /** @type HTMLElement */
-    const parentElement = element[0];
-    const childElements = {};
-
     /* Abort linking if the provided ngModel is not an array. */
     if (!Array.isArray(scope.tokenList)) {
         return false;
     }
+    
+    /** @type HTMLElement */
+    const parentElement = element[0];
+    const childElements = {};
 
     childElements.textElement = parentElement.querySelector('textarea.token-input__text');
     childElements.listElement = parentElement.querySelector('ul.token-input__list');
