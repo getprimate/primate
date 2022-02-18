@@ -68,7 +68,7 @@ label.checkbox {
     background-color: var(--input__primary-bg);
     color: var(--theme__primary-fg);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: normal;
 }
 
 select option {
@@ -112,6 +112,11 @@ textarea {
     input[type=password]:focus,
     textarea:focus {
         outline-width: 0;
+    }
+
+    input[type="text"]:read-only,
+    textarea:read-only {
+        background-color: var(--input__focused-bg);
     }
 
 input[type="range"] {
@@ -961,29 +966,29 @@ ul.range-slider > li:last-child {
     background-color: var(--input__primary-bg);
 }
 
-form.form {
+form {
     display: block;
     padding-bottom: 10px;
 }
 
-form.form .form__field { margin-bottom: 20px; padding-bottom: 10px; }
+form .form__field { margin-bottom: 20px; padding-bottom: 10px; }
 
-form.form .form__field:last-child {
+form .form__field:last-child {
     padding-bottom: 20px !important;
     margin-bottom: 0 !important;
 }
 
-form.form > .form__field:last-child {
+form > .form__field:last-child {
     padding-bottom: 0 !important;
     margin-bottom: 10px !important;
 }
 
 form.form.no-margin .form__field { margin-bottom: 0 !important; }
 
-form.form .form__field label.field-label { font-size: 1rem; font-weight: 500; display: block; cursor: pointer; }
-form.form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
+form .form__field label.field-label { font-size: 1rem; font-weight: 500; display: block; cursor: pointer; }
+form .form__field label.field-label span.tooltip.material-icons { font-size: 1rem; vertical-align: middle; }
 
-form.form label.field-label .label-legend {
+form label.field-label .label-legend {
     display: block;
     float: right;
     position: relative;
@@ -991,7 +996,7 @@ form.form label.field-label .label-legend {
     font-weight: normal;
 }
 
-form.form .field-note {
+form .field-note {
     display: block;
     color: var(--theme__default-fg);
     font-weight: normal;
@@ -999,11 +1004,11 @@ form.form .field-note {
     padding: 6px 12px 0 2px;
 }
 
-form.form .form__field .field-input {
+form .form__field .field-input {
     margin: 5px 0 0 0;
 }
 
-form.form .form__field ul.field-input {
+form .form__field ul.field-input {
     display: flex !important;
     flex-direction: row;
     justify-content: flex-start;
@@ -1011,25 +1016,25 @@ form.form .form__field ul.field-input {
     padding: 0;
 }
 
-form.form .form__field ul.field-input.named-group {
+form .form__field ul.field-input.named-group {
     margin-top: 12px;
 }
 
-form.form .form__field ul.field-input > li {
+form .form__field ul.field-input > li {
     display: inline-block;
     padding: 0 15px 0 0;
 }
 
-form.form .form__field ul.field-input > li > label {
+form .form__field ul.field-input > li > label {
     display: inline-block;
 }
 
-form.form .form__field ul.field-input > li > label > input[type="checkbox"],
-form.form .form__field ul.field-input > li > label > input[type="radio"] {
+form .form__field ul.field-input > li > label > input[type="checkbox"],
+form .form__field ul.field-input > li > label > input[type="radio"] {
     vertical-align: text-bottom;
 }
 
-form.form ul.field-input.linked {
+form ul.field-input.linked {
     justify-content: center;
     align-content: space-around;
     align-items: stretch;
@@ -1039,16 +1044,16 @@ form.form ul.field-input.linked {
     border-width: 0;
 }
 
-form.form ul.field-input.linked > li {
+form ul.field-input.linked > li {
     padding: 0;
 }
 
-    form.form ul.field-input.linked > li.stretch {
+    form ul.field-input.linked > li.stretch {
         flex: 1;
     }
 
-form.form ul.field-input.linked > li > input,
-form.form ul.field-input.linked > li > select {
+form ul.field-input.linked > li > input,
+form ul.field-input.linked > li > select {
     display: inline-block;
     width: 100%;
     height: 100%;
@@ -1058,39 +1063,45 @@ form.form ul.field-input.linked > li > select {
     border-radius: 0;
 }
 
-form.form ul.field-input.linked > li:first-child > input,
-form.form ul.field-input.linked > li:first-child > select {
+form ul.field-input.linked > li:first-child > input,
+form ul.field-input.linked > li:first-child > select {
     border-left-width: var(--input__border-size);
     border-radius: var(--theme__input-corner) 0 0 var(--theme__input-corner);
 }
 
-form.form ul.field-input.linked > li:last-child > input,
-form.form ul.field-input.linked > li:last-child > select{
+form ul.field-input.linked > li:last-child > input,
+form ul.field-input.linked > li:last-child > select{
     border-right-width: var(--input__border-size);
     border-radius: 0 var(--theme__input-corner) var(--theme__input-corner) 0;
 }
 
-form.form ul.field-input.linked > li:last-child > button {
+form ul.field-input.linked > li:last-child > button {
     border-radius: 0 var(--theme__input-corner) var(--theme__input-corner) 0;
+    border-left-width: 0;
 }
 
-form.form .input-control {
+form ul.field-input.linked > li > button.default {
+    background-color: var(--input__primary-bg);
+    border-color: var(--input__border-fg);
+}
+
+form .input-control {
     max-height: 150px; max-width: 900px; margin-top: 5px; padding: 5px;
     overflow-y: auto; overflow-x: hidden; border-radius: 4px; border: 2px solid; }
 
-form.form div.input-control label.field-label { margin-bottom: 5px; }
-form.form div.input-control label.field-label:last-child { margin-bottom: 0; }
+form div.input-control label.field-label { margin-bottom: 5px; }
+form div.input-control label.field-label:last-child { margin-bottom: 0; }
 
-form.form .form__field .field-input input[type="range"] + .field-input__legend {
+form .form__field .field-input input[type="range"] + .field-input__legend {
     width: 100%; display: inline-block; text-align: center;
     color: var(--theme__primary-fg);
 }
 
-form.form select[multiple] { padding: 8px; }
-form.form select[multiple] option { margin: 0 0 2px 0; padding: 5px; background: transparent none; border: 0 solid transparent; }
-form.form select[multiple] option:hover { background: rgba(200, 200, 200, 0.3) none; }
+form select[multiple] { padding: 8px; }
+form select[multiple] option { margin: 0 0 2px 0; padding: 5px; background: transparent none; border: 0 solid transparent; }
+form select[multiple] option:hover { background: rgba(200, 200, 200, 0.3) none; }
 
-form.form article {
+form article {
     display: block;
     padding: 12px;
     border: 2px dashed var(--input__border-fg);
@@ -1099,22 +1110,22 @@ form.form article {
     line-height: 1.19rem;
 }
 
-form.form multi-check ul li > span { display: inline-block; width: 40px; }
-form.form multi-check ul li > label { display: inline-block; }
+form multi-check ul li > span { display: inline-block; width: 40px; }
+form multi-check ul li > label { display: inline-block; }
 
-form.form .input-group-button input { vertical-align: top; display: inline-block; width: 80%; margin-right: 0;
+form .input-group-button input { vertical-align: top; display: inline-block; width: 80%; margin-right: 0;
     border-right-width: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; line-height: 5px; }
 
-form.form .input-group-button button.btn { vertical-align: top; width: 19.5%; padding-top: 10px; margin:0; height: 35px;
+form .input-group-button button.btn { vertical-align: top; width: 19.5%; padding-top: 10px; margin:0; height: 35px;
     border-top-left-radius: 0; border-bottom-left-radius: 0; }
 
-form.form .checkbox-list label.checkbox { display: block; margin-bottom: 5px; }
-form.form .checkbox-list label.checkbox:last-child { margin-bottom: 0 !important; }
+form .checkbox-list label.checkbox { display: block; margin-bottom: 5px; }
+form .checkbox-list label.checkbox:last-child { margin-bottom: 0 !important; }
 
-form.form label.field-label { color: var(--theme__primary-fg); }
+form label.field-label { color: var(--theme__primary-fg); }
 
 label.checkbox,
-form.form label.checkbox {
+form label.checkbox {
     display: inline-block;
     padding: 7px;
     cursor: pointer;
@@ -1123,9 +1134,9 @@ form.form label.checkbox {
     vertical-align: middle;
 }
 
-form.form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--theme__primary-fg); }
+form h6 { font-size: 1rem; font-weight: 500; display: block; color: var(--theme__primary-fg); }
 
-form.form p.metadata { margin: 0; padding-top: 13px; }
+form p.metadata { margin: 0; padding-top: 13px; }
 
 /**
  * Panel widget styles.
@@ -1212,6 +1223,12 @@ form.form p.metadata { margin: 0; padding-top: 13px; }
 .panel.panel-border.info { border-image: linear-gradient(to right, transparent 5%, var(--std__info) 50%, transparent 95%) 30 stretch; }
 .panel.panel-border.info .panel__heading { color: var(--std__info); }
 
+.panel.panel-border.warning { border-image: linear-gradient(to right, transparent 5%, var(--std__warning) 50%, transparent 95%) 30 stretch; }
+.panel.panel-border.warning .panel__heading { color: var(--std__warning); }
+
+.panel.panel-border.critical { border-image: linear-gradient(to right, transparent 5%, var(--std__critical) 50%, transparent 95%) 30 stretch; }
+.panel.panel-border.critical .panel__heading { color: var(--std__critical); }
+
 /**
  * Well widget styles.
  *
@@ -1271,20 +1288,22 @@ form.form p.metadata { margin: 0; padding-top: 13px; }
 
 
 
-.well > form.form {
+.well > form {
     padding-left: 20px;
     padding-right: 20px;
 }
 
-.row .col:first-child > form.form {
+.well__heading + form { padding-top: 20px; }
+
+.row .col:first-child > form {
     padding-left: 20px;
 }
 
-.row .col:last-child > form.form {
+.row .col:last-child > form {
     padding-right: 20px;
 }
 
-.well .row .col > form.form {
+.well .row .col > form {
     padding-top: 20px;
 }
 
@@ -1354,7 +1373,7 @@ form.form p.metadata { margin: 0; padding-top: 13px; }
     margin-bottom: 20px;
 }
 
-form.form .row { margin-bottom: 0 !important; }
+form .row { margin-bottom: 0 !important; }
 
 .row::before { display: table; content: " "; }
 .row::after { display: table; content: " "; clear: both; }
@@ -1565,6 +1584,10 @@ table.card-table.clickable tbody tr:hover {
     background-color: var(--input__primary-bg);
 }
 
+table.card-table.clickable tbody tr.active {
+    background-color: var(--input__border-fg);
+}
+
 table.card-table input[type="radio"],
 table.card-table input[type="checkbox"] {
     background-color: var(--theme__primary-bg);
@@ -1689,7 +1712,7 @@ article.scale.critical .scale-fill { background-color: var(--std__critical); }
     color: #ffffff;
 }
 
-section.notebook__page .row.only-grid > .col:last-child form.form {
+section.notebook__page .row.only-grid > .col:last-child form {
     padding-right: min(1.041vw, 20px);
 }
 

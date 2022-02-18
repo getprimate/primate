@@ -1,4 +1,4 @@
-<html data-ng-app="KongDash" lang="en">
+<html lang="en">
 <head><meta charset="UTF-8" />
 <meta name=viewport content="width=device-width, initial-scale=1"/>
 <title>KongDash</title>
@@ -16,7 +16,7 @@
         <div class="navigation__title">Node</div><!-- .navigation__title -->
         <ul class="navigation__menu">
             <li><a class="navigation__link active" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/node-status"><span class="material-icons">cloud_done</span><span>Configuration</span></a></li>
+            <li><a class="navigation__link" data-ng-href="#!/node-config"><span class="material-icons">cloud_done</span><span>Configuration</span></a></li>
         </ul><!-- .navigation__menu -->
         <div class="navigation__title">Objects</div><!-- .navigation__title -->
         <ul class="navigation__menu">
@@ -34,7 +34,7 @@
 
     <section class="drawer__base">
         <ul class="base-menu">
-            <li data-ng-style="{'color': frameState.sessionTheme}"><span class="material-icons">noise_aware</span> Local Server</li>
+            <li data-ng-style="{'color': frameConfig.sessionColor}"><span class="material-icons">noise_aware</span> {{frameConfig.sessionName}}</li>
             <li><button class="text" title="Logout Session" data-ng-click="emitDestroySessionEvent()"><span class="material-icons">logout</span></button></li>
         </ul>
     </section>
@@ -81,11 +81,5 @@
 <script type="text/javascript" src="static/angular-route.min.js"></script>
 
 <script type="module" src="dashboard.js"></script>
-
-<script type="text/javascript">
-(function (angular) {
-    window.document.querySelector('div.app-layout').classList.remove('hidden');
-})(window);
-</script>
 </body>
 </html>

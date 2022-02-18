@@ -44,7 +44,7 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
                     id: route.id,
                     displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
                     protocols: implode(route.protocols),
-                    createdAt: toDateText(route.created_at, viewFrame.getFrameConfig('dateFormat')),
+                    createdAt: toDateText(route.created_at, viewFrame.getConfig('dateFormat')),
                     pathHandling: route.path_handling
                 });
             }

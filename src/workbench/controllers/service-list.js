@@ -82,7 +82,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
 
             for (let service of response.data) {
                 service.displayText = isText(service.name) ? service.name : `${service.host}:${service.port}`;
-                service.created_at = toDateText(service.created_at, viewFrame.getFrameConfig('dateFormat'));
+                service.created_at = toDateText(service.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.serviceList.push(service);
             }

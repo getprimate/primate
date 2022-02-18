@@ -132,7 +132,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
             const displayText = _.isText(response.username) ? response.username : simplifyObjectId(response.id);
 
             if (_.isNone(scope.consumerId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.consumerId = response.id;
                 scope.metadata.createdAt = `Created on ${createdAt}`;
@@ -372,7 +372,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
         request.then(({data: response}) => {
             const fieldList = Object.keys(response);
-            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
             for (let field of fieldList) {
                 if (_.isNil(scope.consumerModel[field]) || _.isNil(response[field])) {

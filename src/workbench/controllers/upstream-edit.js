@@ -277,7 +277,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
             const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
 
             if (_.isNone(scope.upstreamId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.upstreamId = response.id;
                 scope.metadata.createdAt = `Created on ${createdAt}`;
@@ -487,7 +487,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.get(restConfig.endpoint);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
             refreshUpstreamModel(scope.upstreamModel, response);
 

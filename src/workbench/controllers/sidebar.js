@@ -12,7 +12,7 @@ const {/** @type {IPCHandler} */ ipcHandler} = window;
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function SidebarController(scope, restClient, viewFrame, toast) {
-    scope.frameState = viewFrame.getState();
+    scope.frameConfig = viewFrame.getFrameConfig();
     scope.navMenuObjects = [];
 
     scope.fetchAvailableEndpoints = function () {

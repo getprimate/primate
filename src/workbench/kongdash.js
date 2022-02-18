@@ -63,19 +63,6 @@ KongDash.filter('capitalise', () => {
 });
 
 /**
- * Strips protocol (http:// or https://) from URL.
- */
-KongDash.filter('stripProtocol', () => {
-    return function (input) {
-        if (!input) return '';
-
-        if (input.indexOf('s://') > 1) return input.split('https://')[1];
-
-        return input.split('http://')[1] || '';
-    };
-});
-
-/**
  * Joins a string array with commas.
  */
 KongDash.filter('splice', () => {

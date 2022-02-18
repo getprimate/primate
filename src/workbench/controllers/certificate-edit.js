@@ -186,7 +186,7 @@ export default function CertificateEditController(scope, location, routeParams, 
 
         request.then(({data: response}) => {
             if (_.isNone(scope.certId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.certId = response.id;
                 scope.metadata.createdAt = `Created on ${createdAt}`;
@@ -309,7 +309,7 @@ export default function CertificateEditController(scope, location, routeParams, 
         viewFrame.setLoaderSteps(4);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
             scope.metadata.createdAt = `Created on ${createdAt}`;
 
             refreshCertModel(scope.certModel, response);

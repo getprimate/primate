@@ -42,7 +42,7 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
                     id: upstream.id,
                     name: upstream.name,
                     algorithm: upstream.algorithm.toUpperCase(),
-                    createdAt: epochToDate(upstream.created_at, viewFrame.getFrameConfig('dateFormat'))
+                    createdAt: epochToDate(upstream.created_at, viewFrame.getConfig('dateFormat'))
                 });
             }
         });

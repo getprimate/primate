@@ -23,8 +23,9 @@ const {/** @type {IPCHandler} */ ipcHandler} = window;
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function SettingsController(scope, restClient, viewFrame, toast) {
-    scope.setupModel = _.deepClone(setupModel);
+    scope.connectionModel = _.deepClone(setupModel);
     scope.connectionList = {};
+
     scope.themeDefs = {};
     scope.workbenchConfig = {};
 
@@ -63,15 +64,23 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         const tableRow = target.nodeName === 'TR' ? target : target.closest('tr');
         const {connectionId} = tableRow.dataset;
 
+        const tbody = tableRow.closest('tbody');
+
+        for (let tr of tbody.children) {
+            tr.classList.remove('active');
+        }
+
+        tableRow.classList.add('active');
+
         if (_.isText(connectionId) && connectionId.length >= 5) {
-            scope.setupModel.id = connectionId;
-            scope.setupModel.protocol = scope.connectionList[connectionId]['protocol'];
-            scope.setupModel.name = scope.connectionList[connectionId]['name'];
-            scope.setupModel.adminHost = scope.connectionList[connectionId]['adminHost'];
-            scope.setupModel.adminPort = scope.connectionList[connectionId]['adminPort'];
-            scope.setupModel.colorCode = scope.connectionList[connectionId]['colorCode'];
-            scope.setupModel.basicAuth.username = scope.connectionList[connectionId]['basicAuth']['username'];
-            scope.setupModel.basicAuth.password = scope.connectionList[connectionId]['basicAuth']['password'];
+            scope.connectionModel.id = connectionId;
+            scope.connectionModel.protocol = scope.connectionList[connectionId]['protocol'];
+            scope.connectionModel.name = scope.connectionList[connectionId]['name'];
+            scope.connectionModel.adminHost = scope.connectionList[connectionId]['adminHost'];
+            scope.connectionModel.adminPort = scope.connectionList[connectionId]['adminPort'];
+            scope.connectionModel.colorCode = scope.connectionList[connectionId]['colorCode'];
+            scope.connectionModel.basicAuth.username = scope.connectionList[connectionId]['basicAuth']['username'];
+            scope.connectionModel.basicAuth.password = scope.connectionList[connectionId]['basicAuth']['password'];
         } else {
             scope.setupModel = _.deepClone(setupModel);
         }
@@ -86,22 +95,22 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.updateConnection = function (event) {
         event.preventDefault();
 
-        for (let property in scope.setupModel) {
-            if (_.isText(scope.setupModel[property])) {
-                scope.setupModel[property] = scope.setupModel[property].trim();
+        for (let property in scope.connectionModel) {
+            if (_.isText(scope.connectionModel[property])) {
+                scope.connectionModel[property] = scope.connectionModel[property].trim();
             }
         }
 
-        if (scope.setupModel.adminHost.length === 0) {
+        if (scope.connectionModel.adminHost.length === 0) {
             toast.error('Please provide a valid host address.');
             return false;
         }
-        if (scope.setupModel.name.length === 0) {
+        if (scope.connectionModel.name.length === 0) {
             toast.error('Please set a name for this connection.');
             return false;
         }
 
-        ipcHandler.sendRequest('Write-Connection', scope.setupModel);
+        ipcHandler.sendRequest('Write-Connection', scope.connectionModel);
 
         return true;
     };
@@ -128,7 +137,10 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.$on('$destroy', () => {
         ipcHandler.removeCallbacks('onRequestDone', 'Write-Connection');
 
-        delete scope.setupModel;
+        scope.connectionModel = null;
+        scope.connectionList = null;
+
+        delete scope.connectionModel;
         delete scope.connectionList;
 
         delete scope.populateConnection;

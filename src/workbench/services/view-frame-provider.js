@@ -16,11 +16,8 @@
  * @typedef {Object} ViewFrameFactory
  * @property {(function(redirect: string, displayText: string):void)} addBreadcrumb - Adds an entry to the route history.
  * @property {(function(void):void)} clearBreadcrumbs - Clears the route history stack.
- * @property {(function(void): string[])} getBreadcrumbs - Returns the route history stack.
  * @property {(function(void): Object)} popBreadcrumb - Pops the last breadcrumb.
  * @property {(function(shouldPop: boolean=): string)} previousRoute - Pops the next route from history stack.
- * @property {(function(void): boolean)} hasBreadcrumbs - Tells if the breadcrumbs are present.
- * @property {(function(string): void)} setSessionTheme - Sets the session theme color.
  * @property {(function(string): void)} setTitle - Sets the current view title.
  * @property {(function(displayText:string, redirect:string=, styles:string=,
  *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
@@ -30,7 +27,8 @@
  * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
  * @property {function(void):ViewFrameFactory} incrementLoader - Increments loader width by adding loader step.
- * @property {(function(name: string): string)} getFrameConfig - Finds the configuration value by name.
+ * @property {(function(name: string): string)} getConfig - Finds the configuration value by name.
+ * @property {(function(void): Object)} getFrameConfig - Returns the view frame state.
  */
 
 /**
@@ -40,7 +38,7 @@
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
  */
 
-import * as _ from '../../lib/core-toolkit.js';
+import {isText, isDefined, isEmpty} from '../../lib/core-toolkit.js';
 
 const frameCache = {
     isLoading: false
@@ -52,7 +50,6 @@ const frameCache = {
  * @type {Object}
  */
 const frameState = {
-    sessionTheme: '#FFFFFF',
     frameTitle: '',
     routeNext: '',
     breadcrumbs: [],
@@ -64,7 +61,11 @@ const frameState = {
 };
 
 const frameConfig = {
-    dateFormat: 'date'
+    dateFormat: 'date',
+    sessionId: '__none__',
+    sessionColor: '#FFFFFF',
+    sessionName: 'Unnamed Server',
+    sessionURL: 'localhost:8000'
 };
 
 function loaderTimeoutCallback(state) {
@@ -83,14 +84,6 @@ function loaderTimeoutCallback(state) {
 function buildViewFrameFactory(timeoutFn) {
     return {
         _setTimeout: timeoutFn,
-
-        setSessionTheme(color) {
-            frameState.sessionTheme = color;
-        },
-
-        getSessionTheme() {
-            return frameState.sessionTheme;
-        },
 
         setTitle(title) {
             frameState.frameTitle = title;
@@ -115,7 +108,7 @@ function buildViewFrameFactory(timeoutFn) {
         },
 
         addBreadcrumb(redirect, displayText = null) {
-            if (_.isEmpty(displayText)) {
+            if (isEmpty(displayText)) {
                 displayText = redirect;
             }
 
@@ -126,14 +119,6 @@ function buildViewFrameFactory(timeoutFn) {
         clearBreadcrumbs() {
             frameState.breadcrumbs.splice(0);
             frameState.routeNext = '';
-        },
-
-        getBreadcrumbs() {
-            return frameState.breadcrumbs;
-        },
-
-        hasBreadcrumbs() {
-            return frameState.breadcrumbs.length >= 1;
         },
 
         popBreadcrumb() {
@@ -187,20 +172,32 @@ function buildViewFrameFactory(timeoutFn) {
             return frameState;
         },
 
-        getFrameConfig(name) {
-            return _.isText(frameConfig[name]) ? frameConfig[name] : null;
+        getFrameConfig() {
+            return frameConfig;
+        },
+
+        getConfig(name) {
+            return isText(frameConfig[name]) ? frameConfig[name] : null;
         }
     };
 }
 
 export default function ViewFrameProvider() {
-    this.initialize = (options) => {
-        for (let name in options) {
-            if (!_.isDefined(frameState[name])) {
-                continue;
-            }
+    this.initialize = ({config = {}, state = {}}) => {
+        let keyNames = Object.keys(config);
 
-            frameState[name] = options[name];
+        for (let name of keyNames) {
+            if (isDefined(frameConfig[name])) {
+                frameConfig[name] = config[name];
+            }
+        }
+
+        keyNames = Object.keys(state);
+
+        for (let name of keyNames) {
+            if (isDefined(frameState[name])) {
+                frameConfig[name] = state[name];
+            }
         }
     };
 

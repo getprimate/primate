@@ -19,7 +19,7 @@ import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
 import SidebarController from './controllers/sidebar.js';
 import OverviewController from './controllers/overview.js';
-import NodeStatusController from './controllers/node-status.js';
+import NodeConfigController from './controllers/node-config.js';
 import TagSearchController from './controllers/tag-search.js';
 import ServiceListController from './controllers/service-list.js';
 import ServiceEditController from './controllers/service-edit.js';
@@ -58,7 +58,14 @@ function initFactories(restProvider, vfProvider) {
             host: `${defaultHost.protocol}://${defaultHost.adminHost}:${defaultHost.adminPort}`
         });
 
-        vfProvider.initialize({sessionTheme: defaultHost.colorCode});
+        vfProvider.initialize({
+            config: {
+                sessionId: defaultHost.id,
+                sessionUrl: `${defaultHost.protocol}://${defaultHost.host}:${defaultHost.port}`,
+                sessionName: defaultHost.name,
+                sessionColor: defaultHost.colorCode
+            }
+        });
     }
 }
 
@@ -71,6 +78,8 @@ function initFactories(restProvider, vfProvider) {
  * @param {LoggerFactory} logger - Factory for logging activities.
  */
 function attachEventListeners(window, rootScope, viewFrame, logger) {
+    window.document.body.querySelector('div.app-layout').classList.remove('hidden');
+
     const main = window.document.getElementById('mainWrapper');
 
     rootScope.$on('$locationChangeStart', () => {
@@ -100,6 +109,10 @@ ipcHandler.onEventPush('Open-Settings-View', () => {
     window.location.href = '#!/settings';
 });
 
+ipcHandler.onEventPush('Update-Theme', (payload) => {
+    themeEngine.applyTheme(payload);
+});
+
 ipcHandler.onRequestDone('Update-Theme', (payload) => {
     themeEngine.applyTheme(payload);
 });
@@ -117,7 +130,7 @@ KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast'
 
 /* Register node details controllers. */
 KongDash.controller('OverviewController', ['$scope', 'restClient', 'viewFrame', 'toast', OverviewController]);
-KongDash.controller('NodeStatusController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeStatusController]);
+KongDash.controller('NodeConfigController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeConfigController]);
 
 /* Register object handler controllers. */
 KongDash.controller('TagSearchController', ['$scope', 'restClient', 'viewFrame', 'toast', TagSearchController]);
@@ -218,3 +231,7 @@ KongDash.controller('SettingsController', ['$scope', 'restClient', 'viewFrame', 
 KongDash.config(['$routeProvider', Templates]);
 
 KongDash.run(['$window', '$rootScope', 'viewFrame', 'logger', attachEventListeners]);
+
+/* TODO : Provide this as an exported function in kongdash module. */
+
+window.angular.bootstrap(document, ['KongDash']);

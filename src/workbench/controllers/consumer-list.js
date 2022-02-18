@@ -45,7 +45,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
                     consumer.custom_id = '- Not Provided -';
                 }
 
-                consumer.createdAt = epochToDate(consumer.created_at, viewFrame.getFrameConfig('dateFormat'));
+                consumer.createdAt = epochToDate(consumer.created_at, viewFrame.getConfig('dateFormat'));
                 scope.consumerList.push(consumer);
             }
         });

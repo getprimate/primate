@@ -17,9 +17,9 @@ export default function Templates(routeProvider) {
         throw new TypeError('Parameter is not a valid Route Provider object.');
     }
 
-    routeProvider.when('/node-status', {
-        controller: 'NodeStatusController',
-        templateUrl: 'static/views/node-status.html'
+    routeProvider.when('/node-config', {
+        controller: 'NodeConfigController',
+        templateUrl: 'static/views/node-config.html'
     });
 
     routeProvider.when('/tag-search', {

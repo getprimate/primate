@@ -31,13 +31,11 @@
                 </div><!-- .well__scroll-area -->
             </div><!-- .col.md-6 -->
             <div class="col md-6">
-                <form data-ng-if="setupModel.id.length>=5" method="POST" class="form" data-ng-submit="updateConnection($event)">
-                    <div class="vpadding-20">Editing {{setupModel.name}}</div>
-
+                <form data-ng-if="connectionModel.id.length>=12" method="POST" class="form" data-ng-submit="updateConnection($event)">
                     <div class="form__field">
-                        <label class="field-label">Host URL</label>
+                        <label class="field-label">{{connectionModel.name}}</label>
                         <div class="field-input">
-                            <article>{{setupModel.protocol}}://{{setupModel.adminHost}}:{{setupModel.adminPort}}/</article>
+                            <article>{{connectionModel.protocol}}://{{connectionModel.adminHost}}:{{connectionModel.adminPort}}/</article>
                         </div>
                     </div><!-- .form__field -->
 
@@ -45,19 +43,19 @@
                         <div class="col md-12">
                             <div class="form__field">
                                 <label class="field-label">Connection Name</label>
-                                <div class="field-input"><input data-ng-model="setupModel.name" type="text" placeholder="Example: Staging server" name="connectionName" /></div>
+                                <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" /></div>
                             </div>
                         </div><!-- .col.md-12 -->
                     </div><!-- .row -->
 
                     <div class="form__field">
                         <label class="field-label">Username</label>
-                        <div class="field-input"><input data-ng-model="setupModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
+                        <div class="field-input"><input data-ng-model="connectionModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
                     </div><!-- .form__field -->
 
                     <div class="form__field">
                         <label class="field-label">Password</label>
-                        <div class="field-input"><input data-ng-model="setupModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
+                        <div class="field-input"><input data-ng-model="connectionModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
                     </div><!-- .form__field -->
 
                     <div class="row">
@@ -65,8 +63,8 @@
                             <div class="form__field">
                                 <label class="field-label">Color</label>
                                 <ul class="field-input linked">
-                                    <li style="width: 41px"><input data-ng-model="setupModel.colorCode" type="color" name="colorCode" /></li>
-                                    <li><input type="text" data-ng-model="setupModel.colorCode" readonly /></li>
+                                    <li style="width: 41px"><input data-ng-model="connectionModel.colorCode" type="color" name="colorCode" /></li>
+                                    <li><input type="text" data-ng-model="connectionModel.colorCode" readonly /></li>
                                 </ul>
                             </div>
                         </div><!-- .col.md-6 -->
@@ -82,6 +80,13 @@
                         </div><!-- .col.md-6 -->
                     </div><!-- .row -->
                 </form><!-- .form -->
+
+                <div class="align-center" data-ng-if="connectionModel.id.length<=11">
+                    <form style="margin-top: 100px; margin-bottom: 100px"><article>
+                    <p><span class="material-icons hero">cable</span> </p>
+                    <p><strong>Click on a connection to edit...</strong></p>
+                    </article></form>
+                </div>
             </div><!-- .col.md-6 -->
         </div>
     </div>

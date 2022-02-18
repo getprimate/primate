@@ -73,7 +73,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
 
         request.then(({data: response}) => {
             if (isNone(scope.caId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.caId = response.id;
                 scope.metadata.createdAt = `Created on ${createdAt}`;
@@ -139,7 +139,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getFrameConfig('dateFormat'));
+            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
             scope.metadata.createdAt = `Created on ${createdAt}`;
 
             refreshCAModel(scope.caModel, response);
