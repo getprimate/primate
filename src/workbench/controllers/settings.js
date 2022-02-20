@@ -10,6 +10,7 @@
 import * as _ from '../../lib/core-toolkit.js';
 import setupModel from '../models/setup-model.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
+import {deepClone, isDefined} from '../../lib/core-toolkit.js';
 
 const {/** @type {IPCHandler} */ ipcHandler} = window;
 
@@ -25,18 +26,28 @@ const {/** @type {IPCHandler} */ ipcHandler} = window;
 export default function SettingsController(scope, restClient, viewFrame, toast) {
     scope.connectionModel = _.deepClone(setupModel);
     scope.connectionList = {};
+    scope.connectionId = viewFrame.getConfig('sessionId');
 
     scope.themeDefs = {};
     scope.workbenchConfig = {};
 
     ipcHandler.onRequestDone('Write-Connection', (payload) => {
-        if (_.isObject(payload) && _.isText(payload.id)) {
-            scope.$apply((_this) => {
-                _this.connectionList[payload.id] = payload;
-            });
-
-            toast.success('Connection settings saved.');
+        if (!_.isObject(payload) || !_.isText(payload.id)) {
+            toast.error('Unable to save connection.');
+            return false;
         }
+
+        if (payload.isRemoved === true) {
+            toast.success('Connection removed successfully.');
+            return true;
+        }
+
+        scope.$apply((_this) => {
+            _this.connectionList[payload.id] = payload;
+        });
+
+        toast.success('Connection updated successfully.');
+        return true;
     });
 
     scope.queryConnectionList = function () {
@@ -44,6 +55,15 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         if (typeof connectionList.error === 'string') {
             return false;
+        }
+
+        const connectionIds = Object.keys(connectionList);
+
+        for (let id of connectionIds) {
+            if (id === scope.connectionId) {
+                scope.connectionModel = deepClone(connectionList[id]);
+                break;
+            }
         }
 
         scope.connectionList = connectionList;
@@ -56,34 +76,40 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         scope.workbenchConfig.nonce = '';
     };
 
-    scope.populateConnection = function (event) {
+    scope.handleConnectionClick = function (event) {
         const {target} = event;
 
         if (target.nodeName === 'TBODY') return false;
 
-        const tableRow = target.nodeName === 'TR' ? target : target.closest('tr');
-        const {connectionId} = tableRow.dataset;
+        let tableRow = target.nodeName === 'TR' ? target : target.closest('tr');
+        let {connectionId} = tableRow.dataset;
 
-        const tbody = tableRow.closest('tbody');
+        const tbody = tableRow.parentElement;
+
+        if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
+            ipcHandler.sendRequest('Write-Connection', {id: connectionId, isRemoved: true});
+
+            delete scope.connectionList[connectionId];
+            tbody.removeChild(tableRow);
+
+            connectionId = scope.connectionId;
+        }
 
         for (let tr of tbody.children) {
+            if (tr.dataset.connectionId === connectionId) {
+                tr.classList.add('active');
+                continue;
+            }
+
             tr.classList.remove('active');
         }
 
-        tableRow.classList.add('active');
-
         if (_.isText(connectionId) && connectionId.length >= 5) {
+            scope.connectionModel = deepClone(scope.connectionList[connectionId]);
             scope.connectionModel.id = connectionId;
-            scope.connectionModel.protocol = scope.connectionList[connectionId]['protocol'];
-            scope.connectionModel.name = scope.connectionList[connectionId]['name'];
-            scope.connectionModel.adminHost = scope.connectionList[connectionId]['adminHost'];
-            scope.connectionModel.adminPort = scope.connectionList[connectionId]['adminPort'];
-            scope.connectionModel.colorCode = scope.connectionList[connectionId]['colorCode'];
-            scope.connectionModel.basicAuth.username = scope.connectionList[connectionId]['basicAuth']['username'];
-            scope.connectionModel.basicAuth.password = scope.connectionList[connectionId]['basicAuth']['password'];
-        } else {
-            scope.setupModel = _.deepClone(setupModel);
         }
+
+        return true;
     };
 
     /**
@@ -108,6 +134,10 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         if (scope.connectionModel.name.length === 0) {
             toast.error('Please set a name for this connection.');
             return false;
+        }
+
+        if (isDefined(scope.connectionModel.isDefault)) {
+            delete scope.connectionModel.isDefault;
         }
 
         ipcHandler.sendRequest('Write-Connection', scope.connectionModel);
@@ -143,7 +173,6 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         delete scope.connectionModel;
         delete scope.connectionList;
 
-        delete scope.populateConnection;
         delete scope.updateConnection;
     });
 }

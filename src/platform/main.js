@@ -11,144 +11,34 @@ const ABS_PATH = path.dirname(__dirname);
 const ConfigManager = require('./config/config-manager');
 const ThemeScanner = require('./theme/theme-scanner');
 
+const {RendererWindow} = require('./renderer/window');
+const {ipcServer} = require('./ipc/ipc-server');
+
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
 const themeScanner = new ThemeScanner([path.join(path.dirname(ABS_PATH), 'resources', 'themes')]);
 
-let {app, ipcMain, BrowserWindow, Menu} = electron;
-let mainWindow;
-let themeDefs = {};
+const rendererWindow = new RendererWindow({title: APP_NAME});
+rendererWindow.enableDebugging();
 
+const {app, ipcMain} = electron;
 const connectionMap = {};
 
-function sanitize(payload) {
-    if (payload === null || typeof payload === 'undefined') {
-        return {error: 'Requested entity is not available.', code: 'E404'};
-    }
+let themeDefs = {};
 
-    return payload;
-}
-
-themeScanner.scanThemes().then((defs)=> {
-   themeDefs = defs;
+themeScanner.scanThemes().then((defs) => {
+    themeDefs = defs;
 });
-
-function startMainWindow() {
-    mainWindow = new BrowserWindow({
-        backgroundColor: '#1A242D',
-        width: 1570,
-        height: 800,
-        center: true,
-        title: app.getName(),
-        minWidth: 1280,
-        minHeight: 800,
-        icon: path.dirname(ABS_PATH) + '/kongdash-256x256.png',
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js')
-        }
-    });
-    mainWindow
-        .loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html'))
-        .then(() => {
-            //* Debugging
-            mainWindow.webContents.openDevTools();
-            //*/
-        })
-        .catch((err) => {
-            console.error('Main error ' + err);
-        });
-
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
-}
 
 app.setName(APP_NAME);
 
-app.on('ready', () => {
-    startMainWindow();
+app.on('ready', async () => {
+    rendererWindow.create();
+
+    await rendererWindow.showBootstrap();
 });
 
 app.on('activate', () => {
-    if (mainWindow === null) startMainWindow();
-});
-
-app.on('browser-window-created', (e, window) => {
-    let menuTemplate = [
-        {
-            label: 'File',
-            submenu: [
-                {
-                    label: 'Settings',
-                    click: () => {
-                        mainWindow.webContents.send('workbench:AsyncEventPush', 'Open-Settings-View');
-                    }
-                },
-                {type: 'separator'},
-                {role: 'quit'}
-            ]
-        },
-        {
-            label: 'Edit',
-            submenu: [
-                {role: 'undo'},
-                {role: 'redo'},
-                {type: 'separator'},
-                {role: 'cut'},
-                {role: 'copy'},
-                {role: 'paste'}
-            ]
-        },
-        {
-            label: 'Window',
-            submenu: [{role: 'togglefullscreen'}]
-        },
-        {
-            label: 'Help',
-            submenu: [
-                {
-                    label: 'GitHub Repository',
-                    click: () => {
-                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash').catch((err) => {
-                            console.error(`Help menu error ${err}`);
-                        });
-                    }
-                },
-                {
-                    label: 'Report Issues',
-                    click: () => {
-                        electron.shell.openExternal('https://github.com/ajaysreedhar/KongDash/issues').catch((err) => {
-                            console.error(`Help menu error ${err}`);
-                        });
-                    }
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'About KongDash',
-                    click: () => {
-                        electron.shell.openExternal('https://ajaysreedhar.github.io/KongDash/').catch((err) => {
-                            console.error(`Help menu error ${err}`);
-                        });
-                    }
-                }
-            ]
-        }
-    ];
-
-    let menu = Menu.buildFromTemplate(menuTemplate);
-
-    if (process.platform === 'darwin' || process.platform === 'mas') {
-        Menu.setApplicationMenu(menu);
-    } else {
-        window.setMenu(menu);
-    }
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+    rendererWindow.create();
 });
 
 app.on('will-quit', () => {
@@ -156,65 +46,54 @@ app.on('will-quit', () => {
     ipcMain.removeAllListeners();
 });
 
-ipcMain.on('workbench:AsyncRequest', (event, action, payload) => {
-    if (action === 'Write-Connection') {
-        try {
-            const connection = configManager.writeConnection(payload);
-            connectionMap[`window${event.sender.id}`] = connection.id;
-            event.reply('workbench:AsyncResponse', 'Write-Connection', connection);
-        } catch (error) {
-            event.reply('workbench:AsyncError', 'Write-Connection', {message: `${error}`});
-        }
-    } else if (action === 'Destroy-Session') {
-        if (typeof connectionMap[`window${event.sender.id}`] !== 'undefined') {
-            delete connectionMap[`window${event.sender.id}`];
-            configManager.removeDefaultConnection();
-        }
+ipcServer.registerRequestHandler('Write-Connection', (event, payload) => {
+    try {
+        const connection = configManager.writeConnection(payload);
+        connectionMap[`window${event.senderId}`] = connection.id;
 
-        mainWindow.loadFile(path.join(ABS_PATH, 'workbench', 'bootstrap.html')).catch((error) => {
-            console.error(`${error}`);
-        });
-    } else if (action === 'Update-Theme') {
-        const resolver = themeScanner.readStyle(payload.nonce);
-
-        resolver.then((styles) => {
-            event.reply('workbench:AsyncResponse', action, styles);
-        });
-
-        resolver.catch((error) => {
-            console.error(error);
-            event.reply('workbench:AsyncError', action, {message: `${error}`});
-        });
-
-    } else {
-        event.reply('workbench:AsyncError', {message: `Unknown action ${action}`});
+        return connection;
+    } catch (error) {
+        return {message: `${error}`};
     }
 });
 
-ipcMain.on('workbench:SyncQuery', (event, type) => {
-    switch (type) {
-        case 'Read-All-Connections':
-            event.returnValue = sanitize(configManager.getAllConnections());
-            break;
+ipcServer.registerRequestHandler('Destroy-Session', async (event) => {
+    if (typeof connectionMap[`window${event.senderId}`] !== 'undefined') {
+        delete connectionMap[`window${event.senderId}`];
+        configManager.removeDefaultConnection();
+    }
 
-        case 'Read-Default-Connection':
-            event.returnValue = sanitize(configManager.getDefaultConnection());
-            break;
-
-        case 'Read-Session-Connection':
-            event.returnValue = sanitize(configManager.getConnectionById(connectionMap[`window${event.sender.id}`]));
-            break;
-
-        case 'Read-Theme-Defs':
-            event.returnValue = themeDefs;
-            break;
-
-        default:
-            event.returnValue = {error: `Unknown query type ${type}.`, code: 'E400'};
-            break;
+    try {
+        await rendererWindow.showBootstrap();
+    } catch (error) {
+        return {message: `${error}`};
     }
 });
 
-ipcMain.on('open-external', (event, arg) => {
-    electron.shell.openExternal(arg);
+ipcServer.registerRequestHandler('Update-Theme', async (event, payload) => {
+    try {
+        return await themeScanner.readStyle(payload.nonce);
+    } catch (error) {
+        return {message: `${error}`};
+    }
+});
+
+ipcServer.registerQueryHandler('Read-All-Connections', () => {
+    return configManager.getAllConnections();
+});
+
+ipcServer.registerQueryHandler('Read-Default-Connection', () => {
+    return configManager.getDefaultConnection();
+});
+
+ipcServer.registerQueryHandler('Read-Session-Connection', (event) => {
+    return configManager.getConnectionById(connectionMap[`window${event.sender.id}`]);
+});
+
+ipcServer.registerQueryHandler('Read-Workbench-Config', () => {
+    return configManager.getWorkbenchConfig();
+});
+
+ipcServer.registerQueryHandler('Read-Theme-Defs', () => {
+    return themeDefs;
 });

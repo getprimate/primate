@@ -9,6 +9,7 @@
 
 import * as _ from '../../lib/core-toolkit.js';
 import setupModel from '../models/setup-model.js';
+import {isNone} from '../../lib/core-toolkit.js';
 
 const {/** @type {IPCHandler} */ ipcHandler} = window;
 
@@ -42,6 +43,8 @@ function ipcWriteClientSetup(payload) {
  */
 export default function ClientSetupController(scope, restClient, viewFrame, toast) {
     const defaultHost = ipcHandler.sendQuery('Read-Default-Connection');
+
+    console.log(JSON.stringify(defaultHost));
 
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = {};
@@ -98,7 +101,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
      * @returns {boolean}
      */
     scope.attemptConnection = function (event = null) {
-        const {nodeName} = _.isObject(event) && _.isObject(event.target) ? event.target : {nodeName: 'none'};
+        const {nodeName} = _.isObject(event) && _.isObject(event.target) ? event.target : {nodeName: '__none__'};
 
         if (_.isObject(event) && typeof event.preventDefault === 'function') event.preventDefault();
 
@@ -139,7 +142,9 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
                     return true;
                 }
 
-                ipcWriteClientSetup(scope.setupModel);
+                if (isNone(nodeName))
+
+                    ipcWriteClientSetup(scope.setupModel);
             } catch (error) {
                 toast.error(error.message);
             }

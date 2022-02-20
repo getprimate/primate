@@ -79,6 +79,10 @@ class ThemeScanner {
         return this._themeDefs;
     }
 
+    getTheme(nonce) {
+        return (typeof this._themeDefs[nonce] === 'undefined') ? null : this._themeDefs[nonce];
+    }
+
     async readStyle(nonce) {
         if (typeof this._themeDefs[nonce] === 'undefined') return null;
 
@@ -86,7 +90,7 @@ class ThemeScanner {
         const fileType = (themeDef.fileType === 'css') ? 'css' : 'json';
 
         if (fileType === 'css') {
-            return { styleSheet: path.join(themeDef.absPath, themeDef.styles) };
+            return {styleSheet: path.join(themeDef.absPath, themeDef.styles)};
 
         } else {
             const filePath = path.join(themeDef.absPath, themeDef.styles);

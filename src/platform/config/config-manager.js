@@ -62,11 +62,27 @@ class ConfigManager {
         return CURRENT_CONFIG.gateway.connections[id];
     }
 
+    getWorkbenchConfig() {
+        return CURRENT_CONFIG.workbench;
+    }
+
     writeConnection(connection) {
         if (typeof connection.id !== 'string' || connection.id.length === 0) {
             connection.id = crypto.randomBytes(8).toString('hex');
         }
 
+        if (connection.isRemoved === true) {
+            const config = CURRENT_CONFIG.gateway.connections[connection.id];
+            config.isRemoved = true;
+
+            if (connection.id === CURRENT_CONFIG.gateway.defaultHost) {
+                CURRENT_CONFIG.gateway.defaultHost = '';
+            }
+
+            delete CURRENT_CONFIG.gateway.connections[connection.id];
+            return config;
+        }
+        
         const base =
             typeof BASE_CONFIG.gateway.connections[connection.id] === 'object' ? BASE_CONFIG.gateway.connections : {};
         const config = {...base, ...connection};
@@ -77,6 +93,7 @@ class ConfigManager {
             CURRENT_CONFIG.gateway.defaultHost = config.id;
         }
 
+        delete config.isDefault;
         return config;
     }
 

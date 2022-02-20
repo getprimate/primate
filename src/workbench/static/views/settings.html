@@ -16,14 +16,15 @@
             <div class="col md-6">
                 <div class="well__scroll-area large">
                     <table class="card-table clickable">
-                        <tbody data-ng-click="populateConnection($event)">
-                        <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
+                        <tbody data-ng-click="handleConnectionClick($event)">
+                        <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}" class="{{connId === connectionId ? 'active' : ''}}">
                             <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
                             <td><strong>{{connProps.name}}</strong>
                                 <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
                             <br>Last Used on: 04 February, 2022</td>
                             <td class="row-actions">
-                                <span title="Delete Connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
+                                <span data-ng-if="connId === connectionId" title="Current Session Connection" class="material-icons warning" data-target="consumer">edit</span>
+                                <span data-ng-if="connId !== connectionId" title="Delete Connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
                             </td>
                         </tr>
                         </tbody>
@@ -43,7 +44,7 @@
                         <div class="col md-12">
                             <div class="form__field">
                                 <label class="field-label">Connection Name</label>
-                                <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" /></div>
+                                <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" maxlength="35" /></div>
                             </div>
                         </div><!-- .col.md-12 -->
                     </div><!-- .row -->
