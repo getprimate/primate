@@ -12,13 +12,13 @@
  *      'Write-Connection' |
  *      'Create-Workbench-Session' |
  *      'Destroy-Workbench-Session' |
- *      'Update-Theme',
- *      'Read-All-Connections' |
+ *      'Read-Connection-List' |
  *      'Read-Default-Connection' |
  *      'Read-Session-Connection' |
  *      'Read-Workbench-Config' |
- *      'Read-Theme-Defs' |
- *      'Read-Theme-Style'
+ *      'Read-Theme-List' |
+ *      'Read-Theme-Style' |
+ *      'Write-Workbench-Config'
  * )} IPCAction
  */
 
@@ -152,11 +152,11 @@ const ipcServer = {
      * Registers an event handler for handling synchronous queries.
      *
      * @param {(
-     *      'Read-All-Connections' |
+     *      'Read-Connection-List' |
      *      'Read-Default-Connection' |
      *      'Read-Session-Connection' |
      *      'Read-Workbench-Config' |
-     *      'Read-Theme-Defs' |
+     *      'Read-Theme-List' |
      *      'Read-Theme-Style'
      * )} type - The query type.
      * @param {IPCServerCallback} handler - A callback function to handle the queries.

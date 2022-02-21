@@ -27,7 +27,7 @@
  * @property {(function(action: string, payload: any=): void)} sendRequest - Sends an event to the asynchronous event channel.
  * @property {(function(resource: string, payload: any=): any)} sendQuery - Sends an event to the synchronous event channel.
  * @property {(function(channel: string[]=): void)} removeListeners - Cleans up the existing event listeners.
- * @property {(function(channel: string, action: string): void)} removeCallbacks - Removes listeners for a particular action.
+ * @property {(function(channel: string, ...actions: string): void)} removeCallbacks - Removes listeners for particular actions.
  */
 
 const {ipcRenderer} = require('electron');
@@ -102,20 +102,27 @@ const ipcBridge = {
         }
     },
 
-    removeCallbacks(event, action) {
+    removeCallbacks(event, ...actions) {
         let channel = '__none__';
 
         switch (event) {
-            case 'onResponse':
+            case 'Response':
                 channel = 'workbench:AsyncResponse';
+                break;
+
+            case 'EventPush':
+                channel = 'workbench:AsyncEventPush';
                 break;
 
             default:
                 break;
         }
 
-        if (Array.isArray(registeredCallbacks[channel][action])) {
-            registeredCallbacks[channel][action].splice(0);
+        for (let action of actions) {
+            if (Array.isArray(registeredCallbacks[channel][action])) {
+                registeredCallbacks[channel][action].length = 0;
+                delete registeredCallbacks[channel][action];
+            }
         }
     }
 };

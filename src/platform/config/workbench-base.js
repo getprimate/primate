@@ -2,5 +2,7 @@
 
 module.exports = {
     dateFormat: 'utc',
-    themeUID: 'light-v1.0.0@kongdash.com'
+    themeUID: '__none__',
+    showFooter: true,
+    showBreadcrumbs: true
 };

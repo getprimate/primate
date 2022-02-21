@@ -2,13 +2,11 @@
 
 const path = require('path');
 const fs = require('fs/promises');
-const crypto = require('crypto');
 
 const {ROOT_PATH} = require('../constant/paths');
 
 /**
- * @property {Object} _themeDefs - The theme definitions.
- * @property {string} _themeDefs.fileType - CSS or JSON file type.
+ * @property {Object} _themeList - The theme definitions.
  */
 class ThemeScanner {
     async _loadThemeDefs(location) {
@@ -56,7 +54,7 @@ class ThemeScanner {
             this._locations.push(...locations);
         }
 
-        this._themeDefs = {};
+        this._themeList = {};
     }
 
     async scanThemes() {
@@ -74,7 +72,7 @@ class ThemeScanner {
                     let themeDefs = await this._loadThemeDefs(directory);
 
                     if (typeof themeDefs.themeUID === 'string') {
-                        this._themeDefs[themeDefs.themeUID] = themeDefs;
+                        this._themeList[themeDefs.themeUID] = themeDefs;
                     }
                 }
             }
@@ -82,17 +80,17 @@ class ThemeScanner {
             throw new Error(`Can not read directory ${location}. ${error}`);
         }
 
-        return this._themeDefs;
+        return this._themeList;
     }
 
     getTheme(themeUID) {
-        return typeof this._themeDefs[themeUID] === 'undefined' ? null : this._themeDefs[themeUID];
+        return typeof this._themeList[themeUID] === 'undefined' ? null : this._themeList[themeUID];
     }
 
     async readStyle(themeUID) {
-        if (typeof this._themeDefs[themeUID] === 'undefined') return null;
+        if (typeof this._themeList[themeUID] === 'undefined') return null;
 
-        const themeDef = this._themeDefs[themeUID];
+        const themeDef = this._themeList[themeUID];
         const fileType = themeDef.fileType === 'css' ? 'css' : 'json';
 
         if (fileType === 'css') {
