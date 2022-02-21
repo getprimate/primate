@@ -7,12 +7,17 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import setupModel from '../models/setup-model.js';
+import {deepClone, isText, isObject, isDefined} from '../../lib/core-toolkit.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
-import {deepClone, isDefined} from '../../lib/core-toolkit.js';
 
-const {/** @type {IPCBridge} */ ipcBridge} = window;
+import setupModel from '../models/setup-model.js';
+
+/**
+ * IPC functions exposed over the isolated context.
+ *
+ * @type {IPCBridge}
+ */
+const ipcBridge = window.ipcBridge;
 
 /**
  * Provides controller constructor for setting up the application.
@@ -24,55 +29,60 @@ const {/** @type {IPCBridge} */ ipcBridge} = window;
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function SettingsController(scope, restClient, viewFrame, toast) {
-    scope.connectionModel = _.deepClone(setupModel);
-    scope.connectionList = {};
-    scope.connectionId = viewFrame.getConfig('sessionId');
+    scope.ENUM_DATE_FORMAT = [
+        {nodeValue: 'date', displayText: 'Default'},
+        {nodeValue: 'utc', displayText: 'UCT'},
+        {nodeValue: 'standard', displayText: 'Standard'}
+    ];
 
-    scope.themeDefs = {};
+    scope.connectionId = viewFrame.getConfig('sessionId');
+    scope.connectionModel = deepClone(setupModel);
+    scope.connectionList = {};
+
+    scope.themeList = [];
     scope.workbenchConfig = {};
 
-    ipcBridge.onResponse('Write-Connection', (payload) => {
-        if (!_.isObject(payload) || !_.isText(payload.id)) {
-            toast.error('Unable to save connection.');
-            return false;
-        }
+    scope.setWorkbenchTheme = function (event) {
+        const {target} = event;
+        const {value: themeUID} = target;
 
-        if (payload.isRemoved === true) {
-            toast.success('Connection removed successfully.');
-            return true;
-        }
+        scope.workbenchConfig.themeUID = themeUID;
+        ipcBridge.sendRequest('Read-Theme-Style', {themeUID});
 
-        scope.$apply((_this) => {
-            _this.connectionList[payload.id] = payload;
-        });
-
-        toast.success('Connection updated successfully.');
         return true;
-    });
+    };
 
-    scope.queryConnectionList = function () {
-        const connectionList = ipcBridge.sendQuery('Read-All-Connections');
+    /**
+     * Edits the selected connection.
+     *
+     * @param {{target: Object, preventDefault: function}|null} event
+     * @returns {boolean}
+     */
+    scope.updateConnection = function (event) {
+        event.preventDefault();
 
-        if (typeof connectionList.error === 'string') {
-            return false;
-        }
-
-        const connectionIds = Object.keys(connectionList);
-
-        for (let id of connectionIds) {
-            if (id === scope.connectionId) {
-                scope.connectionModel = deepClone(connectionList[id]);
-                break;
+        for (let property in scope.connectionModel) {
+            if (isText(scope.connectionModel[property])) {
+                scope.connectionModel[property] = scope.connectionModel[property].trim();
             }
         }
 
-        scope.connectionList = connectionList;
-    };
+        if (scope.connectionModel.adminHost.length === 0) {
+            toast.error('Please provide a valid host address.');
+            return false;
+        }
+        if (scope.connectionModel.name.length === 0) {
+            toast.error('Please set a name for this connection.');
+            return false;
+        }
 
-    scope.queryWorkbenchSettings = function () {
-        scope.themeDefs = ipcBridge.sendQuery('Read-Theme-Defs');
+        if (isDefined(scope.connectionModel.isDefault)) {
+            delete scope.connectionModel.isDefault;
+        }
 
-        scope.workbenchConfig.themeUID = '';
+        ipcBridge.sendRequest('Write-Connection', scope.connectionModel);
+
+        return true;
     };
 
     scope.handleConnectionClick = function (event) {
@@ -103,7 +113,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             tr.classList.remove('active');
         }
 
-        if (_.isText(connectionId) && connectionId.length >= 5) {
+        if (isText(connectionId) && connectionId.length >= 5) {
             scope.connectionModel = deepClone(scope.connectionList[connectionId]);
             scope.connectionModel.id = connectionId;
         }
@@ -112,68 +122,97 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     };
 
     /**
-     * Attempts to connect to the specified server.
+     * Handles switch-tab events.
      *
-     * @param {{target: Object, preventDefault: function}|null} event
-     * @returns {boolean}
+     * @type {function(Event): boolean}
      */
-    scope.updateConnection = function (event) {
-        event.preventDefault();
+    scope.switchNotebookTabs = switchTabInitiator((attributes) => {
+        const {configTarget} = attributes;
 
-        for (let property in scope.connectionModel) {
-            if (_.isText(scope.connectionModel[property])) {
-                scope.connectionModel[property] = scope.connectionModel[property].trim();
+        switch (configTarget) {
+            case 'workbench':
+                ipcBridge.sendRequest('Read-Workbench-Config');
+                break;
+
+            default:
+                break;
+        }
+    });
+
+    /* Apply workbench config upon Read-Workbench-Config event response. */
+    ipcBridge.onResponse('Read-Workbench-Config', (config) => {
+        scope.$apply((this_) => {
+            this_.workbenchConfig = config;
+        });
+
+        ipcBridge.sendRequest('Read-Theme-List');
+    });
+
+    /* Populate connection list upon Read-Connection-List event response. */
+    ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
+        if (isText(connectionList.error)) {
+            toast.warning('Unable to display connection history.');
+            return false;
+        }
+
+        const connectionIds = Object.keys(connectionList);
+
+        for (let connectionId of connectionIds) {
+            if (connectionId === scope.connectionId) {
+                scope.connectionModel = deepClone(connectionList[connectionId]);
+                break;
             }
         }
 
-        if (scope.connectionModel.adminHost.length === 0) {
-            toast.error('Please provide a valid host address.');
+        scope.$apply((this_) => {
+            this_.connectionList = connectionList;
+        });
+    });
+
+    /* Populate themes upon Read-Theme-List event response. */
+    ipcBridge.onResponse('Read-Theme-List', (themeList) => {
+        scope.$apply((this_) => {
+            this_.themeList = Object.values(themeList);
+        });
+    });
+
+    /* Remove deleted connections. */
+    ipcBridge.onResponse('Write-Connection', (payload) => {
+        if (!isObject(payload) || !isText(payload.id)) {
+            toast.error('Unable to save connection.');
             return false;
         }
-        if (scope.connectionModel.name.length === 0) {
-            toast.error('Please set a name for this connection.');
-            return false;
-        }
 
-        if (isDefined(scope.connectionModel.isDefault)) {
-            delete scope.connectionModel.isDefault;
-        }
-
-        ipcBridge.sendRequest('Write-Connection', scope.connectionModel);
-
-        return true;
-    };
-
-    scope.setWorkbenchTheme = function (event) {
-        const {target} = event;
-
-        if (target.nodeName === 'INPUT' && _.isText(target.value)) {
-            ipcBridge.sendRequest('Read-Theme-Style', {themeUID: target.value});
+        if (payload.isRemoved === true) {
+            toast.success('Connection removed successfully.');
             return true;
         }
 
-        return false;
-    };
+        scope.$apply((this_) => {
+            this_.connectionList[payload.id] = payload;
+        });
 
-    scope.switchNotebookTabs = switchTabInitiator((attributes) => {
-        console.log(JSON.stringify(attributes));
+        toast.success('Connection updated successfully.');
+        return true;
     });
+
+    ipcBridge.sendRequest('Read-Connection-List');
 
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/settings', 'Settings');
 
-    scope.queryConnectionList();
-    scope.queryWorkbenchSettings();
-
+    /* Cleanup. */
     scope.$on('$destroy', () => {
-        ipcBridge.removeCallbacks('onResponse', 'Write-Connection');
+        ipcBridge.removeCallbacks('Response', 'Read-Connection-List', 'Read-Theme-List', 'Read-Workbench-Config');
+        ipcBridge.sendRequest('Write-Workbench-Config', scope.workbenchConfig);
+
+        viewFrame.setConfig('dateFormat', scope.workbenchConfig.dateFormat);
+        viewFrame.setConfig('showBreadcrumbs', scope.workbenchConfig.showBreadcrumbs);
 
         scope.connectionModel = null;
         scope.connectionList = null;
 
         delete scope.connectionModel;
         delete scope.connectionList;
-
-        delete scope.updateConnection;
     });
 }

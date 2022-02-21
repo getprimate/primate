@@ -55,7 +55,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
     scope.connectionList = {};
 
     scope.queryConnectionList = function () {
-        const connectionList = ipcBridge.sendQuery('Read-All-Connections');
+        const connectionList = ipcBridge.sendQuery('Read-Connection-List');
 
         if (typeof connectionList.error === 'string') {
             return false;

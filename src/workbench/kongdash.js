@@ -79,20 +79,20 @@ export default {
     /**
      *
      * @param {function} constructorFunc
-     * @param {string} injectables
+     * @param {string} dependencies
      */
-    controller(constructorFunc, ...injectables) {
-        const argList = ['$scope'];
+    controller(constructorFunc, ...dependencies) {
+        const bindList = ['$scope'];
 
-        if (Array.isArray(injectables)) {
-            for (let injectable of injectables) {
-                argList.push(injectable);
+        if (Array.isArray(dependencies)) {
+            for (let dependency of dependencies) {
+                bindList.push(dependency);
             }
         }
 
-        argList.push(constructorFunc);
+        bindList.push(constructorFunc);
 
-        app.controller(constructorFunc.name, argList);
+        app.controller(constructorFunc.name, bindList);
     },
 
     /**
@@ -123,17 +123,17 @@ export default {
         app.directive(name.replace('Directive', ''), [directiveFunc]);
     },
 
-    onReady(readyFunc, ...injectables) {
-        const argList = [];
+    onReady(readyFunc, ...dependencies) {
+        const bindList = [];
 
-        if (Array.isArray(injectables)) {
-            for (let injectable of injectables) {
-                argList.push(injectable);
+        if (Array.isArray(dependencies)) {
+            for (let dependency of dependencies) {
+                bindList.push(dependency);
             }
         }
 
-        argList.push(readyFunc);
-        app.run(argList);
+        bindList.push(readyFunc);
+        app.run(bindList);
     },
 
     start() {

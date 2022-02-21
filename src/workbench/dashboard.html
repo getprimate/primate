@@ -46,12 +46,14 @@
             <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
         </div>
 
-        <ul class="breadcrumbs">
+        <ul data-ng-show="frameConfig.showBreadcrumbs === true" class="breadcrumbs">
            <li data-ng-repeat="crumb in frameState.breadcrumbs track by $index">
                <a data-ng-if="$index < frameState.breadcrumbs.length - 1" href="{{crumb.redirect}}">{{crumb.displayText}} <span class="material-icons">navigate_next</span></a>
                <span data-ng-if="$index === frameState.breadcrumbs.length - 1">{{crumb.displayText}}</span>
            </li>
         </ul>
+
+        <div data-ng-show="frameConfig.showBreadcrumbs === false" class="title">{{frameState.frameTitle}}</div>
 
         <div class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
             <button type="button" class="{{button.styles}}" data-ng-repeat="button in frameState.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button>

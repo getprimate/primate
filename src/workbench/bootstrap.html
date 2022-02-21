@@ -96,12 +96,13 @@ form.form {
 <main id="contentWrapper" class="content">
 
 <section data-ng-controller="ClientSetupController" id="index__ngView">
-    <div class="well">
-    <div class="well__heading">Setup KongDash</div>
-    <div class="container">
+    <div class="panel panel-border success">
+    <div class="panel__heading border-bottom-solid"><span class="title">Setup KongDash</span></div>
+    <div class="panel__body">
         <div id="bt-ed__wrp01" class="row">
-        <div class="col md-6 no-padding">
+        <div class="col md-5 no-padding">
         <table class="card-table clickable">
+            <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
             <tbody data-ng-click="pickConnection($event)">
             <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
                 <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
@@ -114,11 +115,19 @@ form.form {
                 </td><!-- .row-actions -->
             </tr>
             </tbody>
+
+            <tbody class="info-placeholder">
+            <tr>
+                <td><span class="material-icons">badge</span></td>
+                <td>No connections are saved!</td>
+            </tr>
+            </tbody><!-- .info-placeholder -->
+
         </table><!-- .board -->
         </div><!-- .col.md-6.no-padding -->
 
-        <div class="col md-6 no-padding">
-        <form method="POST" class="form" data-ng-submit="attemptConnection($event)">
+        <div class="col md-7 no-padding">
+        <form method="POST" data-ng-submit="attemptConnection($event)">
             <div class="form__field">
                 <label class="field-label">Admin API</label>
                 <ul class="field-input linked">
@@ -128,7 +137,7 @@ form.form {
                         <option value="https">HTTPS</option>
                         </select>
                     </li>
-                    <li><input type="text" name="adminHost" value="" data-ng-model="setupModel.adminHost" placeholder="Example: 127.0.0.1" /></li>
+                    <li class="stretch"><input type="text" name="adminHost" value="" data-ng-model="setupModel.adminHost" placeholder="Example: 127.0.0.1" /></li>
                     <li><input type="number" name="adminPort" value="80" data-ng-model="setupModel.adminPort" placeholder="8001" /></li>
                 </ul><!-- .linked -->
             </div><!-- .form__field -->
@@ -180,8 +189,8 @@ form.form {
         </div><!-- .col md-6.no-padding -->
 
         </div><!-- #bt-ed__wrp01.row -->
-    </div><!-- .container -->
-    </div><!-- .well -->
+    </div><!-- .panel__body -->
+    </div><!-- .panel.panel.border -->
 </section><!-- .content__wrapper -->
 
 <footer id="mainFooter" data-ng-controller="FooterController">

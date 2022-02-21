@@ -4,8 +4,8 @@
 <div class="col md-8">
 <div class="notebook">
 <ul class="notebook__tab" data-ng-click="switchNotebookTabs($event)">
-    <li data-page-id="#st-ed__npg01" class="active">Connections</li>
-    <li data-page-id="#st-ed__npg02">Appearance</li>
+    <li data-page-id="#st-ed__npg01" class="active" data-config-target="connections">Connections</li>
+    <li data-page-id="#st-ed__npg02" data-config-target="workbench">Workbench</li>
 </ul><!-- .notebook__tab -->
 
 <section id="st-ed__npg01" class="notebook__page active">
@@ -16,6 +16,7 @@
             <div class="col md-6">
                 <div class="well__scroll-area large">
                     <table class="card-table clickable">
+                        <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
                         <tbody data-ng-click="handleConnectionClick($event)">
                         <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}" class="{{connId === connectionId ? 'active' : ''}}">
                             <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
@@ -73,10 +74,7 @@
                         <div class="col md-6">
                             <div class="form__field align-right">
                                 <label class="field-label">&nbsp;</label>
-                                <div class="field-input">
-                                <button type="button" class="btn default" name="testConnection" data-ng-click="attemptConnection($event)">Test</button>
-                                <button type="submit" class="btn success" name="attemptConnection">Save</button>
-                                </div><!-- .field-input -->
+                                <div class="field-input"><button type="submit" class="btn success" name="attemptConnection">Save</button></div><!-- .field-input -->
                             </div><!-- .form__field.align-right -->
                         </div><!-- .col.md-6 -->
                     </div><!-- .row -->
@@ -95,17 +93,35 @@
 
 <section id="st-ed__npg02" class="notebook__page">
     <div class="well">
-        <div class="well__heading">Appearance Settings</div>
+        <div class="well__heading">Workbench Settings</div>
 
         <div class="row">
             <div class="col md-6">
-                &nbsp;
+                <form method="get">
+                    <div class="form__field">
+                        <label class="field-label">Date Format</label>
+                        <div class="field-input">
+                            <select data-ng-model="workbenchConfig.dateFormat"><option data-ng-repeat="format in ENUM_DATE_FORMAT" value="{{format.nodeValue}}">{{format.displayText}}</option></select>
+                        </div><!-- .field-input -->
+                    </div>
+
+                    <div class="form__field">
+                        <label class="field-label">Appearance</label>
+                        <div class="field-input">
+                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showFooter"> Show Status Bar</label>
+                        </div><!-- .field-input -->
+                        <div class="field-input">
+                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showBreadcrumbs"> Show Navigation Bar</label>
+                        </div><!-- .field-input -->
+                    </div>
+                </form>
             </div><!-- .col.md-6 -->
             <div class="col md-6">
                 <div class="well__scroll-area large">
                     <table class="card-table">
+                        <thead><tr><th colspan="2">Themes</th></tr></thead>
                         <tbody data-ng-click="setWorkbenchTheme($event)">
-                        <tr data-ng-repeat="theme in themeDefs">
+                        <tr data-ng-repeat="theme in themeList">
                             <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
                             <td><strong>{{theme.name}}</strong>
                                 <br />Version: {{theme.version}}

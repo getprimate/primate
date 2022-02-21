@@ -971,7 +971,7 @@ form {
     padding-bottom: 10px;
 }
 
-form .form__field { margin-bottom: 20px; padding-bottom: 10px; }
+form .form__field { margin-bottom: 25px; padding-bottom: 10px; }
 
 form .form__field:last-child {
     padding-bottom: 20px !important;
@@ -1005,7 +1005,7 @@ form .field-note {
 }
 
 form .form__field .field-input {
-    margin: 5px 0 0 0;
+    margin: 10px 0 0 0;
 }
 
 form .form__field ul.field-input {
@@ -1516,7 +1516,7 @@ table.card-table {
     border-spacing: 0 min(1.041vw, 20px);
 }
 
-table.card-table tr {
+table.card-table tbody tr {
     background: var(--widget__accent-bg) none;
     border:1px solid transparent;
     border-radius: var(--theme__widget-corner);

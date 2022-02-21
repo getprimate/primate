@@ -27,6 +27,7 @@
  * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
  * @property {function(void):ViewFrameFactory} incrementLoader - Increments loader width by adding loader step.
+ * @property {(function(name: string, value: any): void)} setConfig - Sets a configuration value.
  * @property {(function(name: string): string)} getConfig - Finds the configuration value by name.
  * @property {(function(void): Object)} getFrameConfig - Returns the view frame state.
  */
@@ -65,7 +66,9 @@ const frameConfig = {
     sessionId: '__none__',
     sessionColor: '#FFFFFF',
     sessionName: 'Unnamed Server',
-    sessionURL: 'localhost:8000'
+    sessionURL: 'localhost:8000',
+    showFooter: true,
+    showBreadcrumbs: true
 };
 
 function loaderTimeoutCallback(state) {
@@ -166,6 +169,12 @@ function buildViewFrameFactory(timeoutFn) {
             frameState.loaderStep = 0;
             frameState.loaderWidth = 0;
             frameState.loaderUnit = `${frameState.loaderWidth}vw`;
+        },
+
+        setConfig(name, value) {
+            if (isText(name) && isDefined(frameConfig[name])) {
+                frameConfig[name] = value;
+            }
         },
 
         getState() {

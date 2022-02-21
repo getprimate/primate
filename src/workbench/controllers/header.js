@@ -19,7 +19,8 @@
  */
 export default function HeaderController(scope, restClient, viewFrame, toast, logger) {
     scope.frameState = viewFrame.getState();
-    
+    scope.frameConfig = viewFrame.getFrameConfig();
+
     /**
      * Handles click events navigation button.
      *
