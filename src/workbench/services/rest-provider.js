@@ -20,7 +20,7 @@
  * @property {(function(endpoint: string, payload: Object): Promise)} patch - Makes an HTTP PATCH request.
  * @property {(function(endpoint: string): Promise)} delete - Makes an HTTP DELETE request.
  * @property {(function(host: string): void)} setHost - Sets the host name.
- * @property {(function(void): boolean)} isInitialized - Tells if the factory is initialized with a host name.
+ * @property {(function(void): boolean)} isConfigured - Tells if the factory is configured with a host name.
  */
 
 /**
@@ -143,7 +143,7 @@ function buildRESTClientFactory(http) {
             CLIENT_CONFIG.host = host;
         },
 
-        isInitialized() {
+        isConfigured() {
             return CLIENT_CONFIG.host.length >= 1;
         }
     };

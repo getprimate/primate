@@ -8,6 +8,21 @@
 'use strict';
 
 /**
+ * @typedef {(
+ *      'Write-Connection' |
+ *      'Create-Workbench-Session' |
+ *      'Destroy-Workbench-Session' |
+ *      'Update-Theme',
+ *      'Read-All-Connections' |
+ *      'Read-Default-Connection' |
+ *      'Read-Session-Connection' |
+ *      'Read-Workbench-Config' |
+ *      'Read-Theme-Defs' |
+ *      'Read-Theme-Style'
+ * )} IPCAction
+ */
+
+/**
  * @callback IPCServerCallback
  * @param {Object} event - The event details.
  * @param {string} event.senderId - The sender Id.
@@ -19,6 +34,12 @@ const {ipcMain} = require('electron');
 
 const registeredHandlers = {};
 
+/**
+ * Sanitizes null payload objects.
+ *
+ * @param {Object|null} payload - The payload object to be sent.
+ * @return {{code: string, error: string}|*} The error object if payload is null, payload itself otherwise.
+ */
 function sanitize(payload) {
     if (payload === null || typeof payload === 'undefined') {
         return {error: 'Requested entity is not available.', code: 'E404'};
@@ -28,6 +49,7 @@ function sanitize(payload) {
 }
 
 /**
+ * Sends the response synchronously or asynchronously depending on the channel name.
  *
  * @param {Electron.IpcMainEvent} event - The IPC message event.
  * @param {string} channel - The channel name.
@@ -37,7 +59,7 @@ function sanitize(payload) {
 function respond(event, channel, action, payload) {
     switch (channel) {
         case 'workbench:AsyncRequest':
-            event.reply('workbench:AsyncResponse', action, payload);
+            event.reply('workbench:AsyncResponse', action, sanitize(payload));
             return true;
 
         case 'workbench:SyncQuery':
@@ -49,6 +71,7 @@ function respond(event, channel, action, payload) {
 }
 
 /**
+ * Wraps the handler callback.
  *
  * @param {Electron.IpcMainEvent} event - The IPC message event.
  * @param {string} action - The action name.
@@ -62,7 +85,7 @@ function handlerWrapper(event, action, payload) {
     const handlers = registeredHandlers[this._channelName];
 
     if (typeof handlers !== 'object' || typeof handlers[action] !== 'function') {
-        return false;
+        return respond(event, this._channelName, action, {error: `Requested action *${action}* is not available.`});
     }
 
     if (util.types.isAsyncFunction(handlers[action])) {
@@ -80,7 +103,7 @@ function handlerWrapper(event, action, payload) {
     }
 
     try {
-        const returnValue = handlers[action].call(null, payload);
+        const returnValue = handlers[action].call(null, {senderId: event.sender.id}, payload);
         respond(event, this._channelName, action, returnValue);
     } catch (error) {
         respond(event, this._channelName, action, {error});
@@ -117,11 +140,7 @@ const ipcServer = {
     /**
      * Registers an event handler for handling asynchronous requests.
      *
-     * @param {(
-     *      'Write-Connection' |
-     *      'Destroy-Session' |
-     *      'Update-Theme'
-     * )} action - The request action name.
+     * @param {IPCAction} action - The request action name.
      * @param {IPCServerCallback} handler - A callback function to handle the requests.
      * @return {boolean} True if registered, false otherwise.
      */
@@ -137,7 +156,8 @@ const ipcServer = {
      *      'Read-Default-Connection' |
      *      'Read-Session-Connection' |
      *      'Read-Workbench-Config' |
-     *      'Read-Theme-Defs'
+     *      'Read-Theme-Defs' |
+     *      'Read-Theme-Style'
      * )} type - The query type.
      * @param {IPCServerCallback} handler - A callback function to handle the queries.
      * @return {boolean} True if registered, false otherwise.
@@ -163,7 +183,7 @@ const ipcServer = {
             let actions = Object.keys(current);
 
             for (let action of actions) {
-                current[action].splice(0);
+                delete current[action];
             }
 
             registeredHandlers[channel] = null;

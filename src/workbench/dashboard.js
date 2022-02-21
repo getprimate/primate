@@ -7,7 +7,7 @@
 
 'use strict';
 
-import * as _ from '../lib/core-toolkit.js';
+import {isNil, isNone, isObject, isText, parseNumeric} from '../lib/core-toolkit.js';
 
 import KongDash from './kongdash.js';
 
@@ -40,34 +40,7 @@ import RouteListController from './controllers/route-list.js';
 
 import ThemeEngine from './interface/theme-engine.js';
 
-const {/** @type {IPCHandler} */ ipcHandler} = window;
-const themeEngine = new ThemeEngine();
-
-/**
- * Initializes factory providers.
- *
- * @param {RESTClientProvider} restProvider - REST Client factory provider
- * @param {ViewFrameProvider} vfProvider - View Frame factory provider
- */
-function initFactories(restProvider, vfProvider) {
-    const defaultHost = ipcHandler.sendQuery('Read-Session-Connection');
-
-    if (_.isText(defaultHost.adminHost) && false === _.isEmpty(defaultHost.adminHost)) {
-        restProvider.initialize({
-            /* TODO : Include basic auth not provided. */
-            host: `${defaultHost.protocol}://${defaultHost.adminHost}:${defaultHost.adminPort}`
-        });
-
-        vfProvider.initialize({
-            config: {
-                sessionId: defaultHost.id,
-                sessionUrl: `${defaultHost.protocol}://${defaultHost.host}:${defaultHost.port}`,
-                sessionName: defaultHost.name,
-                sessionColor: defaultHost.colorCode
-            }
-        });
-    }
-}
+const {/** @type {IPCBridge} */ ipcBridge} = window;
 
 /**
  * Attaches application wide event listeners.
@@ -96,7 +69,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
 
         if (anchor.target === '_blank') {
             event.preventDefault();
-            ipcHandler.sendQuery('open-external', anchor.href);
+            ipcBridge.sendQuery('open-external', anchor.href);
 
             logger.info(`Opening ${anchor.href}`);
         }
@@ -105,133 +78,97 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
     });
 }
 
-ipcHandler.onEventPush('Open-Settings-View', () => {
+ipcBridge.onEventPush('Open-Settings-View', () => {
     window.location.href = '#!/settings';
 });
 
-ipcHandler.onEventPush('Update-Theme', (payload) => {
-    themeEngine.applyTheme(payload);
+ipcBridge.onResponse('Read-Theme-Style', (style) => {
+    if (isObject(style) && isNil(style.error)) {
+        let themeEngine = new ThemeEngine();
+        themeEngine.applyTheme(style);
+
+        themeEngine = null;
+    }
 });
 
-ipcHandler.onRequestDone('Update-Theme', (payload) => {
-    themeEngine.applyTheme(payload);
+ipcBridge.onResponse('Read-Workbench-Config', (config) => {
+    if (!isNone(config.themeUID)) {
+        ipcBridge.sendRequest('Read-Theme-Style', {themeUID: config.themeUID});
+    }
 });
 
-KongDash.config(['restClientProvider', 'viewFrameProvider', initFactories]);
+ipcBridge.onResponse('Read-Session-Connection', (connection) => {
+    if (isText(connection.adminHost) && isText(connection.protocol)) {
+        const adminPort = parseNumeric(connection.adminPort, 8001);
 
-KongDash.directive('tokenInput', [TokenInputDirective]);
-KongDash.directive('multiCheck', [MultiCheckDirective]);
-KongDash.directive('clipboardText', [ClipboardTextDirective]);
+        const initializer = (restProvider, vfProvider) => {
+            restProvider.initialize({
+                /* TODO : Include basic auth not provided. */
+                host: `${connection.protocol}://${connection.adminHost}:${adminPort}`
+            });
+
+            vfProvider.initialize({
+                config: {
+                    sessionId: connection.id,
+                    sessionName: connection.name,
+                    sessionColor: connection.colorCode,
+                    sessionURL: `${connection.protocol}://${connection.adminHost}:${adminPort}`
+                }
+            });
+        };
+
+        KongDash.config(initializer, 'restClient', 'viewFrame');
+    }
+
+    KongDash.start();
+});
+
+KongDash.directive(TokenInputDirective);
+KongDash.directive(MultiCheckDirective);
+KongDash.directive(ClipboardTextDirective);
 
 /* Register sidebar, header and footer controllers. */
-KongDash.controller('SidebarController', ['$scope', 'restClient', 'viewFrame', 'toast', SidebarController]);
-KongDash.controller('HeaderController', ['$scope', 'restClient', 'viewFrame', 'toast', 'logger', HeaderController]);
-KongDash.controller('FooterController', ['$scope', '$http', 'viewFrame', 'toast', 'logger', FooterController]);
+KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
+KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+KongDash.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
 
 /* Register node details controllers. */
-KongDash.controller('OverviewController', ['$scope', 'restClient', 'viewFrame', 'toast', OverviewController]);
-KongDash.controller('NodeConfigController', ['$scope', 'restClient', 'viewFrame', 'toast', NodeConfigController]);
+KongDash.controller(OverviewController, 'restClient', 'viewFrame', 'toast');
+KongDash.controller(NodeConfigController, 'restClient', 'viewFrame', 'toast');
 
 /* Register object handler controllers. */
-KongDash.controller('TagSearchController', ['$scope', 'restClient', 'viewFrame', 'toast', TagSearchController]);
-KongDash.controller('ServiceListController', ['$scope', 'restClient', 'viewFrame', 'toast', ServiceListController]);
+KongDash.controller(TagSearchController, 'restClient', 'viewFrame', 'toast');
+KongDash.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('ServiceEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    ServiceEditController
-]);
+KongDash.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller('RouteListController', ['$scope', 'restClient', 'viewFrame', 'toast', RouteListController]);
+KongDash.controller(RouteListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('RouteEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    RouteEditController
-]);
+KongDash.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller('CertificateListController', [
-    '$scope',
-    'restClient',
-    'viewFrame',
-    'toast',
-    CertificateListController
-]);
+KongDash.controller(CertificateListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('CertificateEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    CertificateEditController
-]);
+KongDash.controller(CertificateEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('TrustedCAEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    TrustedCAEditController
-]);
+KongDash.controller(TrustedCAEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('UpstreamListController', ['$scope', 'restClient', 'viewFrame', 'toast', UpstreamListController]);
+KongDash.controller(UpstreamListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('UpstreamEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    UpstreamEditController
-]);
+KongDash.controller(UpstreamEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('ConsumerListController', ['$scope', 'restClient', 'viewFrame', 'toast', ConsumerListController]);
+KongDash.controller(ConsumerListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('ConsumerEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    'logger',
-    ConsumerEditController
-]);
+KongDash.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller('PluginListController', ['$scope', 'restClient', 'viewFrame', 'toast', PluginListController]);
+KongDash.controller(PluginListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('PluginEditController', [
-    '$scope',
-    '$location',
-    '$routeParams',
-    'restClient',
-    'viewFrame',
-    'toast',
-    PluginEditController
-]);
+KongDash.controller(PluginEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller('SettingsController', ['$scope', 'restClient', 'viewFrame', 'toast', SettingsController]);
+KongDash.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.config(['$routeProvider', Templates]);
+KongDash.config(Templates, '$route');
 
-KongDash.run(['$window', '$rootScope', 'viewFrame', 'logger', attachEventListeners]);
+KongDash.onReady(attachEventListeners, '$window', '$rootScope', 'viewFrame', 'logger');
 
-/* TODO : Provide this as an exported function in kongdash module. */
-
-window.angular.bootstrap(document, ['KongDash']);
+ipcBridge.sendRequest('Read-Workbench-Config');
+ipcBridge.sendRequest('Read-Session-Connection');

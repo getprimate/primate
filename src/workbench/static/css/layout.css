@@ -1737,7 +1737,8 @@ section.notebook__page .row.only-grid > .col:last-child form {
     padding: 28px 0;
 }
 
-.hidden { display: none; }
+.hidden,
+body.hidden { display: none !important; }
 
 .pointer { cursor: pointer; }
 

@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = {
-    appearance: {
-        themeDef: '__none__'
-    }
+    dateFormat: 'utc',
+    themeUID: 'light-v1.0.0@kongdash.com'
 };

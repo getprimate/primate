@@ -1,12 +1,17 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
 const electron = require('electron');
-const path = require('path');
 const ospath = require('ospath');
 
 const APP_NAME = 'KongDash';
 const VERSION = '0.3.0';
-const ABS_PATH = path.dirname(__dirname);
 
 const ConfigManager = require('./config/config-manager');
 const ThemeScanner = require('./theme/theme-scanner');
@@ -15,12 +20,12 @@ const {RendererWindow} = require('./renderer/window');
 const {ipcServer} = require('./ipc/ipc-server');
 
 const configManager = new ConfigManager(ospath.data() + `/${APP_NAME}/v${VERSION}`);
-const themeScanner = new ThemeScanner([path.join(path.dirname(ABS_PATH), 'resources', 'themes')]);
+const themeScanner = new ThemeScanner();
 
 const rendererWindow = new RendererWindow({title: APP_NAME});
 rendererWindow.enableDebugging();
 
-const {app, ipcMain} = electron;
+const {app} = electron;
 const connectionMap = {};
 
 let themeDefs = {};
@@ -43,7 +48,7 @@ app.on('activate', () => {
 
 app.on('will-quit', () => {
     configManager.saveState();
-    ipcMain.removeAllListeners();
+    ipcServer.removeListeners();
 });
 
 ipcServer.registerRequestHandler('Write-Connection', (event, payload) => {
@@ -57,25 +62,36 @@ ipcServer.registerRequestHandler('Write-Connection', (event, payload) => {
     }
 });
 
-ipcServer.registerRequestHandler('Destroy-Session', async (event) => {
+ipcServer.registerRequestHandler('Read-Default-Connection', () => {
+    return configManager.getDefaultConnection();
+});
+
+ipcServer.registerRequestHandler('Read-Workbench-Config', () => {
+    return configManager.getWorkbenchConfig();
+});
+
+ipcServer.registerRequestHandler('Destroy-Workbench-Session', async (event) => {
     if (typeof connectionMap[`window${event.senderId}`] !== 'undefined') {
         delete connectionMap[`window${event.senderId}`];
         configManager.removeDefaultConnection();
     }
 
-    try {
-        await rendererWindow.showBootstrap();
-    } catch (error) {
-        return {message: `${error}`};
-    }
+    return await rendererWindow.showBootstrap();
+});
+
+ipcServer.registerRequestHandler('Read-Theme-Style', async (event, payload) => {
+    return await themeScanner.readStyle(payload.themeUID);
 });
 
 ipcServer.registerRequestHandler('Update-Theme', async (event, payload) => {
-    try {
-        return await themeScanner.readStyle(payload.nonce);
-    } catch (error) {
-        return {message: `${error}`};
-    }
+    return await themeScanner.readStyle(payload.themeUID);
+});
+
+ipcServer.registerRequestHandler('Create-Workbench-Session', async (event, payload) => {
+    connectionMap[`window${event.senderId}`] = payload.connectionId;
+    await rendererWindow.showDashboard();
+
+    return null;
 });
 
 ipcServer.registerQueryHandler('Read-All-Connections', () => {
@@ -86,14 +102,18 @@ ipcServer.registerQueryHandler('Read-Default-Connection', () => {
     return configManager.getDefaultConnection();
 });
 
-ipcServer.registerQueryHandler('Read-Session-Connection', (event) => {
-    return configManager.getConnectionById(connectionMap[`window${event.sender.id}`]);
-});
-
-ipcServer.registerQueryHandler('Read-Workbench-Config', () => {
-    return configManager.getWorkbenchConfig();
+ipcServer.registerRequestHandler('Read-Session-Connection', (event) => {
+    return configManager.getConnectionById(connectionMap[`window${event.senderId}`]);
 });
 
 ipcServer.registerQueryHandler('Read-Theme-Defs', () => {
     return themeDefs;
+});
+
+ipcServer.registerQueryHandler('Read-Theme-Style', async (event, payload) => {
+    try {
+        return await themeScanner.readStyle(payload.themeUID);
+    } catch (error) {
+        return {message: `${error}`};
+    }
 });

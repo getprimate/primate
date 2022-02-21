@@ -17,7 +17,6 @@ const CURRENT_CONFIG = {
 class ConfigManager {
     _write(name) {
         const config = JSON.stringify(CURRENT_CONFIG[name], null, 4);
-
         fs.writeFileSync(path.join(this._location, `${name}.json`), `${config}\n`, {encoding: 'utf-8', flag: 'w'});
     }
 
@@ -62,10 +61,6 @@ class ConfigManager {
         return CURRENT_CONFIG.gateway.connections[id];
     }
 
-    getWorkbenchConfig() {
-        return CURRENT_CONFIG.workbench;
-    }
-
     writeConnection(connection) {
         if (typeof connection.id !== 'string' || connection.id.length === 0) {
             connection.id = crypto.randomBytes(8).toString('hex');
@@ -82,7 +77,7 @@ class ConfigManager {
             delete CURRENT_CONFIG.gateway.connections[connection.id];
             return config;
         }
-        
+
         const base =
             typeof BASE_CONFIG.gateway.connections[connection.id] === 'object' ? BASE_CONFIG.gateway.connections : {};
         const config = {...base, ...connection};
@@ -95,6 +90,22 @@ class ConfigManager {
 
         delete config.isDefault;
         return config;
+    }
+
+    getWorkbenchConfig() {
+        return CURRENT_CONFIG.workbench;
+    }
+
+    writeWorkbenchConfig(config) {
+        const fieldList = Object.keys(config);
+
+        for (let field of fieldList) {
+            if (config[field] !== null) {
+                CURRENT_CONFIG.workbench[field] = config[field];
+            }
+        }
+
+        return CURRENT_CONFIG.workbench;
     }
 
     saveState() {

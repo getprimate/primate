@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs/promises');
 const crypto = require('crypto');
 
+const {ROOT_PATH} = require('../constant/paths');
+
 /**
  * @property {Object} _themeDefs - The theme definitions.
  * @property {string} _themeDefs.fileType - CSS or JSON file type.
@@ -17,10 +19,8 @@ class ThemeScanner {
             const themeDef = JSON.parse(contents);
 
             themeDef.absPath = location;
-            themeDef.nonce = crypto.randomBytes(8).toString('hex');
 
             return themeDef;
-
         } catch (error) {
             throw `Unable to read ${themeJson}. ${error}`;
         }
@@ -41,7 +41,6 @@ class ThemeScanner {
                 let stat = await fs.lstat(path.join(currentPath, 'theme.json'));
 
                 if (stat.isFile()) filtered.push(currentPath);
-
             } catch (ignored) {
                 // eslint-disable no-empty
             }
@@ -50,8 +49,13 @@ class ThemeScanner {
         return filtered;
     }
 
-    constructor(locations, options = {}) {
-        this._locations = Array.isArray(locations) ? locations : [];
+    constructor(locations = null) {
+        this._locations = [path.join(ROOT_PATH, 'resources', 'themes')];
+
+        if (Array.isArray(locations)) {
+            this._locations.push(...locations);
+        }
+
         this._themeDefs = {};
     }
 
@@ -68,10 +72,12 @@ class ThemeScanner {
 
                 for (let directory of directories) {
                     let themeDefs = await this._loadThemeDefs(directory);
-                    this._themeDefs[themeDefs.nonce] = themeDefs;
+
+                    if (typeof themeDefs.themeUID === 'string') {
+                        this._themeDefs[themeDefs.themeUID] = themeDefs;
+                    }
                 }
             }
-
         } catch (error) {
             throw new Error(`Can not read directory ${location}. ${error}`);
         }
@@ -79,26 +85,24 @@ class ThemeScanner {
         return this._themeDefs;
     }
 
-    getTheme(nonce) {
-        return (typeof this._themeDefs[nonce] === 'undefined') ? null : this._themeDefs[nonce];
+    getTheme(themeUID) {
+        return typeof this._themeDefs[themeUID] === 'undefined' ? null : this._themeDefs[themeUID];
     }
 
-    async readStyle(nonce) {
-        if (typeof this._themeDefs[nonce] === 'undefined') return null;
+    async readStyle(themeUID) {
+        if (typeof this._themeDefs[themeUID] === 'undefined') return null;
 
-        const themeDef = this._themeDefs[nonce];
-        const fileType = (themeDef.fileType === 'css') ? 'css' : 'json';
+        const themeDef = this._themeDefs[themeUID];
+        const fileType = themeDef.fileType === 'css' ? 'css' : 'json';
 
         if (fileType === 'css') {
             return {styleSheet: path.join(themeDef.absPath, themeDef.styles)};
-
         } else {
             const filePath = path.join(themeDef.absPath, themeDef.styles);
 
             try {
                 const contents = await fs.readFile(filePath, {encoding: 'utf-8'});
                 return {styleString: contents};
-
             } catch (error) {
                 throw new Error(`Unable to read contents of ${filePath}. ${error}`);
             }

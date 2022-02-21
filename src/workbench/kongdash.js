@@ -13,26 +13,26 @@ import ToastFactory from './services/toast-factory.js';
 import HttpInterceptorFactory from './services/http-interceptor-factory.js';
 import ViewFrameProvider from './services/view-frame-provider.js';
 
-const {angular} = window;
-const KongDash = angular.module('KongDash', ['ngRoute']);
+const {angular, document} = window;
+const app = angular.module('KongDash', ['ngRoute']);
 
 function registerInterceptor(httpProvider) {
     httpProvider.interceptors.push('interceptor');
 }
 
-KongDash.factory('toast', ['$window', ToastFactory]);
-KongDash.factory('logger', LoggerFactory);
-KongDash.factory('interceptor', ['$q', 'logger', HttpInterceptorFactory]);
+app.factory('toast', ['$window', ToastFactory]);
+app.factory('logger', LoggerFactory);
+app.factory('interceptor', ['$q', 'logger', HttpInterceptorFactory]);
 
-KongDash.config(['$httpProvider', registerInterceptor]);
-KongDash.provider('restClient', RestClientProvider);
-KongDash.provider('viewFrame', ViewFrameProvider);
+app.config(['$httpProvider', registerInterceptor]);
+app.provider('restClient', RestClientProvider);
+app.provider('viewFrame', ViewFrameProvider);
 
 /**
  * Converts first letter of a string to uppercase and
  * replaces underscores with whitespaces.
  */
-KongDash.filter('pgname', () => {
+app.filter('pgname', () => {
     return function (input) {
         if (typeof input !== 'string') {
             return '';
@@ -46,7 +46,7 @@ KongDash.filter('pgname', () => {
  * Converts first letter of a string to uppercase and
  * replaces underscores and hyphens with whitespaces.
  */
-KongDash.filter('capitalise', () => {
+app.filter('capitalise', () => {
     return function (input) {
         if (typeof input !== 'string') {
             return '';
@@ -65,7 +65,7 @@ KongDash.filter('capitalise', () => {
 /**
  * Joins a string array with commas.
  */
-KongDash.filter('splice', () => {
+app.filter('splice', () => {
     return function (input) {
         if (typeof input !== 'object') {
             return '';
@@ -75,4 +75,68 @@ KongDash.filter('splice', () => {
     };
 });
 
-export default KongDash;
+export default {
+    /**
+     *
+     * @param {function} constructorFunc
+     * @param {string} injectables
+     */
+    controller(constructorFunc, ...injectables) {
+        const argList = ['$scope'];
+
+        if (Array.isArray(injectables)) {
+            for (let injectable of injectables) {
+                argList.push(injectable);
+            }
+        }
+
+        argList.push(constructorFunc);
+
+        app.controller(constructorFunc.name, argList);
+    },
+
+    /**
+     *
+     * @param {function} configFunc
+     * @param {string} providers
+     */
+    config(configFunc, ...providers) {
+        const argList = [];
+
+        if (Array.isArray(providers)) {
+            for (let name of providers) {
+                argList.push(`${name}Provider`);
+            }
+        }
+
+        argList.push(configFunc);
+
+        app.config(argList);
+    },
+
+    /**
+     *
+     * @param {function} directiveFunc
+     */
+    directive(directiveFunc) {
+        const name = directiveFunc.name.charAt(0).toLowerCase() + directiveFunc.name.substring(1);
+        app.directive(name.replace('Directive', ''), [directiveFunc]);
+    },
+
+    onReady(readyFunc, ...injectables) {
+        const argList = [];
+
+        if (Array.isArray(injectables)) {
+            for (let injectable of injectables) {
+                argList.push(injectable);
+            }
+        }
+
+        argList.push(readyFunc);
+        app.run(argList);
+    },
+
+    start() {
+        angular.bootstrap(document, ['KongDash']);
+    }
+};

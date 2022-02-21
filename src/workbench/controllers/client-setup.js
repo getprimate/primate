@@ -9,9 +9,11 @@
 
 import * as _ from '../../lib/core-toolkit.js';
 import setupModel from '../models/setup-model.js';
-import {isNone} from '../../lib/core-toolkit.js';
+import {isNil, isNone} from '../../lib/core-toolkit.js';
 
-const {/** @type {IPCHandler} */ ipcHandler} = window;
+const {/** @type {IPCBridge} */ ipcBridge} = window;
+
+let unloadTimeout = null;
 
 /**
  *
@@ -29,7 +31,14 @@ function validateServerResponse(response) {
 }
 
 function ipcWriteClientSetup(payload) {
-    ipcHandler.sendRequest('Write-Connection', payload);
+    ipcBridge.sendRequest('Write-Connection', payload);
+}
+
+function createWorkbenchSession(connectionId) {
+    if (!isNil(unloadTimeout)) {
+        clearTimeout(unloadTimeout);
+        ipcBridge.sendRequest('Create-Workbench-Session', {connectionId});
+    }
 }
 
 /**
@@ -42,15 +51,11 @@ function ipcWriteClientSetup(payload) {
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function ClientSetupController(scope, restClient, viewFrame, toast) {
-    const defaultHost = ipcHandler.sendQuery('Read-Default-Connection');
-
-    console.log(JSON.stringify(defaultHost));
-
     scope.setupModel = _.deepClone(setupModel);
     scope.connectionList = {};
 
     scope.queryConnectionList = function () {
-        const connectionList = ipcHandler.sendQuery('Read-All-Connections');
+        const connectionList = ipcBridge.sendQuery('Read-All-Connections');
 
         if (typeof connectionList.error === 'string') {
             return false;
@@ -74,7 +79,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             if (proceed === true) {
                 delete scope.connectionList[connectionId];
                 /* TODO : Implement delete request handler in main process. */
-                ipcHandler.sendRequest('Delete-Connection', {id: connectionId});
+                ipcBridge.sendRequest('Delete-Connection', {id: connectionId});
             }
 
             return proceed;
@@ -142,9 +147,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
                     return true;
                 }
 
-                if (isNone(nodeName))
-
-                    ipcWriteClientSetup(scope.setupModel);
+                if (isNone(nodeName)) ipcWriteClientSetup(scope.setupModel);
             } catch (error) {
                 toast.error(error.message);
             }
@@ -159,16 +162,30 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         return true;
     };
 
-    if (_.isText(defaultHost.id) && false === _.isEmpty(defaultHost.id)) {
-        for (let property in defaultHost) {
-            scope.setupModel[property] = defaultHost[property];
-        }
+    if (restClient.isConfigured() === true) {
+        const request = restClient.get('/');
 
-        let timeout = setTimeout(() => {
-            scope.attemptConnection();
-            clearTimeout(timeout);
-        }, 2000);
+        request.then(({data: response}) => {
+            try {
+                validateServerResponse(response);
+            } catch (error) {
+                toast.error(`${error}`);
+                return false;
+            }
+
+            unloadTimeout = setTimeout(createWorkbenchSession, 2000, viewFrame.getConfig('sessionId'));
+        });
+
+        request.catch(() => {
+            scope.queryConnectionList();
+            document.body.removeChild(document.getElementById('loaderWrapper'));
+        });
+
+        //for (let property in defaultHost) {
+        //    scope.setupModel[property] = defaultHost[property];
+        //}
     } else {
         scope.queryConnectionList();
+        document.body.removeChild(document.getElementById('loaderWrapper'));
     }
 }

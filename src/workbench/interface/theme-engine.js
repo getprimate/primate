@@ -8,6 +8,7 @@
 'use strict';
 
 import * as _ from '../../lib/core-toolkit.js';
+import {isNil} from '../../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -23,7 +24,14 @@ class ThemeEngine {
             if (!_.isText(nodeId) || _.isNil(styles)) continue;
 
             let element = document.documentElement;
-            if (nodeId !== '_documentElement') element = document.getElementById(nodeId);
+
+            if (nodeId !== '_documentElement') {
+                element = document.getElementById(nodeId);
+            }
+
+            if (isNil(element)) {
+                continue;
+            }
 
             for (let name in styles) {
                 element.style.setProperty(`--${name}`, styles[name]);

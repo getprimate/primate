@@ -216,3 +216,9 @@ export function randomHex(length = 16) {
 
     return randomText.substr(0, length);
 }
+
+export function parseNumeric(value, defaultValue = -1) {
+    const parsed = parseInt(value);
+
+    return isNaN(parsed) ? defaultValue : parsed;
+}

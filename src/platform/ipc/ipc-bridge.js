@@ -13,9 +13,9 @@
  */
 
 /**
- * The IPC Handler helper to be exposed using {@link Electron.contextBridge contextBridge}.
+ * The IPC handler helper to be exposed using {@link Electron.contextBridge contextBridge}.
  *
- * @typedef {Object} IPCHandler
+ * @typedef {Object} IPCBridge
  * @property {(function(
  *      action: string,
  *      listener: IPCEventCallback): boolean
@@ -23,11 +23,7 @@
  * @property {(function(
  *      action: string,
  *      listener: IPCEventCallback): boolean
- *      )} onRequestDone - Registers an event listener to handle successful event responses.
- * @property {(function(
- *      action: string,
- *      listener: IPCEventCallback): boolean
- *      )} onRequestFail - Registers an event listener to handle failed event responses.
+ *      )} onResponse - Registers an event listener to handle successful event responses.
  * @property {(function(action: string, payload: any=): void)} sendRequest - Sends an event to the asynchronous event channel.
  * @property {(function(resource: string, payload: any=): any)} sendQuery - Sends an event to the synchronous event channel.
  * @property {(function(channel: string[]=): void)} removeListeners - Cleans up the existing event listeners.
@@ -43,7 +39,9 @@ function callbackWrapper(event, action, payload) {
         this._channelName = '__none__';
     }
 
-    if (typeof registeredCallbacks[this._channelName] === 'object') {
+    const callbacks = registeredCallbacks[this._channelName];
+
+    if (typeof callbacks === 'object' && Array.isArray(callbacks[action])) {
         for (let callback of registeredCallbacks[this._channelName][action]) {
             callback.call({}, payload);
         }
@@ -68,19 +66,15 @@ function registerCallback(channel, action, listener) {
 /**
  * THe object to be attached to the context.
  *
- * @type {IPCHandler}
+ * @type {IPCBridge}
  */
-const ipcHandler = {
+const ipcBridge = {
     onEventPush(action, listener) {
         return registerCallback('workbench:AsyncEventPush', action, listener);
     },
 
-    onRequestDone(action, listener) {
+    onResponse(action, listener) {
         return registerCallback('workbench:AsyncResponse', action, listener);
-    },
-
-    onRequestFail(action, listener) {
-        return registerCallback('workbench:AsyncError', action, listener);
     },
 
     sendRequest(action, payload = {}) {
@@ -112,7 +106,7 @@ const ipcHandler = {
         let channel = '__none__';
 
         switch (event) {
-            case 'onRequestDone':
+            case 'onResponse':
                 channel = 'workbench:AsyncResponse';
                 break;
 
@@ -126,4 +120,4 @@ const ipcHandler = {
     }
 };
 
-module.exports = {ipcHandler};
+module.exports = {ipcBridge};

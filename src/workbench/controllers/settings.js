@@ -12,7 +12,7 @@ import setupModel from '../models/setup-model.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
 import {deepClone, isDefined} from '../../lib/core-toolkit.js';
 
-const {/** @type {IPCHandler} */ ipcHandler} = window;
+const {/** @type {IPCBridge} */ ipcBridge} = window;
 
 /**
  * Provides controller constructor for setting up the application.
@@ -31,7 +31,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.themeDefs = {};
     scope.workbenchConfig = {};
 
-    ipcHandler.onRequestDone('Write-Connection', (payload) => {
+    ipcBridge.onResponse('Write-Connection', (payload) => {
         if (!_.isObject(payload) || !_.isText(payload.id)) {
             toast.error('Unable to save connection.');
             return false;
@@ -51,7 +51,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     });
 
     scope.queryConnectionList = function () {
-        const connectionList = ipcHandler.sendQuery('Read-All-Connections');
+        const connectionList = ipcBridge.sendQuery('Read-All-Connections');
 
         if (typeof connectionList.error === 'string') {
             return false;
@@ -70,10 +70,9 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     };
 
     scope.queryWorkbenchSettings = function () {
-        scope.workbenchConfig = ipcHandler.sendQuery('Read-Theme-Defs');
-        scope.themeDefs = ipcHandler.sendQuery('Read-Theme-Defs');
+        scope.themeDefs = ipcBridge.sendQuery('Read-Theme-Defs');
 
-        scope.workbenchConfig.nonce = '';
+        scope.workbenchConfig.themeUID = '';
     };
 
     scope.handleConnectionClick = function (event) {
@@ -87,7 +86,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         const tbody = tableRow.parentElement;
 
         if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
-            ipcHandler.sendRequest('Write-Connection', {id: connectionId, isRemoved: true});
+            ipcBridge.sendRequest('Write-Connection', {id: connectionId, isRemoved: true});
 
             delete scope.connectionList[connectionId];
             tbody.removeChild(tableRow);
@@ -140,7 +139,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             delete scope.connectionModel.isDefault;
         }
 
-        ipcHandler.sendRequest('Write-Connection', scope.connectionModel);
+        ipcBridge.sendRequest('Write-Connection', scope.connectionModel);
 
         return true;
     };
@@ -149,14 +148,16 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         const {target} = event;
 
         if (target.nodeName === 'INPUT' && _.isText(target.value)) {
-            ipcHandler.sendRequest('Update-Theme', {nonce: target.value});
+            ipcBridge.sendRequest('Read-Theme-Style', {themeUID: target.value});
             return true;
         }
 
         return false;
     };
 
-    scope.switchNotebookTabs = switchTabInitiator();
+    scope.switchNotebookTabs = switchTabInitiator((attributes) => {
+        console.log(JSON.stringify(attributes));
+    });
 
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/settings', 'Settings');
@@ -165,7 +166,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.queryWorkbenchSettings();
 
     scope.$on('$destroy', () => {
-        ipcHandler.removeCallbacks('onRequestDone', 'Write-Connection');
+        ipcBridge.removeCallbacks('onResponse', 'Write-Connection');
 
         scope.connectionModel = null;
         scope.connectionList = null;

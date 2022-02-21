@@ -106,7 +106,7 @@
                     <table class="card-table">
                         <tbody data-ng-click="setWorkbenchTheme($event)">
                         <tr data-ng-repeat="theme in themeDefs">
-                            <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeNonce" value="{{theme.nonce}}" /></td>
+                            <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
                             <td><strong>{{theme.name}}</strong>
                                 <br />Version: {{theme.version}}
                                 <br />{{theme.maintainer}}</td>

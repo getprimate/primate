@@ -1,6 +1,6 @@
 'use strict';
 
 const {contextBridge} = require('electron');
-const {ipcHandler} = require('./ipc/ipc-handler');
+const {ipcBridge} = require('./ipc/ipc-bridge');
 
-contextBridge.exposeInMainWorld('ipcHandler', ipcHandler);
+contextBridge.exposeInMainWorld('ipcBridge', ipcBridge);

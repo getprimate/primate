@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-ng-app="KongDash" lang="en">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name=viewport content="width=device-width, initial-scale=1"/>
@@ -11,6 +11,22 @@
 <link rel="stylesheet" type="text/css" href="static/css/layout.css" />
 
 <style>
+div#loaderWrapper {
+    float: none;
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 125;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--theme__default-bg);
+}
+
 main.content {
     padding-top: 10%;
     overflow: hidden;
@@ -35,11 +51,49 @@ form.form {
 #bt-ed__wrp01 > .col.md-7 {
     border-left: 1px solid var(--widget__accent-bg);
 }
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--theme__default-fg);
+    border-radius: 50%;
+    display: block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 3px solid;
+    border-color: var(--theme__accent-fg) transparent;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 </style>
 
 </head>
-<body class="body">
-<main class="content">
+<body>
+<div id="loaderWrapper">
+    <div class="loader"></div>
+    <div class="vpadding-20"><strong>Loading</strong></div>
+</div><!-- #loaderWrapper -->
+
+<main id="contentWrapper" class="content">
 
 <section data-ng-controller="ClientSetupController" id="index__ngView">
     <div class="well">
