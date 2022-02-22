@@ -80,7 +80,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             delete scope.connectionModel.isDefault;
         }
 
-        ipcBridge.sendRequest('Write-Connection', scope.connectionModel);
+        ipcBridge.sendRequest('Write-Connection-Config', scope.connectionModel);
 
         return true;
     };
@@ -96,7 +96,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         const tbody = tableRow.parentElement;
 
         if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
-            ipcBridge.sendRequest('Write-Connection', {id: connectionId, isRemoved: true});
+            ipcBridge.sendRequest('Write-Connection-Config', {id: connectionId, isRemoved: true});
 
             delete scope.connectionList[connectionId];
             tbody.removeChild(tableRow);
@@ -177,7 +177,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     });
 
     /* Remove deleted connections. */
-    ipcBridge.onResponse('Write-Connection', (payload) => {
+    ipcBridge.onResponse('Write-Connection-Config', (payload) => {
         if (!isObject(payload) || !isText(payload.id)) {
             toast.error('Unable to save connection.');
             return false;

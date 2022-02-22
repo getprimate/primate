@@ -55,7 +55,8 @@ function configure(options) {
         method: options.method,
         url: options.url || CLIENT_CONFIG.host + options.resource,
         headers: {},
-        withCredentials: false
+        withCredentials: false,
+        timeout: 20000
     };
 
     if (typeof options.url === 'string') {

@@ -9,131 +9,135 @@
 </ul><!-- .notebook__tab -->
 
 <section id="st-ed__npg01" class="notebook__page active">
-    <div class="well">
-        <div class="well__heading">Connection Settings</div>
+<div class="panel panel-border success">
+<div class="panel__heading border-bottom-solid"><span class="title">Connection Settings</span></div>
 
-        <div class="row only-grid">
-            <div class="col md-6">
-                <div class="well__scroll-area large">
-                    <table class="card-table clickable">
-                        <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
-                        <tbody data-ng-click="handleConnectionClick($event)">
-                        <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}" class="{{connId === connectionId ? 'active' : ''}}">
-                            <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
-                            <td><strong>{{connProps.name}}</strong>
-                                <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
-                            <br>Last Used on: 04 February, 2022</td>
-                            <td class="row-actions">
-                                <span data-ng-if="connId === connectionId" title="Current Session Connection" class="material-icons warning" data-target="consumer">edit</span>
-                                <span data-ng-if="connId !== connectionId" title="Delete Connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div><!-- .well__scroll-area -->
-            </div><!-- .col.md-6 -->
-            <div class="col md-6">
-                <form data-ng-if="connectionModel.id.length>=12" method="POST" class="form" data-ng-submit="updateConnection($event)">
-                    <div class="form__field">
-                        <label class="field-label">{{connectionModel.name}}</label>
-                        <div class="field-input">
-                            <article>{{connectionModel.protocol}}://{{connectionModel.adminHost}}:{{connectionModel.adminPort}}/</article>
+<div class="panel__body">
+    <div class="row separated">
+        <div class="col md-6">
+            <div class="scroll-area large">
+                <table class="card-table clickable">
+                    <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
+                    <tbody data-ng-click="handleConnectionClick($event)">
+                    <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}" class="{{connId === connectionId ? 'active' : ''}}">
+                        <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
+                        <td><strong>{{connProps.name}}</strong>
+                            <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
+                        <br>Last Used on: 04 February, 2022</td>
+                        <td class="row-actions">
+                            <span data-ng-if="connId === connectionId" title="Current Session Connection" class="material-icons warning" data-target="consumer">edit</span>
+                            <span data-ng-if="connId !== connectionId" title="Delete Connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div><!-- .well__scroll-area -->
+        </div><!-- .col.md-6 -->
+        <div class="col md-6">
+            <form data-ng-if="connectionModel.id.length>=12" method="POST" class="form" data-ng-submit="updateConnection($event)">
+                <div class="form__field">
+                    <label class="field-label">{{connectionModel.name}}</label>
+                    <div class="field-input">
+                        <article>{{connectionModel.protocol}}://{{connectionModel.adminHost}}:{{connectionModel.adminPort}}/</article>
+                    </div>
+                </div><!-- .form__field -->
+
+                <div class="row">
+                    <div class="col md-12">
+                        <div class="form__field">
+                            <label class="field-label">Connection Name</label>
+                            <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" maxlength="35" /></div>
                         </div>
-                    </div><!-- .form__field -->
+                    </div><!-- .col.md-12 -->
+                </div><!-- .row -->
 
-                    <div class="row">
-                        <div class="col md-12">
-                            <div class="form__field">
-                                <label class="field-label">Connection Name</label>
-                                <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" maxlength="35" /></div>
-                            </div>
-                        </div><!-- .col.md-12 -->
-                    </div><!-- .row -->
+                <div class="form__field">
+                    <label class="field-label">Username</label>
+                    <div class="field-input"><input data-ng-model="connectionModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
+                </div><!-- .form__field -->
 
-                    <div class="form__field">
-                        <label class="field-label">Username</label>
-                        <div class="field-input"><input data-ng-model="connectionModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
-                    </div><!-- .form__field -->
+                <div class="form__field">
+                    <label class="field-label">Password</label>
+                    <div class="field-input"><input data-ng-model="connectionModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
+                </div><!-- .form__field -->
 
-                    <div class="form__field">
-                        <label class="field-label">Password</label>
-                        <div class="field-input"><input data-ng-model="connectionModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
-                    </div><!-- .form__field -->
+                <div class="row">
+                    <div class="col md-6">
+                        <div class="form__field">
+                            <label class="field-label">Color</label>
+                            <ul class="field-input linked">
+                                <li style="width: 41px"><input data-ng-model="connectionModel.colorCode" type="color" name="colorCode" /></li>
+                                <li><input type="text" data-ng-model="connectionModel.colorCode" readonly /></li>
+                            </ul>
+                        </div>
+                    </div><!-- .col.md-6 -->
 
-                    <div class="row">
-                        <div class="col md-6">
-                            <div class="form__field">
-                                <label class="field-label">Color</label>
-                                <ul class="field-input linked">
-                                    <li style="width: 41px"><input data-ng-model="connectionModel.colorCode" type="color" name="colorCode" /></li>
-                                    <li><input type="text" data-ng-model="connectionModel.colorCode" readonly /></li>
-                                </ul>
-                            </div>
-                        </div><!-- .col.md-6 -->
+                    <div class="col md-6">
+                        <div class="form__field align-right">
+                            <label class="field-label">&nbsp;</label>
+                            <div class="field-input"><button type="submit" class="btn success" name="attemptConnection">Save</button></div><!-- .field-input -->
+                        </div><!-- .form__field.align-right -->
+                    </div><!-- .col.md-6 -->
+                </div><!-- .row -->
+            </form><!-- .form -->
 
-                        <div class="col md-6">
-                            <div class="form__field align-right">
-                                <label class="field-label">&nbsp;</label>
-                                <div class="field-input"><button type="submit" class="btn success" name="attemptConnection">Save</button></div><!-- .field-input -->
-                            </div><!-- .form__field.align-right -->
-                        </div><!-- .col.md-6 -->
-                    </div><!-- .row -->
-                </form><!-- .form -->
-
-                <div class="align-center" data-ng-if="connectionModel.id.length<=11">
-                    <form style="margin-top: 100px; margin-bottom: 100px"><article>
-                    <p><span class="material-icons hero">cable</span> </p>
-                    <p><strong>Click on a connection to edit...</strong></p>
-                    </article></form>
-                </div>
-            </div><!-- .col.md-6 -->
-        </div>
-    </div>
-</section>
+            <div class="align-center" data-ng-if="connectionModel.id.length<=11">
+                <form style="margin-top: 100px; margin-bottom: 100px"><article>
+                <p><span class="material-icons hero">cable</span> </p>
+                <p><strong>Click on a connection to edit...</strong></p>
+                </article></form>
+            </div>
+        </div><!-- .col.md-6 -->
+    </div><!-- .row -->
+</div><!-- .panel__body -->
+</div><!-- .panel.panel-border -->
+</section><!-- #st-ed__npg01 -->
 
 <section id="st-ed__npg02" class="notebook__page">
-    <div class="well">
-        <div class="well__heading">Workbench Settings</div>
+<div class="panel panel-border success">
+<div class="panel__heading bottom-solid"><span class="title">Workbench Settings</span></div>
 
-        <div class="row">
-            <div class="col md-6">
-                <form method="get">
-                    <div class="form__field">
-                        <label class="field-label">Date Format</label>
-                        <div class="field-input">
-                            <select data-ng-model="workbenchConfig.dateFormat"><option data-ng-repeat="format in ENUM_DATE_FORMAT" value="{{format.nodeValue}}">{{format.displayText}}</option></select>
-                        </div><!-- .field-input -->
-                    </div>
+<div class="panel__body">
+    <div class="row separated">
+        <div class="col md-6">
+            <form method="get">
+                <div class="form__field">
+                    <label class="field-label">Date Format</label>
+                    <div class="field-input">
+                        <select data-ng-model="workbenchConfig.dateFormat"><option data-ng-repeat="format in ENUM_DATE_FORMAT" value="{{format.nodeValue}}">{{format.displayText}}</option></select>
+                    </div><!-- .field-input -->
+                </div>
 
-                    <div class="form__field">
-                        <label class="field-label">Appearance</label>
-                        <div class="field-input">
-                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showFooter"> Show Status Bar</label>
-                        </div><!-- .field-input -->
-                        <div class="field-input">
-                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showBreadcrumbs"> Show Navigation Bar</label>
-                        </div><!-- .field-input -->
-                    </div>
-                </form>
-            </div><!-- .col.md-6 -->
-            <div class="col md-6">
-                <div class="well__scroll-area large">
-                    <table class="card-table">
-                        <thead><tr><th colspan="2">Themes</th></tr></thead>
-                        <tbody data-ng-click="setWorkbenchTheme($event)">
-                        <tr data-ng-repeat="theme in themeList">
-                            <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
-                            <td><strong>{{theme.name}}</strong>
-                                <br />Version: {{theme.version}}
-                                <br />{{theme.maintainer}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div><!-- .well__scroll-area.large -->
-            </div><!-- .col.md-6 -->
-        </div><!-- .row -->
-    </div><!-- .well -->
-</section>
+                <div class="form__field">
+                    <label class="field-label">Appearance</label>
+                    <div class="field-input">
+                        <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showFooter"> Show Status Bar</label>
+                    </div><!-- .field-input -->
+                    <div class="field-input">
+                        <label class="checkbox"><input type="checkbox" class="success" data-ng-model="workbenchConfig.showBreadcrumbs"> Show Navigation Bar</label>
+                    </div><!-- .field-input -->
+                </div>
+            </form>
+        </div><!-- .col.md-6 -->
+        <div class="col md-6">
+            <div class="well__scroll-area large">
+                <table class="card-table">
+                    <thead><tr><th colspan="2">Themes</th></tr></thead>
+                    <tbody data-ng-click="setWorkbenchTheme($event)">
+                    <tr data-ng-repeat="theme in themeList">
+                        <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
+                        <td><strong>{{theme.name}}</strong>
+                            <br />Version: {{theme.version}}
+                            <br />{{theme.maintainer}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div><!-- .well__scroll-area.large -->
+        </div><!-- .col.md-6 -->
+    </div><!-- .row -->
+</div><!-- .panel__body -->
+</div><!-- .panel.panel-border -->
+</section><!-- #st-ed__npg02 -->
 
 </div><!-- .notebook -->
 </div><!-- .col.md-8 -->

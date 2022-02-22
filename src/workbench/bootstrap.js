@@ -12,6 +12,7 @@ import {isNil, isNone, isObject, isText, parseNumeric} from '../lib/core-toolkit
 import KongDash from './kongdash.js';
 import ThemeEngine from './interface/theme-engine.js';
 
+import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
 import ClientSetupController from './controllers/client-setup.js';
 
@@ -22,6 +23,7 @@ import ClientSetupController from './controllers/client-setup.js';
  */
 const ipcBridge = window.ipcBridge;
 
+KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
 KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 KongDash.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
 
@@ -42,11 +44,6 @@ ipcBridge.onResponse('Read-Workbench-Config', (config) => {
     }
 
     ipcBridge.sendRequest('Read-Default-Connection');
-});
-
-ipcBridge.onResponse('Write-Connection', () => {
-    ipcBridge.removeListeners();
-    ipcBridge.sendRequest('Create-Workbench-Session');
 });
 
 ipcBridge.onResponse('Read-Default-Connection', (connection) => {

@@ -9,7 +9,7 @@
 
 /**
  * @typedef {(
- *      'Write-Connection' |
+ *      'Write-Connection-Config' |
  *      'Create-Workbench-Session' |
  *      'Destroy-Workbench-Session' |
  *      'Read-Connection-List' |

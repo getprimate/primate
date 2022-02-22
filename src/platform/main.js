@@ -46,15 +46,8 @@ app.on('will-quit', () => {
     ipcServer.removeListeners();
 });
 
-ipcServer.registerRequestHandler('Write-Connection', (event, payload) => {
-    try {
-        const connection = configManager.writeConnection(payload);
-        connectionMap[`window${event.senderId}`] = connection.id;
-
-        return connection;
-    } catch (error) {
-        return {message: `${error}`};
-    }
+ipcServer.registerRequestHandler('Write-Connection-Config', (event, payload) => {
+    return configManager.writeConnection(payload);
 });
 
 ipcServer.registerRequestHandler('Write-Workbench-Config', (event, config) => {
@@ -82,11 +75,17 @@ ipcServer.registerRequestHandler('Read-Theme-Style', async (event, payload) => {
     return await themeScanner.readStyle(payload.themeUID);
 });
 
-ipcServer.registerRequestHandler('Create-Workbench-Session', async (event, payload) => {
-    connectionMap[`window${event.senderId}`] = payload.connectionId;
-    await rendererWindow.showDashboard();
+ipcServer.registerRequestHandler('Create-Workbench-Session', async (event, session) => {
+    if (typeof session.sessionId === 'string' && session.sessionId.length >= 16) {
+        connectionMap[`window${event.senderId}`] = session.sessionId;
 
-    return null;
+    } else if (typeof session.adminHost === 'string' && typeof session.protocol === 'string') {
+        const connection = configManager.writeConnection(session);
+        connectionMap[`window${event.senderId}`] = connection.id;
+    }
+
+    await rendererWindow.showDashboard();
+    return {};
 });
 
 ipcServer.registerRequestHandler('Read-Connection-List', () => {

@@ -7,38 +7,45 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
+import {deepClone, isText, isObject, isNil} from '../../lib/core-toolkit.js';
+import {errorCode, WorkbenchError} from '../exception/error.js';
 import setupModel from '../models/setup-model.js';
-import {isNil, isNone} from '../../lib/core-toolkit.js';
-
-const {/** @type {IPCBridge} */ ipcBridge} = window;
-
-let unloadTimeout = null;
 
 /**
+ * IPC bridge exposed over isolated context.
  *
- * @param {{
- *     configuration: {kong_env: string},
- *     version: string
- * }} response
+ * @type {IPCBridge}
+ */
+const ipcBridge = window.ipcBridge;
+const cache = {unloadTimeout: null};
+
+function requestWorkbenchSession(sessionId) {
+    if (!isNil(cache.unloadTimeout)) {
+        clearTimeout(cache.unloadTimeout);
+
+        ipcBridge.removeListeners();
+        ipcBridge.sendRequest('Create-Workbench-Session', {sessionId});
+    }
+}
+
+/**
+ * Validates response from the Admin API.
+ *
+ * @template T
+ * @param {T} response - The response from the API server.
+ * @return {T} The validated response object.
  */
 function validateServerResponse(response) {
-    if (!_.isObject(response.configuration) || !_.isText(response.configuration.kong_env)) {
-        throw new Error('Unable to detect Kong Admin API running on the provided address.');
+    if (!isObject(response.configuration) || !isText(response.configuration.kong_env)) {
+        throw new WorkbenchError('Unable to detect Kong Admin API on the provided address.', errorCode.INVALID_HOST);
     }
 
     return response;
 }
 
-function ipcWriteClientSetup(payload) {
-    ipcBridge.sendRequest('Write-Connection', payload);
-}
-
-function createWorkbenchSession(connectionId) {
-    if (!isNil(unloadTimeout)) {
-        clearTimeout(unloadTimeout);
-        ipcBridge.sendRequest('Create-Workbench-Session', {connectionId});
-    }
+function removeSpinner() {
+    ipcBridge.sendRequest('Read-Connection-List');
+    document.body.removeChild(document.getElementById('loaderWrapper'));
 }
 
 /**
@@ -50,86 +57,55 @@ function createWorkbenchSession(connectionId) {
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI attributes.
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
+
 export default function ClientSetupController(scope, restClient, viewFrame, toast) {
-    scope.setupModel = _.deepClone(setupModel);
+    const eventLocks = {submitSetupForm: false};
+
+    scope.setupModel = deepClone(setupModel);
     scope.connectionList = {};
-
-    scope.queryConnectionList = function () {
-        const connectionList = ipcBridge.sendQuery('Read-Connection-List');
-
-        if (typeof connectionList.error === 'string') {
-            return false;
-        }
-
-        scope.connectionList = connectionList;
-    };
-
-    scope.pickConnection = function (event) {
-        const {target} = event;
-        let tableRow = target;
-
-        if (target.nodeName === 'TBODY') return false;
-        else if (target.nodeName !== 'TR') tableRow = target.closest('tr');
-
-        const {connectionId} = tableRow.dataset;
-
-        if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
-            const proceed = confirm('Delete this connection?');
-
-            if (proceed === true) {
-                delete scope.connectionList[connectionId];
-                /* TODO : Implement delete request handler in main process. */
-                ipcBridge.sendRequest('Delete-Connection', {id: connectionId});
-            }
-
-            return proceed;
-        }
-
-        const fields = Object.keys(scope.connectionList[connectionId]);
-
-        for (let field of fields) {
-            scope.setupModel[field] = scope.connectionList[connectionId][field];
-            scope.setupModel.id = connectionId;
-        }
-
-        if (target.nodeName === 'SPAN' && target.classList.contains('edit')) {
-            return true;
-        }
-
-        return scope.attemptConnection();
-    };
+    scope.savedItemCount = 0;
 
     /**
      * Attempts to connect to the specified server.
      *
-     * @param {{target: Object, preventDefault: function}|null} event
-     * @returns {boolean}
+     * @param {SubmitEvent|Object} event - The event object if triggered by user.
      */
-    scope.attemptConnection = function (event = null) {
-        const {nodeName} = _.isObject(event) && _.isObject(event.target) ? event.target : {nodeName: '__none__'};
+    scope.attemptConnection = function (event) {
+        if (eventLocks.submitSetupForm === true) {
+            return false;
+        }
 
-        if (_.isObject(event) && typeof event.preventDefault === 'function') event.preventDefault();
+        const {target} = event;
+        const {setupModel} = scope;
 
-        for (let property in scope.setupModel) {
-            if (_.isText(scope.setupModel[property])) {
-                scope.setupModel[property] = scope.setupModel[property].trim();
+        /* Sanitize and validate the model values. */
+        const fieldList = Object.keys(setupModel);
+
+        for (let field of fieldList) {
+            if (isText(setupModel[field])) {
+                setupModel[field] = setupModel[field].trim();
             }
         }
 
-        if (scope.setupModel.adminHost.length === 0) {
+        if (target.nodeName === 'FORM') {
+            event.preventDefault();
+
+            if (setupModel.name.length === 0) {
+                toast.error('Please set a name for this connection.');
+                return false;
+            }
+        }
+
+        if (setupModel.adminHost.length === 0) {
             toast.error('Please provide a valid host address.');
             return false;
         }
-        if (nodeName === 'FORM' && scope.setupModel.name.length === 0) {
-            toast.error('Please set a name for this connection.');
-            return false;
-        }
 
-        const options = {
-            url: `${scope.setupModel.protocol}://${scope.setupModel.adminHost}:${scope.setupModel.adminPort}`,
-            method: 'GET',
-            headers: {}
-        };
+        eventLocks.submitSetupForm = true;
+        viewFrame.setLoaderSteps(1);
+
+        const url = `${setupModel.protocol}://${setupModel.adminHost}:${setupModel.adminPort}`;
+        const options = {method: 'GET', headers: {}, url};
 
         if (scope.setupModel.basicAuth.username.length >= 1) {
             const {basicAuth} = scope.setupModel;
@@ -142,14 +118,14 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             try {
                 validateServerResponse(response);
 
-                if (nodeName === 'BUTTON') {
+                if (target.nodeName === 'BUTTON') {
                     toast.success('Test OK');
                     return true;
                 }
 
-                if (isNone(nodeName)) ipcWriteClientSetup(scope.setupModel);
+                ipcBridge.sendRequest('Create-Workbench-Session', scope.setupModel);
             } catch (error) {
-                toast.error(error.message);
+                toast.error(error.getMessage());
             }
         });
 
@@ -159,33 +135,92 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             else toast.error(error.message);
         });
 
+        request.finally(() => {
+            eventLocks.submitSetupForm = false;
+            viewFrame.incrementLoader();
+        });
+
         return true;
     };
 
-    if (restClient.isConfigured() === true) {
+    /**
+     * Picks the selected connection from the saved connection list.
+     *
+     * @param {Event} event - The click event object.
+     * @return {boolean} True if action completed, false otherwise.
+     */
+    scope.pickSavedConnection = function (event) {
+        const {target} = event;
+        let tableRow = target;
+
+        if (target.nodeName === 'TBODY') {
+            return false;
+        }
+
+        if (target.nodeName !== 'TR') {
+            tableRow = target.closest('tr');
+        }
+
+        const {connectionId} = tableRow.dataset;
+
+        if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
+            const proceed = confirm('Delete this connection?');
+
+            if (proceed === true) {
+                delete scope.connectionList[connectionId];
+                ipcBridge.sendRequest('Write-Connection-Config', {id: connectionId, isRemoved: true});
+            }
+
+            /* Reset setup model form, if this connection is copied to the form. */
+            if (scope.setupModel.id === connectionId) {
+                scope.setupModel = deepClone(setupModel);
+            }
+
+            return proceed;
+        }
+
+        const fields = Object.keys(scope.connectionList[connectionId]);
+
+        for (let field of fields) {
+            scope.setupModel[field] = scope.connectionList[connectionId][field];
+            scope.setupModel.id = connectionId;
+        }
+
+        return scope.attemptConnection({target: {nodeName: '__none__'}});
+    };
+
+    /* Populate connection list upon Read-Connection-List event response. */
+    ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
+        if (isText(connectionList.error)) {
+            toast.warning('Unable to display connection history.');
+            return false;
+        }
+
+        scope.$apply((this_) => {
+            this_.connectionList = connectionList;
+            this_.savedItemCount = Object.keys(this_.connectionList).length;
+        });
+    });
+
+    if (restClient.isConfigured() && isText(viewFrame.getConfig('sessionId'))) {
         const request = restClient.get('/');
 
         request.then(({data: response}) => {
             try {
                 validateServerResponse(response);
             } catch (error) {
-                toast.error(`${error}`);
+                toast.error(error.getMessage());
                 return false;
             }
 
-            unloadTimeout = setTimeout(createWorkbenchSession, 2000, viewFrame.getConfig('sessionId'));
+            cache.unloadTimeout = setTimeout(requestWorkbenchSession, 2000, viewFrame.getConfig('sessionId'));
+            return true;
         });
 
         request.catch(() => {
-            scope.queryConnectionList();
-            document.body.removeChild(document.getElementById('loaderWrapper'));
+            removeSpinner();
         });
-
-        //for (let property in defaultHost) {
-        //    scope.setupModel[property] = defaultHost[property];
-        //}
     } else {
-        scope.queryConnectionList();
-        document.body.removeChild(document.getElementById('loaderWrapper'));
+        removeSpinner();
     }
 }

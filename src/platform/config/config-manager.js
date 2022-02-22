@@ -62,7 +62,7 @@ class ConfigManager {
     }
 
     writeConnection(connection) {
-        if (typeof connection.id !== 'string' || connection.id.length === 0) {
+        if (typeof connection.id !== 'string' || connection.id.length <= 15) {
             connection.id = crypto.randomBytes(8).toString('hex');
         }
 

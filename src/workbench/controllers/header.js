@@ -15,9 +15,8 @@
  * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {ToastFactory} toast - Factory for displaying notifications.
- * @param {LoggerFactory} logger - Factory for logging activities.
  */
-export default function HeaderController(scope, restClient, viewFrame, toast, logger) {
+export default function HeaderController(scope, restClient, viewFrame, toast) {
     scope.frameState = viewFrame.getState();
     scope.frameConfig = viewFrame.getFrameConfig();
 
@@ -67,16 +66,13 @@ export default function HeaderController(scope, restClient, viewFrame, toast, lo
 
             const request = restClient.delete(endpoint);
 
-            request.then(({httpText}) => {
+            request.then(() => {
                 toast.success(`${target} deleted.`);
-                logger.info(httpText);
-
                 window.location.href = redirect;
             });
 
-            request.catch(({data: error, httpText}) => {
+            request.catch(() => {
                 toast.error(`Unable to delete ${target}.`);
-                logger.exception(httpText, error);
             });
         }
 

@@ -1183,7 +1183,7 @@ form p.metadata { margin: 0; padding-top: 13px; }
 }
 
 .panel .panel__body {
-    padding: 0 min(1.041vw, 20px);
+    padding: 0 20px;
     border-radius: 0 0 var(--theme__widget-corner) var(--theme__widget-corner);
 }
 .panel .panel__split {
@@ -1287,26 +1287,6 @@ form p.metadata { margin: 0; padding-top: 13px; }
 .well .highlight { background-color: #34444d; }
 
 
-
-.well > form {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.well__heading + form { padding-top: 20px; }
-
-.row .col:first-child > form {
-    padding-left: 20px;
-}
-
-.row .col:last-child > form {
-    padding-right: 20px;
-}
-
-.well .row .col > form {
-    padding-top: 20px;
-}
-
 /**
  * Notebooks and tabbed browsing.
  *
@@ -1365,7 +1345,11 @@ form p.metadata { margin: 0; padding-top: 13px; }
  *
  * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
  */
-.container { display: block; position: relative; padding: 0; }
+.container {
+    display: block;
+    position: relative;
+    padding: 0;
+}
 
 .row {
     display: block;
@@ -1375,25 +1359,59 @@ form p.metadata { margin: 0; padding-top: 13px; }
 
 form .row { margin-bottom: 0 !important; }
 
-.row::before { display: table; content: " "; }
-.row::after { display: table; content: " "; clear: both; }
+.row::before,
+.row::after {
+    display: table;
+    content: " ";
+}
+.row::after {
+    clear: both;
+}
 
-.row >.col {
+.row > .col {
     display: block;
     float: left;
     position: relative;
-    background: transparent;
-    padding: 0 10px 0 10px;
     margin: 0;
+    padding: 0 10px 0 10px;
+    background: transparent;
 }
 
-.row > .col:first-child { padding-left: 0; }
-.row > .col:last-child { padding-right: 0; }
-.row > .col:only-child { padding-left: 0 !important; padding-right: 0 !important; }
+.row > .col:first-child {
+    padding-left: 0;
+}
+
+.row > .col:last-child {
+    padding-right: 0;
+}
+
+.row > .col:only-child {
+    padding-left: 0;
+    padding-right: 0;
+}
 
 .row.only-grid > .col {
     padding: 0 !important;
     margin: 0 !important;
+}
+
+.row.separated > .col {
+    border-right: 1px solid var(--widget__accent-bg);
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.row.separated > .col:first-child {
+    padding-left: 0;
+}
+
+.row.separated > .col:last-child {
+    padding-right: 0;
+}
+
+.row.separated > .col:last-child,
+.row.separated > .col:only-child {
+    border-right-width: 0;
 }
 
 .md-1 { width: 8.333% !important; }
@@ -1717,8 +1735,16 @@ section.notebook__page .row.only-grid > .col:last-child form {
 }
 
 /**
- * Miscellaneous helper classes.
+ * Fix layouts.
+ *
+ * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
+ */
 
+
+
+/**
+ * Miscellaneous helper classes.
+ *
  * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
  */
 
@@ -1728,7 +1754,8 @@ section.notebook__page .row.only-grid > .col:last-child form {
 
 .border-bottom-dashed { border-bottom: 1px dashed #49626e }
 
-.border-bottom-solid { border-bottom: 1px solid var(--widget__accent-bg); }
+.border-bottom-solid,
+.bottom-solid { border-bottom: 1px solid var(--widget__accent-bg); }
 
 .subheading { margin: 0 0 10px 0; padding: 0 0 10px 0; }
 

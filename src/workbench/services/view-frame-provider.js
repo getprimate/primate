@@ -143,8 +143,8 @@ function buildViewFrameFactory(timeoutFn) {
 
         setLoaderSteps(steps) {
             if (frameState.loaderWidth === 0 && steps >= 1) {
-                frameState.loaderStep = Math.ceil(100 / steps);
-                frameState.loaderWidth = 1;
+                frameState.loaderStep = Math.ceil(65 / steps);
+                frameState.loaderWidth = 35;
                 frameState.loaderUnit = `${frameState.loaderWidth}vw`;
             }
 

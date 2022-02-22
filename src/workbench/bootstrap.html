@@ -34,7 +34,7 @@ main.content {
 }
 
 section#index__ngView {
-    width: min(67vw, 1280px);
+    width: min(67vw, 1080px);
     margin: 0 auto 0 auto;
 }
 
@@ -48,7 +48,7 @@ form.form {
     padding: 20px min(1.041vw, 20px);
 }
 
-#bt-ed__wrp01 > .col.md-7 {
+#bt-ed__wrp01 > .col:last-child {
     border-left: 1px solid var(--widget__accent-bg);
 }
 
@@ -93,40 +93,40 @@ form.form {
     <div class="vpadding-20"><strong>Loading</strong></div>
 </div><!-- #loaderWrapper -->
 
+<header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
+    <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
+</header>
 <main id="contentWrapper" class="content">
 
 <section data-ng-controller="ClientSetupController" id="index__ngView">
     <div class="panel panel-border success">
     <div class="panel__heading border-bottom-solid"><span class="title">Setup KongDash</span></div>
     <div class="panel__body">
-        <div id="bt-ed__wrp01" class="row">
-        <div class="col md-5 no-padding">
+        <div class="row separated">
+        <div class="col md-6">
         <table class="card-table clickable">
             <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
-            <tbody data-ng-click="pickConnection($event)">
+            <tbody data-ng-click="pickSavedConnection($event)">
             <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
                 <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
                 <td><strong>{{connProps.name}}</strong>
                     <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
                     <br>Last Used on: 04 February, 2022</td>
-                <td class="row-actions">
-                    <span title="Edit before connecting" class="material-icons edit warning">edit</span>
-                    <span title="Delete connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>
-                </td><!-- .row-actions -->
+                <td class="row-actions"><span title="Delete connection" class="material-icons critical delete" data-target="consumer">delete_forever</span></td><!-- .row-actions -->
             </tr>
             </tbody>
 
-            <tbody class="info-placeholder">
+            <tbody data-ng-if="savedItemCount === 0" class="info-placeholder">
             <tr>
                 <td><span class="material-icons">badge</span></td>
-                <td>No connections are saved!</td>
+                <td colspan="2">No connections are saved!</td>
             </tr>
             </tbody><!-- .info-placeholder -->
 
         </table><!-- .board -->
         </div><!-- .col.md-6.no-padding -->
 
-        <div class="col md-7 no-padding">
+        <div class="col md-6">
         <form method="POST" data-ng-submit="attemptConnection($event)">
             <div class="form__field">
                 <label class="field-label">Admin API</label>
