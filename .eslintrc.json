@@ -20,5 +20,5 @@
         "require-await": ["error"],
         "eol-last": ["error", "always"]
     },
-    "ignorePatterns": ["**/static/*.js"]
+    "ignorePatterns": ["**/static/*.js", "dist/**"]
 }
