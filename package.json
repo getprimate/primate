@@ -10,10 +10,7 @@
   "scripts": {
     "test": "yarn run lint",
     "lint": "eslint src/lib src/platform src/workbench",
-    "start": "electron . --trace-warnings",
-    "pack:linux": "gulp pack-linux64",
-    "pack:windows": "gulp pack-windows64",
-    "pack:osx": "gulp pack-osx"
+    "start": "grunt start"
   },
   "dependencies": {
     "ospath": "^1.2.2",
@@ -22,6 +19,8 @@
   "devDependencies": {
     "electron": "^16.0.7",
     "eslint": "^8.8.0",
-    "prettier": "^2.5.1"
+    "grunt": "^1.4.1",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2"
   }
 }
