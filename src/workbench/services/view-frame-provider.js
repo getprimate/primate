@@ -39,7 +39,7 @@
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
  */
 
-import {isText, isDefined, isEmpty} from '../../lib/core-toolkit.js';
+import {isText, isDefined, isEmpty} from '../lib/core-toolkit.js';
 
 const frameCache = {
     isLoading: false

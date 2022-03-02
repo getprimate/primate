@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isText, isEmpty, isNil, deepClone, isNone} from '../../lib/core-toolkit.js';
+import {isText, isEmpty, isNil, deepClone, isNone} from '../lib/core-toolkit.js';
 import {
     deleteMethodInitiator,
     editViewURL,

@@ -15,7 +15,7 @@
  * @param {{target?: string, attribute?: string}=} properties - The property payload from the function.
  */
 
-import {isText, isObject, isEmpty} from '../../lib/core-toolkit.js';
+import {isText, isObject, isEmpty} from '../lib/core-toolkit.js';
 
 /**
  * Handles delete requests initiated from delete icons.

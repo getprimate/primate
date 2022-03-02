@@ -10,7 +10,7 @@ import {
     ArcElement
 } from '../static/chart-esm.js';
 
-import {isNil, isObject} from '../../lib/core-toolkit.js';
+import {isNil, isObject} from '../lib/core-toolkit.js';
 
 Chart.register(CategoryScale, LinearScale, BarElement, BarController, DoughnutController, ArcElement);
 

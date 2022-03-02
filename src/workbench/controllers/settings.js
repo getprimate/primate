@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {deepClone, isText, isObject, isDefined} from '../../lib/core-toolkit.js';
+import {deepClone, isText, isObject, isDefined} from '../lib/core-toolkit.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
 
 import setupModel from '../models/setup-model.js';

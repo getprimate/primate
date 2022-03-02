@@ -1,6 +1,6 @@
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 
 const requiredFields = {
     config: [

@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import {urlQuery, urlOffset, simplifyObjectId, editViewURL, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 

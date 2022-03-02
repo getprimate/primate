@@ -7,7 +7,7 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 import {
     editViewURL,
     urlOffset,

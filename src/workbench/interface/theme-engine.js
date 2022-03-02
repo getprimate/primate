@@ -7,8 +7,8 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import {isNil} from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
+import {isNil} from '../lib/core-toolkit.js';
 
 const {document} = window;
 

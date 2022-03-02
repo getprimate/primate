@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isText} from '../../lib/core-toolkit.js';
+import {isText} from '../lib/core-toolkit.js';
 
 /**
  * Copies text to clipboard.

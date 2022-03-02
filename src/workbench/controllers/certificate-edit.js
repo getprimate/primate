@@ -7,7 +7,7 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import certModel from '../models/certificate-model.js';

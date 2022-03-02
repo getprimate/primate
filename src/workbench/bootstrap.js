@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isNil, isNone, isObject, isText, parseNumeric} from '../lib/core-toolkit.js';
+import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.js';
 
 import KongDash from './kongdash.js';
 import ThemeEngine from './interface/theme-engine.js';

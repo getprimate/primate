@@ -6,7 +6,7 @@
  */
 
 'use strict';
-import {isText} from '../../lib/core-toolkit.js';
+import {isText} from '../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 

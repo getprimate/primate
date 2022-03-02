@@ -7,8 +7,8 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import {urlQuery} from '../../lib/rest-utils.js';
+import * as _ from '../lib/core-toolkit.js';
+import {urlQuery} from '../helpers/rest-toolkit.js';
 
 const entityList = {
     services: {

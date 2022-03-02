@@ -14,7 +14,7 @@
  * @param {Object} properties - The element dataset.
  */
 
-import * as _ from '../../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 
 /**
  * Switches the notebook pages upon clicking the tabs.

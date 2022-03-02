@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {deepClone, isText, isObject, isNil} from '../../lib/core-toolkit.js';
+import {deepClone, isText, isObject, isNil} from '../lib/core-toolkit.js';
 import {errorCode, WorkbenchError} from '../exception/error.js';
 import setupModel from '../models/setup-model.js';
 

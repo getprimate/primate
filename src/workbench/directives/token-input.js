@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {explode, isNil, isText, randomHex} from '../../lib/core-toolkit.js';
+import {explode, isNil, isText, randomHex} from '../lib/core-toolkit.js';
 
 /**
  * Creates LI nodes with token values under the specified UL element.
@@ -84,7 +84,7 @@ function link(scope, element, attributes) {
     if (!Array.isArray(scope.tokenList)) {
         return false;
     }
-    
+
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {};

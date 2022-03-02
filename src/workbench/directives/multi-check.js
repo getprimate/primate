@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, isText, randomHex} from '../../lib/core-toolkit.js';
+import {isObject, isText, randomHex} from '../lib/core-toolkit.js';
 
 const {document} = window;
 

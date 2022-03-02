@@ -7,8 +7,8 @@
 
 'use strict';
 
-import * as _ from '../../lib/core-toolkit.js';
-import {urlQuery, urlOffset} from '../../lib/rest-utils.js';
+import * as _ from '../lib/core-toolkit.js';
+import {urlQuery, urlOffset} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for editing plugin objects.
