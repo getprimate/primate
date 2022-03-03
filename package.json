@@ -12,7 +12,8 @@
     "lint": "eslint src/lib src/platform src/workbench",
     "clean": "grunt clean",
     "start": "grunt start",
-    "compile": "grunt compile"
+    "compile": "grunt compile",
+    "release": "grunt release"
   },
   "dependencies": {
     "ospath": "^1.2.2",
@@ -23,6 +24,7 @@
     "@babel/preset-env": "^7.16.11",
     "babel-preset-minify": "^0.5.1",
     "electron": "^16.0.7",
+    "electron-builder": "^22.14.13",
     "eslint": "^8.8.0",
     "grunt": "^1.4.1",
     "grunt-babel": "^8.0.0",
