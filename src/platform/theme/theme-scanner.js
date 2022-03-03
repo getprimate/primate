@@ -48,7 +48,7 @@ class ThemeScanner {
     }
 
     constructor(locations = null) {
-        this._locations = [path.join(ROOT_PATH, 'resources', 'themes')];
+        this._locations = [path.join(ROOT_PATH, 'themes'), path.join(ROOT_PATH, 'resources', 'themes')];
 
         if (Array.isArray(locations)) {
             this._locations.push(...locations);
@@ -58,10 +58,8 @@ class ThemeScanner {
     }
 
     async scanThemes() {
-        let location;
-
-        try {
-            for (location of this._locations) {
+        for (let location of this._locations) {
+            try {
                 let stats = await fs.lstat(location);
 
                 if (!stats.isDirectory()) continue;
@@ -75,9 +73,9 @@ class ThemeScanner {
                         this._themeList[themeDefs.themeUID] = themeDefs;
                     }
                 }
+            } catch (ignored) {
+                // Ignore the error. Simply skip the directory.
             }
-        } catch (error) {
-            throw new Error(`Can not read directory ${location}. ${error}`);
         }
 
         return this._themeList;
