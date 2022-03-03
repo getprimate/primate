@@ -10,6 +10,8 @@
   "scripts": {
     "lint": "eslint src/platform src/workbench",
     "start": "grunt start",
+    "dev:src": "electron src/platform/main.js --trace-warnings",
+    "dev:dist": "electron dist/platform/main.js --trace-warnings",
     "compile": "grunt compile",
     "release": "grunt release",
     "clean": "grunt clean"
