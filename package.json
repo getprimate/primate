@@ -13,7 +13,13 @@
     "dev:src": "electron src/platform/main.js --trace-warnings",
     "dev:dist": "electron dist/platform/main.js --trace-warnings",
     "compile": "grunt compile",
-    "release": "grunt release",
+    "release:darwin-dmg": "grunt release:darwin:dmg",
+    "release:windows-nsis": "grunt release:windows:nsis",
+    "release:windows-zip": "grunt release:windows:zip",
+    "release:linux-snap": "grunt release:linux:snap",
+    "release:linux-rpm": "grunt release:linux:rpm",
+    "release:linux-deb": "grunt release:linux:deb",
+    "release:linux-zip": "grunt release:linux:zip",
     "clean": "grunt clean"
   },
   "dependencies": {
