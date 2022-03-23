@@ -1,6 +1,6 @@
 <div class="container">
 <div class="row">
-<div class="col md-8">
+<div class="col md-8 sm-12">
 <div class="panel panel-border {{consumerId.length>= 12?'success':'info'}}">
 
 <div class="panel__heading"><span class="title">Consumer Details</span> <span data-ng-if="consumerId.length>=12" data-clipboard-text="{{consumerId}}">{{consumerId}}</span></div>
@@ -442,7 +442,7 @@
 </div><!-- .vpadding-20 -->
 </div><!-- .col.md-8 -->
 
-<div class="col md-4">
+<div class="col md-4 sm-12">
     <div class="well">
         <div class="well__heading">Consumer Plugins
             <div data-ng-if="consumerId!=='__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>

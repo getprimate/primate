@@ -1,6 +1,6 @@
 <div class="container">
 <div class="row">
-<div class="col md-8">
+<div class="col md-8 sm-12">
     <div class="panel panel-border {{serviceId === '__none__' ? 'success' : 'primary'}}">
     <div class="panel__heading"><span class="title">Service Details</span> <span data-ng-if="serviceId.length>=10" data-clipboard-text="{{serviceId}}">{{serviceId}}</span></div>
     <div class="panel__body">
@@ -160,7 +160,7 @@
     </div><!-- .panel__heading -->
 </div><!-- .col.md-8 -->
 
-<div class="col md-4">
+<div class="col md-4 sm-12">
     <div class="well">
         <div class="well__heading">Routes
             <div data-ng-if="serviceId!=='__none__'" class="pull-right"><a title="Add new route" href="#!/services/{{serviceId}}/routes/__create__"><span class="material-icons">launch</span> New</a></div>

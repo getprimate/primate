@@ -1,6 +1,6 @@
 <div class="container">
 <div class="row">
-<div class="col md-8">
+<div class="col md-8 sm-12">
     <div class="panel panel-border {{routeId==='__none__' ? 'success' : 'info'}}">
     <div class="panel__heading"><span class="title">Route Details</span> <span data-ng-if="routeId.length>=10" data-clipboard-text="{{routeId}}">{{routeId}}</span></div>
     <div class="panel__body">
@@ -187,7 +187,7 @@
     </div><!-- .panel.panel-border -->
 </div><!-- .col.md-8 -->
 
-<div class="col md-4">
+<div class="col md-4 sm-12">
     <div class="well">
         <div class="well__heading">Applied Plugins
             <div data-ng-if="routeId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/routes/{{routeId}}/plugins/__create__"><span class="material-icons">launch</span> Apply Plugin</a></div>
