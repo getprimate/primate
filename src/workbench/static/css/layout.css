@@ -1414,18 +1414,18 @@ form .row { margin-bottom: 0 !important; }
     border-right-width: 0;
 }
 
-.md-1 { width: 8.333% !important; }
-.md-2 { width: 16.666% !important; }
-.md-3 { width: 25% !important; }
-.md-4 { width: 33.333% !important; }
-.md-5 { width: 41.666% !important; }
-.md-6 { width: 50% !important; }
-.md-7 { width: 58.333% !important; }
-.md-8 { width: 66.666% !important; }
-.md-9 { width: 75.018% !important; }
-.md-10 { width: 83.333% !important; }
-.md-11 { width: 91.666% !important; }
-.md-12 { width: 100% !important; }
+.md-1 { width: 8.333%; }
+.md-2 { width: 16.666%; }
+.md-3 { width: 25%; }
+.md-4 { width: 33.333%; }
+.md-5 { width: 41.666%; }
+.md-6 { width: 50%; }
+.md-7 { width: 58.333%; }
+.md-8 { width: 66.666%; }
+.md-9 { width: 75.018%; }
+.md-10 { width: 83.333%; }
+.md-11 { width: 91.666%; }
+.md-12 { width: 100%; }
 
 /**
  * Table styles.
@@ -1855,4 +1855,56 @@ canvas#chart_ServerStat {
 canvas#chart_TimerStat {
     height: 220px;
     max-height: 230px;
+}
+
+/**
+ * Responsive media queries
+ *
+ * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ */
+@media only screen and (max-width: 1500px) {
+    aside#sidebarMenu {
+        width: 80px;
+    }
+
+    aside#sidebarMenu + main#mainWrapper {
+        left: 80px;
+        width: calc(100% - 80px);
+    }
+
+    aside#sidebarMenu nav.navigation ul.navigation__menu li,
+    aside#sidebarMenu nav.navigation a.navigation__link:first-child,
+    aside#sidebarMenu .drawer__base ul.base-menu {
+        display: block;
+    }
+
+    aside#sidebarMenu nav.navigation a.navigation__link > span.material-icons {
+        font-size: 1.75rem;
+    }
+
+    aside#sidebarMenu nav.navigation ul.navigation__menu li {
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    aside#sidebarMenu .branding,
+    aside#sidebarMenu nav.navigation .navigation__title,
+    aside#sidebarMenu nav.navigation a.navigation__link:last-child:not(:only-child),
+    aside#sidebarMenu nav.navigation a.navigation__link > span:nth-child(2),
+    aside#sidebarMenu .drawer__base ul.base-menu li:first-child {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 1300px){
+    .row > .col.md-8.sm-12,
+    .row > .col.md-4.sm-12 {
+        display: block;
+        float: revert;
+        width: 100% !important;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
