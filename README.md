@@ -50,6 +50,7 @@ yarn install
 
 Run the app
 ```shell
+yarn run compile
 yarn start
 ```
 
