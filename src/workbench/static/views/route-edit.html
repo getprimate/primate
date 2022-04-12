@@ -1,7 +1,7 @@
 <div class="container">
 <div class="row">
 <div class="col md-8 sm-12">
-    <div class="panel panel-border {{routeId==='__none__' ? 'success' : 'info'}}">
+    <div class="panel panel-border">
     <div class="panel__heading"><span class="title">Route Details</span> <span data-ng-if="routeId.length>=10" data-clipboard-text="{{routeId}}">{{routeId}}</span></div>
     <div class="panel__body">
         <form class="form" method="post" data-ng-submit="submitRouteForm($event)">
