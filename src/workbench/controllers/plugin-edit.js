@@ -178,7 +178,7 @@ export default function PluginEditController(scope, location, routeParams, restC
     scope.pluginModel = _.deepClone(pluginModel);
     scope.pluginList = [];
 
-    scope.jsonText = 'Test';
+    scope.jsonText = 'Select a plugin to view the schema.';
 
     scope.schemaProps = {};
     scope.schemaModel = {};
