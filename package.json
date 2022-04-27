@@ -26,7 +26,7 @@
     "electron": "^17.1.0",
     "electron-builder": "^22.14.13",
     "eslint": "^8.10.0",
-    "grunt": "^1.4.1",
+    "grunt": "^1.5.2",
     "grunt-babel": "^8.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "load-grunt-tasks": "^5.1.0",
