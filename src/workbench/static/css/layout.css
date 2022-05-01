@@ -335,6 +335,7 @@ a.btn {
     color: #ffffff;
     font-weight: 500;
     font-size: 1rem;
+    background: var(--theme__accent-fg) none;
 }
 
 button:last-child { margin-right: 0 !important; }
