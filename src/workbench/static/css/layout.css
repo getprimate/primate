@@ -345,8 +345,15 @@ button.critical,
 button.success,
 button.warning,
 button.primary,
-button.info {
+button.info,
+button.accent {
     border: 2px solid transparent;
+}
+
+button.accent {
+    border-color: var(--theme__accent-fg);
+    color: var(--theme__primary-fg);
+    background: var(--theme__accent-fg);
 }
 
 button.default {
