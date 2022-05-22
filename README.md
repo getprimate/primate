@@ -55,7 +55,7 @@ yarn start
 ```
 
 Run ESLint
-```yarn test``` or ```yarn run lint```
+```yarn run lint```
 
 ### Make a release
 
