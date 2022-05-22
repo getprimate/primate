@@ -30,9 +30,9 @@ const ipcBridge = window.ipcBridge;
  */
 export default function SettingsController(scope, restClient, viewFrame, toast) {
     scope.ENUM_DATE_FORMAT = [
-        {nodeValue: 'date', displayText: 'Default'},
-        {nodeValue: 'utc', displayText: 'UCT'},
-        {nodeValue: 'standard', displayText: 'Standard'}
+        {nodeValue: 'date', displayText: 'Thu Jan 01 1970'},
+        {nodeValue: 'utc', displayText: 'Thu, 01 Jan 1970 00:00:00 GMT'},
+        {nodeValue: 'standard', displayText: 'Thu Jan 01 1970 05:30:00 GMT+0 (Timezone)'}
     ];
 
     scope.connectionId = viewFrame.getConfig('sessionId');
