@@ -1,13 +1,13 @@
 <div class="container">
 
 <div class="well">
-<div class="well__heading">List of Services</div>
-<table id="sv-ls__tab01" class="data-table">
+<div class="well__heading">All Services</div>
+<table class="data-table">
     <thead data-ng-if="serviceList.length>=1"><tr><th>Enabled</th> <th>Name</th> <th>Host</th> <th>Protocol</th> <th>Created On</th> <th class="align-right">Actions</th></tr></thead>
 
     <tbody data-ng-if="serviceList.length>=1" data-ng-click="handleTableClickEvents($event)">
     <tr data-ng-repeat="service in serviceList">
-        <td><input type="checkbox" class="success" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
+        <td><input type="checkbox" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
 
         <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a></td>
         <td>{{service.host}}</td>
@@ -26,7 +26,7 @@
     <tr><td>Looks like no services are present!</td></tr>
     <tr><td><a href="#!/services/__create__" class="btn success">Create Service</a></td></tr>
     </tbody><!-- .hero-placeholder -->
-</table><!-- #sv-ls__tab01.table -->
+</table><!-- table.data-table -->
 </div><!-- .well -->
 
 <div data-ng-if="serviceNext.offset.length>=5" class="pagination">
