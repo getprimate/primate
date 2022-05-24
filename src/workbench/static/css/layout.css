@@ -161,10 +161,14 @@ input[type="checkbox"] {
         content: '\00a0';
     }
 
-    input[type="checkbox"]:checked::after {
-        content: '✔';
+    input[type="checkbox"]:checked {
         background-color: var(--theme__accent-fg);
         color: var(--theme__primary-fg);
+        border-color: var(--theme__accent-fg);
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: '✔';
     }
 
     input[type="checkbox"].default:checked { background-color: #DAE6EC; border-color: #DAE6EC; color: #343434; }
