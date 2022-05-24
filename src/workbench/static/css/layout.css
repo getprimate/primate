@@ -1614,11 +1614,12 @@ table.card-table.clickable tbody tr.active {
     background-color: var(--input__border-fg);
 }
 
-table.card-table input[type="radio"],
-table.card-table input[type="checkbox"] {
-    background-color: var(--theme__primary-bg);
-    border-color: var(--theme__default-fg);
-}
+
+/* table.card-table input[type="radio"],
+ * table.card-table input[type="checkbox"] {
+ *      background-color: var(--theme__primary-bg);
+ *      border-color: var(--theme__default-fg);
+ * } */
 
 table.card-table .hero-placeholder .material-icons.hero {
     font-size: 6.5rem;
