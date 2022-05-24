@@ -147,8 +147,7 @@ input[type="checkbox"] {
     position:relative;
     width: 17px;
     height: 17px;
-    background-color: var(--theme__accent-fg);
-    border: 2px solid var(--theme__accent-fg);
+    border: 2px solid var(--input__border-fg);
     border-radius: 4px;
     cursor:pointer;
     text-align: center;
@@ -164,6 +163,7 @@ input[type="checkbox"] {
 
     input[type="checkbox"]:checked::after {
         content: '✔';
+        background-color: var(--theme__accent-fg);
         color: var(--theme__primary-fg);
     }
 
