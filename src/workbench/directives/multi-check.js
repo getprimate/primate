@@ -33,7 +33,9 @@ function attachItemElements(listElement, available, selected = []) {
 
         inputElement.type = 'checkbox';
         inputElement.value = nodeValue;
-        inputElement.classList.add(isText(inputClass) ? inputClass : 'success');
+
+        /* Disabled because checkbox colour should default to theme accent colour.
+         * inputElement.classList.add(isText(inputClass) ? inputClass : 'success'); */
 
         if (selected.indexOf(nodeValue) >= 0) {
             inputElement.checked = true;
