@@ -147,8 +147,8 @@ input[type="checkbox"] {
     position:relative;
     width: 17px;
     height: 17px;
-    background-color: rgba(0,0,0,0);
-    border: 2px solid var(--input__border-fg);
+    background-color: var(--theme__accent-fg);
+    border: 2px solid var(--theme__accent-fg);
     border-radius: 4px;
     cursor:pointer;
     text-align: center;
@@ -164,7 +164,7 @@ input[type="checkbox"] {
 
     input[type="checkbox"]:checked::after {
         content: '✔';
-        color: #FFFFFF;
+        color: var(--theme__primary-fg);
     }
 
     input[type="checkbox"].default:checked { background-color: #DAE6EC; border-color: #DAE6EC; color: #343434; }
