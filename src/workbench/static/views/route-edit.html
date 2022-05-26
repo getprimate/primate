@@ -28,7 +28,7 @@
                     <div class="form__field">
                         <label class="field-label">Upstream URL</label>
                         <div class="field-input">
-                            <label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
+                            <label class="checkbox"><input type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->
@@ -55,19 +55,19 @@
         <div class="row">
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
+                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
 
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
+                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
 
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" class="success" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
+                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
         </div><!-- .row -->
@@ -197,7 +197,7 @@
         <table id="pluginListTable" class="card-table">
             <tbody data-ng-if="pluginList.length>=1" data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="plugin in pluginList">
-                <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" class="success plugin-state" data-ng-checked="plugin.enabled===true" /></td>
+                <td><input type="checkbox" data-name="{{plugin.name}}" value="{{plugin.id}}" data-ng-checked="plugin.enabled===true" /></td>
 
                 <td><a href="#!/plugins/{{plugin.id}}">{{plugin.displayText}}</a>
                     <br />{{plugin.subTagsText}}</td>
