@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, isText, randomHex} from '../lib/core-toolkit.js';
+import {isObject, /* isText, */ randomHex} from '../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -20,7 +20,7 @@ const {document} = window;
  * @return {Object[]} The added token array.
  */
 function attachItemElements(listElement, available, selected = []) {
-    const inputClass = listElement.parentElement.dataset.inputClass;
+    /* const inputClass = listElement.parentElement.dataset.inputClass; */
 
     for (let item of available) {
         let {nodeValue, displayText} = isObject(item) ? item : {nodeValue: item, displayText: item};
