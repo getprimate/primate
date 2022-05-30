@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "lint": "eslint src/platform src/workbench",
-    "start": "electron src/platform/main.js --trace-warnings",
+    "start": "grunt start",
     "clean": "grunt clean"
   },
   "dependencies": {
