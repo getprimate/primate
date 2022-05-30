@@ -10,7 +10,7 @@
 /**
  * Provides compiler configurations for babel plugin.
  */
- const babelConfig = {
+const babelConfig = {
     options: {
         comments: false,
         sourceMap: false,
