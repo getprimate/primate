@@ -10,9 +10,11 @@
 const childProcess = require('node:child_process');
 const path = require('path');
 
-const electron = require('electron');
 const grunt = require('grunt');
 const rimraf = require('rimraf');
+
+const electron = require('electron');
+const {build, Platform} = require('electron-builder');
 
 const {ROOT_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
@@ -51,12 +53,26 @@ function startRenderer() {
 
 function makeRelease(platform, type) {
     const done = this.async();
-    const config = releaseConfig;
 
-    const builder = build({
-        targets: Platform.LINUX.createTarget(),
-        config
-    });
+    let config = releaseConfig;
+    let targets = Platform.WINDOWS.createTarget();
+
+    switch (platform) {
+        case 'linux':
+            targets = Platform.LINUX.createTarget();
+            break;
+
+        case 'macos':
+            targets = Platform.MAC.createTarget();
+            break;
+
+        default:
+            break;
+    }
+
+    const builder = build({config, targets});
+
+    grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
 
     builder.then((result) => {
         console.log(JSON.stringify(result, null, 4));

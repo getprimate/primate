@@ -9,8 +9,8 @@
 
 const loadTasks = require('load-grunt-tasks');
 
-const {copyConfig, babelConfig} = require('./build/config');
-const {cleanBuild, startRenderer} = require('./build/task');
+const {copyConfig, babelConfig} = require('./build/grunt-config');
+const {cleanBuild, startRenderer, makeRelease} = require('./build/grunt-task');
 
 module.exports = function (grunt) {
     loadTasks(grunt, {pattern: ['grunt-contrib-copy', 'grunt-babel']});
@@ -23,4 +23,5 @@ module.exports = function (grunt) {
     grunt.registerTask('clean', 'Cleans up the output files.', cleanBuild);
     grunt.registerTask('render', 'Starts the electron renderer.', startRenderer);
     grunt.registerTask('start', ['clean', 'babel', 'copy', 'render']);
+    grunt.registerTask('release', 'Makes an app release.', makeRelease);
 };

@@ -8,9 +8,10 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "lint": "eslint src/platform src/workbench",
+    "lint": "eslint src/platform src/workbench build/",
     "start": "grunt start",
-    "clean": "grunt clean"
+    "clean": "grunt clean",
+    "release:linux-snap": "grunt release:linux:snap"
   },
   "dependencies": {
     "ospath": "^1.2.2",
@@ -21,6 +22,7 @@
     "@babel/preset-env": "^7.18.2",
     "babel-preset-minify": "^0.5.2",
     "electron": "^19.0.1",
+    "electron-builder": "^23.0.3",
     "eslint": "^8.16.0",
     "grunt": "^1.5.3",
     "grunt-babel": "^8.0.0",
