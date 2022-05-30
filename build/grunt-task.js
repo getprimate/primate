@@ -33,7 +33,7 @@ function cleanBuild() {
             return false;
         }
 
-        grunt.log.errorlns(['Removed output directories.']);
+        grunt.log.oklns(['Cleaned up output directories.']);
         done();
 
         return true;
@@ -75,11 +75,11 @@ function makeRelease(platform, type) {
     grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
 
     builder.then((result) => {
-        console.log(JSON.stringify(result, null, 4));
+        grunt.log.oklns(['Binaries written to release/ directory.']);
     });
 
     builder.catch((error) => {
-        console.error(JSON.stringify(error, null, 4));
+        grunt.log.errorlns([`${error}`]);
     });
 
     builder.finally(() => {

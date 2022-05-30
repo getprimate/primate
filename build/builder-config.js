@@ -31,7 +31,7 @@ const releaseConfig = {
         'package.json'
     ],
     directories: {
-        output: 'release/linux'
+        output: 'release'
     },
     extraResources: [
         {
