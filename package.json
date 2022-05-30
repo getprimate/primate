@@ -1,0 +1,14 @@
+{
+  "name": "kongdash",
+  "version": "1.0.0",
+  "description": "A modern desktop client for Kong Admin API",
+  "main": "dist/platform/main.js",
+  "repository": "git@github.com:ajaysreedhar/kongdash.git",
+  "author": "Ajay Sreedhar <ajaysreedhar05@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "ospath": "^1.2.2",
+    "semver": "^7.3.7"
+  }
+}
