@@ -80,7 +80,7 @@ function makeRelease(platform, type) {
     grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
 
     builder.then((result) => {
-        grunt.log.oklns(['Binaries written to release/ directory.']);
+        grunt.log.oklns(['Binaries written to `release` directory.']);
     });
 
     builder.catch((error) => {
