@@ -15,6 +15,7 @@ const grunt = require('grunt');
 const rimraf = require('rimraf');
 
 const {ROOT_DIR} = require('./constant');
+const {releaseConfig} = require('./builder-config');
 
 function _onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
@@ -48,7 +49,30 @@ function startRenderer() {
     child.on('SIGTERM', _onRendererExit);
 }
 
+function makeRelease(platform, type) {
+    const done = this.async();
+    const config = releaseConfig;
+
+    const builder = build({
+        targets: Platform.LINUX.createTarget(),
+        config
+    });
+
+    builder.then((result) => {
+        console.log(JSON.stringify(result, null, 4));
+    });
+
+    builder.catch((error) => {
+        console.error(JSON.stringify(error, null, 4));
+    });
+
+    builder.finally(() => {
+        done();
+    });
+}
+
 module.exports = {
     cleanBuild,
-    startRenderer
+    startRenderer,
+    makeRelease
 };
