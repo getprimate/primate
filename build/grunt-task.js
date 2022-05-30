@@ -8,7 +8,8 @@
 'use strict';
 
 const childProcess = require('node:child_process');
-const path = require('path');
+const path = require('node:path');
+const fs = require('node:fs');
 
 const grunt = require('grunt');
 const rimraf = require('rimraf');
@@ -52,8 +53,6 @@ function startRenderer() {
 }
 
 function makeRelease(platform, type) {
-    const done = this.async();
-
     let config = releaseConfig;
     let targets = Platform.WINDOWS.createTarget();
 
@@ -70,6 +69,12 @@ function makeRelease(platform, type) {
             break;
     }
 
+    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
+        grunt.fail.fatal('Project not compiled yet! Run `yarn run compile` first.', 0);
+        return 0;
+    }
+
+    const done = this.async();
     const builder = build({config, targets});
 
     grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
