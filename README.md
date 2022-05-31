@@ -50,31 +50,11 @@ yarn install
 
 Run the app
 ```shell
-yarn run compile
 yarn start
 ```
 
 Run ESLint
 ```yarn run lint```
-
-### Make a release
-
-Linux 64-bit:
-```shell
-yarn run pack:linux64
-```
-
-Mac OS X (64-bit only):
-```shell
-yarn run pack:osx
-```
-
-Windows 64-bit:
-```shell
-yarn run pack:windows64
-```
-
-The packaged application will be moved to release/ directory.
 
 ### License
 MIT License. See [LICENSE](LICENSE).
