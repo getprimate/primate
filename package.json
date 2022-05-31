@@ -11,7 +11,7 @@
     "lint": "eslint src/platform src/workbench build/",
     "start": "grunt start",
     "clean": "grunt clean",
-    "release:linux-bin": "grunt release:linux:snap"
+    "release:linux-bin": "grunt release:linux:bin"
   },
   "dependencies": {
     "ospath": "^1.2.2",
