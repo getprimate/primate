@@ -158,7 +158,6 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
         });
 
         request.finally(() => {
-            console.log('Inc 1');
             viewFrame.incrementLoader();
         });
     };
