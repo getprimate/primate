@@ -9,8 +9,9 @@
   "private": false,
   "scripts": {
     "lint": "eslint src/platform src/workbench build/",
-    "start": "grunt start",
     "clean": "grunt clean",
+    "dist": "grunt dist",
+    "start": "grunt start",
     "release:linux-bin": "grunt release:linux:bin"
   },
   "dependencies": {

@@ -70,7 +70,7 @@ function makeRelease(platform, type) {
     }
 
     if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
-        grunt.fail.fatal('Project not compiled yet! Run `yarn run compile` first.', 0);
+        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
         return 0;
     }
 
