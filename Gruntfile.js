@@ -24,6 +24,6 @@ module.exports = function (grunt) {
     grunt.registerTask('render', 'Starts the electron renderer.', startRenderer);
     grunt.registerTask('release', 'Makes an app release.', makeRelease);
 
-    grunt.registerTask('compile', ['clean', 'babel', 'copy']);
-    grunt.registerTask('start', ['compile', 'render']);
+    grunt.registerTask('dist', ['clean', 'babel', 'copy']);
+    grunt.registerTask('start', ['dist', 'render']);
 };
