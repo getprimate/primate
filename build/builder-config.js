@@ -16,9 +16,6 @@ const releaseConfig = {
     removePackageScripts: true,
     nodeGypRebuild: false,
     buildDependenciesFromSource: false,
-    extraMetadata: {
-        main: 'platform/main.js'
-    },
     files: [
         {
             from: 'dist/platform',
@@ -39,8 +36,8 @@ const releaseConfig = {
             to: 'themes'
         }
     ],
-    linux: {
-        target: ['dir']
+    extraMetadata: {
+        main: 'platform/main.js'
     }
 };
 

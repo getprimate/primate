@@ -19,8 +19,9 @@ const {build, Platform} = require('electron-builder');
 
 const {ROOT_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
+const {configureLinuxBuild} = require('./builder-platform');
 
-function _onRendererExit(code) {
+function onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
 }
 
@@ -47,9 +48,9 @@ function startRenderer() {
         stdio: ['pipe', process.stdout, process.stderr]
     });
 
-    child.on('close', _onRendererExit);
-    child.on('exit', _onRendererExit);
-    child.on('SIGTERM', _onRendererExit);
+    child.on('close', onRendererExit);
+    child.on('exit', onRendererExit);
+    child.on('SIGTERM', onRendererExit);
 }
 
 function makeRelease(platform, type) {
@@ -59,6 +60,7 @@ function makeRelease(platform, type) {
     switch (platform) {
         case 'linux':
             targets = Platform.LINUX.createTarget();
+            config = configureLinuxBuild(type);
             break;
 
         case 'macos':
