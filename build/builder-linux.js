@@ -7,19 +7,33 @@
 
 'use strict';
 
-const config = require('./builder-config');
+const {releaseConfig: config} = require('./builder-config');
 
 module.exports = function (type) {
+    config.linux = {
+        synopsis: 'A modern desktop client for Kong Admin API',
+        category: 'Development',
+        target: 'dir'
+    };
+
     switch (type) {
         case 'snap':
-            config.linux = {target: 'snap'};
+            config.linux.target = 'snap';
 
             config.snap = {
                 confinement: 'strict',
                 grade: 'devel',
                 autoStart: false,
-                compression: 'xz'
+                compression: 'xz',
+                summary: 'A modern desktop client for Kong Admin API'
             };
+            break;
+
+        case 'flatpak':
+            break;
+
+        case 'tar':
+            config.linux.target = 'tar.gz';
             break;
 
         default:
