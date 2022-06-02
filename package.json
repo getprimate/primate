@@ -10,8 +10,8 @@
   "scripts": {
     "lint": "eslint src/platform src/workbench build/",
     "clean": "grunt clean",
-    "dist": "grunt dist",
     "start": "grunt start",
+    "dist": "grunt dist",
     "release": "grunt release"
   },
   "dependencies": {

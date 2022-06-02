@@ -15,11 +15,12 @@ const grunt = require('grunt');
 const rimraf = require('rimraf');
 
 const electron = require('electron');
-const {build, Platform} = require('electron-builder');
+const builder = require('electron-builder');
 
 const {ROOT_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
 const {configureLinuxBuild} = require('./builder-platform');
+const {type} = require('node:os');
 
 function onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
@@ -53,43 +54,46 @@ function startRenderer() {
     child.on('SIGTERM', onRendererExit);
 }
 
-function makeRelease(platform, type) {
+function makeRelease() {
+    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
+        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
+        return 0;
+    }
+
+    const {platform} = process;
+    const type = 'tar.gz';
+    const done = this.async();
+
     let config = releaseConfig;
-    let targets = Platform.WINDOWS.createTarget();
+    let targets = builder.Platform.WINDOWS.createTarget();
 
     switch (platform) {
         case 'linux':
-            targets = Platform.LINUX.createTarget();
+            targets = builder.Platform.LINUX.createTarget(type, builder.Arch.x64);
             config = configureLinuxBuild(type);
             break;
 
-        case 'macos':
-            targets = Platform.MAC.createTarget();
+        case 'darwin':
+            targets = builder.Platform.MAC.createTarget('dmg', builder.Arch.x64);
             break;
 
         default:
             break;
     }
 
-    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
-        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
-        return 0;
-    }
-
-    const done = this.async();
-    const builder = build({config, targets});
+    const release = builder.build({config, targets});
 
     grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
 
-    builder.then(() => {
+    release.then(() => {
         grunt.log.oklns(['Binaries written to `release` directory.']);
     });
 
-    builder.catch((error) => {
+    release.catch((error) => {
         grunt.log.errorlns([`${error}`]);
     });
 
-    builder.finally(() => {
+    release.finally(() => {
         done();
     });
 }

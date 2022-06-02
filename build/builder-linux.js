@@ -13,7 +13,8 @@ module.exports = function (type) {
     config.linux = {
         synopsis: 'A modern desktop client for Kong Admin API',
         category: 'Development',
-        target: 'dir'
+        target: 'dir',
+        publish: []
     };
 
     switch (type) {
@@ -32,7 +33,7 @@ module.exports = function (type) {
         case 'flatpak':
             break;
 
-        case 'tar':
+        case 'tar.gz':
             config.linux.target = 'tar.gz';
             break;
 
