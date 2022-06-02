@@ -12,7 +12,9 @@
     "clean": "grunt clean",
     "dist": "grunt dist",
     "start": "grunt start",
-    "release:linux-bin": "grunt release:linux:bin"
+    "release:linux-tar": "grunt release:linux:tar",
+    "release:linux-snap": "grunt release:linux:snap",
+    "release:linux-flatpak": "grunt release:linux:flatpak"
   },
   "dependencies": {
     "ospath": "^1.2.2",
