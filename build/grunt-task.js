@@ -21,6 +21,7 @@ const {ROOT_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
 const {configureLinuxBuild} = require('./builder-platform');
 const {type} = require('node:os');
+const {buildPackage} = require('./builder-wrapper');
 
 function onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
@@ -61,8 +62,13 @@ function makeRelease() {
     }
 
     const {platform} = process;
-    const type = 'tar.gz';
     const done = this.async();
+
+    grunt.log.writeln(`Release platform: ${platform}`);
+
+    buildPackage(platform).then(done);
+
+    /*
 
     let config = releaseConfig;
     let targets = builder.Platform.WINDOWS.createTarget();
@@ -96,6 +102,7 @@ function makeRelease() {
     release.finally(() => {
         done();
     });
+    */
 }
 
 module.exports = {
