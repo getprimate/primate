@@ -1,6 +1,6 @@
 # KongDash
 
-> An elegant desktop client for [Kong](https://konghq.com/kong/) admin API
+> A modern desktop client for [Kong](https://konghq.com/kong/) admin API
 
 [![](screenshot.png)](https://raw.githubusercontent.com/ajaysreedhar/kongdash/master/screenshot.png)
 
