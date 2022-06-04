@@ -56,53 +56,7 @@ function startRenderer() {
 }
 
 function makeRelease() {
-    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
-        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
-        return 0;
-    }
-
-    const {platform} = process;
-    const done = this.async();
-
-    grunt.log.writeln(`Release platform: ${platform}`);
-
-    buildPackage(platform).then(done);
-
-    /*
-
-    let config = releaseConfig;
-    let targets = builder.Platform.WINDOWS.createTarget();
-
-    switch (platform) {
-        case 'linux':
-            targets = builder.Platform.LINUX.createTarget(type, builder.Arch.x64);
-            config = configureLinuxBuild(type);
-            break;
-
-        case 'darwin':
-            targets = builder.Platform.MAC.createTarget('dmg', builder.Arch.x64);
-            break;
-
-        default:
-            break;
-    }
-
-    const release = builder.build({config, targets});
-
-    grunt.log.writeln(`Release platform: ${platform}, Type: ${type}.`);
-
-    release.then(() => {
-        grunt.log.oklns(['Binaries written to `release` directory.']);
-    });
-
-    release.catch((error) => {
-        grunt.log.errorlns([`${error}`]);
-    });
-
-    release.finally(() => {
-        done();
-    });
-    */
+    grunt.log.errorlns(['Unable to make release.']);
 }
 
 module.exports = {
