@@ -9,19 +9,13 @@
 
 const childProcess = require('node:child_process');
 const path = require('node:path');
-const fs = require('node:fs');
 
 const grunt = require('grunt');
 const rimraf = require('rimraf');
 
 const electron = require('electron');
-const builder = require('electron-builder');
 
 const {ROOT_DIR} = require('./constant');
-const {releaseConfig} = require('./builder-config');
-const {configureLinuxBuild} = require('./builder-platform');
-const {type} = require('node:os');
-const {buildPackage} = require('./builder-wrapper');
 
 function onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
