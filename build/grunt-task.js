@@ -8,14 +8,15 @@
 'use strict';
 
 const childProcess = require('node:child_process');
+const fs = require('node:fs');
 const path = require('node:path');
 
+const electron = require('electron');
 const grunt = require('grunt');
 const rimraf = require('rimraf');
 
-const electron = require('electron');
-
 const {ROOT_DIR} = require('./constant');
+const {buildRelease} = require('./builder-wrapper');
 
 function onRendererExit(code) {
     grunt.log.writeln(`Electron exited with code ${code}.`);
@@ -50,7 +51,23 @@ function startRenderer() {
 }
 
 function makeRelease() {
-    grunt.log.errorlns(['Unable to make release.']);
+    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
+        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
+        return 0;
+    }
+
+    const done = this.async();
+    const release = buildRelease();
+
+    release.then((path) => {
+        grunt.log.oklns([`Created release: ${path}`]);
+    });
+
+    release.catch((error) => {
+        grunt.log.errorlns([`Unable to make release: ${error}`]);
+    });
+
+    release.finally(done);
 }
 
 module.exports = {
