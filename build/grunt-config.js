@@ -46,7 +46,7 @@ const babelConfig = {
                 expand: true,
                 cwd: 'src/platform',
                 src: ['**/*.js'],
-                dest: 'dist/platform'
+                dest: 'out/platform'
             }
         ]
     },
@@ -56,7 +56,7 @@ const babelConfig = {
                 expand: true,
                 cwd: 'src/workbench',
                 src: ['**/*.js'],
-                dest: 'dist/workbench',
+                dest: 'out/workbench',
                 ignore: ['static/*.js']
             }
         ]
@@ -73,14 +73,14 @@ const copyConfig = {
                 expand: true,
                 cwd: 'src/workbench/static',
                 src: ['css/*.css', 'fonts/*.woff2', 'fonts/*.ttf', 'images/*.png', 'views/*.html', '*.js'],
-                dest: 'dist/workbench/static'
+                dest: 'out/workbench/static'
             },
 
             {
                 expand: true,
                 cwd: 'src/workbench',
                 src: ['*.html'],
-                dest: 'dist/workbench'
+                dest: 'out/workbench'
             }
         ]
     }
