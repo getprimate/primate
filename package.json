@@ -2,7 +2,7 @@
   "name": "kongdash",
   "version": "1.0.0",
   "description": "A modern desktop client for Kong Admin API",
-  "main": "dist/platform/main.js",
+  "main": "out/platform/main.js",
   "repository": "git@github.com:ajaysreedhar/kongdash.git",
   "author": "Ajay Sreedhar <ajaysreedhar05@gmail.com>",
   "license": "MIT",
@@ -11,6 +11,7 @@
     "lint": "eslint src/platform src/workbench build/",
     "clean": "grunt clean",
     "start": "grunt start",
+    "compile": "grunt compile",
     "dist": "grunt dist",
     "release": "grunt release"
   },
