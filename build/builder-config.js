@@ -18,17 +18,17 @@ const releaseConfig = {
     buildDependenciesFromSource: false,
     files: [
         {
-            from: 'dist/platform',
+            from: 'out/platform',
             to: 'platform'
         },
         {
-            from: 'dist/workbench',
+            from: 'out/workbench',
             to: 'workbench'
         },
         'package.json'
     ],
     directories: {
-        output: 'release'
+        output: 'dist'
     },
     extraResources: [
         {
