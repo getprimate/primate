@@ -71,14 +71,14 @@ function configureMacOptions() {
         title: 'KongDash v1.0.0',
         contents: [
             {
-                x: 150,
-                y: 200,
+                x: 175,
+                y: 195,
                 type: 'file'
             },
 
             {
-                x: 525,
-                y: 200,
+                x: 540,
+                y: 195,
                 type: 'link',
                 path: '/Applications'
             }
