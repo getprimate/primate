@@ -6,8 +6,8 @@
 node_modules/
 
 # Release binaries
+out/
 dist/
-release/
 
 # Log and backup files
 *.log
