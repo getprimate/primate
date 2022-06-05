@@ -7,7 +7,9 @@
 
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 
 const ROOT_DIR = path.dirname(__dirname);
-module.exports = {ROOT_DIR};
+const ICON_DIR = path.join(ROOT_DIR, 'resources', 'icons');
+
+module.exports = {ROOT_DIR, ICON_DIR};
