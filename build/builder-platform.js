@@ -7,9 +7,11 @@
 
 'use strict';
 
+const path = require('node:path');
+
 const {Arch, Platform} = require('electron-builder');
 
-const {ICON_DIR} = require('./constant');
+const {ROOT_DIR, ICON_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
 
 function configureLinuxOptions(type = 'dir') {
@@ -52,8 +54,40 @@ function configureLinuxOptions(type = 'dir') {
     return {config, targets};
 }
 
+function configureMacOptions() {
+    const config = releaseConfig;
+    const targets = Platform.MAC.createTarget('dmg', Arch.x64);
+
+    config.mac = {
+        category: 'public.app-category.developer-tools',
+        target: 'dmg',
+        icon: path.join(ICON_DIR, '256x256.icns')
+    };
+
+    config.dmg = {
+        background: path.join(ROOT_DIR, 'resources', 'dmg-background.png'),
+        backgroundColor: '#181922',
+        icon: path.join(ROOT_DIR, 'resources', 'icons', '256x256.icns'),
+        iconSize: 80,
+        title: 'KongDash v1.0.0',
+        contents: [
+            {
+                x: 150,
+                y: 200
+            },
+
+            {
+                x: 150,
+                y: 200,
+                type: 'link',
+                path: '/Applications'
+            }
+        ]
+    };
+}
+
 module.exports = {
     configureLinuxOptions,
-    configureMacOptions: () => {},
+    configureMacOptions,
     configureWin32Options: () => {}
 };
