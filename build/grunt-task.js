@@ -26,7 +26,7 @@ function onRendererExit(code) {
 function cleanBuild() {
     const done = this.async();
 
-    rimraf(path.join(ROOT_DIR, '{dist,release}'), {disableGlob: false}, (error) => {
+    rimraf(path.join(ROOT_DIR, '{out,dist}'), {disableGlob: false}, (error) => {
         if (error) {
             grunt.log.errorlns([`Could not clean-up: ${error}`]);
             return false;
@@ -51,8 +51,8 @@ function startRenderer() {
 }
 
 function makeRelease() {
-    if (!fs.existsSync(path.join(ROOT_DIR, 'dist/platform/main.js'))) {
-        grunt.fail.fatal('Project not compiled yet! Run `yarn run dist` first.', 0);
+    if (!fs.existsSync(path.join(ROOT_DIR, 'out/platform/main.js'))) {
+        grunt.fail.fatal('Project not compiled yet! Run `yarn run compile` first.', 0);
         return 0;
     }
 
