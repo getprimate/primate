@@ -67,7 +67,7 @@ function configureMacOptions() {
     config.dmg = {
         background: path.join(ROOT_DIR, 'resources', 'dmg-background.png'),
         icon: path.join(ROOT_DIR, 'resources', 'icons', '256x256.icns'),
-        iconSize: 80,
+        iconSize: 96,
         title: 'KongDash v1.0.0',
         contents: [
             {
@@ -77,7 +77,7 @@ function configureMacOptions() {
             },
 
             {
-                x: 150,
+                x: 525,
                 y: 200,
                 type: 'link',
                 path: '/Applications'
