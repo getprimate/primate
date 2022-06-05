@@ -73,7 +73,8 @@ function configureMacOptions() {
         contents: [
             {
                 x: 150,
-                y: 200
+                y: 200,
+                type: 'file'
             },
 
             {
