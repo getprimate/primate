@@ -85,6 +85,8 @@ function configureMacOptions() {
             }
         ]
     };
+
+    return {config, targets};
 }
 
 module.exports = {
