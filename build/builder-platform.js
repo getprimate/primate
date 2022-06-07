@@ -11,7 +11,7 @@ const path = require('node:path');
 
 const {Arch, Platform} = require('electron-builder');
 
-const {ROOT_DIR, ICON_DIR} = require('./constant');
+const {ROOT_DIR, ICON_DIR, RES_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
 
 function configureLinuxOptions(type = 'dir') {
@@ -88,8 +88,39 @@ function configureMacOptions() {
     return {config, targets};
 }
 
+/**
+ * Configures packager options for Windows targets.
+ *
+ * The default installer is NSIS.
+ *
+ * @returns {PackagerOptions} The packager options for electron builder.
+ */
+function configureWin32Options() {
+    const config = releaseConfig;
+    const targets = Platform.WINDOWS.createTarget('nsis', Arch.x64);
+
+    config.win = {
+        target: 'nsis',
+        icon: path.join(ICON_DIR, '256x256.ico'),
+        legalTrademarks: 'KongDash'
+    };
+
+    config.nsis = {
+        oneClick: false,
+        perMachine: false,
+        allowToChangeInstallationDirectory: true,
+        installerIcon: path.join(ICON_DIR, 'installerIcon.ico'),
+        uninstallerIcon: path.join(ICON_DIR, 'uninstallerIcon.ico'),
+        uninstallDisplayName: 'KongDash',
+        license: path.join(RES_DIR, 'license.txt'),
+        artifactName: `${config.productName}-v1.0.0-Setup-x64`
+    };
+
+    return {config, targets};
+}
+
 module.exports = {
     configureLinuxOptions,
     configureMacOptions,
-    configureWin32Options: () => {}
+    configureWin32Options
 };
