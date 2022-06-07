@@ -18,9 +18,7 @@ const rimraf = require('rimraf');
 const {ROOT_DIR} = require('./constant');
 const {buildRelease} = require('./builder-wrapper');
 
-function onRendererExit(code) {
-    grunt.log.writeln(`Electron exited with code ${code}.`);
-}
+function onRendererExit(code) {}
 
 /* eslint-disable no-console */
 function cleanBuild() {
@@ -41,13 +39,16 @@ function cleanBuild() {
 
 /* eslint-disable no-console */
 function startRenderer() {
+    const done = this.async();
+
     const child = childProcess.spawn(electron, [ROOT_DIR, '--trace-warnings'], {
         stdio: ['pipe', process.stdout, process.stderr]
     });
 
-    child.on('close', onRendererExit);
-    child.on('exit', onRendererExit);
-    child.on('SIGTERM', onRendererExit);
+    child.on('close', (code) => {
+        grunt.log.writeln(`Renderer exited with code ${code}.`);
+        done();
+    });
 }
 
 function makeRelease() {
