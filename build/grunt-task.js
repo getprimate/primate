@@ -18,8 +18,6 @@ const rimraf = require('rimraf');
 const {ROOT_DIR} = require('./constant');
 const {buildRelease} = require('./builder-wrapper');
 
-function onRendererExit(code) {}
-
 /* eslint-disable no-console */
 function cleanBuild() {
     const done = this.async();
