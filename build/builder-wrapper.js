@@ -23,7 +23,7 @@ async function prepareBuilderOptions() {
                 type: 'rawlist',
                 name: 'type',
                 message: 'Choose the package type',
-                choices: ['snap', 'tar.gz', 'flatpak']
+                choices: ['Snap', 'AppImage', 'Tarball']
             }
         ]);
 

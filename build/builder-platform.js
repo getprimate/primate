@@ -27,7 +27,7 @@ function configureLinuxOptions(type = 'dir') {
     };
 
     switch (type) {
-        case 'snap':
+        case 'Snap':
             config.linux.target = 'snap';
 
             config.snap = {
@@ -39,10 +39,10 @@ function configureLinuxOptions(type = 'dir') {
             };
             break;
 
-        case 'flatpak':
+        case 'AppImage':
             break;
 
-        case 'tar.gz':
+        case 'Tarball':
             config.linux.target = 'tar.gz';
             break;
 
@@ -113,7 +113,7 @@ function configureWin32Options() {
         uninstallerIcon: path.join(ICON_DIR, 'uninstallerIcon.ico'),
         uninstallDisplayName: 'KongDash',
         license: path.join(RES_DIR, 'license.txt'),
-        artifactName: `${config.productName}-v1.0.0-Setup-x64`
+        artifactName: `${config.productName}-v1.0.0-Setup-x64.exe`
     };
 
     return {config, targets};
