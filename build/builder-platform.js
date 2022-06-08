@@ -40,6 +40,11 @@ function configureLinuxOptions(type = 'dir') {
             break;
 
         case 'AppImage':
+            config.linux.target = 'AppImage';
+            config.appImage = {
+                artifactName: '${productName}-v${version}-x64.AppImage'
+            };
+
             break;
 
         case 'Tarball':
@@ -113,7 +118,7 @@ function configureWin32Options() {
         uninstallerIcon: path.join(ICON_DIR, 'uninstallerIcon.ico'),
         uninstallDisplayName: 'KongDash',
         license: path.join(RES_DIR, 'license.txt'),
-        artifactName: `${config.productName}-v1.0.0-Setup-x64.exe`
+        artifactName: '${productName}-Setup-v${version}-x64.exe'
     };
 
     return {config, targets};
