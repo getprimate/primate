@@ -24,7 +24,6 @@ const configManager = new ConfigManager(path.join(ospath.data(), APP_NAME, 'User
 const themeScanner = new ThemeScanner([path.join(ospath.data(), APP_NAME, 'User-Themes')]);
 
 const rendererWindow = new RendererWindow({title: APP_NAME});
-rendererWindow.enableDebugging();
 
 const {app} = electron;
 const connectionMap = {};
@@ -79,7 +78,6 @@ ipcServer.registerRequestHandler('Read-Theme-Style', async (event, payload) => {
 ipcServer.registerRequestHandler('Create-Workbench-Session', async (event, session) => {
     if (typeof session.sessionId === 'string' && session.sessionId.length >= 16) {
         connectionMap[`window${event.senderId}`] = session.sessionId;
-
     } else if (typeof session.adminHost === 'string' && typeof session.protocol === 'string') {
         const connection = configManager.writeConnection(session);
         connectionMap[`window${event.senderId}`] = connection.id;

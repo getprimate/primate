@@ -7,10 +7,11 @@
 
 'use strict';
 
-const path = require('path');
+const os = require('node:os');
+const path = require('node:path');
 const {app, nativeImage, Menu, BrowserWindow} = require('electron');
 
-const {ROOT_PATH, PLATFORM_PATH, WORKBENCH_PATH} = require('../constant/paths');
+const {ROOT_PATH, PLATFORM_PATH, WORKBENCH_PATH, RESOURCES_PATH} = require('../constant/paths');
 const {menuTemplate} = require('./menu');
 
 /**
@@ -23,9 +24,12 @@ class RendererWindow {
      */
     constructor(options) {
         this._window = null;
-        this._debug = false;
+        this._debug = app.isPackaged === false;
 
-        const icon = nativeImage.createFromPath(path.join(ROOT_PATH, 'kongdash-512x512.png'));
+        const icon =
+            'Windows_NT' === os.type()
+                ? path.join(RESOURCES_PATH, 'icons', 'kongdash-scalable.ico')
+                : nativeImage.createFromPath(path.join(RESOURCES_PATH, 'icons', '512x512.png'));
 
         this._options = {
             backgroundColor: '#1A242D',
