@@ -50,7 +50,7 @@ function startRenderer() {
 }
 
 function makeRelease() {
-    if (!fs.existsSync(path.join(ROOT_DIR, 'out/platform/main.js'))) {
+    if (!fs.existsSync(path.join(ROOT_DIR, 'out', 'platform', 'main.js'))) {
         grunt.fail.fatal('Project not compiled yet! Run `yarn run compile` first.', 0);
         return 0;
     }
