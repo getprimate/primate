@@ -66,12 +66,12 @@ function configureMacOptions() {
     config.mac = {
         category: 'public.app-category.developer-tools',
         target: 'dmg',
-        icon: path.join(ICON_DIR, '256x256.icns')
+        icon: path.join(ICON_DIR, 'kongdash-scalable.icns')
     };
 
     config.dmg = {
-        background: path.join(ROOT_DIR, 'resources', 'dmg-background.png'),
-        icon: path.join(ROOT_DIR, 'resources', 'icons', '256x256.icns'),
+        background: path.join(RES_DIR, 'dmg-background.png'),
+        icon: path.join(ICON_DIR, 'dmg-scalable.icns'),
         iconSize: 96,
         title: 'KongDash v1.0.0',
         contents: [
