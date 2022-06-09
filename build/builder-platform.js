@@ -106,7 +106,7 @@ function configureWin32Options() {
 
     config.win = {
         target: 'nsis',
-        icon: path.join(ICON_DIR, '256x256.ico'),
+        icon: path.join(ICON_DIR, 'app-scalable.ico'),
         legalTrademarks: 'KongDash'
     };
 
@@ -114,8 +114,8 @@ function configureWin32Options() {
         oneClick: false,
         perMachine: false,
         allowToChangeInstallationDirectory: true,
-        installerIcon: path.join(ICON_DIR, 'installerIcon.ico'),
-        uninstallerIcon: path.join(ICON_DIR, 'uninstallerIcon.ico'),
+        installerIcon: path.join(ICON_DIR, 'installer-scalable.ico'),
+        uninstallerIcon: path.join(ICON_DIR, 'uninstaller-scalable.ico'),
         uninstallDisplayName: 'KongDash',
         license: path.join(RES_DIR, 'license.txt'),
         artifactName: '${productName}-Setup-v${version}-x64.exe'
