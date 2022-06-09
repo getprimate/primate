@@ -31,10 +31,8 @@ const releaseConfig = {
         output: 'dist'
     },
     extraResources: [
-        {
-            from: 'resources/themes',
-            to: 'themes'
-        }
+        {from: 'resources/themes', to: 'themes'},
+        {from: 'resources/icons/', to: 'icons'}
     ],
     extraMetadata: {
         main: 'platform/main.js'
