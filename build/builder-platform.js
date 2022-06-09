@@ -106,7 +106,7 @@ function configureWin32Options() {
 
     config.win = {
         target: 'nsis',
-        icon: path.join(ICON_DIR, 'app-scalable.ico'),
+        icon: path.join(ICON_DIR, 'kongdash-scalable.ico'),
         legalTrademarks: 'KongDash'
     };
 
