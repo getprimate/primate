@@ -8,7 +8,7 @@
 'use strict';
 
 const path = require('path');
-const {app, Menu, BrowserWindow} = require('electron');
+const {app, nativeImage, Menu, BrowserWindow} = require('electron');
 
 const {ROOT_PATH, PLATFORM_PATH, WORKBENCH_PATH} = require('../constant/paths');
 const {menuTemplate} = require('./menu');
@@ -25,6 +25,8 @@ class RendererWindow {
         this._window = null;
         this._debug = false;
 
+        const icon = nativeImage.createFromPath(path.join(ROOT_PATH, 'kongdash-512x512.png'));
+
         this._options = {
             backgroundColor: '#1A242D',
             width: 1570,
@@ -33,7 +35,7 @@ class RendererWindow {
             title: 'KongDash',
             minWidth: 1280,
             minHeight: 800,
-            icon: path.join(ROOT_PATH, 'kongdash-256x256.png'),
+            icon,
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
