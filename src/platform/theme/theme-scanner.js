@@ -3,7 +3,7 @@
 const path = require('path');
 const fs = require('fs/promises');
 
-const {ROOT_PATH} = require('../constant/paths');
+const {RESOURCES_PATH} = require('../constant/paths');
 
 /**
  * @property {Object} _themeList - The theme definitions.
@@ -48,7 +48,7 @@ class ThemeScanner {
     }
 
     constructor(locations = null) {
-        this._locations = [path.join(ROOT_PATH, 'themes'), path.join(ROOT_PATH, 'resources', 'themes')];
+        this._locations = [path.join(RESOURCES_PATH, 'themes')];
 
         if (Array.isArray(locations)) {
             this._locations.push(...locations);
