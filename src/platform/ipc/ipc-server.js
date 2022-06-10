@@ -29,7 +29,7 @@
  * @param {Object} payload - The event data payload.
  */
 
-const util = require('util');
+const util = require('node:util');
 const {ipcMain} = require('electron');
 
 const registeredHandlers = {};

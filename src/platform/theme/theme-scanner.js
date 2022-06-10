@@ -1,7 +1,7 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs/promises');
+const path = require('node:path');
+const fs = require('node:fs/promises');
 
 const {RESOURCES_PATH} = require('../constant/paths');
 

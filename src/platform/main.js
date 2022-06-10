@@ -7,7 +7,7 @@
 
 'use strict';
 
-const path = require('path');
+const path = require('node:path');
 const electron = require('electron');
 const ospath = require('ospath');
 
