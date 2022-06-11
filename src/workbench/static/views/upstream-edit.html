@@ -322,7 +322,7 @@
 
 <div class="col md-4 sm-12">
     <div class="well">
-        <div class="well__heading">Targets <div data-ng-if="upstreamId!=='__none__'" class="pull-right"><a title="Manage Targets" href="#!/upstreams/{{upstreamId}}/targets"><span class="material-icons">launch</span> Manage</a></div></div>
+        <div class="well__heading">Targets <div data-ng-if="upstreamId!=='__none__'" class="pull-right"></div></div>
 
         <div class="well__scroll-area">
             <table id="targetsTable" class="card-table">
@@ -349,7 +349,7 @@
                 </tfoot>
             </table>
         </div><!-- .well__scroll-area -->
-        <form data-ng-if="upstreamId.length >= 12" class="form" method="post" data-ng-submit="submitTargetForm($event)">
+        <form data-ng-if="upstreamId.length >= 12" class="form hpadding-20" method="post" data-ng-submit="submitTargetForm($event)">
             <div class="form__field">
                 <ul class="field-input linked">
                     <li class="stretch"><input id="up-ed__txt10" type="text" name="target" placeholder="example.com:80, 15, user-level, low-priority" data-ng-model="targetModel.properties" /></li>
