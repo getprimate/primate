@@ -2,7 +2,7 @@
 
 module.exports = {
     dateFormat: 'utc',
-    themeUID: '__none__',
+    themeUID: 'dark-v1.0.0@kongdash.com',
     showFooter: true,
     showBreadcrumbs: true
 };
