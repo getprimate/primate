@@ -26,7 +26,7 @@
     "input__accent-bg": "#2a2c38",
     "input__focused-bg": "#181b23",
     "input__border-fg": "#5f6170",
-    "input__border-size": "2px"
+    "input__border-size": "1px"
   },
 
   "sidebar": {
