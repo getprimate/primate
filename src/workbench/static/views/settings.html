@@ -125,7 +125,7 @@
                     <thead><tr><th colspan="2">Themes</th></tr></thead>
                     <tbody data-ng-click="setWorkbenchTheme($event)">
                     <tr data-ng-repeat="theme in themeList">
-                        <td><input type="radio" class="success" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
+                        <td><input type="radio" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
                         <td><strong>{{theme.name}}</strong>
                             <br />Version: {{theme.version}}
                             <br />{{theme.maintainer}}</td>
