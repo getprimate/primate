@@ -32,8 +32,16 @@ class ConfigManager {
         this._location = location;
 
         for (let name in CURRENT_CONFIG) {
-            if (fs.existsSync(`${this._location}/${name}.json`)) {
-                CURRENT_CONFIG[name] = require(`${this._location}/${name}.json`);
+            if (!fs.existsSync(`${this._location}/${name}.json`)) {
+                continue;
+            }
+
+            let loaded = require(`${this._location}/${name}.json`);
+
+            for (let key of Object.keys(CURRENT_CONFIG[name])) {
+                if (typeof loaded[key] !== 'undefined') {
+                    CURRENT_CONFIG[name][key] = loaded[key];
+                }
             }
         }
     }
