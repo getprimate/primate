@@ -60,7 +60,7 @@
         </div>
         <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
     </header>
-    <footer id="mainFooter" data-ng-controller="FooterController">
+    <footer id="mainFooter" data-ng-controller="FooterController" data-ng-show="frameConfig.showFooter === true">
         <section class="footer__window">
             <div class="activity-log">
                 <ul><li data-ng-repeat="log in eventLogs">[<span>{{log.timestamp}}</span>]&nbsp;<span class="upper-case log-{{log.level}}">{{log.level}}</span> : <span>{{log.message}}</span></li></ul>
@@ -70,7 +70,7 @@
         <section id="index__ftBase" class="footer__base"><form>
             <ul class="base-menu">
                 <li><label><input type="checkbox" class="warning" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> Activity Log</label> </li>
-                <li>localhost:8001</li>
+                <li>{{frameConfig.sessionURL}}</li>
                 <li>version 0.6.0</li>
             </ul>
         </form></section>
