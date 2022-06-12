@@ -2,55 +2,58 @@
   "root": {
     "std__default": "#9db4be",
     "std__primary": "#1F5EFF",
-    "std__success": "#22b07d",
+    "std__success": "#6fc476",
     "std__info": "#35B8E0",
     "std__critical": "#FF5B5B",
-    "std__warning": "#c77c19",
+    "std__warning": "#ffd764",
 
-    "theme__default-bg": "#202225",
-    "theme__primary-bg": "#27292c",
+    "theme__default-bg": "#181922",
+    "theme__primary-bg": "#1f2029",
 
-    "theme__default-fg": "#636e78",
-    "theme__primary-fg": "#d1d2d2",
-    "theme__accent-fg": "#937ec9",
+    "theme__default-fg": "#a4a4a8",
+    "theme__primary-fg": "#FFFFFF",
+    "theme__accent-fg": "#6fc476",
 
     "theme__border-fg": "#35383b",
 
-    "theme__widget-corner": "10px",
-    "theme__input-corner": "5px",
+    "theme__widget-corner": "12px",
+    "theme__input-corner": "10px",
 
-    "widget__primary-bg": "#27292c",
-    "widget__accent-bg": "#232527",
+    "widget__primary-bg": "#1f2029",
+    "widget__accent-bg": "#2a2c38",
 
-    "input__primary-bg": "#242629",
-    "input__accent-bg": "#232527",
-    "input__focused-bg": "#292e2f",
-    "input__border-fg": "#343a40",
+    "input__primary-bg": "#363848",
+    "input__accent-bg": "#2a2c38",
+    "input__focused-bg": "#181b23",
+    "input__border-fg": "#5f6170",
     "input__border-size": "2px"
   },
 
   "sidebar": {
-    "default-bg": "#202225",
-    "primary-bg": "#27292c",
-    "accent-bg": "#27292c",
-    "default-fg": "#61617d",
+    "default-bg": "#121418",
+    "primary-bg": "#181a23",
+    "accent-bg": "#1f2029",
+    "default-fg": "#a4a4a8",
     "primary-fg": "#FFFFFF",
-    "accent-fg": "#61617d",
+    "accent-fg": "#a4a4a8",
     "border-size": "1px",
-    "border-fg": "#2C2E36"
+    "border-fg": "#0C0C0C"
   },
 
   "header": {
     "primary-bg": "transparent",
-    "primary-fg": "#d1d2d2",
-    "default-fg": "#636e78",
-    "border-size": "1px",
-    "border-fg": "#2f3138"
+    "primary-fg": "#ffffff",
+    "default-fg": "#a4a4a8",
+    "border-size": "0px",
+    "border-fg": "transparent"
   },
 
   "footer": {
-    "primary-bg": "#27292c",
-    "primary-fg": "#d1d2d2",
-    "accent-bg": "#212121"
+    "primary-bg": "#121418",
+    "primary-fg": "#FFFFFF",
+    "accent-bg": "#212121",
+    "accent-fg": "#0C0C0C",
+    "border-size": "1px",
+    "border-fg": "#0C0C0C"
   }
 }
