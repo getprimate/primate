@@ -533,7 +533,7 @@ aside#sidebarMenu {
 
 aside#sidebarMenu .branding {
     max-height: 150px;
-    margin: 20px 30px 20px 30px;
+    margin: 20px;
     padding: 0;
     text-align: left;
     text-transform: capitalize;
@@ -548,7 +548,6 @@ aside#sidebarMenu nav.navigation {
     width: 100%;
     height: auto;
     background: transparent;
-    padding: 0 10px 0 10px;
 }
 
 aside#sidebarMenu nav.navigation .navigation__title {
@@ -572,16 +571,14 @@ aside#sidebarMenu nav.navigation ul.navigation__menu li {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 5px 0 5px 0;
     padding: 10px 20px 10px 20px;
 }
 
 aside#sidebarMenu nav.navigation ul.navigation__menu li.active {
-    border-radius: var(--theme__widget-corner);
     background-color: var(--primary-bg);
     color: var(--primary-fg);
     font-weight: 500;
-    text-shadow: none;
+    box-shadow: 2px 0px 0 0 var(--theme__accent-fg) inset;
 }
 
 aside#sidebarMenu nav.navigation ul.navigation__menu li.active a {
