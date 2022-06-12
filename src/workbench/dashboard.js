@@ -43,6 +43,47 @@ import ThemeEngine from './interface/theme-engine.js';
 const {/** @type {IPCBridge} */ ipcBridge} = window;
 
 /**
+ * Stores responses from asynchronous IPC events.
+ */
+const responseLocker = {
+    completedSteps: 0,
+    config: {}
+};
+
+/**
+ * Initializes REST client and View frame factory.
+ *
+ * @param {import('./services/rest-provider.js').RESTClientProvider} restProvider - The REST client provider.
+ * @param {import('./services/view-frame-provider.js').ViewFrameProvider} vfProvider - The view actory provider.
+ */
+function finalFactoryInitializer(restProvider, vfProvider) {
+    restProvider.initialize({
+        /* TODO : Include basic auth not provided. */
+        host: responseLocker.host
+    });
+
+    vfProvider.initialize(responseLocker);
+}
+
+/**
+ * Attempts to start the Angular application if all the required steps are completed.
+ *
+ * @returns {boolean} True if application started, false otherwise.
+ */
+function attemptStart() {
+    if (responseLocker.completedSteps < 2) {
+        return false;
+    }
+
+    console.log(JSON.stringify({responseLocker}, null, 4));
+
+    KongDash.config(finalFactoryInitializer, 'restClient', 'viewFrame');
+    KongDash.start();
+
+    return true;
+}
+
+/**
  * Attaches application wide event listeners.
  *
  * @param {Window} window - Top level window object.
@@ -95,32 +136,32 @@ ipcBridge.onResponse('Read-Workbench-Config', (config) => {
     if (!isNone(config.themeUID)) {
         ipcBridge.sendRequest('Read-Theme-Style', {themeUID: config.themeUID});
     }
+
+    const fields = ['showFooter', 'showBreadcrumbs', 'dateFormat'];
+
+    for (let field of fields) {
+        responseLocker.config[field] = config[field];
+    }
+
+    responseLocker.completedSteps++;
+    return attemptStart();
 });
 
 ipcBridge.onResponse('Read-Session-Connection', (connection) => {
-    if (isText(connection.adminHost) && isText(connection.protocol)) {
-        const adminPort = parseNumeric(connection.adminPort, 8001);
-
-        const initializer = (restProvider, vfProvider) => {
-            restProvider.initialize({
-                /* TODO : Include basic auth not provided. */
-                host: `${connection.protocol}://${connection.adminHost}:${adminPort}`
-            });
-
-            vfProvider.initialize({
-                config: {
-                    sessionId: connection.id,
-                    sessionName: connection.name,
-                    sessionColor: connection.colorCode,
-                    sessionURL: `${connection.protocol}://${connection.adminHost}:${adminPort}`
-                }
-            });
-        };
-
-        KongDash.config(initializer, 'restClient', 'viewFrame');
+    if (!isText(connection.adminHost) || !isText(connection.protocol)) {
+        return false;
     }
 
-    KongDash.start();
+    const adminPort = parseNumeric(connection.adminPort, 8001);
+
+    responseLocker.host = `${connection.protocol}://${connection.adminHost}:${adminPort}`;
+    responseLocker.config.sessionId = connection.id;
+    responseLocker.config.sessionName = connection.name;
+    responseLocker.config.sessionColor = connection.colorCode;
+    responseLocker.config.sessionURL = responseLocker.host;
+    responseLocker.completedSteps++;
+
+    return attemptStart();
 });
 
 KongDash.directive(TokenInputDirective);
@@ -170,5 +211,5 @@ KongDash.config(Templates, '$route');
 
 KongDash.onReady(attachEventListeners, '$window', '$rootScope', 'viewFrame', 'logger');
 
-ipcBridge.sendRequest('Read-Workbench-Config');
 ipcBridge.sendRequest('Read-Session-Connection');
+ipcBridge.sendRequest('Read-Workbench-Config');
