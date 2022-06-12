@@ -208,6 +208,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         viewFrame.setConfig('dateFormat', scope.workbenchConfig.dateFormat);
         viewFrame.setConfig('showBreadcrumbs', scope.workbenchConfig.showBreadcrumbs);
+        viewFrame.setConfig('showFooter', scope.workbenchConfig.showFooter);
 
         scope.connectionModel = null;
         scope.connectionList = null;
