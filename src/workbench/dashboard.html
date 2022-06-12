@@ -28,7 +28,6 @@
                 </a>
                 <a data-ng-if="menu.editView.length>=5" href="{{menu.editView}}" class="navigation__link"><span class="material-icons">add</span></a>
             </li>
-
         </ul><!-- .navigation__menu -->
     </nav><!-- .navigation -->
 
@@ -53,11 +52,12 @@
            </li>
         </ul>
 
-        <div data-ng-show="frameConfig.showBreadcrumbs === false" class="title">{{frameState.frameTitle}}</div>
+        <div data-ng-show="frameConfig.showBreadcrumbs === false" class="title"><span>{{frameState.frameTitle}}</span></div>
 
-        <div class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
-            <button type="button" class="{{button.styles}}" data-ng-repeat="button in frameState.actionButtons" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button>
-        </div>
+        <ul class="actions" data-ng-if="frameState.actionButtons.length>=1" data-ng-click="handleButtonAction($event)">
+            <li data-ng-repeat="button in frameState.actionButtons"><button type="button" class="{{button.styles}}" data-target="{{button.target}}" data-endpoint="{{button.endpoint}}" data-redirect="{{button.redirect}}">{{button.displayText}}</button></li>
+        </ul><!-- .actions -->
+
         <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
     </header>
     <footer id="mainFooter" data-ng-controller="FooterController" data-ng-show="frameConfig.showFooter === true">
@@ -69,7 +69,7 @@
 
         <section id="index__ftBase" class="footer__base"><form>
             <ul class="base-menu">
-                <li><label><input type="checkbox" class="warning" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> Activity Log</label> </li>
+                <li><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> <label for="chk_ToggleLog">Activity Log</label> </li>
                 <li>{{frameConfig.sessionURL}}</li>
                 <li>version 0.6.0</li>
             </ul>

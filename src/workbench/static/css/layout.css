@@ -516,8 +516,8 @@ aside#sidebarMenu {
     --primary-fg: #FFFFFF;
     --accent-fg: var(--default-fg);
 
-    --border-size: 0px;
-    --border-fg: transparent;
+    --border-size: 1px;
+    --border-fg: #0C0C0C;
 
     float: none;
     position: absolute;
@@ -703,7 +703,7 @@ header#mainHeader {
     max-height: 100px;
     width: 100%;
     height: 60px;
-    padding: 15px 25px 0 25px;
+    padding: 10px 25px 10px 20px;
     margin: 0;
     border-bottom: var(--border-size) solid var(--border-fg);
     background-color: var(--primary-bg);
@@ -718,36 +718,51 @@ header#mainHeader {
     }
 
 header#mainHeader .navigate {
-    display: block;
     float: left;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: row;
     height: 100%;
     width: auto;
     margin-right: 5px;
-    padding-top: 6px;
     vertical-align: middle;
 }
 
-header#mainHeader .actions {
+header#mainHeader ul.actions {
     float: right;
     position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-header#mainHeader .actions > .btn.create.success,
-header#mainHeader .actions > .btn.critical.delete {
+header#mainHeader ul.actions li {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+header#mainHeader button.create.success,
+header#mainHeader button.critical.delete {
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
-header#mainHeader .actions > .btn.create.success {
+header#mainHeader button.create.success {
     background: transparent none;
     color: var(--theme__primary-fg);
     font-weight: 500;
     background-blend-mode: multiply;
 }
 
-    .actions > .btn.create.success:hover {
+    header#mainHeader button.create.success:hover {
         color: var(--theme__primary-fg);
         background-image: linear-gradient(to right, var(--std__success), var(--std__success)), var(--overlay__dark-10);
     }
@@ -756,6 +771,7 @@ header#mainHeader .navigate button.text {
     display: inline-block;
     padding: 0;
     text-align: left;
+    padding-top: 2px;
 }
 
 header#mainHeader .navigate .material-icons {
@@ -763,7 +779,27 @@ header#mainHeader .navigate .material-icons {
     color: var(--default-fg);
 }
 
-header#mainHeader .title { padding: 0; font-size: 2rem; font-weight: 300; }
+header#mainHeader .title { 
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    height: 100%;
+    width: auto;
+    margin-right: 5px;
+    vertical-align: middle;
+    padding: 0; 
+}
+
+header#mainHeader .title > span {
+    display: inline-block;
+    font-size: 1.5rem; 
+    font-weight: 300; 
+}
+
 header#mainHeader .navigate ~ .title { padding-left: 0; }
 
 header#mainHeader .loader-bar {
@@ -796,8 +832,6 @@ header#mainHeader ul.breadcrumbs {
 
 header#mainHeader ul.breadcrumbs li {
     display: inline-block;
-    height: 100%;
-    padding: 5px 1px;
     margin-right: 5px;
     text-transform: lowercase;
 }
@@ -820,11 +854,10 @@ header#mainHeader ul.breadcrumbs li > span {
 
 main#mainWrapper section.content__wrapper {
     width: calc(100% - 25px);
-    height: calc(100% - 145px);
-    margin: 60px 0 0 25px;
-    padding: 0 25px 0 0;
+    height: calc(100% - 87px);
+    margin: 60px 0 0 20px;
+    padding: 0 20px 0 0;
     overflow-y: auto;
-    border-radius: var(--theme__widget-corner);
     z-index: 10;
 }
 
@@ -835,28 +868,31 @@ main#mainWrapper section.content__wrapper.resized {
     height: calc(100% - 380px) !important;
 }
 
+footer#mainFooter.ng-scope.ng-hide + section.content__wrapper {
+    height: calc(100% - 60px);
+}
+
 footer#mainFooter {
-    --primary-bg: var(--theme__primary-bg);
+    --primary-bg: #121418;
     --primary-fg: var(--theme__primary-fg);
     --accent-bg: #212121;
+    --border-fg: #0C0C0C;
 
     float: none;
     position: absolute;
-    bottom: 15px;
-    width: calc(100% - 50px);
+    bottom: 0;
+    width: 100%;
     max-height: 500px;
-    margin: 0 25px;
-    border-radius: var(--theme__widget-corner);
     background-color: var(--primary-bg);
-    border-top: 1px solid var(--widget__primary-bg);
+    border-top: 1px solid var(--border-fg);
     color: #76868F;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     z-index: 100;
 }
 
 footer#mainFooter .footer__base {
-    padding: 10px min(1.041vw, 20px) 10px min(1.041vw, 20px);
+    padding: 2px 20px;
 }
 
 footer#mainFooter .footer__base form {
@@ -951,6 +987,18 @@ footer#mainFooter .footer__window .activity-log ul li > span.log-error {
     text-transform: uppercase;
 }
 
+input[type="checkbox"]#chk_ToggleLog + label {
+    display: inline-block;
+    height: 100%;
+    background: transparent none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 0 8px;
+}
+
+input[type="checkbox"]#chk_ToggleLog + label:hover {
+    background-color: var(--theme__primary-bg);
+}
 
 
 /* Custom input elements */
