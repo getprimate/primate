@@ -21,6 +21,9 @@ export default function FooterController(scope, http, viewFrame, toast, logger) 
     const {document} = window;
     const footerMain = document.getElementById('mainFooter');
 
+    scope.frameState = viewFrame.getState();
+    scope.frameConfig = viewFrame.getFrameConfig();
+
     scope.eventLogs = logger.getCache();
 
     scope.toggleActivityLog = function (event) {
