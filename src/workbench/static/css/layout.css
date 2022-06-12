@@ -877,6 +877,7 @@ footer#mainFooter {
     --primary-fg: var(--theme__primary-fg);
     --accent-bg: #212121;
     --border-fg: #0C0C0C;
+    --border-size: 1px;
 
     float: none;
     position: absolute;
@@ -884,7 +885,7 @@ footer#mainFooter {
     width: 100%;
     max-height: 500px;
     background-color: var(--primary-bg);
-    border-top: 1px solid var(--border-fg);
+    border-top: var(--border-size) solid var(--border-fg);
     color: #76868F;
     font-size: 0.8rem;
     font-weight: 500;
