@@ -75,6 +75,8 @@ function attemptStart() {
         return false;
     }
 
+    responseLocker.completedSteps = -10;
+
     console.log(JSON.stringify({responseLocker}, null, 4));
 
     KongDash.config(finalFactoryInitializer, 'restClient', 'viewFrame');
