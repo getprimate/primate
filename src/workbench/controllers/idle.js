@@ -7,4 +7,11 @@
 
 'use strict';
 
+/**
+ * Provides a controller constructor that does not do anything significant.
+ *
+ * @constructor
+ * @param {Object} scope - Injected scope object.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ */
 export default function IdleController(scope, viewFrame) {}
