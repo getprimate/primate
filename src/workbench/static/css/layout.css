@@ -168,14 +168,6 @@ input[type="checkbox"] {
         content: '✔';
     }
 
-    input[type="checkbox"].default:checked { background-color: #DAE6EC; border-color: #DAE6EC; color: #343434; }
-    input[type="checkbox"].default:checked::after { color: #343434; }
-    input[type="checkbox"].primary:checked { background-color: #188AE2; border-color: #188AE2; }
-    input[type="checkbox"].success:checked { background-color: var(--std__success); border-color: var(--std__success); }
-    input[type="checkbox"].info:checked { background-color: var(--std__info); border-color: var(--std__info); }
-    input[type="checkbox"].warning:checked { background-color: var(--std__warning); border-color: var(--std__warning); }
-    input[type="checkbox"].critical:checked { background-color: var(--std__critical); border-color: var(--std__critical); }
-
 input[type="radio"] {
     position:relative;
     width: 20px;
@@ -189,36 +181,6 @@ input[type="radio"] {
     -webkit-transition: 0.5s;
 }
 
-    input[type="radio"].default:checked {
-        background-color: var(--std__default);
-        border-color: var(--std__default);
-    }
-
-    input[type="radio"].primary:checked {
-        background-color: var(--std__primary);
-        border-color: var(--std__primary);
-    }
-
-    input[type="radio"].success:checked {
-        background-color: var(--std__success);
-        border-color: var(--std__success);
-    }
-
-    input[type="radio"].info:checked {
-        background-color: var(--std__info);
-        border-color: var(--std__info);
-    }
-
-    input[type="radio"].warning:checked {
-        background-color: var(--std__warning);
-        border-color: var(--std__warning);
-    }
-
-    input[type="radio"].critical:checked {
-        background-color: var(--std__critical);
-        border-color: var(--std__critical);
-    }
-
     input[type="radio"]::after {
         display: none;
         margin: 2px 1px 1px 1px;
@@ -231,13 +193,16 @@ input[type="radio"] {
 
     input[type="radio"]:checked::after {
         display: inline-block;
-        background-color: #FFFFFF;
+        background-color: var(--theme__accent-fg);
+        color: var(--theme__primary-fg);
+        border-color: var(--theme__accent-fg);
     }
 
 textarea.tx-small { height: 100px !important; }
 
-
+/* SAFE-DELETE
 label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
+*/
 
 input[type="color"] {
     display: inline-block;
@@ -339,54 +304,22 @@ a.btn {
     background: var(--theme__accent-fg) none;
 }
 
-button:last-child { margin-right: 0 !important; }
-
-button.default,
-button.critical,
-button.success,
-button.warning,
-button.primary,
-button.info,
-button.accent {
+button {
     border: 2px solid transparent;
 }
 
-button.accent {
-    border-color: var(--theme__accent-fg);
-    color: var(--theme__primary-fg);
-    background: var(--theme__accent-fg);
-}
 
-button.default {
+    button:last-child { margin-right: 0 !important; }
+
+button.subtle {
     background: var(--input__primary-bg);
     color: var(--theme__primary-fg);
     border-color: var(--input__primary-bg);
 }
 
-    button.default:hover {
-        background-color: var(--input__border-fg);
-    }
-
-button.success {
-    background-color: var(--std__success);
-    border-color: var(--std__success);
+button.subtle:hover {
+    background-color: var(--input__border-fg);
 }
-
-    button.success:hover { background-color: #0fad5a; }
-
-button.warning {
-    background-color: var(--std__warning);
-    border-color: var(--std__warning);
-}
-
-    button.warning:hover { background-color: #F26418; }
-
-button.info {
-    background-color: var(--std__info);
-    border-color: var(--std__info);
-}
-
-    button.info:hover { background-color: #35AAD2; }
 
 button.critical {
     background-color: var(--std__critical);
@@ -395,13 +328,6 @@ button.critical {
 
     button.critical:hover { background-color: #FA372E; }
 
-button.dark {
-    background-color: var(--widget__accent-bg);
-    border-color: var(--widget__accent-bg);
-    color: #AAC5D4;
-}
-
-    button.dark:hover { background-color: #556972; }
 
 button.text {
     border: 0 solid transparent;
@@ -1451,10 +1377,9 @@ form .row { margin-bottom: 0 !important; }
     margin: 0 !important;
 }
 
-.row.separated > .col {
+.row.separated > .col:first-child {
     border-right: 1px solid var(--widget__accent-bg);
-    padding-right: 20px;
-    padding-left: 20px;
+    padding: 0;
 }
 
 .row.separated > .col:first-child {
@@ -1561,23 +1486,31 @@ table tfoot.pagination button {
     color: var(--theme__primary-fg);
 }
 
-    table.data-table tbody tr:nth-child(odd) td,
-    table.data-table tbody tr:nth-child(odd) th { background-color: var(--widget__accent-bg); }
+    table.data-table:not(.flat) tbody tr:nth-child(odd) td,
+    table.data-table:not(.flat) tbody tr:nth-child(odd) th { background-color: var(--widget__accent-bg); }
 
-    table.data-table tbody tr:nth-child(even) td,
-    table.data-table tbody tr:nth-child(even) th { background-color: var(--widget__primary-bg); }
+    table.data-table:not(.flat) tbody tr:nth-child(even) td,
+    table.data-table:not(.flat) tbody tr:nth-child(even) th { background-color: var(--widget__primary-bg); }
 
     table.data-table tbody.hero-placeholder tr:first-child td { padding-top: 35px; }
     table.data-table tbody.hero-placeholder tr:last-child td { padding-bottom: 35px; }
 
-.well table.data-table tr:last-child td:first-child,
-.panel table.data-table tr:last-child td:first-child {
+.well table.data-table:not(.flat) tr:last-child td:first-child,
+.panel table.data-table:not(.flat) tr:last-child td:first-child {
     border-bottom-left-radius: var(--theme__widget-corner);
 }
 
-.well table.data-table tr:last-child td:last-child,
-.panel table.data-table tr:last-child td:last-child {
+.well table.data-table:not(.flat) tr:last-child td:last-child,
+.panel table.data-table:not(.flat) tr:last-child td:last-child {
     border-bottom-right-radius: var(--theme__widget-corner);
+}
+
+table.data-table.flat tr td {
+    border-bottom: 1px solid var(--widget__accent-bg);
+}
+
+table.data-table.flat tr.active > td {
+    background-color: var(--widget__accent-bg);
 }
 
 table.card-table {

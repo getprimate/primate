@@ -52,6 +52,8 @@ const frameCache = {
  */
 const frameState = {
     frameTitle: '',
+    kongVersion: 'Unknown',
+    kongDatabase: 'Unknown',
     routeNext: '',
     breadcrumbs: [],
     serverHost: '',
@@ -66,7 +68,7 @@ const frameConfig = {
     sessionId: '__none__',
     sessionColor: '#FFFFFF',
     sessionName: 'Unnamed Server',
-    sessionURL: 'localhost:8000',
+    sessionURL: '',
     showFooter: true,
     showBreadcrumbs: true
 };
@@ -174,6 +176,12 @@ function buildViewFrameFactory(timeoutFn) {
         setConfig(name, value) {
             if (isText(name) && isDefined(frameConfig[name])) {
                 frameConfig[name] = value;
+            }
+        },
+
+        setState(key, value) {
+            if (isText(key) && isDefined(frameState[key])) {
+                frameState[key] = value;
             }
         },
 

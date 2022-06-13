@@ -35,7 +35,7 @@ import PluginListController from './controllers/plugin-list.js';
 import PluginEditController from './controllers/plugin-edit.js';
 import SettingsController from './controllers/settings.js';
 
-import Templates from './templates.js';
+import {DashboardTemplate} from './template.js';
 import RouteListController from './controllers/route-list.js';
 
 import ThemeEngine from './interface/theme-engine.js';
@@ -209,7 +209,7 @@ KongDash.controller(PluginEditController, '$location', '$routeParams', 'restClie
 
 KongDash.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.config(Templates, '$route');
+KongDash.config(DashboardTemplate, '$route');
 
 KongDash.onReady(attachEventListeners, '$window', '$rootScope', 'viewFrame', 'logger');
 

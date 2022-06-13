@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
+<head><meta charset="UTF-8" />
 <meta name=viewport content="width=device-width, initial-scale=1"/>
 <title>KongDash</title>
 
@@ -10,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="static/css/theme-defaults.css" />
 <link rel="stylesheet" type="text/css" href="static/css/layout.css" />
 
-<style>
+<style type="text/css">
 div#loaderWrapper {
     float: none;
     position: fixed;
@@ -25,31 +24,6 @@ div#loaderWrapper {
     justify-content: center;
     flex-direction: column;
     background-color: var(--theme__default-bg);
-}
-
-main.content {
-    padding-top: 10%;
-    overflow: hidden;
-    /*background-color: var(--theme__accent-bg);*/
-}
-
-section#index__ngView {
-    width: min(67vw, 1080px);
-    margin: 0 auto 0 auto;
-}
-
-.icon { text-align: center;  }
-.icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
-.icon p { margin: 0 0 10px 0; padding: 0; }
-.icon p.caption { font-size: 2.5rem; text-shadow: 1px 1px #1A242D; font-weight: 500; }
-.icon .description { font-size: 1rem; font-weight: 400; color: #B5BCCE; text-shadow: 1px 1px #1A242D; }
-
-form.form {
-    padding: 20px min(1.041vw, 20px);
-}
-
-#bt-ed__wrp01 > .col:last-child {
-    border-left: 1px solid var(--widget__accent-bg);
 }
 
 .loader {
@@ -84,124 +58,65 @@ form.form {
         transform: rotate(360deg);
     }
 }
-</style>
 
+/*
+main.content {
+    padding-top: 10%;
+    overflow: hidden;
+}
+
+section#index__ngView {
+    width: min(67vw, 1080px);
+    margin: 0 auto 0 auto;
+}
+
+.icon { text-align: center;  }
+.icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
+.icon p { margin: 0 0 10px 0; padding: 0; }
+.icon p.caption { font-size: 2.5rem; text-shadow: 1px 1px #1A242D; font-weight: 500; }
+.icon .description { font-size: 1rem; font-weight: 400; color: #B5BCCE; text-shadow: 1px 1px #1A242D; }
+
+form.form {
+    padding: 20px min(1.041vw, 20px);
+}
+
+#bt-ed__wrp01 > .col:last-child {
+    border-left: 1px solid var(--widget__accent-bg);
+}
+*/
+</style>
 </head>
-<body>
+
+<body class="body">
 <div id="loaderWrapper">
     <div class="loader"></div>
     <div class="vpadding-20"><strong>Loading</strong></div>
 </div><!-- #loaderWrapper -->
 
-<header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
-    <hr data-ng-show="frameState.loaderWidth>=1" class="loader-bar" data-ng-style="{width: frameState.loaderUnit}" />
-</header>
-<main id="contentWrapper" class="content">
+<div class="app-layout">
+    <aside id="sidebarMenu" data-ng-controller="SidebarController">
+        <nav class="navigation" data-ng-click="redirectNav($event)">
+            <ul class="navigation__menu">
+                <li class="active"><a class="navigation__link" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Welcome</span></a></li>
+                <li><a class="navigation__link" data-ng-href="#!/connections"><span class="material-icons">cable</span><span>Connections</span></a></li>
+                <li><a class="navigation__link" data-ng-href="#!/release-note"><span class="material-icons">description</span><span>Release Notes</span></a></li>
+            </ul><!-- .navigation__menu -->
+        </nav><!-- .navigation -->
+    </aside><!--  #sidebarMenu -->
 
-<section data-ng-controller="ClientSetupController" id="index__ngView">
-    <div class="panel panel-border">
-    <div class="panel__heading border-bottom-solid"><span class="title">Setup KongDash</span></div>
-    <div class="panel__body">
-        <div class="row separated">
-        <div class="col md-6">
-        <table class="card-table clickable">
-            <thead><tr><th colspan="3">Saved Connections</th></tr></thead>
-            <tbody data-ng-click="pickSavedConnection($event)">
-            <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
-                <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
-                <td><strong>{{connProps.name}}</strong>
-                    <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
-                    <br>Last Used on: 04 February, 2022</td>
-                <td class="row-actions"><span title="Delete connection" class="material-icons critical delete" data-target="consumer">delete_forever</span></td><!-- .row-actions -->
-            </tr>
-            </tbody>
+    <main id="mainWrapper">
+        <header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
+            <div class="title"><span>{{frameState.frameTitle}}</span></div>
+        </header>
 
-            <tbody data-ng-if="savedItemCount === 0" class="info-placeholder">
-            <tr>
-                <td><span class="material-icons">badge</span></td>
-                <td colspan="2">No connections are saved!</td>
-            </tr>
-            </tbody><!-- .info-placeholder -->
-
-        </table><!-- .board -->
-        </div><!-- .col.md-6.no-padding -->
-
-        <div class="col md-6">
-        <form method="POST" data-ng-submit="attemptConnection($event)">
-            <div class="form__field">
-                <label class="field-label">Admin API</label>
-                <ul class="field-input linked">
-                    <li>
-                        <select name="protocol" data-ng-model="setupModel.protocol" data-ng-selected="setupModel.protocol">
-                        <option value="http">HTTP</option>
-                        <option value="https">HTTPS</option>
-                        </select>
-                    </li>
-                    <li class="stretch"><input type="text" name="adminHost" value="" data-ng-model="setupModel.adminHost" placeholder="Example: 127.0.0.1" /></li>
-                    <li><input type="number" name="adminPort" value="80" data-ng-model="setupModel.adminPort" placeholder="8001" /></li>
-                </ul><!-- .linked -->
-            </div><!-- .form__field -->
-
-            <div class="row">
-            <div class="col md-8">
-                <div class="form__field">
-                    <label class="field-label">Connection Name</label>
-                    <div class="field-input"><input data-ng-model="setupModel.name" type="text" placeholder="Example: Staging server" name="connectionName" /></div>
-                </div>
-            </div><!-- .col.md-8 -->
-
-            <div class="col md-4">
-                <div class="form__field">
-                    <label class="field-label">Color</label>
-                    <ul class="field-input linked">
-                        <li style="width: 41px"><input data-ng-model="setupModel.colorCode" type="color" name="colorCode" /></li>
-                        <li><input type="text" data-ng-model="setupModel.colorCode" readonly /></li>
-                    </ul>
-                </div>
-            </div><!-- .col.md-4 -->
-            </div><!-- .row -->
-
-            <div class="form__field">
-                <label class="field-label">Username</label>
-                <div class="field-input"><input data-ng-model="setupModel.basicAuth.username" type="text" placeholder="Optional" name="username" /></div>
-            </div><!-- .form__field -->
-
-            <div class="form__field">
-                <label class="field-label">Password</label>
-                <div class="field-input"><input data-ng-model="setupModel.basicAuth.password" type="password" placeholder="Optional" name="password" /></div>
-            </div><!-- .form__field -->
-
-            <div class="row">
-            <div class="col md-6">
-                <div class="form__field">
-                    <div class="field-input"><label><input type="checkbox" class="success" name="defaultConnection" data-ng-model="setupModel.isDefault"> Connect Automatically</label> </div>
-                </div>
-            </div><!-- .col.md-6 -->
-
-            <div class="col md-6">
-                <div class="form__field align-right">
-                    <button type="button" class="btn default" name="testConnection" data-ng-click="attemptConnection($event)">Test</button>
-                    <button type="submit" class="btn success" name="attemptConnection">Connect</button>
-                </div><!-- .form__field.align-right -->
-            </div><!-- .col.md-6 -->
-            </div><!-- .row -->
-        </form><!-- .form -->
-        </div><!-- .col md-6.no-padding -->
-
-        </div><!-- #bt-ed__wrp01.row -->
-    </div><!-- .panel__body -->
-    </div><!-- .panel.panel.border -->
-</section><!-- .content__wrapper -->
-
-<footer id="mainFooter" data-ng-controller="FooterController">
-    <section id="index__ftBase" class="footer__base"><form>
-        <ul class="base-menu">
-            <li>localhost:8001</li>
-            <li>version 0.6.0</li>
-        </ul>
-    </form></section>
-    </footer><!-- .footer -->
-</main><!-- .content -->
+        <footer id="mainFooter">
+            <section id="index__ftBase" class="footer__base">
+                <ul class="base-menu"><li title="KongDash version">v1.0.0</li></ul>
+            </section>
+        </footer>
+        <section id="index__ngView" class="content__wrapper" data-ng-view="">Loading...</section>
+    </main><!-- #mainWrapper -->
+</div><!-- .app-layout -->
 
 <script type="text/javascript" src="static/angular.min.js"></script>
 <script type="text/javascript" src="static/angular-route.min.js"></script>

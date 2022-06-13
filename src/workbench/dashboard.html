@@ -69,14 +69,16 @@
 
         <section id="index__ftBase" class="footer__base"><form>
             <ul class="base-menu">
-                <li><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> <label for="chk_ToggleLog">Activity Log</label> </li>
-                <li>{{frameConfig.sessionURL}}</li>
-                <li>version 0.6.0</li>
+                <li><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> 
+                    <label for="chk_ToggleLog" title="Toggle activity log">Toggle Activity Log</label> 
+                </li>
+                <li title="Kong Admin API version">Kong API: v{{frameState.kongVersion}}</li>
+                <li title="Kong Admin API database">{{frameState.kongDatabase}}</li>
             </ul>
         </form></section>
     </footer>
     <section id="index__ngView" class="content__wrapper" data-ng-view="">Loading...</section>
-</main>
+</main><!-- #mainWrapper -->
 </div><!-- .app-layout.hidden -->
 
 <script type="text/javascript" src="static/angular.min.js"></script>

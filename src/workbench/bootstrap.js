@@ -12,9 +12,12 @@ import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.
 import KongDash from './kongdash.js';
 import ThemeEngine from './interface/theme-engine.js';
 
+import SidebarController from './controllers/sidebar.js';
 import HeaderController from './controllers/header.js';
-import FooterController from './controllers/footer.js';
+import IdleControlller from './controllers/idle.js';
 import ClientSetupController from './controllers/client-setup.js';
+
+import {BootstrapTemplate} from './template.js';
 
 /**
  * IPC bridge exposed over isolated context.
@@ -23,9 +26,34 @@ import ClientSetupController from './controllers/client-setup.js';
  */
 const ipcBridge = window.ipcBridge;
 
-KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
+/**
+ * Attaches application wide event listeners.
+ *
+ * @param {Window} window - Top level window object.
+ * @param {Object} rootScope - Angular root scope object.
+ * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {LoggerFactory} logger - Factory for logging activities.
+ */
+function attachEventListeners(window, rootScope, viewFrame, logger) {
+    const main = window.document.getElementById('mainWrapper');
+
+    main.addEventListener('click', (event) => {
+        const {target: anchor} = event;
+
+        if (anchor.nodeName !== 'A') {
+            return true;
+        }
+
+        if (anchor.target === '_blank') {
+            event.preventDefault();
+            ipcBridge.sendQuery('open-external', anchor.href);
+
+            logger.info(`Opening ${anchor.href}`);
+        }
+
+        return true;
+    });
+}
 
 ipcBridge.onResponse('Read-Theme-Style', (theme) => {
     if (isObject(theme) && isNil(theme.error)) {
@@ -76,6 +104,15 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
     }
 
     KongDash.start();
+
+    window.location.href = '#!/connections';
 });
+
+KongDash.config(BootstrapTemplate, '$route');
+
+KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
+KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
+KongDash.controller(IdleControlller, 'viewFrame');
+KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
 
 ipcBridge.sendRequest('Read-Workbench-Config');
