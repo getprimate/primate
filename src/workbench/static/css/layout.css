@@ -46,9 +46,6 @@ body {
     -webkit-animation: fadein 1s;
 
     --overlay__dark-10: linear-gradient(to right, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.5));
-
-    --vw-min__p20: min(1.041vw, 20px);
-    --vw-max__n20: max(calc(0px - 1.041vw), -20px);
 }
 
 hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
@@ -929,7 +926,7 @@ footer#mainFooter .footer__window.minimized {
 
 footer#mainFooter.maximized > .footer__window {
     height: 200px !important;
-    padding: min(1.041vw, 20px);
+    padding: 20px;
     border-width: 2px;
     transition: height 0.2s linear;
 }
@@ -1221,7 +1218,7 @@ form p.metadata { margin: 0; padding-top: 13px; }
     align-items: center;
     justify-content: space-between;
     flex-wrap: nowrap;
-    padding: min(1.041vw, 20px);
+    padding: 20px;
     border-radius: var(--theme__widget-corner) var(--theme__widget-corner) 0 0;
     background-color: var(--theme__primary-bg);
 }
@@ -1246,9 +1243,9 @@ form p.metadata { margin: 0; padding-top: 13px; }
     border-radius: 0 0 var(--theme__widget-corner) var(--theme__widget-corner);
 }
 .panel .panel__split {
-    margin: 20px var(--vw-max__n20) 30px var(--vw-max__n20);
-    padding-left: var(--vw-min__p20);
-    padding-right: var(--vw-min__p20);
+    margin: 20px -20px 30px -20px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-top: var(--input__border-size) dashed var(--input__border-fg);
 }
 
@@ -1294,7 +1291,7 @@ form p.metadata { margin: 0; padding-top: 13px; }
  * =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
  */
 .well {
-    margin-bottom: min(1.30201vw, 25px);
+    margin-bottom: 25px;
     padding: 0;
     background-color: var(--theme__primary-bg);
     border-radius: var(--theme__widget-corner);
@@ -1303,7 +1300,7 @@ form p.metadata { margin: 0; padding-top: 13px; }
     .well:only-of-type { margin-bottom: 5px !important; }
 
 .well .well__heading {
-    padding: min(1.041vw, 20px);
+    padding: 20px;
     border-bottom: 1px solid var(--theme__border-fg);
     border-radius: var(--theme__widget-corner) var(--theme__widget-corner) 0 0;
     color: var(--theme__primary-fg);
@@ -1498,7 +1495,7 @@ table {
 }
 
 table th {
-    padding: 10px min(1.041vw, 20px);
+    padding: 20px;
     font-size: 1rem;
     font-weight: 500;
     color: var(--theme__default-fg);
@@ -1511,7 +1508,7 @@ table tfoot th {
 
 table tbody td,
 table tbody th {
-    padding: 10px min(1.041vw, 20px);
+    padding: 10px 20px;
     color: var(--theme__primary-fg);
     font-size: 1rem;
 }
@@ -1590,7 +1587,7 @@ table.card-table {
 
 .well table.card-table,
 .panel table.card-table {
-    border-spacing: 0 min(1.041vw, 20px);
+    border-spacing: 0 20px;
 }
 
 table.card-table tbody tr {
@@ -1791,7 +1788,7 @@ article.scale.critical .scale-fill { background-color: var(--std__critical); }
 }
 
 section.notebook__page .row.only-grid > .col:last-child form {
-    padding-right: min(1.041vw, 20px);
+    padding-right: 20px;
 }
 
 /**
