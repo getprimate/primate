@@ -171,13 +171,19 @@ export default function OverviewController(scope, restClient, viewFrame, toast) 
             scope.metadata.luaVersion = response.lua_version;
             scope.metadata.nodeId = response.node_id;
 
+            viewFrame.setState('kongVersion', scope.metadata.apiVersion);
+
             if (configuration.database === 'off') {
                 scope.metadata.isDBLess = true;
                 scope.metadata.database.server = 'DB-Less Configuration';
+
+                viewFrame.setState('kongDatabase', 'DB-Less');
             } else if (configuration.database === 'postgres') {
                 scope.metadata.database.server = 'Postgres';
                 scope.metadata.database.url = `${configuration.pg_host}:${configuration.pg_port}`;
                 scope.metadata.database.dbName = configuration.pg_database;
+
+                viewFrame.setState('kongDatabase', 'Postgres');
             }
 
             generateTimerChart([timers.running, timers.pending]);

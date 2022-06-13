@@ -130,8 +130,9 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         const {configTarget} = attributes;
 
         switch (configTarget) {
+            case 'themes':
             case 'workbench':
-                ipcBridge.sendRequest('Read-Workbench-Config');
+                if (Object.keys(scope.workbenchConfig).length === 0) ipcBridge.sendRequest('Read-Workbench-Config');
                 break;
 
             default:

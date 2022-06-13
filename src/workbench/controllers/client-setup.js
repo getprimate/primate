@@ -17,7 +17,7 @@ import setupModel from '../models/setup-model.js';
  * @type {IPCBridge}
  */
 const ipcBridge = window.ipcBridge;
-const cache = {unloadTimeout: null};
+const cache = {isInitialized: false, unloadTimeout: null};
 
 function requestWorkbenchSession(sessionId) {
     if (!isNil(cache.unloadTimeout)) {
@@ -44,8 +44,14 @@ function validateServerResponse(response) {
 }
 
 function removeSpinner() {
+    if (cache.isInitialized === true) {
+        return false;
+    }
+
     ipcBridge.sendRequest('Read-Connection-List');
     document.body.removeChild(document.getElementById('loaderWrapper'));
+
+    return true;
 }
 
 /**
@@ -191,6 +197,8 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
 
     /* Populate connection list upon Read-Connection-List event response. */
     ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
+        cache.isInitialized = true;
+
         if (isText(connectionList.error)) {
             toast.warning('Unable to display connection history.');
             return false;

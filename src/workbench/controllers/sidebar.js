@@ -1,5 +1,7 @@
 'use strict';
 
+import {isNone} from '../lib/core-toolkit.js';
+
 const {/** @type {IPCBridge} */ ipcBridge} = window;
 
 /**
@@ -127,5 +129,7 @@ export default function SidebarController(scope, restClient, viewFrame, toast) {
         ipcBridge.removeListeners();
     };
 
-    scope.fetchAvailableEndpoints();
+    if (!isNone(viewFrame.getConfig('sessionId')) && viewFrame.getConfig('sessionURL').length > 0) {
+        scope.fetchAvailableEndpoints();
+    }
 }
