@@ -8,9 +8,14 @@
 'use strict';
 
 /**
- * Configures route templates.
+ * @typedef {Object} RouteProvider
+ * @property {(function (string, {Object}))} when - Attaches a route handler
+ */
+
+/**
+ * Configures route templates for dashboard.
  *
- * @param {*} routeProvider
+ * @param {RouteProvider} routeProvider
  */
 export function DashboardTemplate(routeProvider) {
     if (typeof routeProvider !== 'object' || routeProvider === null || typeof routeProvider.when !== 'function') {
@@ -133,19 +138,24 @@ export function DashboardTemplate(routeProvider) {
     });
 }
 
+/**
+ * Configures route templates for boostrap.
+ *
+ * @param {RouteProvider} routeProvider - The Angular route provider.
+ */
 export function BootstrapTemplate(routeProvider) {
     if (typeof routeProvider !== 'object' || routeProvider === null || typeof routeProvider.when !== 'function') {
         throw new TypeError('Parameter is not a valid Route Provider object.');
     }
 
-    routeProvider.when('/welcome', {
-        controller: 'IdleController',
-        templateUrl: 'static/views/welcome-intro.html'
-    });
-
     routeProvider.when('/', {
         controller: 'ClientSetupController',
         templateUrl: 'static/views/client-setup.html'
+    });
+
+    routeProvider.when('/welcome', {
+        controller: 'IdleController',
+        templateUrl: 'static/views/welcome-intro.html'
     });
 
     routeProvider.when('/release-note', {
