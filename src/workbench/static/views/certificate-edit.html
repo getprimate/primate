@@ -59,9 +59,9 @@
                 <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div>
                 <div class="col md-6">
                     <div class="form__field align-right" data-ng-switch="certId">
-                        <button class="btn default" data-ng-click="resetCertForm($event)">Reset</button>
-                        <button data-ng-switch-when="__none__" class="btn success" type="submit" name="action" value="create">Create</button>
-                        <button data-ng-switch-default class="btn info" type="submit" name="action" value="update">Update</button>
+                        <button class="subtle" data-ng-click="resetCertForm($event)">Reset</button>
+                        <button data-ng-switch-when="__none__" type="submit" name="action" value="create">Create</button>
+                        <button data-ng-switch-default type="submit" name="action" value="update">Update</button>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->
             </div><!-- .row -->

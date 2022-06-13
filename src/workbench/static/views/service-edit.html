@@ -148,8 +148,8 @@
                 <div class="col md-6">&nbsp;</div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div data-ng-switch="serviceId" class="form__field align-right">
-                        <button class="default" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
-                        <button data-ng-switch-when="__none__" class="accent" type="submit" name="action" value="create">Create</button>
+                        <button class="subtle" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
+                        <button data-ng-switch-when="__none__" type="submit" name="action" value="create">Create</button>
                         <button data-ng-switch-default="" class="accent" type="submit" name="action" value="update">Update</button>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->
@@ -221,8 +221,6 @@
         </table>
     </div><!-- .well__scroll-area -->
     </div><!-- .well -->
-
-    <div class="pagination" data-ng-if="nextPluginUrl"><button class="btn dark" data-ng-click="fetchPluginList(nextPluginUrl)">Load Next</button></div>
 </div><!-- .col.md-4 -->
 </div><!-- .row -->
 </div><!-- .container -->
