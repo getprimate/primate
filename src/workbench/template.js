@@ -138,12 +138,12 @@ export function BootstrapTemplate(routeProvider) {
         throw new TypeError('Parameter is not a valid Route Provider object.');
     }
 
-    routeProvider.when('/', {
+    routeProvider.when('/welcome', {
         controller: 'IdleController',
         templateUrl: 'static/views/welcome-intro.html'
     });
 
-    routeProvider.when('/connections', {
+    routeProvider.when('/', {
         controller: 'ClientSetupController',
         templateUrl: 'static/views/client-setup.html'
     });
