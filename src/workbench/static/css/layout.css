@@ -302,12 +302,8 @@ a.btn {
     font-weight: 500;
     font-size: 1rem;
     background: var(--theme__accent-fg) none;
+    border: var(--input__border-size) solid var(--theme__accent-fg);
 }
-
-button {
-    border: 2px solid transparent;
-}
-
 
     button:last-child { margin-right: 0 !important; }
 
@@ -667,12 +663,6 @@ header#mainHeader ul.actions {
 header#mainHeader ul.actions li {
     display: inline-block;
     margin-left: 10px;
-}
-
-header#mainHeader button.create.success,
-header#mainHeader button.critical.delete {
-    padding-top: 5px;
-    padding-bottom: 5px;
 }
 
 header#mainHeader button.create.success {
@@ -1724,6 +1714,41 @@ section.notebook__page .row.only-grid > .col:last-child form {
     padding-right: 20px;
 }
 
+.hero-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+ul.hero-placeholder {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.hero-placeholder li {
+    display: inline-block;
+    padding: 12px 0;
+    text-align: center;
+}
+
+ul.hero-placeholder > li:first-child {
+    background: var(--widget__accent-bg);
+    border-radius: 50%;
+    padding: 30px;
+    margin-bottom: 10px;
+}
+
+ul.hero-placeholder a .material-icons {
+    font-size: 1rem;
+    vertical-align: -2px;
+}
+
 /**
  * Miscellaneous helper classes.
  *
@@ -1783,20 +1808,9 @@ body.hidden { display: none !important; }
 .left { float:left !important; }
 .right { float:right !important; }
 
-.view-hero {
-    margin-top: calc(50vh - 270px);
-    text-align: center;
-}
-
-.view-hero > p:nth-child(2) {
-    color: var(--theme__default-fg);
-}
-
 .material-icons.hero { font-size: 8rem; color: var(--theme__default-fg); }
 
 .clickable { cursor: pointer; }
-
-
 
 .capitalize { text-transform: capitalize; }
 
