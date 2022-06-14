@@ -87,7 +87,7 @@
             <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="2">No host names configured to use this certificate.</th></tr></tfoot>
 
             <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
-                <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
+                <tr><th colspan="2"><button class="pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
         </div><!-- .well__scroll-area -->
@@ -131,7 +131,7 @@
             </tbody>
 
             <tfoot class="pagination" data-ng-if="serviceNext.length>=5">
-            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchServiceList(serviceNext)">Load Next</button></th></tr>
+            <tr><th colspan="2"><button class="pagination" data-ng-click="fetchServiceList(serviceNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
     </div><!-- .well -->
@@ -164,7 +164,7 @@
             </tbody>
 
             <tfoot class="pagination" data-ng-if="upstreamNext.length>=5">
-            <tr><th colspan="2"><button class="btn pagination" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next</button></th></tr>
+            <tr><th colspan="2"><button class="pagination" data-ng-click="fetchUpstreamList(upstreamNext)">Load Next</button></th></tr>
             </tfoot>
         </table>
     </div><!-- .well -->
