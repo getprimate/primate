@@ -9,12 +9,13 @@
     <li><a href="#!/plugins/__create__" class="btn">Apply Plugin</a></li>
 </ul><!-- .hero-placeholder -->
 
+<!-- ==-==-==-==-== Display this block only if plugins are present. ==-==-==-==-== -->
 <div data-ng-if="pluginList.length>=1" class="container">
 <div class="well">
 <div class="well__heading">Applied Plugins</div>
-<table id="pluginsTable" class="data-table" data-ng-click="handleTableClickEvents($event)">
+<table id="pluginsTable" class="data-table">
     <thead><tr><th>Enabled</th><th>Plugin Name</th><th>Configured Objects</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
-    <tbody>
+    <tbody data-ng-click="handleTableClickEvents($event)">
         <tr data-ng-repeat="plugin in pluginList">
             <td><input type="checkbox" class="success" data-name="{{plugin.name}}" value="{{plugin.id}}" data-ng-checked="plugin.enabled===true" /></td>
 
@@ -33,4 +34,4 @@
 <div data-ng-if="pluginNext.offset.length>=5" class="pagination">
     <button class="text" data-ng-click="fetchPluginList(pluginNext)">Load Next<span class="material-icons">navigate_next</span></button>
 </div><!-- .pagination -->
-</div><!.. container -->
+</div><!-- container -->
