@@ -226,7 +226,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         });
     });
 
-    viewFrame.setTitle('Setup');
+    viewFrame.setTitle('Manage Connections');
 
     if (restClient.isConfigured() && !isNone(viewFrame.getConfig('sessionId'))) {
         const request = restClient.get('/');

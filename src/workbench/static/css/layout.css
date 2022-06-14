@@ -46,6 +46,7 @@ body {
     -webkit-animation: fadein 1s;
 
     --overlay__dark-10: linear-gradient(to right, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.5));
+    --overlay__dark-20: linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2));
 }
 
 hr { margin: 10px 0 10px 0; padding: 0; border-width: 1px 0 0 0; }
@@ -301,7 +302,9 @@ a.btn {
     color: #ffffff;
     font-weight: 500;
     font-size: 1rem;
-    background: var(--theme__accent-fg) none;
+    background-color: var(--theme__accent-fg);
+    background-image: linear-gradient(to right, var(--theme__accent-fg), var(--theme__accent-fg)), var(--overlay__dark-20);
+    background-blend-mode: multiply;
     border: var(--input__border-size) solid var(--theme__accent-fg);
 }
 

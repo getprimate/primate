@@ -50,6 +50,41 @@ div#loaderWrapper {
     border-color: var(--theme__accent-fg) transparent;
 }
 
+.welcome-wrapper {
+    max-width: 700px;
+    margin: calc(50vh - 300px) auto 0 auto;
+}
+
+.welcome-wrapper ul.branding {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.welcome-wrapper ul.branding > li {
+    display: inline-block;
+}
+
+.welcome-wrapper ul.branding > li h1 {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 3.5rem;
+    font-weight: 300;
+}
+
+.welcome-wrapper > h3 {
+    margin: 0 0 30px 0;
+    padding: 0;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.5rem;
+}
+
 @keyframes rotation {
     0% {
         transform: rotate(0deg);
@@ -58,32 +93,6 @@ div#loaderWrapper {
         transform: rotate(360deg);
     }
 }
-
-/*
-main.content {
-    padding-top: 10%;
-    overflow: hidden;
-}
-
-section#index__ngView {
-    width: min(67vw, 1080px);
-    margin: 0 auto 0 auto;
-}
-
-.icon { text-align: center;  }
-.icon img { display: block; margin: 0 auto 10px auto; width: 150px; }
-.icon p { margin: 0 0 10px 0; padding: 0; }
-.icon p.caption { font-size: 2.5rem; text-shadow: 1px 1px #1A242D; font-weight: 500; }
-.icon .description { font-size: 1rem; font-weight: 400; color: #B5BCCE; text-shadow: 1px 1px #1A242D; }
-
-form.form {
-    padding: 20px min(1.041vw, 20px);
-}
-
-#bt-ed__wrp01 > .col:last-child {
-    border-left: 1px solid var(--widget__accent-bg);
-}
-*/
 </style>
 </head>
 
@@ -98,7 +107,7 @@ form.form {
         <nav class="navigation" data-ng-click="redirectNav($event)">
             <ul class="navigation__menu">
                 <li><a class="navigation__link" data-ng-href="#!/welcome"><span class="material-icons">view_quilt</span><span>Welcome</span></a></li>
-                <li class="active"><a class="navigation__link" data-ng-href="#!/"><span class="material-icons">cable</span><span>Setup</span></a></li>
+                <li class="active"><a class="navigation__link" data-ng-href="#!/"><span class="material-icons">cable</span><span>Connections</span></a></li>
                 <li><a class="navigation__link" data-ng-href="#!/release-note"><span class="material-icons">description</span><span>Release Notes</span></a></li>
             </ul><!-- .navigation__menu -->
         </nav><!-- .navigation -->
