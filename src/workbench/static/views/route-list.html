@@ -1,11 +1,22 @@
-<div class="container">
+<!-- ==-==-==-==-== Display this block if no routes are present. ==-==-==-==-== -->
+<ul data-ng-if="routeList.length===0" class="hero-placeholder" >
+    <li><span class="material-icons hero">directions</span></li>
+    <li><strong>Looks like no routes are present!</strong></li>
+    <li>Route entities define rules to match client requests.
+        <br /> Each Route is associated with a Service.
+        <a target="_blank" href="https://docs.konghq.com/gateway/2.7.x/admin-api/#route-object">Learn More <span class="material-icons">launch</span></a>
+    </li>
+    <li><a href="#!/routes/__create__" class="btn">Create Route</a></li>
+</ul><!-- .hero-placeholder -->
 
+<!-- ==-==-==-==-== Display this block only if routes are present. ==-==-==-==-== -->
+<div data-ng-if="routeList.length>=1" class="container">
 <div class="well">
 <div class="well__heading">List of Routes</div>
 <table class="data-table">
-    <thead data-ng-if="routeList.length>=1"><tr> <th>Name</th> <th>Protocols</th> <th>Path Handling</th> <th>Created On</th> <th class="row-actions">Actions</th></tr></thead>
+    <thead><tr> <th>Name</th> <th>Protocols</th> <th>Path Handling</th> <th>Created On</th> <th class="row-actions">Actions</th></tr></thead>
 
-    <tbody data-ng-if="routeList.length>=1" data-ng-click="deleteTableRow($event)">
+    <tbody data-ng-click="deleteTableRow($event)">
     <tr data-ng-repeat="route in routeList">
         <td><a href="#!/routes/{{route.id}}">{{route.displayText}}</a></td>
         <td>{{route.protocols}}</td>
@@ -17,18 +28,10 @@
         </td>
     </tr>
     </tbody>
-
-    <!-- ==-==-==-==-== Display this body if no routes are present. ==-==-==-==-== -->
-    <tbody class="hero-placeholder" data-ng-if="routeList.length===0">
-    <tr><td><span class="material-icons hero">directions</span></td></tr>
-    <tr><td>Looks like no routes are present!</td></tr>
-    <tr><td><a href="#!/routes/__create__" class="btn">Create Route</a></td></tr>
-    </tbody><!-- .hero-placeholder -->
 </table><!-- .table -->
 </div><!-- .well -->
 
 <div data-ng-if="routeNext.offset.length>=5" class="pagination">
     <button class="text" data-ng-click="fetchRouteList(routeNext)">Load More<span class="material-icons">navigate_next</span></button>
 </div><!-- .pagination -->
-
 </div><!-- .container -->
