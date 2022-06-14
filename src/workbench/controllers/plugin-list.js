@@ -7,8 +7,8 @@
 
 'use strict';
 
-import * as _ from '../lib/core-toolkit.js';
-import {urlQuery, urlOffset} from '../helpers/rest-toolkit.js';
+import {isObject, isText} from '../lib/core-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for editing plugin objects.
@@ -39,9 +39,9 @@ export default function PluginListController(scope, restClient, viewFrame, toast
             for (let plugin of response.data) {
                 let objectNames = [];
 
-                if (_.isObject(plugin.service)) objectNames.push('Service');
-                if (_.isObject(plugin.route)) objectNames.push('Route');
-                if (_.isObject(plugin.consumer)) objectNames.push('Consumer');
+                if (isObject(plugin.service)) objectNames.push('Service');
+                if (isObject(plugin.route)) objectNames.push('Route');
+                if (isObject(plugin.consumer)) objectNames.push('Consumer');
 
                 scope.pluginList.push({
                     id: plugin.id,
@@ -71,10 +71,14 @@ export default function PluginListController(scope, restClient, viewFrame, toast
      * @param {HTMLInputElement} target - The target checkbox element.
      * @returns {boolean} True if action completed, false otherwise.
      */
-    scope.togglePluginState = function ({target}) {
+    scope._togglePluginState = function (event) {
+        const {target} = event;
+
         if (target.nodeName !== 'INPUT' || target.type !== 'checkbox') {
             return false;
         }
+
+        viewFrame.setLoaderSteps(1);
 
         const endpoint = `/plugins/${target.value}`;
         const request = restClient.patch(endpoint, {enabled: target.checked});
@@ -87,7 +91,35 @@ export default function PluginListController(scope, restClient, viewFrame, toast
             toast.error('Unable to change plugin state.');
         });
 
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
+
         return true;
+    };
+
+    /**
+     * Deletes the table row entry upon clicking the bin icon.
+     *
+     * @private
+     * @type {function(Event): boolean}
+     */
+    scope._deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+        if (isText(err)) toast.error(err);
+        else toast.success('Plugin deleted successfully.');
+    });
+
+    /**
+     * Handles click events on the table widgets.
+     *
+     * @param {Event} event - The current event object
+     * @return {boolean} True if event handled, false otherwise
+     */
+    scope.handleTableClickEvents = function (event) {
+        const {target} = event;
+
+        if (target.nodeName === 'INPUT' && target.type === 'checkbox') return scope._togglePluginState(event);
+        else return scope._deleteTableRow(event);
     };
 
     viewFrame.setTitle('Plugins');
