@@ -14,4 +14,17 @@
  * @param {Object} scope - Injected scope object.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  */
-export default function IdleController(scope, viewFrame) {}
+export default function IdleController(scope, location, viewFrame) {
+    switch (location.path()) {
+        case '/welcome':
+            viewFrame.setTitle('Welcome to KongDash');
+            break;
+
+        case '/release-note':
+            viewFrame.setTitle('Release Notes');
+            break;
+
+        default:
+            break;
+    }
+}

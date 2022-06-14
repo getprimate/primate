@@ -7,9 +7,11 @@
 
 'use strict';
 
-import {deepClone, isText, isObject, isNil} from '../lib/core-toolkit.js';
+import {deepClone, isText, isObject, isNil, isNone} from '../lib/core-toolkit.js';
 import {errorCode, WorkbenchError} from '../exception/error.js';
 import setupModel from '../models/setup-model.js';
+
+const {document} = window;
 
 /**
  * IPC bridge exposed over isolated context.
@@ -17,7 +19,7 @@ import setupModel from '../models/setup-model.js';
  * @type {IPCBridge}
  */
 const ipcBridge = window.ipcBridge;
-const cache = {isInitialized: false, unloadTimeout: null};
+const cache = {isInitialized: false, unloadTimeout: null, connectionList: {}, savedItemCount: 0};
 
 function requestWorkbenchSession(sessionId) {
     if (!isNil(cache.unloadTimeout)) {
@@ -68,8 +70,8 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
     const eventLocks = {submitSetupForm: false};
 
     scope.setupModel = deepClone(setupModel);
-    scope.connectionList = {};
-    scope.savedItemCount = 0;
+    scope.connectionList = cache.connectionList;
+    scope.savedItemCount = cache.savedItemCount;
 
     /**
      * Attempts to connect to the specified server.
@@ -197,6 +199,8 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
 
     /* Populate connection list upon Read-Connection-List event response. */
     ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
+        const savedItemCount = Object.keys(connectionList).length;
+
         cache.isInitialized = true;
 
         if (isText(connectionList.error)) {
@@ -204,13 +208,27 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             return false;
         }
 
+        if (savedItemCount === 0) {
+            document
+                .getElementById('sidebarMenu')
+                .querySelector('ul.navigation__menu li:first-child a.navigation__link')
+                .click();
+
+            return true;
+        }
+
+        cache.connectionList = connectionList;
+        cache.savedItemCount = savedItemCount;
+
         scope.$apply((this_) => {
             this_.connectionList = connectionList;
-            this_.savedItemCount = Object.keys(this_.connectionList).length;
+            this_.savedItemCount = savedItemCount;
         });
     });
 
-    if (restClient.isConfigured() && isText(viewFrame.getConfig('sessionId'))) {
+    viewFrame.setTitle('Setup');
+
+    if (restClient.isConfigured() && !isNone(viewFrame.getConfig('sessionId'))) {
         const request = restClient.get('/');
 
         request.then(({data: response}) => {

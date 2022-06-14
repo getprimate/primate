@@ -1515,7 +1515,7 @@ table.data-table.flat tr.active > td {
 
 table.card-table {
     border-collapse: separate;
-    border-spacing: 0;
+    border-spacing: 0 20px;
 }
 
 .well table.card-table,

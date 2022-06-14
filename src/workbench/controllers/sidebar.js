@@ -129,7 +129,7 @@ export default function SidebarController(scope, restClient, viewFrame, toast) {
         ipcBridge.removeListeners();
     };
 
-    if (!isNone(viewFrame.getConfig('sessionId')) && viewFrame.getConfig('sessionURL').length > 0) {
+    if (restClient.isConfigured() && !isNone(viewFrame.getConfig('sessionId'))) {
         scope.fetchAvailableEndpoints();
     }
 }

@@ -104,15 +104,13 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
     }
 
     KongDash.start();
-
-    window.location.href = '#!/connections';
 });
 
 KongDash.config(BootstrapTemplate, '$route');
 
 KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(IdleControlller, 'viewFrame');
+KongDash.controller(IdleControlller, '$location', 'viewFrame');
 KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
 
 ipcBridge.sendRequest('Read-Workbench-Config');
