@@ -1714,12 +1714,6 @@ section.notebook__page .row.only-grid > .col:last-child form {
     padding-right: 20px;
 }
 
-.hero-placeholder {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
 ul.hero-placeholder {
     display: flex;
     width: 100%;
