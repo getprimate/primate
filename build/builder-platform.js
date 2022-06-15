@@ -66,7 +66,7 @@ function configureMacOptions() {
     config.mac = {
         category: 'public.app-category.developer-tools',
         target: 'dmg',
-        icon: path.join(ICON_DIR, 'kongdash-scalable.icns')
+        icon: path.join(ICON_DIR, 'app-scalable.icns')
     };
 
     config.dmg = {
@@ -106,7 +106,7 @@ function configureWin32Options() {
 
     config.win = {
         target: 'nsis',
-        icon: path.join(ICON_DIR, 'kongdash-scalable.ico'),
+        icon: path.join(ICON_DIR, 'app-scalable.ico'),
         legalTrademarks: 'KongDash'
     };
 
