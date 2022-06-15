@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Primate
+Comment=An elegant desktop client for Kong admin API.
+GenericName=Kong Dashboard
+Exec=/opt/primate-x64/primate %U
+Icon=/opt/primate-x64/resources/512x512.png
+Terminal=false
+Type=Application
+StartupNotify=true
+StartupWMClass=primate
+Keywords=Kong;Primate;Dashboard;Admin API;
+Categories=Network;
