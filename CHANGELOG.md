@@ -1,11 +1,11 @@
 ## v0.3.0
 
 - Support for Kong Admin API v0.10.x
-[#14](https://github.com/ajaysreedhar/kongdash/issues/14)
+[#14](https://github.com/getprimate/primate/issues/14)
 - New views to manage certificates and upstreams
-[#16](https://github.com/ajaysreedhar/kongdash/issues/16)
-- Fixed settings reload issues [#2](https://github.com/ajaysreedhar/kongdash/issues/2),
-[#10](https://github.com/ajaysreedhar/kongdash/issues/10)
+[#16](https://github.com/getprimate/primate/issues/16)
+- Fixed settings reload issues [#2](https://github.com/getprimate/primate/issues/2)
+[#10](https://github.com/getprimate/primate/issues/10)
 - Settings option moved to File menu
 
 ## v0.2.0
