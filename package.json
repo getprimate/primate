@@ -1,9 +1,9 @@
 {
-  "name": "kongdash",
+  "name": "primate",
   "version": "1.0.0",
   "description": "A modern desktop client for Kong Admin API",
   "main": "out/platform/main.js",
-  "repository": "git@github.com:ajaysreedhar/kongdash.git",
+  "repository": "git@github.com:getprimate/primate.git",
   "author": "Ajay Sreedhar <ajaysreedhar05@gmail.com>",
   "license": "MIT",
   "private": false,
