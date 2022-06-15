@@ -9,7 +9,7 @@
 
 import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.js';
 
-import KongDash from './kongdash.js';
+import Primate from './primate.js';
 
 import TokenInputDirective from './directives/token-input.js';
 import MultiCheckDirective from './directives/multi-check.js';
@@ -79,8 +79,8 @@ function attemptStart() {
 
     console.log(JSON.stringify({responseLocker}, null, 4));
 
-    KongDash.config(finalFactoryInitializer, 'restClient', 'viewFrame');
-    KongDash.start();
+    Primate.config(finalFactoryInitializer, 'restClient', 'viewFrame');
+    Primate.start();
 
     return true;
 }
@@ -165,52 +165,52 @@ ipcBridge.onResponse('Read-Session-Connection', (connection) => {
     return attemptStart();
 });
 
-KongDash.directive(TokenInputDirective);
-KongDash.directive(MultiCheckDirective);
-KongDash.directive(ClipboardTextDirective);
+Primate.directive(TokenInputDirective);
+Primate.directive(MultiCheckDirective);
+Primate.directive(ClipboardTextDirective);
 
 /* Register sidebar, header and footer controllers. */
-KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
-KongDash.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
+Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
 
 /* Register node details controllers. */
-KongDash.controller(OverviewController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(NodeConfigController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(OverviewController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(NodeConfigController, 'restClient', 'viewFrame', 'toast');
 
 /* Register object handler controllers. */
-KongDash.controller(TagSearchController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(TagSearchController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller(RouteListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(RouteListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller(CertificateListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(CertificateListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(CertificateEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
+Primate.controller(CertificateEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(TrustedCAEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
+Primate.controller(TrustedCAEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(UpstreamListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(UpstreamListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(UpstreamEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
+Primate.controller(UpstreamEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(ConsumerListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(ConsumerListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.controller(PluginListController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(PluginListController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(PluginEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
+Primate.controller(PluginEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
-KongDash.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
 
-KongDash.config(DashboardTemplate, '$route');
+Primate.config(DashboardTemplate, '$route');
 
-KongDash.onReady(attachEventListeners, '$rootScope', 'viewFrame', 'logger');
+Primate.onReady(attachEventListeners, '$rootScope', 'viewFrame', 'logger');
 
 ipcBridge.sendRequest('Read-Session-Connection');
 ipcBridge.sendRequest('Read-Workbench-Config');
