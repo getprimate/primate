@@ -32,7 +32,7 @@ export default function GenericBootstrap(scope, location, viewFrame) {
             break;
 
         case '/release-note':
-            viewFrame.setTitle('KongDash v1.0.0 - June 14, 2022');
+            viewFrame.setTitle('Primate v1.0.0 - June 14, 2022');
             break;
 
         default:
