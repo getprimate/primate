@@ -14,7 +14,7 @@ import HttpInterceptorFactory from './services/http-interceptor-factory.js';
 import ViewFrameProvider from './services/view-frame-provider.js';
 
 const {angular, document} = window;
-const app = angular.module('KongDash', ['ngRoute']);
+const app = angular.module('Primate', ['ngRoute']);
 
 function registerInterceptor(httpProvider) {
     httpProvider.interceptors.push('interceptor');
@@ -137,6 +137,6 @@ export default {
     },
 
     start() {
-        angular.bootstrap(document, ['KongDash']);
+        angular.bootstrap(document, ['Primate']);
     }
 };
