@@ -9,7 +9,7 @@
 
 import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.js';
 
-import KongDash from './kongdash.js';
+import Primate from './primate.js';
 import ThemeEngine from './interface/theme-engine.js';
 
 import SidebarController from './controllers/sidebar.js';
@@ -98,19 +98,19 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
             });
         };
 
-        KongDash.config(configure, 'restClient', 'viewFrame');
+        Primate.config(configure, 'restClient', 'viewFrame');
     }
 
-    KongDash.start();
+    Primate.start();
 });
 
-KongDash.config(BootstrapTemplate, '$route');
+Primate.config(BootstrapTemplate, '$route');
 
-KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(GenericBootstrap, '$location', 'viewFrame');
-KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(GenericBootstrap, '$location', 'viewFrame');
+Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
 
-KongDash.onReady(attachEventListeners);
+Primate.onReady(attachEventListeners);
 
 ipcBridge.sendRequest('Read-Workbench-Config');
