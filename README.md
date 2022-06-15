@@ -6,9 +6,7 @@
 
 ### How to Install
 
-👉 The below information is only for versions v0.3.0 and below.
-
-👉 The succeding release is still in the final stages of its development. See **For Developers** section below.
+👉 The below information is only for versions v0.3.0 and below. The succeding release is still in the final stages of its development. See **For Developers** section below.
 
 #### On Linux
 _Ubuntu and other Debian distributions:_
