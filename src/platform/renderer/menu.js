@@ -37,22 +37,22 @@ const menuTemplate = [
             {
                 label: 'GitHub Repository',
                 click: () => {
-                    electronShell.openExternal('https://github.com/ajaysreedhar/KongDash').catch(() => {});
+                    electronShell.openExternal('https://github.com/getprimate/primate').catch(() => {});
                 }
             },
             {
                 label: 'Report Issues',
                 click: () => {
-                    electronShell.openExternal('https://github.com/ajaysreedhar/KongDash/issues').catch(() => {});
+                    electronShell.openExternal('https://github.com/getprimate/primate/issues').catch(() => {});
                 }
             },
             {
                 type: 'separator'
             },
             {
-                label: 'About KongDash',
+                label: 'About Primate',
                 click: () => {
-                    electronShell.openExternal('https://ajaysreedhar.github.io/KongDash/').catch(() => {});
+                    electronShell.openExternal('https://getprimate.xyz').catch(() => {});
                 }
             }
         ]

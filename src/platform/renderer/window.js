@@ -28,7 +28,7 @@ class RendererWindow {
 
         const icon =
             'Windows_NT' === os.type()
-                ? path.join(RESOURCES_PATH, 'icons', 'kongdash-scalable.ico')
+                ? path.join(RESOURCES_PATH, 'icons', 'primate-scalable.ico')
                 : nativeImage.createFromPath(path.join(RESOURCES_PATH, 'icons', '512x512.png'));
 
         this._options = {
@@ -36,7 +36,7 @@ class RendererWindow {
             width: 1570,
             height: 800,
             center: true,
-            title: 'KongDash',
+            title: 'Primate',
             minWidth: 1280,
             minHeight: 800,
             icon,

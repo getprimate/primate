@@ -11,7 +11,7 @@ const path = require('node:path');
 const electron = require('electron');
 const ospath = require('ospath');
 
-const APP_NAME = 'KongDash';
+const APP_NAME = 'Primate';
 /* const VERSION = '0.3.0'; */
 
 const ConfigManager = require('./config/config-manager');
