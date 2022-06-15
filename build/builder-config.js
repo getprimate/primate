@@ -8,8 +8,8 @@
 'use strict';
 
 const releaseConfig = {
-    appId: 'com.kongdash',
-    productName: 'KongDash',
+    appId: 'xyz.getprimate.primate',
+    productName: 'Primate',
     copyright: 'Copyright (c) 2022 Ajay Sreedhar',
     asar: true,
     compression: 'normal',

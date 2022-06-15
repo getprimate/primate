@@ -73,7 +73,7 @@ function configureMacOptions() {
         background: path.join(RES_DIR, 'dmg-background.png'),
         icon: path.join(ICON_DIR, 'dmg-scalable.icns'),
         iconSize: 96,
-        title: 'KongDash v1.0.0',
+        title: 'Primate v1.0.0',
         contents: [
             {
                 x: 175,
@@ -107,7 +107,7 @@ function configureWin32Options() {
     config.win = {
         target: 'nsis',
         icon: path.join(ICON_DIR, 'app-scalable.ico'),
-        legalTrademarks: 'KongDash'
+        legalTrademarks: 'getprimate.xyz'
     };
 
     config.nsis = {
@@ -116,7 +116,7 @@ function configureWin32Options() {
         allowToChangeInstallationDirectory: true,
         installerIcon: path.join(ICON_DIR, 'installer-scalable.ico'),
         uninstallerIcon: path.join(ICON_DIR, 'uninstaller-scalable.ico'),
-        uninstallDisplayName: 'KongDash',
+        uninstallDisplayName: 'Primate',
         license: path.join(RES_DIR, 'license.txt'),
         artifactName: '${productName}-Setup-v${version}-x64.exe'
     };
