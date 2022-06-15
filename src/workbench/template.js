@@ -154,12 +154,12 @@ export function BootstrapTemplate(routeProvider) {
     });
 
     routeProvider.when('/welcome', {
-        controller: 'IdleController',
+        controller: 'GenericBootstrap',
         templateUrl: 'static/views/welcome-intro.html'
     });
 
     routeProvider.when('/release-note', {
-        controller: 'IdleController',
+        controller: 'GenericBootstrap',
         templateUrl: 'static/views/release-note.html'
     });
 }

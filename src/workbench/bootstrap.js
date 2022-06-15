@@ -14,31 +14,31 @@ import ThemeEngine from './interface/theme-engine.js';
 
 import SidebarController from './controllers/sidebar.js';
 import HeaderController from './controllers/header.js';
-import IdleControlller from './controllers/idle.js';
+import GenericBootstrap from './controllers/generic-bootstrap.js';
 import ClientSetupController from './controllers/client-setup.js';
 
 import {BootstrapTemplate} from './template.js';
 
-/**
- * IPC bridge exposed over isolated context.
- *
- * @type {IPCBridge}
- */
-const ipcBridge = window.ipcBridge;
+const {
+    /**
+     * IPC bridge exposed over isolated context.
+     *
+     * @type {IPCBridge}
+     */
+    ipcBridge,
+    document
+} = window;
 
 /**
  * Attaches application wide event listeners.
- *
- * @param {Window} window - Top level window object.
- * @param {Object} rootScope - Angular root scope object.
- * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
- * @param {LoggerFactory} logger - Factory for logging activities.
  */
-function attachEventListeners(window, rootScope, viewFrame, logger) {
-    const main = window.document.getElementById('mainWrapper');
+function attachEventListeners() {
+    const main = document.getElementById('mainWrapper');
 
     main.addEventListener('click', (event) => {
         const {target: anchor} = event;
+
+        console.log('Run event listener ', anchor.nodeName);
 
         if (anchor.nodeName !== 'A') {
             return true;
@@ -46,9 +46,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
 
         if (anchor.target === '_blank') {
             event.preventDefault();
-            ipcBridge.sendQuery('open-external', anchor.href);
-
-            logger.info(`Opening ${anchor.href}`);
+            ipcBridge.sendRequest('Open-External-Link', {url: anchor.href});
         }
 
         return true;
@@ -110,7 +108,9 @@ KongDash.config(BootstrapTemplate, '$route');
 
 KongDash.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 KongDash.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-KongDash.controller(IdleControlller, '$location', 'viewFrame');
+KongDash.controller(GenericBootstrap, '$location', 'viewFrame');
 KongDash.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+
+KongDash.onReady(attachEventListeners);
 
 ipcBridge.sendRequest('Read-Workbench-Config');

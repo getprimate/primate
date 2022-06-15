@@ -40,7 +40,7 @@ import RouteListController from './controllers/route-list.js';
 
 import ThemeEngine from './interface/theme-engine.js';
 
-const {/** @type {IPCBridge} */ ipcBridge} = window;
+const {/** @type {IPCBridge} */ ipcBridge, document} = window;
 
 /**
  * Stores responses from asynchronous IPC events.
@@ -88,15 +88,14 @@ function attemptStart() {
 /**
  * Attaches application wide event listeners.
  *
- * @param {Window} window - Top level window object.
  * @param {Object} rootScope - Angular root scope object.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
  * @param {LoggerFactory} logger - Factory for logging activities.
  */
-function attachEventListeners(window, rootScope, viewFrame, logger) {
-    window.document.body.querySelector('div.app-layout').classList.remove('hidden');
+function attachEventListeners(rootScope, viewFrame, logger) {
+    document.body.querySelector('div.app-layout').classList.remove('hidden');
 
-    const main = window.document.getElementById('mainWrapper');
+    const main = document.getElementById('mainWrapper');
 
     rootScope.$on('$locationChangeStart', () => {
         viewFrame.clearActions();
@@ -112,7 +111,7 @@ function attachEventListeners(window, rootScope, viewFrame, logger) {
 
         if (anchor.target === '_blank') {
             event.preventDefault();
-            ipcBridge.sendQuery('open-external', anchor.href);
+            ipcBridge.sendRequest('Open-External-Link', {url: anchor.href});
 
             logger.info(`Opening ${anchor.href}`);
         }
@@ -211,7 +210,7 @@ KongDash.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
 
 KongDash.config(DashboardTemplate, '$route');
 
-KongDash.onReady(attachEventListeners, '$window', '$rootScope', 'viewFrame', 'logger');
+KongDash.onReady(attachEventListeners, '$rootScope', 'viewFrame', 'logger');
 
 ipcBridge.sendRequest('Read-Session-Connection');
 ipcBridge.sendRequest('Read-Workbench-Config');

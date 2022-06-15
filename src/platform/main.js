@@ -46,6 +46,11 @@ app.on('will-quit', () => {
     ipcServer.removeListeners();
 });
 
+ipcServer.registerRequestHandler('Open-External-Link', async (event, payload) => {
+    await electron.shell.openExternal(payload.url);
+    return {};
+});
+
 ipcServer.registerRequestHandler('Write-Connection-Config', (event, payload) => {
     return configManager.writeConnection(payload);
 });
