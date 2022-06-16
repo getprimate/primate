@@ -8,6 +8,7 @@
 'use strict';
 
 const path = require('node:path');
+const directory = require('../system/directory');
 
 const {app} = require('electron');
 
@@ -19,8 +20,11 @@ const WORKBENCH_PATH = path.join(APP_PATH, 'workbench');
 
 const RESOURCES_PATH = app.isPackaged ? ROOT_PATH : path.join(ROOT_PATH, 'resources');
 
+const DATA_PATH = path.join(directory.appData(), 'primate-ce');
+
 module.exports = {
     ROOT_PATH,
+    DATA_PATH,
     APP_PATH,
     PLATFORM_PATH,
     WORKBENCH_PATH,

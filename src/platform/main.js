@@ -9,10 +9,8 @@
 
 const path = require('node:path');
 const electron = require('electron');
-const ospath = require('ospath');
 
-const APP_NAME = 'Primate';
-/* const VERSION = '0.3.0'; */
+const {DATA_PATH} = require('./constant/paths');
 
 const ConfigManager = require('./config/config-manager');
 const ThemeScanner = require('./theme/theme-scanner');
@@ -20,15 +18,16 @@ const ThemeScanner = require('./theme/theme-scanner');
 const {RendererWindow} = require('./renderer/window');
 const {ipcServer} = require('./ipc/ipc-server');
 
-const configManager = new ConfigManager(path.join(ospath.data(), APP_NAME, 'User-Config'));
-const themeScanner = new ThemeScanner([path.join(ospath.data(), APP_NAME, 'User-Themes')]);
-
-const rendererWindow = new RendererWindow({title: APP_NAME});
-
+const APP_NAME = 'Primate';
 const {app} = electron;
 const connectionMap = {};
 
+const configManager = new ConfigManager(path.join(DATA_PATH, 'User-Config'));
+const themeScanner = new ThemeScanner([path.join(DATA_PATH, 'User-Themes')]);
+const rendererWindow = new RendererWindow({title: APP_NAME});
+
 app.setName(APP_NAME);
+app.setPath('userData', DATA_PATH);
 
 app.on('ready', async () => {
     rendererWindow.create();
