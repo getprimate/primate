@@ -131,6 +131,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
                     return true;
                 }
 
+                scope.setupModel.createdAt = Date.now();
                 ipcBridge.sendRequest('Create-Workbench-Session', scope.setupModel);
             } catch (error) {
                 toast.error(error.getMessage());
