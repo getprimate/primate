@@ -41,11 +41,11 @@
   },
 
   "header": {
-    "primary-bg": "transparent",
+    "primary-bg": "#1f2029",
     "primary-fg": "#ffffff",
     "default-fg": "#a4a4a8",
-    "border-size": "0px",
-    "border-fg": "transparent"
+    "border-size": "1px",
+    "border-fg": "#0c0c0c"
   },
 
   "footer": {

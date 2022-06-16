@@ -611,11 +611,11 @@ aside#sidebarMenu + main#mainWrapper {
 
 /* =-=-=-=-=-= Main header styles =-=-=-=-=-= */
 header#mainHeader {
-    --primary-bg: transparent;
+    --primary-bg: var(--theme__primary-bg);
     --default-fg: var(--theme__default-fg);
     --primary-fg: var(--theme__primary-fg);
-    --border-size: 0px;
-    --border-fg: transparent;
+    --border-size: 1px;
+    --border-fg: #0c0c0c;
 
     float: none;
     position: absolute;
@@ -769,7 +769,7 @@ main#mainWrapper section.content__wrapper {
     width: calc(100% - 25px);
     height: calc(100% - 87px);
     margin: 60px 0 0 20px;
-    padding: 0 20px 0 0;
+    padding: 20px 20px 0 0;
     overflow-y: auto;
     z-index: 10;
 }

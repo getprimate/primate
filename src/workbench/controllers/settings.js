@@ -82,6 +82,11 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         ipcBridge.sendRequest('Write-Connection-Config', scope.connectionModel);
 
+        if (scope.connectionModel.id === viewFrame.getConfig('sessionId')) {
+            viewFrame.setConfig('sessionName', scope.connectionModel.name);
+            viewFrame.setConfig('sessionColor', scope.connectionModel.colorCode);
+        }
+
         return true;
     };
 
@@ -139,6 +144,19 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
                 break;
         }
     });
+
+    /**
+     * Applies Workbench config.
+     */
+    scope.applyWorkbenchConfig = function (event) {
+        event.preventDefault();
+
+        viewFrame.setConfig('dateFormat', scope.workbenchConfig.dateFormat);
+        viewFrame.setConfig('showBreadcrumbs', scope.workbenchConfig.showBreadcrumbs);
+        viewFrame.setConfig('showFooter', scope.workbenchConfig.showFooter);
+
+        return true;
+    };
 
     /* Apply workbench config upon Read-Workbench-Config event response. */
     ipcBridge.onResponse('Read-Workbench-Config', (config) => {
@@ -206,16 +224,13 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     ipcBridge.sendRequest('Read-Connection-List');
 
     viewFrame.clearBreadcrumbs();
+    viewFrame.setTitle('Settings');
     viewFrame.addBreadcrumb('#!/settings', 'Settings');
 
     /* Cleanup. */
     scope.$on('$destroy', () => {
         ipcBridge.removeCallbacks('Response', 'Read-Connection-List', 'Read-Theme-List', 'Read-Workbench-Config');
         ipcBridge.sendRequest('Write-Workbench-Config', scope.workbenchConfig);
-
-        viewFrame.setConfig('dateFormat', scope.workbenchConfig.dateFormat);
-        viewFrame.setConfig('showBreadcrumbs', scope.workbenchConfig.showBreadcrumbs);
-        viewFrame.setConfig('showFooter', scope.workbenchConfig.showFooter);
 
         scope.connectionModel = null;
         scope.connectionList = null;

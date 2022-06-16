@@ -113,7 +113,7 @@
 <section id="st-ed__npg03" class="notebook__page">
     <div class="well">
         <div class="well__heading">Workbench</div>
-        <form method="get" class="form" style="padding: 20px 20px 10px 20px;">
+        <form method="get" class="form" style="padding: 20px 20px 10px 20px;" data-ng-submit="applyWorkbenchConfig($event)">
             <div class="row">
             <div class="col md-6">
                     <div class="form__field">
@@ -132,10 +132,11 @@
                     <div class="field-input">
                         <label class="checkbox"><input type="checkbox" data-ng-model="workbenchConfig.showBreadcrumbs"> Show Navigation Bar</label>
                     </div><!-- .field-input -->
-                </div>
+                </div><!-- .form__field -->
+                <div class="form__field align-right"><button type="submit">Save</button></div><!-- .form__field -->
             </div><!-- .col.md-6 -->
             </div><!-- .row -->
-        </form>
+        </form><!-- .form -->
     </div><!-- .well -->
 </section><!-- #st-ed__npg03 -->
 
