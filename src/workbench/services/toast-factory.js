@@ -25,50 +25,79 @@
  * @type {Object}
  */
 const TOAST_STATE = {
+    element: null,
     timeout: null
 };
 
+/**
+ * Clears the timeout and resets the state.
+ */
+function removeTimer() {
+    if (TOAST_STATE.timeout === null) return false;
+
+    clearTimeout(TOAST_STATE.timeout);
+    TOAST_STATE.timeout = null;
+
+    return true;
+}
+
+function removePopup() {
+    if (TOAST_STATE.element === null) return false;
+
+    TOAST_STATE.element.remove();
+    TOAST_STATE.element = null;
+
+    return true;
+}
+
 function createPopup(level, message) {
-    const popup = document.createElement('div');
-    popup.classList.add('notification');
+    const {document} = window;
+    let shouldAppend = false;
 
-    popup.addEventListener('click', (event) => {
-        const {currentTarget: target} = event;
+    /* Re-use the DIV if popup is already displayed on the screen. */
+    if (TOAST_STATE.element === null) {
+        TOAST_STATE.element = document.createElement('div');
+        TOAST_STATE.element.classList.add('notification');
+        TOAST_STATE.element.addEventListener('click', removePopup);
 
-        if (target.nodeName === 'DIV') {
-            target.remove();
-        }
-    });
+        shouldAppend = true;
+    } else {
+        /* Remove previous colour style classes if element is already present. */
+        TOAST_STATE.element.classList.remove(['critical', 'success', 'warning', 'info']);
+    }
+
+    removeTimer();
 
     switch (level) {
         case 'ERROR':
-            popup.innerHTML = '<b>Error!</b>';
-            popup.classList.add('critical');
+            TOAST_STATE.element.innerHTML = '<b>Error!</b>';
+            TOAST_STATE.element.classList.add('critical');
             break;
 
         case 'SUCCESS':
-            popup.innerHTML = '<b>Success!</b>';
-            popup.classList.add('success');
+            TOAST_STATE.element.innerHTML = '<b>Success!</b>';
+            TOAST_STATE.element.classList.add('success');
             break;
 
         case 'WARN':
-            popup.innerHTML = '<b>Warning!</b>';
-            popup.classList.add('warning');
+            TOAST_STATE.element.innerHTML = '<b>Warning!</b>';
+            TOAST_STATE.element.classList.add('warning');
             break;
 
         default:
-            popup.innerHTML = '<b>Message!</b>';
-            popup.classList.add('info');
+            TOAST_STATE.element.innerHTML = '<b>Message!</b>';
+            TOAST_STATE.element.classList.add('info');
             break;
     }
 
-    popup.innerText = message;
+    TOAST_STATE.element.innerText = message;
+    TOAST_STATE.timeout = setTimeout(removePopup, 5000);
 
-    TOAST_STATE.timeout = setTimeout(() => {
-        clearTimeout(TOAST_STATE.timeout);
-    }, 5000);
+    if (shouldAppend === true) {
+        document.body.appendChild(TOAST_STATE.element);
+    }
 
-    return popup;
+    return TOAST_STATE.element;
 }
 
 /**
@@ -78,27 +107,25 @@ function createPopup(level, message) {
  * @returns {ToastFactory} The toast factory service.
  */
 export default function ToastFactory(window) {
-    const {document} = window;
-
     return {
         message(level, message) {
-            document.body.appendChild(createPopup(level, message));
+            createPopup(level, message);
         },
 
         success(message) {
-            document.body.appendChild(createPopup('SUCCESS', message));
+            createPopup('SUCCESS', message);
         },
 
         info(message) {
-            document.body.appendChild(createPopup('INFO', message));
+            createPopup('INFO', message);
         },
 
         warning(message) {
-            document.body.appendChild(createPopup('WARN', message));
+            createPopup('WARN', message);
         },
 
         error(message) {
-            document.body.appendChild(createPopup('ERROR', message));
+            createPopup('ERROR', message);
         }
     };
 }
