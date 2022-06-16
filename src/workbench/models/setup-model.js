@@ -11,5 +11,6 @@ export default {
         username: '',
         password: ''
     },
-    isDefault: true
+    isDefault: true,
+    createdAt: 0
 };
