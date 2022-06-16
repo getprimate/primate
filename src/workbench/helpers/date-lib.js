@@ -11,21 +11,21 @@
  * Formats UNIX-timestamp to human-readable date text.
  *
  * @param {number} seconds - Unix timestamp in seconds.
- * @param {('date'|'utc')} format - Format specifier.
+ * @param {('en-IN'|'en-US'|'standard')} format - Format specifier.
  * @return {string}
  */
 export function epochToDate(seconds, format = 'date') {
     const date = new Date(seconds * 1000);
 
     switch (format) {
-        case 'date':
-            return date.toDateString();
+        case 'en-IN':
+            return date.toLocaleDateString('en-IN');
 
-        case 'utc':
-            return date.toUTCString();
+        case 'en-US':
+            return date.toLocaleDateString('en-US');
 
         default:
-            return date.toString();
+            return date.toDateString();
     }
 }
 

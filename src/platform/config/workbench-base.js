@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    dateFormat: 'utc',
+    dateFormat: 'standard',
     themeUID: 'dark-v1.0.0@getprimate.xyz',
     showFooter: true,
     showBreadcrumbs: true

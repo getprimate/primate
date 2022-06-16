@@ -9,7 +9,7 @@
 
 import {deepClone, isText, isObject, isDefined} from '../lib/core-toolkit.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
-
+import {epochToDate} from '../helpers/date-lib.js';
 import setupModel from '../models/setup-model.js';
 
 /**
@@ -30,9 +30,9 @@ const ipcBridge = window.ipcBridge;
  */
 export default function SettingsController(scope, restClient, viewFrame, toast) {
     scope.ENUM_DATE_FORMAT = [
-        {nodeValue: 'date', displayText: 'Thu Jan 01 1970'},
-        {nodeValue: 'utc', displayText: 'Thu, 01 Jan 1970 00:00:00 GMT'},
-        {nodeValue: 'standard', displayText: 'Thu Jan 01 1970 05:30:00 GMT+0 (Timezone)'}
+        {nodeValue: 'en-US', displayText: '01/31/2022'},
+        {nodeValue: 'en-IN', displayText: '31/01/2022'},
+        {nodeValue: 'standard', displayText: 'Mon Jan 31 2022'}
     ];
 
     scope.connectionId = viewFrame.getConfig('sessionId');
@@ -158,9 +158,15 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         const connectionIds = Object.keys(connectionList);
 
-        for (let connectionId of connectionIds) {
-            if (connectionId === scope.connectionId) {
-                scope.connectionModel = deepClone(connectionList[connectionId]);
+        for (let id of connectionIds) {
+            let timestamp = parseInt(connectionList[id]['createdAt']);
+
+            if (!isNaN(timestamp)) {
+                connectionList[id]['createdAt'] = epochToDate(timestamp / 1000, viewFrame.getConfig('dateFormat'));
+            }
+
+            if (id === scope.connectionId) {
+                scope.connectionModel = deepClone(connectionList[id]);
                 break;
             }
         }

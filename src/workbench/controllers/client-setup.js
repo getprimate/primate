@@ -9,6 +9,7 @@
 
 import {deepClone, isText, isObject, isNil, isNone} from '../lib/core-toolkit.js';
 import {errorCode, WorkbenchError} from '../exception/error.js';
+import {epochToDate} from '../helpers/date-lib.js';
 import setupModel from '../models/setup-model.js';
 
 const {document} = window;
@@ -216,6 +217,14 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
                 .click();
 
             return true;
+        }
+
+        for (let id of Object.keys(connectionList)) {
+            let timestamp = parseInt(connectionList[id]['createdAt']);
+
+            if (!isNaN(timestamp)) {
+                connectionList[id]['createdAt'] = epochToDate(timestamp / 1000, viewFrame.getConfig('dateFormat'));
+            }
         }
 
         cache.connectionList = connectionList;

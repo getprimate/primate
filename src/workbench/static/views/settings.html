@@ -22,7 +22,7 @@
                     <td><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
                     <td><strong>{{connProps.name}}</strong>
                         <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
-                    <br>Last Used on: 04 February, 2022</td>
+                    <br>Created on: {{connProps.createdAt}}</td>
                     <td class="row-actions">
                         <span data-ng-if="connId === connectionId" title="Current Session Connection" class="material-icons warning" data-target="consumer">edit</span>
                         <span data-ng-if="connId !== connectionId" title="Delete Connection" class="material-icons critical delete" data-target="consumer">delete_forever</span>

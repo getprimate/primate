@@ -168,7 +168,7 @@ export default function OverviewController(scope, restClient, viewFrame, toast) 
             }
 
             scope.metadata.apiVersion = response.version;
-            scope.metadata.luaVersion = response.lua_version;
+            scope.metadata.luaVersion = response.lua_version.replace('LuaJIT', '');
             scope.metadata.nodeId = response.node_id;
 
             viewFrame.setState('kongVersion', scope.metadata.apiVersion);
