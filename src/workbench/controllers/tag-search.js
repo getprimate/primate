@@ -128,18 +128,26 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
     scope.searchByTags = function (event) {
         const queryText = scope.filterModel.queryText.trim();
 
-        if (queryText.length === 0) return false;
+        event.preventDefault();
 
-        /** FIXME : Loader steps are not working properly. */
+        if (queryText.length === 0) {
+            return false;
+        }
+
         viewFrame.resetLoader();
         viewFrame.setLoaderSteps(3);
 
         const request = restClient.get(`/tags/${queryText}`);
 
-        event.preventDefault();
         request.then(({data: response}) => {
             const typeList = new Set([]);
             const typeMap = {};
+
+            if (!Array.isArray(response.data)) {
+                for (let i = 0; i <= 2; i++) {
+                    viewFrame.incrementLoader();
+                }
+            }
 
             for (let entity of response.data) {
                 typeList.add(entity.entity_name);
