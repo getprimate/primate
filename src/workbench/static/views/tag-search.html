@@ -25,8 +25,8 @@
                 <table class="card-table transparent">
                     <tr data-ng-repeat="result in searchResults">
                         <td><span class="material-icons success">{{result.displayIcon}}</span></td>
-                        <td class="border-bottom-solid"><a href="{{result.redirect}}">{{result.displayText}}</a>
-                            <br />{{result.entityType}}
+                        <td class="border-bottom-solid"><a data-ng-if="result.redirect.length>=1" href="{{result.redirect}}">{{result.displayText}}</a>
+                            <br data-ng-if="result.redirect.length>=1" />{{result.entityType}}
                             <br />{{result.tags}}</td>
                         <td class="border-bottom-solid row-actions">{{result.createdAt}}</td>
                     </tr>

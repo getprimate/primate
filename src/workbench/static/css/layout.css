@@ -321,7 +321,7 @@ button.subtle:hover {
 }
 
 button.critical {
-    background-color: var(--std__critical);
+    background: var(--std__critical) none;
     border-color: var(--std__critical);
 }
 
@@ -986,7 +986,7 @@ form .form__field ul.field-input {
     display: flex !important;
     flex-direction: row;
     justify-content: flex-start;
-    margin: 5px 0 0 0;
+    margin: 10px 0 0 0;
     padding: 0;
 }
 
@@ -1550,13 +1550,13 @@ table.card-table.collapsed td {
 
 table.card-table td { padding: 10px; font-size: 0.95rem; }
 
-    table.card-table:not(.collapsed) td:first-child,
-    table.card-table:not(.collapsed) th:first-child {
+    table.card-table:not(.collapsed):not(.transparent) td:first-child,
+    table.card-table:not(.collapsed):not(.transparent) th:first-child {
         border-radius: var(--theme__widget-corner) 0 0 var(--theme__widget-corner);
     }
 
-    table.card-table:not(.collapsed) td:last-child,
-    table.card-table:not(.collapsed) th:last-child {
+    table.card-table:not(.collapsed):not(.transparent) td:last-child,
+    table.card-table:not(.collapsed):not(.transparent) th:last-child {
         border-radius: 0 var(--theme__widget-corner) var(--theme__widget-corner) 0;
     }
 

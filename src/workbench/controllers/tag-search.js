@@ -7,8 +7,8 @@
 
 'use strict';
 
-import * as _ from '../lib/core-toolkit.js';
-import {urlQuery} from '../helpers/rest-toolkit.js';
+import {isText} from '../lib/core-toolkit.js';
+import {urlQuery, simplifyObjectId} from '../helpers/rest-toolkit.js';
 
 const entityList = {
     services: {
@@ -93,19 +93,20 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
         viewFrame.incrementLoader();
         requests.then((resolvedList = []) => {
             const searchResults = [];
+
             for (let resolvedItem of resolvedList) {
                 const {data: response} = resolvedItem;
 
                 for (let entity of response.data) {
                     let entityType = entityList[typeMap[entity.id]];
                     let date = new Date(entity.created_at * 1000);
-                    let createdAt = date.toJSON().substr(0, 19).replace('T', ' ');
+                    let createdAt = date.toJSON().substring(0, 19).replace('T', ' ');
 
                     searchResults.push({
                         id: entity.id,
                         redirect: `${entityType.redirect}/${entity.id}`,
                         displayIcon: entityType.displayIcon,
-                        displayText: _.isText(entity.name) ? entity.name : _.objectName(entity.id),
+                        displayText: isText(entity.name) ? entity.name : simplifyObjectId(entity.id),
                         entityType: entityType.displayText.substring(0, entityType.displayText.length - 1),
                         tags: entity.tags.join(', '),
                         createdAt
@@ -116,37 +117,43 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
             scope.$apply((scope) => {
                 scope.searchResults = searchResults;
             });
-
-            viewFrame.incrementLoader();
         });
 
         requests.finally(() => {
-            viewFrame.resetLoader();
+            viewFrame.incrementLoader();
         });
     };
 
     scope.searchByTags = function (event) {
         const queryText = scope.filterModel.queryText.trim();
-
         event.preventDefault();
 
         if (queryText.length === 0) {
             return false;
         }
 
-        viewFrame.resetLoader();
-        viewFrame.setLoaderSteps(3);
-
         const request = restClient.get(`/tags/${queryText}`);
+
+        scope.searchResults = [];
+        viewFrame.setLoaderSteps(3);
 
         request.then(({data: response}) => {
             const typeList = new Set([]);
             const typeMap = {};
 
             if (!Array.isArray(response.data)) {
-                for (let i = 0; i <= 2; i++) {
+                const emptyResult = {
+                    displayIcon: 'hourglass_empty',
+                    entityType: `No entities found for tag "${queryText}"`
+                };
+
+                for (let field of ['displayText', 'redirect', 'tags', 'createdAt']) {
+                    emptyResult[field] = '';
                     viewFrame.incrementLoader();
                 }
+
+                scope.searchResults = [emptyResult];
+                return true;
             }
 
             for (let entity of response.data) {
@@ -159,6 +166,8 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
             });
 
             scope._fetchEntitiesByName({typeList: filtered, typeMap});
+
+            return true;
         });
 
         request.catch(() => {
