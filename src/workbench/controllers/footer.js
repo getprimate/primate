@@ -33,13 +33,13 @@ export default function FooterController(scope, http, viewFrame, toast, logger) 
             logger.resume();
 
             footerMain.classList.add('maximized');
-            document.getElementById('index__ngView').classList.add('resized');
+            document.getElementById('mainLayout').classList.add('resized');
         } else {
             logger.pause();
             logger.clear();
 
             footerMain.classList.remove('maximized');
-            document.getElementById('index__ngView').classList.remove('resized');
+            document.getElementById('mainLayout').classList.remove('resized');
         }
     };
 

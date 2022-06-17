@@ -23,7 +23,7 @@ class ThemeEngine {
 
             if (!_.isText(nodeId) || _.isNil(styles)) continue;
 
-            let element = document.documentElement;
+            let element = document.querySelector(':root');
 
             if (nodeId !== '_documentElement') {
                 element = document.getElementById(nodeId);

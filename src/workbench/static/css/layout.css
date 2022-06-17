@@ -173,7 +173,7 @@ input[type="checkbox"] {
     position:relative;
     width: 17px;
     height: 17px;
-    border: 2px solid var(--border-fg);
+    border: 2px solid var(--default-fg);
     border-radius: 4px;
     cursor:pointer;
     text-align: center;
@@ -273,7 +273,7 @@ multi-check ul li {
 }
 
 multi-check ul li:nth-child(odd)  { background-color: var(--widget-bg); }
-multi-check ul li:nth-child(even) { background-color: var(--primary-bg); }
+multi-check ul li:nth-child(even) { background-color: var(--widget-tc); }
 
 token-input {
     display: block;
@@ -309,6 +309,7 @@ token-input ul.token-input__list {
     border-top-width: 1px;
     overflow-y: auto;
     transition: height .5s linear;
+    background: var(--widget-tc) none;
 }
 
 token-input ul.token-input__list li {
@@ -316,7 +317,7 @@ token-input ul.token-input__list li {
     margin: 0 5px 5px 0;
     padding: 5px 8px 5px 8px;
     border-radius: var(--corner-radius);
-    background: var(--widget-tc) none;
+    background: var(--widget-bg) none;
     cursor: pointer;
 }
 
@@ -338,7 +339,7 @@ a.btn {
     font-weight: 500;
     font-size: 1rem;
     background-color: var(--accent-bg);
-    background-image: linear-gradient(to right, var(--accent-bg), var(--accent-bg)), var(--overlay__dark-20);
+    background-image: none /* linear-gradient(to right, var(--accent-bg), var(--accent-bg)), var(--overlay__dark-20) */;
     background-blend-mode: multiply;
     border: var(--border-size) solid var(--accent-bg);
 }
@@ -469,11 +470,9 @@ ul.list li {
 aside#sidebarMenu {
     --default-bg: #121418;
     --primary-bg: #181a23;
-    --accent-bg: #1f2029;
 
     --default-fg: #a4a4a8;
     --primary-fg: #FFFFFF;
-    --accent-fg: var(--default-fg);
 
     --border-size: 1px;
     --border-fg: #0C0C0C;
@@ -587,7 +586,7 @@ aside#sidebarMenu .drawer__base {
     width: calc(100% - 20px);
     padding: 10px 20px;
     margin: 10px;
-    background-color: var(--accent-bg);
+    background-color: var(--primary-bg);
     border-radius: var(--corner-radius);
 }
 
@@ -650,7 +649,7 @@ aside#sidebarMenu + main#mainWrapper {
 
 /* =-=-=-=-=-= Main header styles =-=-=-=-=-= */
 header#mainHeader {
-    --primary-bg: #1f2029;
+    --default-bg: #1f2029;
     --default-fg: #a4a4a8;
     --primary-fg: #FFFFFF;
     --border-size: 1px;
@@ -664,8 +663,8 @@ header#mainHeader {
     padding: 10px 25px 10px 20px;
     margin: 0;
     border-bottom: var(--border-size) solid var(--border-fg);
-    background-color: var(--primary-bg);
-    color: var(--primary-fg);
+    background-color: var(--default-bg);
+    color: var(--default-fg);
     z-index: 100;
 }
 
@@ -750,6 +749,7 @@ header#mainHeader .title > span {
     display: inline-block;
     font-size: 1.5rem; 
     font-weight: 300; 
+    color: var(--primary-bg);
 }
 
 header#mainHeader .navigate ~ .title { padding-left: 0; }
@@ -801,7 +801,7 @@ header#mainHeader ul.breadcrumbs li .material-icons {
 
 header#mainHeader ul.breadcrumbs li > span {
     font-weight: normal;
-    color: var(--primary-fg);
+    color: var(--default-fg);
 }
 
 section#mainLayout {
@@ -824,9 +824,8 @@ footer#mainFooter.ng-scope.ng-hide + section#mainLayout {
 }
 
 footer#mainFooter {
-    --primary-bg: #121418;
-    --primary-fg: #FFFFFF;
-    --accent-bg: #212121;
+    --default-bg: #121418;
+    --default-fg: #FFFFFF;
     --border-fg: #0C0C0C;
     --border-size: 1px;
 
@@ -835,11 +834,11 @@ footer#mainFooter {
     bottom: 0;
     width: 100%;
     max-height: 500px;
-    background-color: var(--primary-bg);
+    background-color: var(--default-bg);
     border-top: var(--border-size) solid var(--border-fg);
-    color: var(--primary-fg);
+    color: var(--default-fg);
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 400;
     z-index: 100;
 }
 
@@ -869,22 +868,18 @@ footer#mainFooter .footer__base ul.base-menu > li {
     vertical-align: middle;
 }
 
-footer#mainFooter .footer__window,
-footer#mainFooter .footer__window.minimized {
+footer#mainFooter .footer__window {
     width: 100%;
     max-height: 500px;
     height: 0;
     overflow: hidden;
-}
-
-footer#mainFooter .footer__window.minimized {
-    transition: height 0.2s linear;
+    border-bottom: 0 solid transparent;
 }
 
 footer#mainFooter.maximized > .footer__window {
     height: 200px !important;
-    padding: 20px;
-    border-width: 2px;
+    padding: 0;
+    border-bottom: var(--border-size) solid var(--border-fg);
     transition: height 0.2s linear;
 }
 
@@ -892,9 +887,8 @@ footer#mainFooter .activity-log {
     min-height: 0;
     height: 100%;
     padding: 12px;
-    background: var(--accent-bg) none;
+    background: var(--widget-bg) none;
     border: 0 solid var(--border-fg);
-    border-radius: var(--corner-radius);
     overflow: hidden;
 }
 
@@ -905,14 +899,16 @@ footer#mainFooter .activity-log ul {
     padding: 0;
     overflow-y: auto;
     overflow-x: auto;
+    color: var(--default-fg);
+    font-family: monospace, sans-serif;
+    font-size: 0.95rem;
+    font-weight: normal;
+    letter-spacing: 0;
 }
 
 footer#mainFooter .footer__window .activity-log ul li {
     display: block;
     margin: 5px 0 5px 0;
-    color: var(--primary-fg);
-    font-size: 1rem;
-    font-weight: normal;
 }
 
 footer#mainFooter .footer__window .activity-log ul li > span {
@@ -922,7 +918,7 @@ footer#mainFooter .footer__window .activity-log ul li > span {
 }
 
 footer#mainFooter .footer__window .activity-log ul li > span:first-child {
-    color: var(--accent-bg);
+    color: var(--default-fg);
 }
 
 footer#mainFooter .footer__window .activity-log ul li > span.log-info {
@@ -947,10 +943,11 @@ input[type="checkbox"]#chk_ToggleLog + label {
     cursor: pointer;
     border-radius: 5px;
     padding: 0 8px;
+    color: var(--accent-bg);
 }
 
 input[type="checkbox"]#chk_ToggleLog + label:hover {
-    background-color: var(--primary-bg);
+    background-color: var(--default-bg);
 }
 
 form {
@@ -1233,7 +1230,7 @@ form p.metadata { margin: 0; padding-top: 13px; }
 
 .well .well__heading {
     padding: 20px;
-    border-bottom: 1px solid var(--border-fg);
+    border-bottom: 1px solid var(--primary-tc);
     border-radius: var(--corner-radius) var(--corner-radius) 0 0;
     color: var(--primary-fg);
     font-size: var(--widget__heading-sz);
