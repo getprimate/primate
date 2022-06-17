@@ -749,7 +749,7 @@ header#mainHeader .title > span {
     display: inline-block;
     font-size: 1.5rem; 
     font-weight: 300; 
-    color: var(--primary-bg);
+    color: var(--primary-fg);
 }
 
 header#mainHeader .navigate ~ .title { padding-left: 0; }
