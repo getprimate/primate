@@ -14,6 +14,7 @@ import Primate from './primate.js';
 import TokenInputDirective from './directives/token-input.js';
 import MultiCheckDirective from './directives/multi-check.js';
 import ClipboardTextDirective from './directives/clipboard-text.js';
+import RecordMapDirective from './directives/record-map.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
@@ -168,6 +169,7 @@ ipcBridge.onResponse('Read-Session-Connection', (connection) => {
 Primate.directive(TokenInputDirective);
 Primate.directive(MultiCheckDirective);
 Primate.directive(ClipboardTextDirective);
+Primate.directive(RecordMapDirective);
 
 /* Register sidebar, header and footer controllers. */
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');

@@ -37,6 +37,10 @@ function _buildSchemaModel(fields) {
                     model[name] = typeof field[name].default === 'string' ? field[name].default : '';
                     break;
 
+                case 'map':
+                    model[name] = _.isObject(field[name].default) ? field[name].default : {};
+                    break;
+
                 case 'record':
                     model[name] = _buildSchemaModel(field[name]['fields']);
                     break;
@@ -83,6 +87,10 @@ function _sanitiseSchema(schema) {
 
                 case 'string':
                     attributes.nodeType = 'input__text';
+                    break;
+
+                case 'map':
+                    attributes.nodeType = 'record-map';
                     break;
 
                 case 'record':

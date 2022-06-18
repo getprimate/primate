@@ -251,7 +251,8 @@ input[type="color"]::after {
     height: 20px;
 }
 
-multi-check {
+multi-check,
+record-map {
     display: block;
     max-height: 235px;
     overflow-y: auto;
@@ -261,19 +262,50 @@ multi-check {
     border-radius: var(--corner-radius);
 }
 
-multi-check ul {
+multi-check ul,
+record-map ul {
     display: block;
     margin: 0;
     padding: 0;
 }
 
-multi-check ul li {
+multi-check ul > li {
     display: block;
     padding: 5px 8px 5px 8px;
 }
 
-multi-check ul li:nth-child(odd)  { background-color: var(--widget-bg); }
-multi-check ul li:nth-child(even) { background-color: var(--widget-tc); }
+    multi-check ul > li:nth-child(odd),
+    record-map ul > li:nth-child(odd) { 
+        background-color: var(--widget-bg);
+    }
+
+    multi-check ul > li:nth-child(even),
+    record-map ul > li:nth-child(even) { 
+        background-color: var(--widget-tc); 
+    }
+
+record-map ul > li {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+record-map input[type="text"] {
+    display: inline-block;
+    width: 50%;
+    padding: 8px 5px;
+    background: transparent none;
+    border: 0 solid var(--widget-tc);
+    border-radius: 0;
+}
+
+    record-map input[type="text"]:focus {
+        background: transparent none;
+    }
+
+    record-map input[type="text"]:first-child {
+        border-right-width: 1px;
+    }
 
 token-input {
     display: block;
