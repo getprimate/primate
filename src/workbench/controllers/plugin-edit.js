@@ -23,10 +23,12 @@ function _buildSchemaModel(fields) {
                     model[name] = typeof field[name].default === 'boolean' ? field[name].default : false;
                     break;
 
+                case 'integer':
                 case 'number':
                     model[name] = typeof field[name].default === 'number' ? field[name].default : 0;
                     break;
 
+                case 'set':
                 case 'array':
                     model[name] = Array.isArray(field[name].default) ? field[name].default : [];
                     break;

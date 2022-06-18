@@ -3,7 +3,7 @@
     <div class="col md-8 sm-12">
 
     <div class="panel panel-border">
-    <div class="panel__heading">Plugin Details</div>
+    <div class="panel__heading"><span class="title">Plugin Details</span> <span data-ng-if="pluginId.length>=10" data-clipboard-text="{{pluginId}}">{{pluginId}}</span></div>
     <div class="panel__body">
         <form id="pg-ed__frm01" class="form" method="post" data-ng-submit="submitPluginForm($event)">
         <div class="row">
@@ -142,10 +142,16 @@
             <div class="field-input"><token-input data-ng-model="pluginModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
         </div><!-- .form__field -->
 
-        <div class="form__field">
-            <a href="{{prevUrl}}" class="btn default cancel">Cancel</a>
-            <button type="submit" name="action" value="save">{{pluginId==null ? 'Add Plugin' : 'Update'}}</button>
-        </div>
+        <div class="row">
+            <div class="col md-6">&nbsp;</div><!-- .col.md-6 -->
+            <div class="col md-6">
+                <div data-ng-switch="pluginId" class="form__field align-right">
+                    <button class="subtle" type="button" data-ng-click="resetPluginForm($event)">Clear</button>
+                    <button data-ng-switch-when="__none__" type="submit" name="action" value="create">Create</button>
+                    <button data-ng-switch-default="" class="accent" type="submit" name="action" value="update">Update</button>
+                </div><!-- .form__field -->
+            </div><!-- .col.md-6 -->
+        </div><!-- .row -->
         </form><!-- .form -->
     </div><!-- .panel__body -->
     </div><!-- .panel.panel-border.info -->

@@ -52,7 +52,7 @@ const menuTemplate = [
             {
                 label: 'About Primate',
                 click: () => {
-                    electronShell.openExternal('https://getprimate.xyz').catch(() => {});
+                    electronShell.openExternal('https://www.getprimate.xyz').catch(() => {});
                 }
             }
         ]
