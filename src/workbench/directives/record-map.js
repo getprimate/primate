@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, randomHex, trim} from '../lib/core-toolkit.js';
+import {isObject, isText, randomHex, trim} from '../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -42,12 +42,14 @@ function createRecordItem(key = '', value = '') {
     const keyInput = document.createElement('input');
     const valueInput = document.createElement('input');
 
-    keyInput.type = 'text';
+    keyInput.type = valueInput.type = 'text';
+
     keyInput.value = key;
+    keyInput.placeholder = 'Key';
     keyInput.name = `${li.dataset.identifier}_key`;
 
-    valueInput.type = 'text';
     valueInput.value = value;
+    keyInput.placeholder = 'Value';
     valueInput.name = `${li.dataset.identifier}_value`;
 
     li.appendChild(keyInput);
@@ -108,7 +110,7 @@ function updateRecordModel(listElement, model) {
  * Allways create and instant of this function with
  * the below properties:
  *
- * @property {HTMLUListElement} _listElement - The UL element.
+ * @property {HTMLUListElement} _recordElement - The UL element.
  *
  * @param {Object} current - The current model object.
  * @param {Object} previous  - The previous model object.
@@ -118,7 +120,7 @@ function RecordModelWatcher(current, previous) {
     console.log('Current:', JSON.stringify(current));
     console.log('Previous:', JSON.stringify(previous));
 
-    clearRecordItems(this._listElement);
+    clearRecordItems(this._recordElement);
 
     if (!isObject(current)) {
         return false;
@@ -126,12 +128,12 @@ function RecordModelWatcher(current, previous) {
 
     if (Object.keys(current).length === 0) {
         const li = createRecordItem();
-        this._listElement.appendChild(li);
+        this._recordElement.appendChild(li);
 
         return true;
     }
 
-    attachRecordItems(this._listElement, current);
+    attachRecordItems(this._recordElement, current);
     return true;
 }
 
@@ -142,15 +144,43 @@ function RecordModelWatcher(current, previous) {
  * Allways create and instant of this function with
  * the below properties:
  *
- * @property {Object} _recordModel - The model of the current scope.
- * @property {HTMLUListElement} _listElement - The UL element.
+ * @property {Object} _recordScope - The current directive scope.
+ * @property {Object} _recordScope.recordModel - The model object.
+ * @property {HTMLUListElement} _recordElement - The UL element.
+ * @property {HTMLElement} _recordControl - The contrl wrapper
  *
  * @param {Object} current - The current model object.
  * @param {Object} previous  - The previous model object.
  * @returns {boolean} True if handled, false otherwise.
  */
-function ButtonWrapperWatcher(event) {
-    const {target} = event;
+function RecordElementWatcher(event) {
+    if (this._recordScope.isModified === true || event.target.nodeName !== 'INPUT') {
+        return true;
+    }
+
+    this._recordScope.isModified = true;
+    this._recordControl.lastChild.classList.add('success');
+
+    return true;
+}
+
+/**
+ * Provides a callback for click event listener.
+ *
+ * This function should not be used directly.
+ * Allways create and instant of this function with
+ * the below properties:
+ *
+ * @property {Object} _recordScope - The current directive scope.
+ * @property {Object} _recordScope.recordModel - The model object.
+ * @property {HTMLUListElement} _recordElement - The UL element.
+ *
+ * @param {Object} current - The current model object.
+ * @param {Object} previous  - The previous model object.
+ * @returns {boolean} True if handled, false otherwise.
+ */
+function RecordControlWatcher(event) {
+    const {currentTarget: wrapper, target} = event;
 
     if (target.nodeName === 'DIV') {
         return false;
@@ -159,30 +189,48 @@ function ButtonWrapperWatcher(event) {
     const button = target.nodeName === 'BUTTON' ? target : target.parentElement;
 
     if (button.value === 'clear') {
-        for (let key of Object.keys(this._recordModel)) {
-            delete this._recordModel[key];
+        for (let key of Object.keys(this._recordScope.recordModel)) {
+            delete this._recordScope.recordModel[key];
         }
 
-        clearRecordItems(this._listElement);
+        clearRecordItems(this._recordElement);
+
+        wrapper.lastChild.classList.remove('success');
+        wrapper.lastChild.title = 'Changes applied';
+
+        this._recordScope.isModified = false;
+
         return true;
     }
 
     if (button.value === 'done') {
-        updateRecordModel(this._listElement, this._recordModel);
+        updateRecordModel(this._recordElement, this._recordScope.recordModel);
+        this._recordScope.isModified = false;
+
         target.classList.remove('success');
+        target.placeholder = 'Changes applied';
 
         return true;
     }
 
     if (button.value === 'insert') {
         /* Do not insert a new LI if the input box in the last UL is empty. */
-        if (trim(this._listElement.lastChild.firstChild.value).length === 0) {
-            this._listElement.lastChild.firstChild.focus();
+        if (
+            this._recordElement.childNodes.length >= 1 &&
+            trim(this._recordElement.lastChild.firstChild.value).length === 0
+        ) {
+            this._recordElement.lastChild.firstChild.focus();
             return false;
         }
 
         const li = createRecordItem();
-        this._listElement.appendChild(li);
+        this._recordElement.appendChild(li);
+
+        if (this._recordScope.isModified === false) {
+            this._recordScope.isModified = true;
+            wrapper.lastChild.classList.add('success');
+            wrapper.lastChild.title = 'Apply changes';
+        }
 
         return true;
     }
@@ -200,30 +248,46 @@ function ButtonWrapperWatcher(event) {
  * @return {boolean} True if linking successful, false otherwise.
  */
 function link(scope, element, attributes) {
+    console.log(JSON.stringify(attributes, null, 4));
     if (!isObject(scope.recordModel)) {
         return false;
     }
 
     /** @type HTMLElement */
     const parentElement = element[0];
-    const childElements = {};
+    const childElements = {
+        headerElement: parentElement.firstChild,
+        recordElement: parentElement.childNodes[1],
+        recordControl: parentElement.lastChild
+    };
 
-    childElements.recordElement = parentElement.firstChild;
-    childElements.buttonWrapper = parentElement.lastChild;
-
-    const clickEventListener = ButtonWrapperWatcher.bind({
-        _recordModel: scope.recordModel,
-        _listElement: childElements.recordElement
+    const clickEventListener = RecordControlWatcher.bind({
+        _recordScope: scope,
+        _recordElement: childElements.recordElement
     });
 
-    childElements.buttonWrapper.addEventListener('click', clickEventListener);
+    const inputEventListener = RecordElementWatcher.bind({
+        _recordScope: scope,
+        _recordControl: childElements.recordControl
+    });
 
-    scope.$watch('recordModel', RecordModelWatcher.bind({_listElement: childElements.recordElement}), false);
+    if (isText(attributes.headerText)) {
+        childElements.headerElement.innerHTML = attributes.headerText;
+    }
+
+    childElements.recordElement.addEventListener('input', inputEventListener);
+    childElements.recordControl.addEventListener('click', clickEventListener);
+
+    scope.$watch('recordModel', RecordModelWatcher.bind({_recordElement: childElements.recordElement}), false);
 
     scope.$on('$destroy', () => {
         parentElement.removeChild(childElements.recordElement);
         parentElement.remove();
     });
+}
+
+function RecordMapController(scope) {
+    scope.isModified = false;
 }
 
 /**
@@ -239,10 +303,11 @@ function link(scope, element, attributes) {
  */
 export default function RecordMapDirective() {
     const template =
-        '<ul class="record-map__items"></ul><div class="record-map__flex">' +
-        '<button type="button" class="mini btn subtle" value="clear"><span class="material-icons">backspace</span></button>' +
-        '<button type="button" class="mini btn subtle" value="insert"><span class="material-icons">add</span></button>' +
-        '<button type="button" class="mini btn subtle" value="done"><span class="material-icons">done</span></button>' +
+        '<h6>Input key value pairs</h6>' +
+        '<ul class="records"></ul><div class="control">' +
+        '<button type="button" value="clear" title="Clear all rows"><span class="material-icons">backspace</span></button>' +
+        '<button type="button" value="insert" title="Insert new row"><span class="material-icons">add</span></button>' +
+        '<button type="button" value="done" title="No changes made"><span class="material-icons">done</span></button>' +
         '</div>';
 
     return {
@@ -250,6 +315,7 @@ export default function RecordMapDirective() {
         restrict: 'E',
         require: 'ngModel',
         scope: {recordModel: '=ngModel'},
+        controller: ['$scope', RecordMapController],
         link,
         template
     };
