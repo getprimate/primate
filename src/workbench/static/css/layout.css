@@ -307,6 +307,37 @@ record-map input[type="text"] {
         border-right-width: 1px;
     }
 
+record-map > h6 {
+    margin: 0;
+    padding: 8px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    background: var(--primary-tc) none;
+    border-bottom: var(--border-size) solid var(--border-fg);
+}
+
+record-map .control {
+    display: block;
+    max-height: 40px;
+    padding: 8px;
+    background: var(--primary-tc) none;
+    border-top: var(--border-size) solid var(--border-fg);
+    text-align: right;
+}
+
+record-map .control button {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: var(--widget-tc) none;
+    border-color: var(--widget-tc);
+}
+
+record-map .control .material-icons {
+    font-size: 1rem;
+    cursor: inherit;
+}
+
 token-input {
     display: block;
     width: 100%;
@@ -391,9 +422,16 @@ button.subtle:hover {
 button.critical {
     background: var(--std__critical) none;
     border-color: var(--std__critical);
+    color: #FFFFFF;
 }
 
     button.critical:hover { background-color: #FA372E; }
+
+button.success {
+    background: var(--std__success) none !important;
+    border-color: var(--std__success) !important;
+    color: #FFFFFF !important;
+}
 
 
 button.text {
