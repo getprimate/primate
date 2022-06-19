@@ -80,7 +80,7 @@
 
         <div class="mg-bottom-10 border-bottom-solid" data-ng-repeat="fieldWrap in schemaProps.fields">
             <div class="container row-wrapper" data-ng-repeat="(fieldName, fieldProp) in fieldWrap">
-            <div class="row" data-ng-if="fieldProp.nodeType !== 'static-record'">
+            <div class="row"><!-- data-ng-if="fieldProp.nodeType_ !== 'static-record'" -->
                 <div class="col md-6">
                     <div class="form__field">
                         <label class="field-label">{{fieldProp.fieldName}}</label>
@@ -88,7 +88,7 @@
                     </div>
                 </div><!-- .col.md-6 -->
 
-                <div class="col md-6" data-ng-switch="fieldProp.nodeType">
+                <div class="col md-6" data-ng-switch="fieldProp.nodeType_">
 
                     <div data-ng-switch-when="input__checkbox" class="form__field">
                         <label class="field-label">&nbsp</label>
@@ -114,31 +114,41 @@
 
                     <div data-ng-switch-when="multi-check" class="form__field">
                         <label class="field-label">&nbsp;</label>
-                        <div class="field-input"><multi-check data-ng-model="schemaModel[fieldName]" data-option-list="fieldProp.nodeList"></multi-check></div>
+                        <div class="field-input"><multi-check data-ng-model="schemaModel[fieldName]" data-option-list="fieldProp.nodeList_"></multi-check></div>
+                    </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="record-text" class="form__field">
+                        <label class="field-label">&nbsp;</label>
+                        <div class="field-input"><record-text type="text" data-ng-model="schemaModel[fieldName]"></record-text></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="record-map" class="form__field">
                         <label class="field-label">&nbsp;</label>
-                        <div class="field-input"><record-map data-ng-model="schemaModel[fieldName]"></record-map></div>
+                        <div class="field-input"><record-map data-ng-model="schemaModel[fieldName]" data-sanitise-values="true"></record-map></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="select" class="form__field">
                         <label class="field-label">&nbsp;</label>
                         <div class="field-input">
                             <select data-ng-selected="schemaModel[fieldName]" data-ng-model="schemaModel[fieldName]">
-                                <option data-ng-repeat="option in fieldProp.nodeList" value="{{option}}">{{option}}</option>
+                                <option data-ng-repeat="option in fieldProp.nodeList_" value="{{option}}">{{option}}</option>
                             </select>
                         </div><!-- .field__input -->
                     </div><!-- .form__field -->
+
+                    <div data-ng-switch-when="record-static">
+                        <div data-ng-include="'static/views/plugin-static-record.html'"></div>        
+                    </div>
 
                     <div data-ng-switch-default=""><article>{{fieldProp.type}}</article></div>
                 </div><!-- .col.md-6 | data-ng-switch -->
             </div><!-- .row -->
 
-            <div data-ng-if="fieldProp.nodeType === 'static-record'">
+            <!--div data-ng-if="fieldProp.nodeType_ === 'static-record'">
                 <div><strong>{{fieldName | pgname}}</strong></div>
                 <div data-ng-include="'static/views/plugin-static-record.html'"></div>
-            </div>
+            </div-->
+            
             </div><!-- .container.row-wrapper | data-ng-repeat -->
         </div><!-- .mg-bottom-10 -->
 

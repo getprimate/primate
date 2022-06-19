@@ -13,7 +13,15 @@ import {simplifyObjectId} from '../helpers/rest-toolkit.js';
 
 import pluginModel from '../models/plugin-model.js';
 
-function _buildSchemaModel(fields) {
+/**
+ * Builds a plugin config model from the schema.
+ *
+ * The model will be populated with default values, if aailable.
+ *
+ * @param {[Object]} fields - The schema fields.
+ * @returns {Object} The final model.
+ */
+function buildSchemaModel(fields) {
     const model = {};
 
     for (let field of fields) {
@@ -42,7 +50,7 @@ function _buildSchemaModel(fields) {
                     break;
 
                 case 'record':
-                    model[name] = _buildSchemaModel(field[name]['fields']);
+                    model[name] = buildSchemaModel(field[name]['fields']);
                     break;
 
                 default:
@@ -54,7 +62,16 @@ function _buildSchemaModel(fields) {
     return model;
 }
 
-function _sanitiseSchema(schema) {
+/**
+ * Sanitises the plugin schema.
+ *
+ * This function also injects the proper widget name (as nodeType_) after
+ * evaluatng the attribute properties.
+ *
+ * @param {Object} schema - The plugin schema.
+ * @returns {Object} The sanitised schema.
+ */
+function sanitiseSchema(schema) {
     const {fields} = schema;
 
     for (let field of fields) {
@@ -67,35 +84,47 @@ function _sanitiseSchema(schema) {
             switch (attributes.type) {
                 case 'integer':
                 case 'number':
-                    attributes.nodeType = 'input__number';
+                    attributes.nodeType_ = 'input__number';
                     break;
 
                 case 'set':
                 case 'array':
-                    attributes.nodeType = 'token-input';
+                    attributes.nodeType_ = 'token-input';
+
                     if (typeof attributes.elements === 'object' && Array.isArray(attributes.elements.one_of)) {
-                        attributes.nodeType = 'multi-check';
-                        attributes.nodeList = attributes.elements.one_of;
+                        attributes.nodeType_ = 'multi-check';
+                        attributes.nodeList_ = attributes.elements.one_of;
+                    } else if (typeof attributes.elements === 'object' && attributes.elements.type === 'record') {
+                        attributes.nodeType_ = 'record-text';
+                        //attributes.sanitise_ = 'json-parse';
                     }
+
                     checkEnum = false;
                     break;
 
                 case 'boolean':
-                    attributes.nodeType = 'input__checkbox';
+                    attributes.nodeType_ = 'input__checkbox';
                     checkEnum = false;
                     break;
 
                 case 'string':
-                    attributes.nodeType = 'input__text';
+                    attributes.nodeType_ = 'input__text';
                     break;
 
                 case 'map':
-                    attributes.nodeType = 'record-map';
+                    attributes.nodeType_ = 'record-map';
+
+                    if (attributes.values.type === 'record') {
+                        attributes.sanitise_ = 'value-json';
+                    } else if (attributes.values.type === 'array') {
+                        attributes.sanitise_ = 'value-array';
+                    }
+
                     break;
 
                 case 'record':
-                    attributes.nodeType = 'static-record';
-                    _sanitiseSchema(attributes);
+                    attributes.nodeType_ = 'record-static';
+                    sanitiseSchema(attributes);
                     break;
 
                 default:
@@ -103,8 +132,8 @@ function _sanitiseSchema(schema) {
             }
 
             if (checkEnum === true && typeof attributes.one_of === 'object' && Array.isArray(attributes.one_of)) {
-                attributes.nodeType = 'select';
-                attributes.nodeList = attributes.one_of;
+                attributes.nodeType_ = 'select';
+                attributes.nodeList_ = attributes.one_of;
             }
         }
     }
@@ -112,7 +141,14 @@ function _sanitiseSchema(schema) {
     return schema;
 }
 
-function _buildPluginObject(pluginModel, schemaModel) {
+/**
+ * Builds the plugin object representation from the model.
+ *
+ * @param {Object} pluginModel - The plugin model.
+ * @param {Object} schemaModel - The schema model.
+ * @returns {Object} The object representation.
+ */
+function buildPluginObject(pluginModel, schemaModel) {
     if (typeof pluginModel.name !== 'string' || pluginModel.name === '__none__') {
         throw new Error('Please select a plugin from the list.');
     }
@@ -140,7 +176,7 @@ function _buildPluginObject(pluginModel, schemaModel) {
     return payload;
 }
 
-function _refreshPluginModel(model, source) {
+function refreshPluginModel(model, source) {
     for (let field in source) {
         if (typeof model[field] === 'undefined' || source[field] === null) {
             continue;
@@ -160,6 +196,81 @@ function _refreshPluginModel(model, source) {
     }
 
     return model;
+}
+
+/**
+ * Sanitises the payload after matching with schema.
+ *
+ * @param {Object} payload - The plugin object payload.
+ * @param {[Object]} schemaFieldList - The fields from schema properties object.
+ * @returns {Object} The sanitised payload object.
+ */
+function sanitisePayload(payload, schemaFieldList) {
+    /**
+     * Required to hold a simplified version of
+     * schemaProps property, received in 'fields' parameter.
+     */
+    const schemaFieldMap = {};
+
+    for (let field of schemaFieldList) {
+        for (let key of Object.keys(field)) {
+            if (!_.isObject(field[key])) continue;
+
+            schemaFieldMap[key] = field[key];
+        }
+    }
+
+    const {config: pluginConfig} = payload;
+    const configKeyList = Object.keys(pluginConfig);
+
+    /* Iterating over the plugin configuration object in the payload. */
+    for (let configKey of configKeyList) {
+        /* Skip if either the key is missing in the fieldMap or
+         * config property value is a number. */
+        if (!_.isObject(schemaFieldMap[configKey]) || typeof pluginConfig[configKey] === 'number') {
+            continue;
+        }
+
+        /* If the config field is optional and value is empty, remove it. */
+        if (schemaFieldMap[configKey]['required'] !== true && _.isEmpty(pluginConfig[configKey])) {
+            delete pluginConfig[configKey];
+            continue;
+        }
+
+        /* Check if the field value needs to be passed through JSON.parse() */
+        if (schemaFieldMap[configKey]['sanitise_'] === 'json-parse' && _.isText(pluginConfig[configKey])) {
+            try {
+                pluginConfig[configKey] = JSON.parse(pluginConfig[configKey]);
+            } catch (e) {
+                throw new Error(`The required field ${configKey} is not a proper JSON string.`);
+            }
+
+            continue;
+        }
+
+        /* Check if the field sis of type 'Map' and the map values arrays. */
+        if (schemaFieldMap[configKey]['sanitise_'] === 'value-array' && _.isObject(pluginConfig[configKey])) {
+            console.log(JSON.stringify(pluginConfig[configKey], null, 4));
+            for (let mapKey of Object.keys(pluginConfig[configKey])) {
+                pluginConfig[configKey][mapKey] = _.explode(pluginConfig[configKey][mapKey]);
+            }
+        }
+
+        /* Check if the field sis of type 'Map' and the map values arrays. */
+        if (schemaFieldMap[configKey]['sanitise_'] === 'value-json' && _.isObject(pluginConfig[configKey])) {
+            let mapKey = '';
+
+            try {
+                for (mapKey of Object.keys(pluginConfig[configKey])) {
+                    pluginConfig[configKey][mapKey] = JSON.parse(pluginConfig[configKey][mapKey]);
+                }
+            } catch (e) {
+                throw new Error(`The field ${mapKey} in ${configKey} is not a proper JSON string.`);
+            }
+        }
+    }
+
+    return payload;
 }
 
 /**
@@ -201,6 +312,11 @@ export default function PluginEditController(scope, location, routeParams, restC
     scope.routeList = [];
     scope.consumerList = [];
 
+    /**
+     * Retrieves the list of available plugins.
+     *
+     * @returns {boolean} True if successful, false otherwise.
+     */
     scope.fetchAvailablePlugins = function () {
         const request = restClient.get('/plugins/enabled');
 
@@ -219,6 +335,11 @@ export default function PluginEditController(scope, location, routeParams, restC
         return true;
     };
 
+    /**
+     * Retrieves the schema for the selected plugin.
+     *
+     * @returns {boolean} True if successful, false otherwise.
+     */
     scope.fetchSchema = (plugin, config = null) => {
         const request = restClient.get(`/plugins/schema/${plugin}`);
 
@@ -231,12 +352,12 @@ export default function PluginEditController(scope, location, routeParams, restC
             const {fields} = response;
 
             if (_.isNil(config)) {
-                scope.schemaModel = _buildSchemaModel(fields);
+                scope.schemaModel = buildSchemaModel(fields);
             } else {
                 scope.schemaModel = config;
             }
 
-            scope.schemaProps = _sanitiseSchema(response);
+            scope.schemaProps = sanitiseSchema(response);
             scope.jsonText = JSON.stringify(scope.schemaProps, null, 4);
 
             return true;
@@ -249,6 +370,11 @@ export default function PluginEditController(scope, location, routeParams, restC
         return true;
     };
 
+    /**
+     * Handles plugin selection from drop down..
+     *
+     * @returns {boolean} True if successful, false otherwise.
+     */
     scope.changePlugin = function () {
         if (scope.pluginModel.name === '__none__') {
             scope.schemaProps = {};
@@ -260,30 +386,41 @@ export default function PluginEditController(scope, location, routeParams, restC
         return scope.fetchSchema(scope.pluginModel.name);
     };
 
+    /**
+     * Posts the plugin data to the API.
+     *
+     * @param {Event} event -Form submit event.
+     * @returns {boolean} True if successful, false otherwise.
+     */
     scope.submitPluginForm = function (event) {
-        if (typeof event === 'undefined') {
+        viewFrame.setLoaderSteps(1);
+
+        let payload = null;
+
+        try {
+            payload = buildPluginObject(scope.pluginModel, scope.schemaModel);
+            payload = sanitisePayload(payload, scope.schemaProps.fields);
+        } catch (error) {
+            toast.error(error.message);
             return false;
         }
 
-        try {
-            const payload = _buildPluginObject(scope.pluginModel, scope.schemaModel);
+        const request = restClient.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, payload});
 
-            const request = restClient.request({method: ajaxConfig.method, endpoint: ajaxConfig.endpoint, payload});
+        request.then(({data: response}) => {
+            toast.success('Plugin details saved.');
+            window.location.href = '#!' + location.path().replace('__create__', response.id);
+        });
 
-            request.then(({data: response}) => {
-                toast.message(scope.pluginId === '__none__' ? 'SUCCESS' : 'INFO', 'Plugin details saved.');
+        request.catch(() => {
+            toast.error('Unable to save plugin details.');
+        });
 
-                window.location.href = '#!' + location.path().replace('__create__', response.id);
-            });
+        request.finally(() => {
+            viewFrame.incrementLoader();
+        });
 
-            request.catch(() => {
-                toast.error('Unable to save plugin details.');
-            });
-        } catch (error) {
-            toast.error(error.message);
-        }
-
-        return false;
+        return true;
     };
 
     /**
@@ -431,10 +568,8 @@ export default function PluginEditController(scope, location, routeParams, restC
         const request = restClient.get(`/plugins/${scope.pluginId}`);
 
         request.then(({data: response}) => {
-            _refreshPluginModel(scope.pluginModel, response);
-
+            refreshPluginModel(scope.pluginModel, response);
             scope.fetchSchema(response.name, response.config);
-
             viewFrame.addBreadcrumb(location.path(), response.name);
         });
 
