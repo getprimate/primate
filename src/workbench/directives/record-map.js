@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, isText, randomHex, trim} from '../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -37,7 +37,7 @@ function clearRecordItems(listElement) {
  */
 function createRecordItem(key = '', value = '') {
     const li = document.createElement('li');
-    li.dataset.identifier = randomHex();
+    li.dataset.identifier = _.randomHex();
 
     const keyInput = document.createElement('input');
     const valueInput = document.createElement('input');
@@ -92,8 +92,8 @@ function updateRecordModel(listElement, model) {
     }
 
     for (let child of children) {
-        let key = trim(child.firstChild.value, ''); /* Key text. */
-        let value = trim(child.lastChild.value, ''); /* Value text. */
+        let key = _.trim(child.firstChild.value, ''); /* Key text. */
+        let value = _.trim(child.lastChild.value, ''); /* Value text. */
 
         if (key.length >= 1) {
             model[key] = value;
@@ -122,7 +122,7 @@ function RecordModelWatcher(current, previous) {
 
     clearRecordItems(this._recordElement);
 
-    if (!isObject(current)) {
+    if (!_.isObject(current)) {
         return false;
     }
 
@@ -131,6 +131,16 @@ function RecordModelWatcher(current, previous) {
         this._recordElement.appendChild(li);
 
         return true;
+    }
+
+    if (_.isObject(this._options) && this._options.sanitiseValues === true) {
+        const keyList = Object.keys(current);
+
+        for (let key of keyList) {
+            if (Array.isArray(current[key])) current[key] = _.implode(current[key]);
+            else if (_.isObject(current[key])) current[key] = JSON.stringify(current[key]);
+            else if (current[key] === null) current[key] = '';
+        }
     }
 
     attachRecordItems(this._recordElement, current);
@@ -217,7 +227,7 @@ function RecordControlWatcher(event) {
         /* Do not insert a new LI if the input box in the last UL is empty. */
         if (
             this._recordElement.childNodes.length >= 1 &&
-            trim(this._recordElement.lastChild.firstChild.value).length === 0
+            _.trim(this._recordElement.lastChild.firstChild.value).length === 0
         ) {
             this._recordElement.lastChild.firstChild.focus();
             return false;
@@ -248,8 +258,7 @@ function RecordControlWatcher(event) {
  * @return {boolean} True if linking successful, false otherwise.
  */
 function link(scope, element, attributes) {
-    console.log(JSON.stringify(attributes, null, 4));
-    if (!isObject(scope.recordModel)) {
+    if (!_.isObject(scope.recordModel)) {
         return false;
     }
 
@@ -261,6 +270,11 @@ function link(scope, element, attributes) {
         recordControl: parentElement.lastChild
     };
 
+    const recordModelWatcher = RecordModelWatcher.bind({
+        _options: {sanitiseValues: attributes.sanitiseValues === 'true'},
+        _recordElement: childElements.recordElement
+    });
+
     const clickEventListener = RecordControlWatcher.bind({
         _recordScope: scope,
         _recordElement: childElements.recordElement
@@ -271,14 +285,14 @@ function link(scope, element, attributes) {
         _recordControl: childElements.recordControl
     });
 
-    if (isText(attributes.headerText)) {
+    if (_.isText(attributes.headerText)) {
         childElements.headerElement.innerHTML = attributes.headerText;
     }
 
     childElements.recordElement.addEventListener('input', inputEventListener);
     childElements.recordControl.addEventListener('click', clickEventListener);
 
-    scope.$watch('recordModel', RecordModelWatcher.bind({_recordElement: childElements.recordElement}), false);
+    scope.$watch('recordModel', recordModelWatcher, false);
 
     scope.$on('$destroy', () => {
         parentElement.removeChild(childElements.recordElement);
