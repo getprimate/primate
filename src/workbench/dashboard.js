@@ -79,8 +79,6 @@ function attemptStart() {
 
     responseLocker.completedSteps = -10;
 
-    console.log(JSON.stringify({responseLocker}, null, 4));
-
     Primate.config(finalFactoryInitializer, 'restClient', 'viewFrame');
     Primate.start();
 
