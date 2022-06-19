@@ -15,6 +15,7 @@ import TokenInputDirective from './directives/token-input.js';
 import MultiCheckDirective from './directives/multi-check.js';
 import ClipboardTextDirective from './directives/clipboard-text.js';
 import RecordMapDirective from './directives/record-map.js';
+import RecordTextDirective from './directives/record-text.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
@@ -170,6 +171,7 @@ Primate.directive(TokenInputDirective);
 Primate.directive(MultiCheckDirective);
 Primate.directive(ClipboardTextDirective);
 Primate.directive(RecordMapDirective);
+Primate.directive(RecordTextDirective);
 
 /* Register sidebar, header and footer controllers. */
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
