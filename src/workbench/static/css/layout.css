@@ -252,7 +252,8 @@ input[type="color"]::after {
 }
 
 multi-check,
-record-map {
+record-map,
+record-text {
     display: block;
     max-height: 235px;
     overflow-y: auto;
@@ -262,11 +263,22 @@ record-map {
     border-radius: var(--corner-radius);
 }
 
+record-map,
+record-text {
+    max-height: unset;
+    overflow-y: unset;
+}
+
 multi-check ul,
 record-map ul {
     display: block;
     margin: 0;
     padding: 0;
+}
+
+multi-check ul {
+    max-height: 360px;
+    overflow-y: auto;
 }
 
 multi-check ul > li {
@@ -316,16 +328,26 @@ record-map > h6 {
     border-bottom: var(--border-size) solid var(--border-fg);
 }
 
-record-map .control {
+record-text > textarea {
+    display: block;
+    border-width: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+record-map .control,
+record-text .control {
     display: block;
     max-height: 40px;
     padding: 8px;
     background: var(--primary-tc) none;
     border-top: var(--border-size) solid var(--border-fg);
+    border-radius: 0 0 var(--corner-radius) var(--corner-radius);
     text-align: right;
 }
 
-record-map .control button {
+record-map .control button,
+record-text .control button {
     display: inline-block;
     margin-left: 8px;
     padding: 2px 8px;
@@ -333,7 +355,8 @@ record-map .control button {
     border-color: var(--widget-tc);
 }
 
-record-map .control .material-icons {
+record-map .control .material-icons,
+record-text .control .material-icons {
     font-size: 1rem;
     cursor: inherit;
 }
@@ -373,6 +396,7 @@ token-input ul.token-input__list {
     overflow-y: auto;
     transition: height .5s linear;
     background: var(--widget-tc) none;
+    border-radius: 0 0 var(--corner-radius) var(--corner-radius);
 }
 
 token-input ul.token-input__list li {
