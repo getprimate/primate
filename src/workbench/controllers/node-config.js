@@ -83,6 +83,7 @@ export default function NodeConfigController(scope, restClient, viewFrame, toast
         });
     };
 
+    viewFrame.setTitle('Configuration');
     viewFrame.clearBreadcrumbs();
     viewFrame.addBreadcrumb('#!/node-config', 'Configuration');
 
