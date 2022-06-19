@@ -7,8 +7,6 @@
 
 'use strict';
 
-import * as _ from '../lib/core-toolkit.js';
-
 /**
  * Provides a callback for record model watcher.
  *
@@ -47,7 +45,7 @@ function RecordModelWatcher(current, previous) {
  * @param {Object} previous  - The previous model object.
  * @returns {boolean} True if handled, false otherwise.
  */
-function RecordElementWatcher(event) {
+function RecordElementWatcher() {
     if (this._recordScope.isModified === true) {
         return true;
     }

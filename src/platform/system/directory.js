@@ -45,7 +45,6 @@ function appData() {
             return typeof process.env.XDG_CONFIG_HOME === 'string'
                 ? path.resolve(process.env.XDG_CONFIG_HOME)
                 : path.resolve(path.join(home(), '.config'));
-            return;
 
         case 'Darwin':
             return path.resolve(path.join(home(), 'Library', 'Application Support'));

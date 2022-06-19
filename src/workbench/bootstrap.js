@@ -38,8 +38,6 @@ function attachEventListeners() {
     main.addEventListener('click', (event) => {
         const {target: anchor} = event;
 
-        console.log('Run event listener ', anchor.nodeName);
-
         if (anchor.nodeName !== 'A') {
             return true;
         }

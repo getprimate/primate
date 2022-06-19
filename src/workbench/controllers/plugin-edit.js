@@ -250,7 +250,6 @@ function sanitisePayload(payload, schemaFieldList) {
 
         /* Check if the field sis of type 'Map' and the map values arrays. */
         if (schemaFieldMap[configKey]['sanitise_'] === 'value-array' && _.isObject(pluginConfig[configKey])) {
-            console.log(JSON.stringify(pluginConfig[configKey], null, 4));
             for (let mapKey of Object.keys(pluginConfig[configKey])) {
                 pluginConfig[configKey][mapKey] = _.explode(pluginConfig[configKey][mapKey]);
             }
@@ -389,10 +388,9 @@ export default function PluginEditController(scope, location, routeParams, restC
     /**
      * Posts the plugin data to the API.
      *
-     * @param {Event} event -Form submit event.
      * @returns {boolean} True if successful, false otherwise.
      */
-    scope.submitPluginForm = function (event) {
+    scope.submitPluginForm = function () {
         viewFrame.setLoaderSteps(1);
 
         let payload = null;

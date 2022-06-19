@@ -20,7 +20,7 @@ function registerInterceptor(httpProvider) {
     httpProvider.interceptors.push('interceptor');
 }
 
-app.factory('toast', ['$window', ToastFactory]);
+app.factory('toast', [ToastFactory]);
 app.factory('logger', LoggerFactory);
 app.factory('interceptor', ['$q', 'logger', HttpInterceptorFactory]);
 

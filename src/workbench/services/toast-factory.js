@@ -103,10 +103,9 @@ function createPopup(level, message) {
 /**
  * Returns the {@link ToastFactory toast factory} singleton.
  *
- * @param {Window} window - The top level window object.
  * @returns {ToastFactory} The toast factory service.
  */
-export default function ToastFactory(window) {
+export default function ToastFactory() {
     return {
         message(level, message) {
             createPopup(level, message);

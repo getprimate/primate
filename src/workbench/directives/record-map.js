@@ -117,9 +117,6 @@ function updateRecordModel(listElement, model) {
  * @returns {boolean} True if handled, false otherwise.
  */
 function RecordModelWatcher(current, previous) {
-    console.log('Current:', JSON.stringify(current));
-    console.log('Previous:', JSON.stringify(previous));
-
     clearRecordItems(this._recordElement);
 
     if (!_.isObject(current)) {
