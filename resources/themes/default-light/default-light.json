@@ -38,6 +38,7 @@
   "header": {
     "default-bg": "#FFFFFF",
     "default-fg": "#434343",
+    "primary-fg": "#434343",
     "border-size": "1px",
     "border-fg": "#dfdfdf"
   },
