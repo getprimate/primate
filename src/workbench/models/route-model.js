@@ -25,7 +25,7 @@ const RouteModel = {
     methods: [],
     hosts: [],
     paths: [],
-    headers: [],
+    headers: {},
     https_redirect_status_code: '426',
     regex_priority: 0,
     strip_path: true,
