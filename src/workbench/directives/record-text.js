@@ -7,6 +7,8 @@
 
 'use strict';
 
+import * as _ from '../lib/core-toolkit.js';
+
 /**
  * Provides a callback for record model watcher.
  *
@@ -14,6 +16,7 @@
  * Allways create and instant of this function with
  * the below properties:
  *
+ * @property {Object} _recordScope - The current directive scope.
  * @property {HTMLElement} _recordElement - The text area element.
  *
  * @param {Object} current - The current model object.
@@ -21,7 +24,8 @@
  * @returns {boolean} True if handled, false otherwise.
  */
 function RecordModelWatcher(current, previous) {
-    if (previous === null) {
+    if (_.isNil(current)) {
+        this._recordElement.value = '';
         return false;
     }
 
@@ -77,21 +81,13 @@ function RecordControlWatcher(event) {
     wrapper.firstChild.innerHTML = '';
 
     if (target.nodeName === 'DIV') return false;
-    if (this._recordScope.recordModel === null) this._recordScope.recordModel = {};
 
     const button = target.nodeName === 'BUTTON' ? target : target.parentElement;
 
-    /* Remove individual keys so as to not to trigger the watcher. */
-    if (Array.isArray(this._recordScope.recordModel)) {
-        this._recordScope.recordModel.length = 0;
-    } else {
-        for (let key of Object.keys(this._recordScope.recordModel)) {
-            delete this._recordScope.recordModel[key];
-        }
-    }
-
     if (button.value === 'clear') {
-        this._recordElement.value = JSON.stringify(this._recordScope.recordModel, null, 4);
+        this._recordScope.$apply((scope) => {
+            scope.recordModel = null;
+        });
 
         wrapper.lastChild.classList.remove('success');
         wrapper.lastChild.title = 'Changes applied';
@@ -103,15 +99,9 @@ function RecordControlWatcher(event) {
     if (button.value === 'done') {
         try {
             const parsed = JSON.parse(this._recordElement.value);
-
-            /* Copy individual keys so as to not to trigger the watcher. */
-            for (let key of Object.keys(parsed)) {
-                key = Array.isArray(this._recordScope.recordModel) ? parseInt(key) : key;
-                this._recordScope.recordModel[key] = parsed[key];
-            }
-
-            /* Pretty-print the JSON object back to the text area. */
-            this._recordElement.value = JSON.stringify(parsed, null, 4);
+            this._recordScope.$apply((scope) => {
+                scope.recordModel = parsed;
+            });
         } catch (e) {
             wrapper.firstChild.innerHTML = 'JSON validation failed!';
             return false;
@@ -138,10 +128,6 @@ function RecordControlWatcher(event) {
  * @return {boolean} True if linking successful, false otherwise.
  */
 function link(scope, element, attributes) {
-    if (scope.recordModel === null) {
-        scope.recordModel = {};
-    }
-
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {
@@ -149,20 +135,15 @@ function link(scope, element, attributes) {
         recordControl: parentElement.lastChild
     };
 
-    const recordModelWatcher = RecordModelWatcher.bind({
-        _options: {sanitiseValues: attributes.sanitiseValues === 'true'},
-        _recordElement: childElements.recordElement
-    });
-
-    const clickEventListener = RecordControlWatcher.bind({
+    const context = {
         _recordScope: scope,
-        _recordElement: childElements.recordElement
-    });
-
-    const inputEventListener = RecordElementWatcher.bind({
-        _recordScope: scope,
+        _recordElement: childElements.recordElement,
         _recordControl: childElements.recordControl
-    });
+    };
+
+    const recordModelWatcher = RecordModelWatcher.bind(context);
+    const clickEventListener = RecordControlWatcher.bind(context);
+    const inputEventListener = RecordElementWatcher.bind(context);
 
     scope.$watch('recordModel', recordModelWatcher, false);
 
@@ -177,7 +158,7 @@ function link(scope, element, attributes) {
     });
 }
 
-function RecordMapController(scope) {
+function RecordTextController(scope) {
     scope.isModified = false;
 }
 
@@ -206,7 +187,7 @@ export default function RecordTextDirective() {
         restrict: 'E',
         require: 'ngModel',
         scope: {recordModel: '=ngModel'},
-        controller: ['$scope', RecordMapController],
+        controller: ['$scope', RecordTextController],
         link,
         template
     };
