@@ -210,7 +210,6 @@ function link(scope, element) {
  *
  * Element Properties:
  * - data-ng-model - The model reference. Should be an array.
- * - data-disable-parser - If set, tokens will not be split by comma.
  * - data-placeholder - A placeholder text to be displayed on the text area.
  *
  * @constructor
