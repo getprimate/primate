@@ -77,34 +77,24 @@ function implodeAddress(sources = []) {
 }
 
 /**
- * Creates header name - value map from token list.
+ * Sanitises header name - value map from token list.
  *
- * @param {string[]} tokens - Array of tokens
- * @return {{}} The header name - value map.
+ * @param {Record<string, string>} tokens - Array of tokens
+ * @return {Record<string, [string]>} The header name - value map.
  */
-function createHeaderMap(tokens) {
+function sanitiseHeaderMap(header) {
     const headerMap = {};
 
-    for (let token of tokens) {
-        token = token.trim();
+    for (let key of Object.keys(header)) {
+        let value = header[key];
 
-        let index = token.indexOf(':');
+        key = key.trim().replace(/[^-_a-zA-Z0-9]/g, '-');
 
-        if (index <= 0) {
+        if (key.length === 0) {
             continue;
         }
 
-        let name = token
-            .substring(0, index)
-            .trim()
-            .replace(/[^-_a-zA-Z0-9]/g, '-');
-
-        if (name.length === 0) {
-            continue;
-        }
-
-        let value = index >= token.length - 1 ? '' : token.substring(index + 1);
-        headerMap[name] = _.explode(value, ',');
+        headerMap[key] = _.explode(value, ',');
     }
 
     return headerMap;
@@ -113,21 +103,19 @@ function createHeaderMap(tokens) {
 /**
  * Creates header tokens from name-value map.
  *
- * This function does the reverse of {@link createHeaderMap}.
+ * This function does the reverse of {@link sanitiseHeaderMap}.
  *
- * @param {Object} headers - The header key-value pair.
- * @return {string[]} The token array.
+ * @param {Record<string, [string]>} headers - The header key-value pair.
+ * @return {Record<string, [string]>} The record map.
  */
 function implodeHeaders(headers) {
     const nameList = Object.keys(headers);
-    const tokens = [];
 
     for (let name of nameList) {
-        let values = headers[name];
-        tokens.push(`${name}: ` + (Array.isArray(values) ? values.join(', ') : ''));
+        headers[name] = _.implode(headers[name]);
     }
 
-    return tokens;
+    return headers;
 }
 
 /**
@@ -214,7 +202,7 @@ function buildRouteObject(model) {
                 break;
 
             case 'headers':
-                payload.headers = createHeaderMap(model[field]);
+                payload.headers = sanitiseHeaderMap(model[field]);
                 break;
 
             case 'service':
