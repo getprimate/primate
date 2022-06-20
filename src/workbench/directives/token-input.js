@@ -50,7 +50,6 @@ function detachItemElement(listElement, itemElement) {
     }
 
     itemElement.remove();
-
     return index;
 }
 
@@ -123,6 +122,8 @@ function TokenTextAreaWatcher(event) {
 
         target.value = '';
     }
+
+    return true;
 }
 
 /**
@@ -152,6 +153,8 @@ function TokenListItemWatcher(event) {
 
     const index = detachItemElement(this._listElement, itemNode);
     this._scope.tokenModel.splice(index, 1);
+
+    return true;
 }
 
 /**
