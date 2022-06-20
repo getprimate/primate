@@ -106,9 +106,8 @@ function updateRecordModel(listElement, model) {
 /**
  * Provides a callback for record model watcher.
  *
- * This function should not be used directly.
- * Allways create and instant of this function with
- * the below properties:
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
  *
  * @property {HTMLUListElement} _recordElement - The UL element.
  *
@@ -147,12 +146,10 @@ function RecordModelWatcher(current, previous) {
 /**
  * Provides a callback for click event listener.
  *
- * This function should not be used directly.
- * Allways create and instant of this function with
- * the below properties:
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
  *
- * @property {Object} _recordScope - The current directive scope.
- * @property {Object} _recordScope.recordModel - The model object.
+ * @property {{recordModel: {}}} _recordScope - The current directive scope.
  * @property {HTMLUListElement} _recordElement - The UL element.
  * @property {HTMLElement} _recordControl - The contrl wrapper
  *
@@ -174,12 +171,10 @@ function RecordElementWatcher(event) {
 /**
  * Provides a callback for click event listener.
  *
- * This function should not be used directly.
- * Allways create and instant of this function with
- * the below properties:
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
  *
- * @property {Object} _recordScope - The current directive scope.
- * @property {Object} _recordScope.recordModel - The model object.
+ * @property {{recordModel: {}}} _recordScope - The current directive scope.
  * @property {HTMLUListElement} _recordElement - The UL element.
  *
  * @param {Object} current - The current model object.
@@ -211,11 +206,15 @@ function RecordControlWatcher(event) {
     }
 
     if (button.value === 'done') {
+        if (_.isNil(this._recordScope.recordModel)) {
+            this._recordScope.recordModel = {};
+        }
+
         updateRecordModel(this._recordElement, this._recordScope.recordModel);
         this._recordScope.isModified = false;
 
-        target.classList.remove('success');
-        target.placeholder = 'Changes applied';
+        button.classList.remove('success');
+        button.placeholder = 'Changes applied';
 
         return true;
     }
