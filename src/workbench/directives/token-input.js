@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {explode, isNil, isText, randomHex} from '../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 
 /**
  * Creates LI nodes with token values under the specified UL element.
@@ -21,7 +21,7 @@ function attachItemElements(listElement, tokens = []) {
         let li = document.createElement('li');
 
         li.dataset.displayText = token;
-        li.dataset.identifier = randomHex();
+        li.dataset.identifier = _.randomHex();
         li.innerHTML = `${token} <span class ="material-icons clickable">highlight_off</span>`;
 
         listElement.appendChild(li);
@@ -61,101 +61,136 @@ function detachItemElement(listElement, itemElement) {
  * @return {number} - The number of items removed.
  */
 function clearItemElements(listElement) {
-    const length = 0;
+    let length = 0;
 
     while (listElement.firstChild !== null) {
         listElement.removeChild(listElement.lastChild);
+        length++;
     }
 
     return length;
 }
 
 /**
+ * Updates the UL element if a change in the model array is detected.
+ *
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
+ *
+ * @property {{tokenModel: []}} _scope - The current directive scope.
+ * @property {HTMLUListElement} _listElement - The token list element.
+ *
+ * @param {string[]} current - The current array of tokens.
+ * @param {string[]} previous - The previous array of tokens.
+ * @return {boolean} True if new LI items were added, false otherwise.
+ */
+function TokenModelWatcher(current, previous) {
+    clearItemElements(this._listElement);
+
+    if (!Array.isArray(current) || (_.isNil(previous) && Array.isArray(current))) {
+        return false;
+    }
+
+    attachItemElements(this._listElement, current);
+    return true;
+}
+
+/**
+ * Handles events triggered from the textarea element.
+ *
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
+ *
+ * @property {{tokenModel: []}} _scope - The current directive scope.
+ * @property {Object} _scope.tokenModel - The model object.
+ * @property {HTMLUListElement} _listElement - The token list element.
+ *
+ * @param {Event} event - The event object.
+ */
+function TokenTextAreaWatcher(event) {
+    const {target} = event;
+    event.preventDefault();
+
+    if (event.keyCode === 13) {
+        const value = target.value.trim();
+
+        if (value.length >= 1) {
+            const tokens = this._options.disableParser ? _.explode(value, ',') : [value];
+            const items = attachItemElements(this._listElement, tokens);
+
+            this._scope.tokenModel.push(...items);
+        }
+
+        target.value = '';
+    }
+}
+
+/**
+ * Handles events triggered from the UL element.
+ *
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
+ *
+ * @property {{tokenModel: []}} _scope - The current directive scope.
+ * @property {Object} _scope.tokenModel - The model object.
+ * @property {HTMLUListElement} _listElement - The token list element.
+ *
+ * @param {Event} event - The event object.
+ */
+function TokenListItemWatcher(event) {
+    const {target} = event;
+
+    if (target.nodeName !== 'LI' && target.nodeName !== 'SPAN') {
+        return false;
+    }
+
+    let itemNode = target;
+
+    if (target.nodeName === 'SPAN' && target.classList.contains('clickable')) {
+        itemNode = target.closest('li');
+    }
+
+    const index = detachItemElement(this._listElement, itemNode);
+    this._scope.tokenModel.splice(index, 1);
+}
+
+/**
  * Initializes the token input directive.
  *
- * @param {Object} scope - The injected scope object.
- * @property {string=} scope.tokenList - An array of added tokens
+ * @param {{tokenModel: [string]}} scope - The injected scope object.
  * @param {Object} element - The parent element wrapped as jqLite object.
  * @param {{disableParser?: string, placeholder?: string}} attributes - The element attributes.
  * @return {boolean} True if linking successful, false otherwise.
  */
 function link(scope, element, attributes) {
-    /* Abort linking if the provided ngModel is not an array. */
-    if (!Array.isArray(scope.tokenList)) {
-        return false;
-    }
-
     /** @type HTMLElement */
     const parentElement = element[0];
-    const childElements = {};
-
-    childElements.textElement = parentElement.querySelector('textarea.token-input__text');
-    childElements.listElement = parentElement.querySelector('ul.token-input__list');
-
-    /**
-     * Updates the UL element if a change in the model array is detected.
-     *
-     * @param {string[]} current - The current array of tokens.
-     * @param {string[]} previous - The previous array of tokens.
-     * @return {boolean} True if new LI items were added, false otherwise.
-     */
-    const onTokenListUpdated = (current, previous) => {
-        clearItemElements(childElements.listElement);
-
-        if (!Array.isArray(current) || current.length === 0) {
-            return false;
-        }
-
-        if (!Array.isArray(previous) || current.length !== previous.length) {
-            attachItemElements(childElements.listElement, current);
-        }
-
-        return true;
+    const childElements = {
+        textElement: parentElement.firstChild,
+        listElement: parentElement.lastChild
     };
+
+    const context = {
+        _scope: scope,
+        _options: {disableParser: _.isDefined(attributes.disableParser)},
+        _textElement: childElements.textElement,
+        _listElement: childElements.listElement
+    };
+
+    const tokenModelWatcher = TokenModelWatcher.bind(context);
+    const keyupEventListener = TokenTextAreaWatcher.bind(context);
+    const clickEventListsner = TokenListItemWatcher.bind(context);
 
     parentElement.classList.add('token-input');
 
-    childElements.textElement.placeholder = isText(attributes.placeholder)
+    childElements.textElement.placeholder = _.isText(attributes.placeholder)
         ? attributes.placeholder
         : 'Type and press enter...';
 
-    childElements.textElement.addEventListener('keyup', (event) => {
-        event.preventDefault();
+    scope.$watch('tokenModel', tokenModelWatcher, false);
 
-        const {target} = event;
-
-        if (event.keyCode === 13) {
-            let value = target.value.trim();
-
-            if (value.length >= 1) {
-                const tokens = isNil(attributes.disableParser) ? explode(value, ',') : [value];
-                const items = attachItemElements(childElements.listElement, tokens);
-
-                scope.tokenList.push(...items);
-            }
-
-            target.value = '';
-        }
-    });
-
-    childElements.listElement.addEventListener('click', (event) => {
-        const {target} = event;
-
-        if (target.nodeName !== 'LI' && target.nodeName !== 'SPAN') {
-            return false;
-        }
-
-        let itemNode = target;
-
-        if (target.nodeName === 'SPAN' && target.classList.contains('clickable')) {
-            itemNode = target.closest('li');
-        }
-
-        const index = detachItemElement(childElements.listElement, itemNode);
-        scope.tokenList.splice(index, 1);
-    });
-
-    scope.$watch('tokenList', onTokenListUpdated, false);
+    childElements.textElement.addEventListener('keyup', keyupEventListener);
+    childElements.listElement.addEventListener('click', clickEventListsner);
 
     scope.$on('$destroy', () => {
         clearItemElements(childElements.listElement);
@@ -191,7 +226,7 @@ export default function TokenInputDirective() {
         transclude: false,
         restrict: 'E',
         require: 'ngModel',
-        scope: {tokenList: '=ngModel'},
+        scope: {tokenModel: '=ngModel'},
         link,
         template
     };
