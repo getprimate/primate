@@ -132,6 +132,11 @@ export function DashboardTemplate(routeProvider) {
             controller: 'PluginEditController'
         });
 
+    routeProvider.when('/release-info/:version', {
+        controller: 'ReleaseInfoController',
+        templateUrl: 'static/views/release-info.html'
+    });
+
     routeProvider.otherwise({
         templateUrl: 'static/views/overview.html',
         controller: 'OverviewController'
