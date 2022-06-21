@@ -7,6 +7,11 @@
 
 'use strict';
 
+import {greaterThan} from '../lib/version-utils.js';
+import {FetchReleaseInfo} from '../helpers/release-repo.js';
+
+const {document, appBridge} = window;
+
 /**
  * Provides controller constructor for footer view.
  *
@@ -17,10 +22,11 @@
  * @param {ToastFactory} toast - custom toast message service
  * @param {LoggerFactory} logger - custom logger factory
  */
-export default function FooterController(scope, http, viewFrame, toast, logger) {
+export default function FooterController(scope, restClient, viewFrame, toast, logger) {
     const {document} = window;
 
     const footerMain = document.getElementById('mainFooter');
+    const fetchReleaseInfo = FetchReleaseInfo.bind({_restClient: restClient});
 
     scope.appVersion = window.appBridge.getVersion();
     scope.frameState = viewFrame.getState();
@@ -45,5 +51,24 @@ export default function FooterController(scope, http, viewFrame, toast, logger) 
         }
     };
 
-    /* TODO : CHECK FOR UPDATE EVENT SHOULD BE TRIGGERED FROM MAIN PROCESS USING IPC... Show message on footer */
+    const release = fetchReleaseInfo('latest');
+
+    release.then(({releaseIndex}) => {
+        if (!greaterThan(releaseIndex.latest.stable, appBridge.getVersion())) {
+            return false;
+        }
+        const baseMenu = document.getElementById('index__ftBase').firstElementChild;
+        const anchor = document.createElement('a');
+
+        anchor.href = '#!/release-info/latest';
+        anchor.innerHTML = '<span class="material-icons">browser_updated</span>&nbsp;Update available';
+
+        baseMenu.firstElementChild.appendChild(anchor);
+
+        return true;
+    });
+
+    release.catch(() => {
+        /* Simply ignore the error. */
+    });
 }
