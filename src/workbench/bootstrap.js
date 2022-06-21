@@ -15,6 +15,7 @@ import ThemeEngine from './interface/theme-engine.js';
 import SidebarController from './controllers/sidebar.js';
 import HeaderController from './controllers/header.js';
 import GenericBootstrap from './controllers/generic-bootstrap.js';
+import ReleaseInfoController from './controllers/release-info.js';
 import ClientSetupController from './controllers/client-setup.js';
 
 import {BootstrapTemplate} from './template.js';
@@ -28,6 +29,8 @@ const {
     ipcBridge,
     document
 } = window;
+
+console.log(typeof window.ipcBridge, ' ', window.appBridge.getVersion());
 
 /**
  * Attaches application wide event listeners.
@@ -107,7 +110,8 @@ Primate.config(BootstrapTemplate, '$route');
 Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(GenericBootstrap, '$location', 'viewFrame');
-Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(ReleaseInfoController, '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.onReady(attachEventListeners);
 
