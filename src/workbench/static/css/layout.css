@@ -1718,7 +1718,7 @@ table.card-table .hero-placeholder .material-icons.hero {
 .material-icons.md-17 { font-size: 17px !important; }
 
 .label { color: #ffffff; }
-.label.default { background-color: var(--std__default); }
+.label.default { background-color: var(--primary-tc); }
 .label.success { background-color: var(--std__success); }
 .label.info { background-color: var(--std__info); }
 .label.critical { background-color: var(--std__critical); }
@@ -1929,6 +1929,47 @@ canvas#chart_ServerStat {
 canvas#chart_TimerStat {
     height: 220px;
     max-height: 230px;
+}
+
+.letterpad {
+    display: block;
+    margin-bottom: 20px;
+    color: var(--primary-fg);
+}
+
+.letterpad h1,
+.letterpad h2,
+.letterpad h3,
+.letterpad h4,
+.letterpad h5,
+.letterpad h6 {
+    margin: 5px 0;
+    font-weight: 400;
+    color: var(--default-fg);
+}
+
+.letterpad > h1 {
+    font-size: 2.4rem;
+    border-bottom: 1px solid var(--default-fg);
+    padding-bottom: 10px;
+}
+
+.letterpad ul {
+    margin: 0;
+    padding: 0;
+}
+
+.letterpad li {
+    display: block;
+    padding: 3px 0;
+}
+
+.letterpad li > a {
+    font-weight: normal;
+}
+
+.letterpad li > strong {
+    font-weight: 500;
 }
 
 /**

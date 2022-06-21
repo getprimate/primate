@@ -1,47 +1,101 @@
 <div class="container">
 <div class="row">
     <div class="col md-7">
-        <div class="well">
-            <div class="well__heading">What's New</div>
-            <table class="data-table">
-                <tbody>
-                    <tr>
-                        <td><span class="material-icons success">check_circle</span></td>
-                        <td>Supports Kong Admin API v2.7.x</td>
-                    </tr>
+        <article class="letterpad">
+            <h1>Version {{releaseModel.version}} - {{releaseModel.publishedAt}}</h1>
+            <p>Welcome to the release notes of Primate desktop application.</p>
+            <ul>
+                <li><a target="_blank" href="https://github.com/getprimate/primate/releases">View Releases</a></li>
+                <li><a target="_blank" href="https://github.com/getprimate/primate/blob/main/CHANGELOG.md">See Changelog</a></li>
+            </ul>
+        </article><!-- .letterpad -->
 
-                    <tr>
-                        <td><span class="material-icons success">check_circle</span></td>
-                        <td>Supports UI customizations with themes.
-                            <br />- Themes can be placed in <i>/&lt;app-data&gt;/Primate/User-Themes</i> directory.
-                        </td>
-                    </tr>
+        <article class="letterpad">
+            <h2>Kong Admin API Compatibility</h2>
+            <p>This release works with the Kong Admin API versions below:</p>
+            <p><span data-ng-repeat="version in releaseModel.adminAPIList" class="label default">{{version}}</span></p>
+        </article><!-- .letterpad -->
 
-                    <tr>
-                        <td><span class="material-icons success">check_circle</span></td>
-                        <td>Stores multiple connections in history.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div><!-- .well -->
-    </div><!-- .col.md-4 -->
+        <article class="letterpad">
+            <h2>What's New</h2>
+            <ul data-ng-repeat="feature in releaseModel.releaseNotes.features">
+                <li><strong>{{feature.primaryText}}</strong></li>
+                <li data-ng-repeat="text in feature.description">- {{text}}</li>
+            </ul>
+        </article>
+
+        <article class="letterpad">
+            <h2>Improvements</h2>
+            <ul data-ng-repeat="upgrade in releaseModel.releaseNotes.upgrades">
+                <li><strong>{{upgrade.primaryText}}</strong></li>
+                <li data-ng-repeat="text in upgrade.description">- {{text}}</li>
+            </ul>
+        </article>
+
+        <article class="letterpad">
+            <h2>Bugfixes</h2>
+            <ul data-ng-repeat="bugfix in releaseModel.releaseNotes.bugfixes">
+                <li><strong>{{bugfix.primaryText}}</strong></li>
+                <li data-ng-repeat="text in bugfix.description">- {{text}}</li>
+            </ul>
+        </article>
+
+        <article data-ng-if="releaseModel.contributors && releaseModel.contributors.length >= 1" class="letterpad">
+            <h2>Contributors</h2>
+            <ul data-ng-repeat="contrib in releaseModel.contributors">
+                <li><a target="_blank" href="{{contrib.profileLink}}">@{{contrib.username}} ({{contrib.fullname}})</a> - {{contrib.description}}</li>
+            </ul>
+        </article>
+    </div><!-- .col.md-7 -->
+
     <div class="col md-5">
-        <div class="well">
-            <div class="well__heading">Improvements + Bugfixes</div>
-            <table class="data-table">
-                <tbody>
-                    <tr>
-                        <td><span class="material-icons success">upgrade</span></td>
-                        <td>Electron to version 19.x.x</td>
-                    </tr>
+    <article class="letterpad">
+    <table class="card-table collapsed">
+        <tbody class="info-placeholder">
+        <tr>
+            <td style="width: 150px;">Latest version: </td> 
+            <td><a href="#!/release-info/latest">{{upgradedVersion}}</a></td>
+            <td class="align-right">&nbsp;<span data-ng-if="upgradeLink" class="label default"><a target="_blank" href="{{upgradeLink}}">Download</a></span></td>
+        </tr>
+        <tr>
+            <td>Installed version: </td>
+            <td colspan="2"><a href="#!/release-info/current">{{installedVersion}}</a></td>
+        </tr>
+        </tbody>
+    </table>
+    </article>
 
-                    <tr>
-                        <td><span class="material-icons success">bug_report</span></td>
-                        <td>Fixed host configuration issue in settings view.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div><!-- .well -->
-    </div><!-- .col.md-4 -->
-</div><!-- .row -->
+    <article class="letterpad">
+    <h3>Summary</h3>
+    <div class="well">
+        <div class="well__heading">What's New</div>
+        <table class="data-table">
+            <tbody>
+                <tr data-ng-repeat="feature in releaseModel.releaseNotes.features">
+                    <td><span class="material-icons success">check_circle</span></td>
+                    <td>{{feature.primaryText}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- .well -->
+
+    <div class="well">
+        <div class="well__heading">Improvements + Bugfixes</div>
+        <table class="data-table">
+            <tbody>
+                <tr data-ng-repeat="upgrade in releaseModel.releaseNotes.upgrades">
+                    <td><span class="material-icons success">upgrade</span></td>
+                    <td>{{upgrade.primaryText}}</td>
+                </tr>
+
+                <tr data-ng-repeat="bugfix in releaseModel.releaseNotes.bugfixes">
+                    <td><span class="material-icons success">bug_report</span></td>
+                    <td>{{bugfix.primaryText}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!-- .well -->
+    </article>
+    </div><!-- .col.md-5 -->
+</div><!-- . row -->
 </div><!-- .container -->
