@@ -65,16 +65,16 @@
             </div><!-- .activity-window -->
         </section><!-- .footer__window -->
 
-        <section id="index__ftBase" class="footer__base"><form>
+        <section id="index__ftBase" class="footer__base">
             <ul class="base-menu">
-                <li><span class="material-icons">browser_updated</span> Update available v1.1.0</li>
-                <li><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> 
-                    <label for="chk_ToggleLog" title="Toggle activity log"><span class="material-icons">terminal</span> Toggle Activity Log</label> 
+                <li></li>
+                <li><form><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> 
+                    <label for="chk_ToggleLog" title="Toggle activity log"><span class="material-icons">terminal</span> Toggle Activity Log</label></form> 
                 </li>
                 <li title="Kong Admin API version"><span class="material-icons">api</span> Kong API: v{{frameState.kongVersion}}</li>
                 <li title="Kong Admin API database"><span class="material-icons">storage</span> {{frameState.kongDatabase}}</li>
             </ul>
-        </form></section>
+        </section>
     </footer>
     <section id="mainLayout" data-ng-view="">Loading...</section>
 </main><!-- #mainWrapper -->
