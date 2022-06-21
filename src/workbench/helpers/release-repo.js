@@ -10,7 +10,7 @@
 const repository = 'https://raw.githubusercontent.com/getprimate/release-info/main';
 
 /**
- * Retrieves version ifo from the repository.
+ * Retrieves version information from the repository.
  *
  * This function should not be called directly.
  * Allways create a bound function with the below context:
@@ -22,10 +22,10 @@ const repository = 'https://raw.githubusercontent.com/getprimate/release-info/ma
  */
 export async function FetchReleaseInfo(version) {
     const options = {method: 'GET', headers: {}, url: `${repository}/index.json`};
+    const {data: releaseIndex} = await this._restClient.request(options);
 
     if (version === 'latest') {
-        const {data: index} = await this._restClient.request(options);
-        options.url = `${repository}/versions/v${index.latest.stable}.json`;
+        options.url = `${repository}/versions/v${releaseIndex.latest.stable}.json`;
         //
     } else if (version === 'current') {
         const current = appBridge.getVersion();
@@ -35,6 +35,6 @@ export async function FetchReleaseInfo(version) {
         options.url = `${repository}/versions/v${version}.json`;
     }
 
-    const {data: release} = await this._restClient.request(options);
-    return release;
+    const {data: releaseInfo} = await this._restClient.request(options);
+    return {releaseIndex, releaseInfo};
 }
