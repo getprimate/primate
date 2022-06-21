@@ -19,8 +19,10 @@
  */
 export default function FooterController(scope, http, viewFrame, toast, logger) {
     const {document} = window;
+
     const footerMain = document.getElementById('mainFooter');
 
+    scope.appVersion = window.appBridge.getVersion();
     scope.frameState = viewFrame.getState();
     scope.frameConfig = viewFrame.getFrameConfig();
 
