@@ -158,8 +158,8 @@ export function BootstrapTemplate(routeProvider) {
         templateUrl: 'static/views/welcome-intro.html'
     });
 
-    routeProvider.when('/release-note', {
-        controller: 'GenericBootstrap',
-        templateUrl: 'static/views/release-note.html'
+    routeProvider.when('/release-info/:version', {
+        controller: 'ReleaseInfoController',
+        templateUrl: 'static/views/release-info.html'
     });
 }
