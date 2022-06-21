@@ -35,6 +35,12 @@ const menuTemplate = [
         label: 'Help',
         submenu: [
             {
+                label: 'Release Notes',
+                click: (menuItem, browserWindow) => {
+                    browserWindow.webContents.send('workbench:AsyncEventPush', 'Open-Release-Info');
+                }
+            },
+            {
                 label: 'GitHub Repository',
                 click: () => {
                     electronShell.openExternal('https://github.com/getprimate/primate').catch(() => {});
