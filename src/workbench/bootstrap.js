@@ -105,6 +105,14 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
     Primate.start();
 });
 
+ipcBridge.onEventPush('Open-Settings-View', () => {
+    window.location.href = '#!/';
+});
+
+ipcBridge.onEventPush('Open-Release-Info', () => {
+    window.location.href = '#!/release-info/current';
+});
+
 Primate.config(BootstrapTemplate, '$route');
 
 Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
