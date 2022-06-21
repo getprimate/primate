@@ -36,6 +36,7 @@ import ConsumerEditController from './controllers/consumer-edit.js';
 import PluginListController from './controllers/plugin-list.js';
 import PluginEditController from './controllers/plugin-edit.js';
 import SettingsController from './controllers/settings.js';
+import ReleaseInfoController from './controllers/release-info.js';
 
 import {DashboardTemplate} from './template.js';
 import RouteListController from './controllers/route-list.js';
@@ -120,10 +121,6 @@ function attachEventListeners(rootScope, viewFrame, logger) {
     });
 }
 
-ipcBridge.onEventPush('Open-Settings-View', () => {
-    window.location.href = '#!/settings';
-});
-
 ipcBridge.onResponse('Read-Theme-Style', (style) => {
     if (isObject(style) && isNil(style.error)) {
         let themeEngine = new ThemeEngine();
@@ -165,6 +162,14 @@ ipcBridge.onResponse('Read-Session-Connection', (connection) => {
     return attemptStart();
 });
 
+ipcBridge.onEventPush('Open-Settings-View', () => {
+    window.location.href = '#!/settings';
+});
+
+ipcBridge.onEventPush('Open-Release-Info', () => {
+    window.location.href = '#!/release-info/current';
+});
+
 Primate.directive(TokenInputDirective);
 Primate.directive(MultiCheckDirective);
 Primate.directive(ClipboardTextDirective);
@@ -174,7 +179,7 @@ Primate.directive(RecordTextDirective);
 /* Register sidebar, header and footer controllers. */
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
-Primate.controller(FooterController, '$http', 'viewFrame', 'toast', 'logger');
+Primate.controller(FooterController, 'restClient', 'viewFrame', 'toast', 'logger');
 
 /* Register node details controllers. */
 Primate.controller(OverviewController, 'restClient', 'viewFrame', 'toast');
@@ -182,33 +187,29 @@ Primate.controller(NodeConfigController, 'restClient', 'viewFrame', 'toast');
 
 /* Register object handler controllers. */
 Primate.controller(TagSearchController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
 
+Primate.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
 Primate.controller(RouteListController, 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
 Primate.controller(CertificateListController, 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(CertificateEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(TrustedCAEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(UpstreamListController, 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(UpstreamEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(ConsumerListController, 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
 
 Primate.controller(PluginListController, 'restClient', 'viewFrame', 'toast');
-
 Primate.controller(PluginEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(SettingsController, 'restClient', 'viewFrame', 'toast');
+
+Primate.controller(ReleaseInfoController, '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.config(DashboardTemplate, '$route');
 
