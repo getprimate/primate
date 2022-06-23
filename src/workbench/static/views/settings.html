@@ -144,7 +144,23 @@
 </div><!-- .col.md-8 -->
 
 <div class="col md-4 sm-12">
-&nbsp;
+    <div class="well">
+        <div class="well__heading">Updates
+            <div data-ng-if="downloadLink.length >= 5" class="pull-right"><a target="_blank" title="Open Link in Browser" href="{{downloadLink}}"><span class="material-icons">system_update_alt</span> Download</a></div>
+        </div><!-- .well__heading -->
+
+        <table class="data-table">
+            <tr>
+                <td>Installed Version</td>
+                <td class="align-right">{{installedVersion}}</td>
+            </tr>
+
+            <tr>
+                <td>Latest Version</td>
+                <td class="align-right">{{latestVersion}}</td>
+            </tr>
+        </table>
+    </div><!-- .well -->
 </div><!-- .col.md-4 -->
 </div><!-- .row -->
 </div><!-- .container -->

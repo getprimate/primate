@@ -8,16 +8,20 @@
 'use strict';
 
 import {deepClone, isText, isObject, isDefined} from '../lib/core-toolkit.js';
-import {switchTabInitiator} from '../helpers/notebook.js';
+import {greaterThan} from '../lib/version-utils.js';
 import {epochToDate} from '../helpers/date-lib.js';
+import {switchTabInitiator} from '../helpers/notebook.js';
+import {FetchReleaseInfo} from '../helpers/release-repo.js';
 import setupModel from '../models/setup-model.js';
 
 /**
- * IPC functions exposed over the isolated context.
- *
- * @type {IPCBridge}
+ * Functions exposed over the isolated context.
  */
-const ipcBridge = window.ipcBridge;
+const {
+    /** @type {IPCBridge} */
+    appBridge,
+    ipcBridge
+} = window;
 
 /**
  * Provides controller constructor for setting up the application.
@@ -29,11 +33,18 @@ const ipcBridge = window.ipcBridge;
  * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function SettingsController(scope, restClient, viewFrame, toast) {
+    const fetchReleaseInfo = FetchReleaseInfo.bind({_restClient: restClient});
+    const request = fetchReleaseInfo('latest');
+
     scope.ENUM_DATE_FORMAT = [
         {nodeValue: 'en-US', displayText: '01/31/2022'},
         {nodeValue: 'en-IN', displayText: '31/01/2022'},
         {nodeValue: 'standard', displayText: 'Mon Jan 31 2022'}
     ];
+
+    scope.installedVersion = appBridge.getVersion();
+    scope.latestVersion = 'Checking...';
+    scope.downloadLink = '';
 
     scope.connectionId = viewFrame.getConfig('sessionId');
     scope.connectionModel = deepClone(setupModel);
@@ -125,6 +136,24 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         return true;
     };
+
+    request.then(({releaseIndex}) => {
+        const isAvailable = greaterThan(releaseIndex.latest.stable, scope.installedVersion);
+
+        if (isAvailable) toast.info(`New version ${releaseIndex.latest.stable} available.`);
+
+        scope.$apply((scope_) => {
+            scope_.latestVersion = releaseIndex.latest.stable;
+
+            if (isAvailable) {
+                scope_.downloadLink = 'https://www.getprimate.xyz/download';
+            }
+        });
+    });
+
+    request.catch(() => {
+        toast.warning('Unable to check for updates.');
+    });
 
     /**
      * Handles switch-tab events.

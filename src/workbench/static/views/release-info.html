@@ -5,8 +5,8 @@
             <h1>Version {{releaseModel.version}} - {{releaseModel.publishedAt}}</h1>
             <p>Welcome to the release notes of Primate desktop application.</p>
             <ul>
-                <li><a target="_blank" href="https://github.com/getprimate/primate/releases">View Releases</a></li>
-                <li><a target="_blank" href="https://github.com/getprimate/primate/blob/main/CHANGELOG.md">See Changelog</a></li>
+                <li><a target="_blank" href="https://github.com/getprimate/primate/releases" title="Open Link in Browser">View Releases</a></li>
+                <li><a target="_blank" href="https://github.com/getprimate/primate/blob/main/CHANGELOG.md" title="Open Link in Browser">See Changelog</a></li>
             </ul>
         </article><!-- .letterpad -->
 
@@ -43,7 +43,7 @@
         <article data-ng-if="releaseModel.contributors && releaseModel.contributors.length >= 1" class="letterpad">
             <h2>Contributors</h2>
             <ul data-ng-repeat="contrib in releaseModel.contributors">
-                <li><a target="_blank" href="{{contrib.profileLink}}">@{{contrib.username}} ({{contrib.fullname}})</a> - {{contrib.description}}</li>
+                <li><a target="_blank" href="{{contrib.profileLink}}" title="Open Link in Browser">@{{contrib.username}} ({{contrib.fullname}})</a> - {{contrib.description}}</li>
             </ul>
         </article>
     </div><!-- .col.md-7 -->
@@ -54,12 +54,12 @@
         <tbody class="info-placeholder">
         <tr>
             <td style="width: 150px;">Latest version: </td> 
-            <td><a href="#!/release-info/latest">{{upgradedVersion}}</a></td>
-            <td class="align-right">&nbsp;<span data-ng-if="upgradeLink" class="label default"><a target="_blank" href="{{upgradeLink}}">Download</a></span></td>
+            <td><a href="#!/release-info/latest" title="View Release Notes">{{upgradedVersion}}</a></td>
+            <td class="align-right">&nbsp;<span data-ng-if="upgradeLink" class="label default"><a target="_blank" href="{{upgradeLink}}" title="Open Link in Browser">Download</a></span></td>
         </tr>
         <tr>
             <td>Installed version: </td>
-            <td colspan="2"><a href="#!/release-info/current">{{installedVersion}}</a></td>
+            <td colspan="2"><a href="#!/release-info/current" title="View Release Notes">{{installedVersion}}</a></td>
         </tr>
         </tbody>
     </table>

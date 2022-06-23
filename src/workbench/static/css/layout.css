@@ -1350,7 +1350,6 @@ form p.metadata { margin: 0; padding-top: 13px; }
 }
 
 .well .well__heading a {
-    color: var(--accent-fg);
     font-size: 1rem;
     vertical-align: middle;
 }
