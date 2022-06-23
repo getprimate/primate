@@ -137,24 +137,6 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         return true;
     };
 
-    request.then(({releaseIndex}) => {
-        const isAvailable = greaterThan(releaseIndex.latest.stable, scope.installedVersion);
-
-        if (isAvailable) toast.info(`New version ${releaseIndex.latest.stable} available.`);
-
-        scope.$apply((scope_) => {
-            scope_.latestVersion = releaseIndex.latest.stable;
-
-            if (isAvailable) {
-                scope_.downloadLink = 'https://www.getprimate.xyz/download';
-            }
-        });
-    });
-
-    request.catch(() => {
-        toast.warning('Unable to check for updates.');
-    });
-
     /**
      * Handles switch-tab events.
      *
@@ -186,6 +168,22 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
         return true;
     };
+
+    request.then(({releaseIndex}) => {
+        const isAvailable = greaterThan(releaseIndex.latest.stable, scope.installedVersion);
+
+        scope.$apply((scope_) => {
+            scope_.latestVersion = releaseIndex.latest.stable;
+
+            if (isAvailable) {
+                scope_.downloadLink = 'https://www.getprimate.xyz/download';
+            }
+        });
+    });
+
+    request.catch(() => {
+        toast.warning('Unable to check for updates.');
+    });
 
     /* Apply workbench config upon Read-Workbench-Config event response. */
     ipcBridge.onResponse('Read-Workbench-Config', (config) => {

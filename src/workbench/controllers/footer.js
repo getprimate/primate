@@ -70,6 +70,7 @@ export default function FooterController(scope, restClient, viewFrame, toast, lo
             event.currentTarget.remove();
         });
 
+        toast.info(`New version ${releaseIndex.latest.stable} available.`);
         return true;
     });
 
