@@ -199,8 +199,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         return scope.attemptConnection({target: {nodeName: '__none__'}});
     };
 
-    /* Populate connection list upon Read-Connection-List event response. */
-    ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
+    scope.updateConnectionList = function (connectionList) {
         const savedItemCount = Object.keys(connectionList).length;
 
         cache.isInitialized = true;
@@ -234,7 +233,10 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             this_.connectionList = connectionList;
             this_.savedItemCount = savedItemCount;
         });
-    });
+    };
+
+    /* Populate connection list upon Read-Connection-List event response. */
+    ipcBridge.onResponse('Read-Connection-List', scope.updateConnectionList);
 
     viewFrame.setTitle('Manage Connections');
 

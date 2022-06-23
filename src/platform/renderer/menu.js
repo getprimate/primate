@@ -8,6 +8,7 @@
 'use strict';
 
 const {shell: electronShell} = require('electron');
+const {showAboutDialog} = require('./about-dialog');
 
 const menuTemplate = [
     {
@@ -58,8 +59,8 @@ const menuTemplate = [
             },
             {
                 label: 'About Primate',
-                click: () => {
-                    electronShell.openExternal('https://www.getprimate.xyz').catch(() => {});
+                click: (menuItem, browserWindow) => {
+                    showAboutDialog(browserWindow);
                 }
             }
         ]
