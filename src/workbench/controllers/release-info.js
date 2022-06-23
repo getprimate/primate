@@ -32,8 +32,6 @@ export default function ReleaseInfoController(scope, routeParams, restClient, vi
     const request = fetchReleaseInfo(routeParams.version);
 
     request.then(({releaseIndex, releaseInfo}) => {
-        console.log(JSON.stringify(releaseIndex, null, 4), JSON.stringify(releaseInfo, null, 4));
-
         if (Array.isArray(releaseIndex.contributors) && Array.isArray(releaseInfo.contributors)) {
             releaseInfo.contributors = releaseIndex.contributors.concat(releaseInfo.contributors);
         }
