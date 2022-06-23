@@ -40,14 +40,15 @@ const menuTemplate = [
                     browserWindow.webContents.send('workbench:AsyncEventPush', 'Open-Release-Info');
                 }
             },
+            {type: 'separator'},
             {
-                label: 'GitHub Repository',
+                label: 'View on GitHub',
                 click: () => {
                     electronShell.openExternal('https://github.com/getprimate/primate').catch(() => {});
                 }
             },
             {
-                label: 'Report Issues',
+                label: 'Report an Issue',
                 click: () => {
                     electronShell.openExternal('https://github.com/getprimate/primate/issues').catch(() => {});
                 }

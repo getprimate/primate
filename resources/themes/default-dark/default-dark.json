@@ -45,7 +45,7 @@
 
   "footer": {
     "default-bg": "#121418",
-    "default-fg": "#FFFFFF",
+    "default-fg": "#8993a4",
     "widget-bg": "#121418",
     "border-size": "1px",
     "border-fg": "#0C0C0C"

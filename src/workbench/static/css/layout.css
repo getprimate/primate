@@ -938,29 +938,41 @@ footer#mainFooter {
 }
 
 footer#mainFooter .footer__base {
-    padding: 2px 20px;
+    padding: 0 20px;
+    height: 25px;
 }
 
-footer#mainFooter .footer__base form {
-    display: block;
-    margin: 0;
-    padding: 0;
-}
-
-footer#mainFooter .footer__base ul.base-menu {
+footer#mainFooter ul.base-menu {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-end;
+    align-items: center;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
-footer#mainFooter .footer__base ul.base-menu > li {
+footer#mainFooter ul.base-menu > li {
     display: inline-block;
-    padding: 0 0 0 25px;
-    line-height: 22px;
-    vertical-align: middle;
+    height: 100%;
+    margin: 0 8px;
+    line-height: 23px;
+}
+
+footer#mainFooter ul.base-menu > li:last-child {
+    margin-right: 0;
+}
+
+footer#mainFooter form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+footer#mainFooter ul.base-menu a {
+    font-weight: normal;
+    font-size: inherit;
 }
 
 footer#mainFooter .footer__window {
@@ -1032,8 +1044,8 @@ footer#mainFooter .footer__window .activity-log ul li > span.log-error {
 }
 
 footer#mainFooter span.material-icons {
-    font-size: 1rem;
-    vertical-align: sub;
+    font-size: 0.9rem;
+    vertical-align: -2px;
 }
 
 input[type="checkbox"]#chk_ToggleLog + label {
@@ -1041,13 +1053,12 @@ input[type="checkbox"]#chk_ToggleLog + label {
     height: 100%;
     background: transparent none;
     cursor: pointer;
-    border-radius: 5px;
+    margin: 0 -8px;
     padding: 0 8px;
-    color: var(--accent-bg);
 }
 
 input[type="checkbox"]#chk_ToggleLog + label:hover {
-    background-color: var(--default-bg);
+    background-color: var(--primary-tc);
 }
 
 form {

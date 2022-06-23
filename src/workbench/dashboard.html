@@ -40,7 +40,7 @@
 <main id="mainWrapper">
     <header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
         <div class="navigate" data-ng-if="frameState.routeNext.length >= 1">
-            <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
+            <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous Page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
         </div>
 
         <ul data-ng-show="frameConfig.showBreadcrumbs === true" class="breadcrumbs">
@@ -69,10 +69,10 @@
             <ul class="base-menu">
                 <li></li>
                 <li><form><input type="checkbox" id="chk_ToggleLog" class="hidden" name="toggleLogger" data-ng-click="toggleActivityLog($event)"> 
-                    <label for="chk_ToggleLog" title="Toggle activity log"><span class="material-icons">terminal</span> Toggle Activity Log</label></form> 
+                    <label for="chk_ToggleLog" title="Toggle Activity Log"><span class="material-icons">terminal</span> Activity Log</label></form> 
                 </li>
-                <li title="Kong Admin API version"><span class="material-icons">api</span> Kong API: v{{frameState.kongVersion}}</li>
-                <li title="Kong Admin API database"><span class="material-icons">storage</span> {{frameState.kongDatabase}}</li>
+                <li title="Kong Admin API Version">Kong API: v{{frameState.kongVersion}}</li>
+                <li title="Kong Admin API Database"><span class="material-icons">storage</span> {{frameState.kongDatabase}}</li>
             </ul>
         </section>
     </footer>

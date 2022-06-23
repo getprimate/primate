@@ -57,13 +57,18 @@ export default function FooterController(scope, restClient, viewFrame, toast, lo
         if (!greaterThan(releaseIndex.latest.stable, appBridge.getVersion())) {
             return false;
         }
+
         const baseMenu = document.getElementById('index__ftBase').firstElementChild;
         const anchor = document.createElement('a');
 
         anchor.href = '#!/release-info/latest';
-        anchor.innerHTML = '<span class="material-icons">browser_updated</span>&nbsp;Update available';
+        anchor.innerHTML = '<span class="material-icons">browser_updated</span>&nbsp;Update Available';
 
         baseMenu.firstElementChild.appendChild(anchor);
+
+        anchor.addEventListener('click', (event) => {
+            event.currentTarget.remove();
+        });
 
         return true;
     });

@@ -57,5 +57,7 @@ export default function ReleaseInfoController(scope, routeParams, restClient, vi
         scope.upgradedVersion = 'Failed to check.';
     });
 
+    viewFrame.clearBreadcrumbs();
     viewFrame.setTitle(`Release Notes`);
+    viewFrame.addBreadcrumb('#!/release-info/current', 'Release Notes');
 }
