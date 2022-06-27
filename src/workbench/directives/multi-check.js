@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isObject, /* isText, */ randomHex} from '../lib/core-toolkit.js';
+import {isNil, isObject, /* isText, */ randomHex} from '../lib/core-toolkit.js';
 
 const {document} = window;
 
@@ -94,6 +94,8 @@ function checkSelectedItems(listElement, selected) {
     for (let child of listElement.children) {
         let inputElement = child.querySelector('input[type="checkbox"]');
 
+        if (isNil(inputElement)) break;
+
         if (selected.indexOf(inputElement.value) >= 0) {
             inputElement.checked = true;
         }
@@ -113,6 +115,8 @@ function uncheckAllItems(listElement) {
 
     for (let child of listElement.children) {
         let inputElement = child.querySelector('input[type="checkbox"]');
+
+        if (isNil(inputElement)) break;
 
         if (inputElement.checked === true) {
             counter++;

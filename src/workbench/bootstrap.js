@@ -14,6 +14,7 @@ import ThemeEngine from './interface/theme-engine.js';
 
 import SidebarController from './controllers/sidebar.js';
 import HeaderController from './controllers/header.js';
+import FooterController from './controllers/footer.js';
 import ReleaseInfoController from './controllers/release-info.js';
 import ClientSetupController from './controllers/client-setup.js';
 import WelcomeIntroController from './controllers/welcome-intro.js';
@@ -122,6 +123,7 @@ Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(WelcomeIntroController, '$location', 'viewFrame');
 Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
+Primate.controller(FooterController, 'restClient', 'viewFrame', 'toast', 'logger');
 Primate.controller(ReleaseInfoController, '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.onReady(attachEventListeners);
