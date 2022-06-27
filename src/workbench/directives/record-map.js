@@ -33,9 +33,13 @@ function clearRecordItems(listElement) {
  *
  * @param {string} key - The text to be displayed in the key input box.
  * @param {string} value  - The text to be displayed on the value input box.
+ * @param {{
+ *      keyPlaceholder: string,
+ *      valuePlaceholder: string
+ *      }} - The key and value placeholder texts.
  * @returns {HTMLLIElement} The created LI element.
  */
-function createRecordItem(key = '', value = '') {
+function createRecordItem(key = '', value = '', options) {
     const li = document.createElement('li');
     li.dataset.identifier = _.randomHex();
 
@@ -45,11 +49,11 @@ function createRecordItem(key = '', value = '') {
     keyInput.type = valueInput.type = 'text';
 
     keyInput.value = key;
-    keyInput.placeholder = 'Key';
+    keyInput.placeholder = options.keyPlaceholder;
     keyInput.name = `${li.dataset.identifier}_key`;
 
     valueInput.value = value;
-    keyInput.placeholder = 'Value';
+    valueInput.placeholder = options.valuePlaceholder;
     valueInput.name = `${li.dataset.identifier}_value`;
 
     li.appendChild(keyInput);
@@ -66,11 +70,15 @@ function createRecordItem(key = '', value = '') {
  *
  * @param {HTMLUListElement} listElement - The parent UL element.
  * @param {Object} record - An object containing the key-value pairs.
+ * @param {{
+ *      keyPlaceholder: string,
+ *      valuePlaceholder: string
+ *      }} options - The key and value placeholder texts.
  * @return {Object} The added record object.
  */
-function attachRecordItems(listElement, record) {
+function attachRecordItems(listElement, record, options) {
     for (let key of Object.keys(record)) {
-        let li = createRecordItem(key, record[key]);
+        let li = createRecordItem(key, record[key], options);
         listElement.appendChild(li);
     }
 
@@ -110,6 +118,7 @@ function updateRecordModel(listElement, model) {
  * Allways create a bound function with the below context:
  *
  * @property {HTMLUListElement} _recordElement - The UL element.
+ * @property {Object} _options - Configuration options.
  *
  * @param {Object} current - The current model object.
  * @param {Object} previous  - The previous model object.
@@ -123,7 +132,7 @@ function RecordModelWatcher(current, previous) {
     }
 
     if (Object.keys(current).length === 0) {
-        const li = createRecordItem();
+        const li = createRecordItem('', '', this._options);
         this._recordElement.appendChild(li);
 
         return true;
@@ -139,7 +148,7 @@ function RecordModelWatcher(current, previous) {
         }
     }
 
-    attachRecordItems(this._recordElement, current);
+    attachRecordItems(this._recordElement, current, this._options);
     return true;
 }
 
@@ -152,6 +161,7 @@ function RecordModelWatcher(current, previous) {
  * @property {{recordModel: {}}} _recordScope - The current directive scope.
  * @property {HTMLUListElement} _recordElement - The UL element.
  * @property {HTMLElement} _recordControl - The contrl wrapper
+ * @property {Object} _options - Configuration options.
  *
  * @param {Object} current - The current model object.
  * @param {Object} previous  - The previous model object.
@@ -176,6 +186,7 @@ function RecordElementWatcher(event) {
  *
  * @property {{recordModel: {}}} _recordScope - The current directive scope.
  * @property {HTMLUListElement} _recordElement - The UL element.
+ * @property {Object} _options - Configuration options.
  *
  * @param {Object} current - The current model object.
  * @param {Object} previous  - The previous model object.
@@ -229,7 +240,7 @@ function RecordControlWatcher(event) {
             return false;
         }
 
-        const li = createRecordItem();
+        const li = createRecordItem('', '', this._options);
         this._recordElement.appendChild(li);
 
         if (this._recordScope.isModified === false) {
@@ -266,20 +277,21 @@ function link(scope, element, attributes) {
         recordControl: parentElement.lastChild
     };
 
-    const recordModelWatcher = RecordModelWatcher.bind({
-        _options: {sanitiseValues: attributes.sanitiseValues === 'true'},
-        _recordElement: childElements.recordElement
-    });
+    const options = {
+        sanitiseValues: attributes.sanitiseValues === 'true',
+        keyPlaceholder: _.isText(attributes.keyPlaceholder) ? attributes.keyPlaceholder : 'Key',
+        valuePlaceholder: _.isText(attributes.valuePlaceholder) ? attributes.valuePlaceholder : 'Value'
+    };
 
-    const clickEventListener = RecordControlWatcher.bind({
-        _recordScope: scope,
-        _recordElement: childElements.recordElement
-    });
-
-    const inputEventListener = RecordElementWatcher.bind({
+    const context = {
+        _options: options,
         _recordScope: scope,
         _recordControl: childElements.recordControl
-    });
+    };
+
+    const recordModelWatcher = RecordModelWatcher.bind(context);
+    const clickEventListener = RecordControlWatcher.bind(context);
+    const inputEventListener = RecordElementWatcher.bind(context);
 
     if (_.isText(attributes.headerText)) {
         childElements.headerElement.innerHTML = attributes.headerText;
