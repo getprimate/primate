@@ -16,7 +16,8 @@
             <div class="form__field">
                 <label class="field-label" for="rt-ed__sel02">Service</label>
                 <div data-ng-switch="serviceId" class="field-input">
-                    <select data-ng-switch-when="__none__" class="stretch" id="rt-ed__sel02" name="service" data-ng-model="routeModel.serviceId" data-ng-selected="routeModel.serviceId">
+                    <select data-ng-switch-when="__none__" id="rt-ed__sel02" name="service" data-ng-model="routeModel.service" data-ng-selected="routeModel.service">
+                        <option value="__none__">-- None --</option>
                         <option data-ng-repeat="service in serviceList" value="{{service.id}}">{{service.displayText}}</option>
                     </select><!-- #up-ed__sel01 -->
                     <article data-ng-switch-default>{{serviceId}}</article>
