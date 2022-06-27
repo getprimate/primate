@@ -159,7 +159,7 @@ export function BootstrapTemplate(routeProvider) {
     });
 
     routeProvider.when('/welcome', {
-        controller: 'GenericBootstrap',
+        controller: 'WelcomeIntroController',
         templateUrl: 'static/views/welcome-intro.html'
     });
 

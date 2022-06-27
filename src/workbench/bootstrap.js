@@ -14,9 +14,9 @@ import ThemeEngine from './interface/theme-engine.js';
 
 import SidebarController from './controllers/sidebar.js';
 import HeaderController from './controllers/header.js';
-import GenericBootstrap from './controllers/generic-bootstrap.js';
 import ReleaseInfoController from './controllers/release-info.js';
 import ClientSetupController from './controllers/client-setup.js';
+import WelcomeIntroController from './controllers/welcome-intro.js';
 
 import {BootstrapTemplate} from './template.js';
 
@@ -117,7 +117,7 @@ Primate.config(BootstrapTemplate, '$route');
 
 Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(GenericBootstrap, '$location', 'viewFrame');
+Primate.controller(WelcomeIntroController, '$location', 'viewFrame');
 Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(ReleaseInfoController, '$routeParams', 'restClient', 'viewFrame', 'toast');
 
