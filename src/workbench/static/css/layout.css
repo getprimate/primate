@@ -2377,6 +2377,7 @@ canvas#chart_TimerStat {
     }
 
     aside#sidebarMenu nav.navigation a.navigation__link > span.material-icons {
+        margin-right: 0;
         font-size: 1.75rem;
     }
 

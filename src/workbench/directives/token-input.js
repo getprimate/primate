@@ -114,7 +114,7 @@ function TokenTextAreaWatcher(event) {
         const value = target.value.trim();
 
         if (value.length >= 1) {
-            const tokens = this._options.disableParser ? _.explode(value, ',') : [value];
+            const tokens = this._options.disableParser ? [value] : _.explode(value, ',');
             const items = attachItemElements(this._listElement, tokens);
 
             this._scope.tokenModel.push(...items);
