@@ -14,23 +14,5 @@
     "compile": "grunt compile",
     "dist": "grunt dist",
     "release": "grunt release"
-  },
-  "dependencies": {
-    "semver": "^7.3.7"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
-    "babel-preset-minify": "^0.5.2",
-    "electron": "^19.0.1",
-    "electron-builder": "^23.0.3",
-    "eslint": "^8.16.0",
-    "grunt": "^1.5.3",
-    "grunt-babel": "^8.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "inquirer": "^8.2.4",
-    "load-grunt-tasks": "^5.1.0",
-    "prettier": "^2.6.2",
-    "rimraf": "^3.0.2"
   }
 }
