@@ -45,6 +45,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
 
     scope.caId = '__none__';
     scope.caModel = deepClone(caModel);
+    scope.metadata = {createdAt: ''};
 
     /**
      * Builds CA certificate object from the model and submits the form.
