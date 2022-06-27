@@ -50,6 +50,8 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.connectionModel = deepClone(setupModel);
     scope.connectionList = {};
 
+    scope.credentialModel = {username: '', password: ''};
+
     scope.themeList = [];
     scope.workbenchConfig = {};
 
@@ -91,6 +93,11 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             delete scope.connectionModel.isDefault;
         }
 
+        if (scope.credentialModel.username.length >= 1) {
+            const {credentialModel: credentials} = scope;
+            scope.connectionModel.basicAuth.credentials = btoa(`${credentials.username}:${credentials.password}`);
+        }
+
         ipcBridge.sendRequest('Write-Connection-Config', scope.connectionModel);
 
         if (scope.connectionModel.id === viewFrame.getConfig('sessionId')) {
@@ -110,6 +117,8 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         let {connectionId} = tableRow.dataset;
 
         const tbody = tableRow.parentElement;
+
+        scope.credentialModel.username = scope.credentialModel.password = '';
 
         if (target.nodeName === 'SPAN' && target.classList.contains('delete')) {
             ipcBridge.sendRequest('Write-Connection-Config', {id: connectionId, isRemoved: true});
