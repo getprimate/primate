@@ -1213,6 +1213,7 @@ form ul.field-input.linked {
     justify-content: center;
     align-content: space-around;
     align-items: stretch;
+    max-height: 40px;
     padding: 0;
     background-color: var(--widget-bg);
     border-radius: var(--corner-radius);
@@ -1253,12 +1254,16 @@ form ul.field-input.linked > li:last-child > select {
 form ul.field-input.linked > li:last-child > button {
     border-radius: 0 var(--corner-radius) var(--corner-radius) 0;
     border-left-width: 0;
-    padding: 10px;
+    height: 100%;
 }
 
 form ul.field-input.linked > li > button.default {
     background-color: var(--primary-bg);
     border-color: var(--border-fg);
+}
+
+form ul.field-input.linked span.material-icons {
+    font-size: 1rem;
 }
 
 form .input-control {
