@@ -182,7 +182,7 @@ Primate.directive(RecordTextDirective);
 
 /* Register sidebar, header and footer controllers. */
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(HeaderController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(FooterController, 'restClient', 'viewFrame', 'toast', 'logger');
 
 /* Register node details controllers. */
@@ -193,10 +193,10 @@ Primate.controller(NodeConfigController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(TagSearchController, 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(ServiceListController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(ServiceEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(RouteListController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(RouteEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(CertificateListController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(CertificateEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
@@ -206,7 +206,7 @@ Primate.controller(UpstreamListController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(UpstreamEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(ConsumerListController, 'restClient', 'viewFrame', 'toast');
-Primate.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast', 'logger');
+Primate.controller(ConsumerEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');
 
 Primate.controller(PluginListController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(PluginEditController, '$location', '$routeParams', 'restClient', 'viewFrame', 'toast');

@@ -285,7 +285,7 @@ export default function CertificateEditController(scope, location, routeParams, 
     });
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
+    viewFrame.addBreadcrumb('/certificates', 'Certificates');
 
     switch (routeParams.certId) {
         case '__create__':
@@ -322,7 +322,7 @@ export default function CertificateEditController(scope, location, routeParams, 
                 `/certificates/${scope.certId}`
             );
 
-            viewFrame.addBreadcrumb('#!' + location.path(), simplifyObjectId(response.id));
+            viewFrame.addBreadcrumb(location.path(), simplifyObjectId(response.id));
         });
 
         request.catch(() => {

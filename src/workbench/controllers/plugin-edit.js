@@ -543,7 +543,7 @@ export default function PluginEditController(scope, location, routeParams, restC
     }
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/plugins', 'Plugins');
+    viewFrame.addBreadcrumb('/plugins', 'Plugins');
 
     switch (routeParams.pluginId) {
         case '__create__':

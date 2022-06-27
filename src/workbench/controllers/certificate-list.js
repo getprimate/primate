@@ -153,7 +153,7 @@ export default function CertificateListController(scope, restClient, viewFrame, 
     viewFrame.setTitle('Certificates');
     viewFrame.setLoaderSteps(3);
 
-    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
+    viewFrame.addBreadcrumb('/certificates', 'Certificates');
     viewFrame.addAction('New Certificate', '#!/certificates/__create__');
     viewFrame.addAction('New Trusted CA', '#!/trusted-cas/__create__');
 

@@ -485,7 +485,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
         viewFrame.clearBreadcrumbs();
     }
 
-    viewFrame.addBreadcrumb('#!/services', 'Services');
+    viewFrame.addBreadcrumb('/services', 'Services');
 
     switch (routeParams.serviceId) {
         case '__create__':
@@ -512,7 +512,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             const {id, name} = response;
             refreshServiceModel(scope.serviceModel, response);
 
-            viewFrame.addBreadcrumb(`#!/services/${id}`, isText(name) ? name : simplifyObjectId(id));
+            viewFrame.addBreadcrumb(`/services/${id}`, isText(name) ? name : simplifyObjectId(id));
             viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 

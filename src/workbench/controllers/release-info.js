@@ -57,5 +57,5 @@ export default function ReleaseInfoController(scope, routeParams, restClient, vi
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle(`Release Notes`);
-    viewFrame.addBreadcrumb('#!/release-info/current', 'Release Notes');
+    viewFrame.addBreadcrumb('/release-info/current', 'Release Notes');
 }

@@ -114,7 +114,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Services');
-    viewFrame.addBreadcrumb('#!/services', 'Services');
+    viewFrame.addBreadcrumb('/services', 'Services');
     viewFrame.addAction('New Service', '#!/services/__create__');
 
     scope.fetchServiceList();

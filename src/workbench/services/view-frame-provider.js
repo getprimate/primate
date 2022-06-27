@@ -118,7 +118,9 @@ function buildViewFrameFactory(timeoutFn) {
             }
 
             frameState.breadcrumbs.push({redirect, displayText});
-            frameState.routeNext = frameState.breadcrumbs.length >= 2 ? redirect : '';
+
+            let crumbLen = frameState.breadcrumbs.length;
+            frameState.routeNext = crumbLen >= 2 ? frameState.breadcrumbs[crumbLen - 2]['redirect'] : '';
         },
 
         clearBreadcrumbs() {

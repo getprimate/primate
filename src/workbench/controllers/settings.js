@@ -261,7 +261,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Settings');
-    viewFrame.addBreadcrumb('#!/settings', 'Settings');
+    viewFrame.addBreadcrumb('/settings', 'Settings');
 
     /* Cleanup. */
     scope.$on('$destroy', () => {

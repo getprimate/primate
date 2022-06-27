@@ -40,13 +40,12 @@
 <main id="mainWrapper">
     <header id="mainHeader" class="content__header" data-ng-controller="HeaderController">
         <div class="navigate" data-ng-if="frameState.routeNext.length >= 1">
-            <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous Page" data-ng-click="redirectRoute($event)"><span class="material-icons">arrow_back</span></button>
+            <button class="text" data-redirect="{{frameState.routeNext}}" title="Previous Page" data-ng-click="handleRedirects($event)"><span class="material-icons">arrow_back</span></button>
         </div>
 
-        <ul data-ng-show="frameConfig.showBreadcrumbs === true" class="breadcrumbs">
-           <li data-ng-repeat="crumb in frameState.breadcrumbs track by $index">
-               <a data-ng-if="$index < frameState.breadcrumbs.length - 1" href="{{crumb.redirect}}">{{crumb.displayText}} <span class="material-icons">navigate_next</span></a>
-               <span data-ng-if="$index === frameState.breadcrumbs.length - 1">{{crumb.displayText}}</span>
+        <ul data-ng-show="frameConfig.showBreadcrumbs === true" class="breadcrumbs" data-ng-click="handleRedirects($event)">
+           <li data-ng-repeat="crumb in frameState.breadcrumbs track by $index" data-redirect="{{crumb.redirect}}">{{crumb.displayText}}
+               <span class="material-icons">navigate_next</span>
            </li>
         </ul>
 

@@ -462,7 +462,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
         loaderSteps++;
     }
 
-    viewFrame.addBreadcrumb('#!/routes', 'Routes');
+    viewFrame.addBreadcrumb('/routes', 'Routes');
 
     switch (routeParams.routeId) {
         case '__create__':

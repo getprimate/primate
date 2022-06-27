@@ -186,5 +186,5 @@ export function editViewURL(current, id = '') {
         replaced = `/${replaced}`;
     }
 
-    return `#!${replaced}`;
+    return replaced;
 }

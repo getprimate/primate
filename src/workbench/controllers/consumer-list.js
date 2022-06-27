@@ -72,7 +72,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     });
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/consumers', 'Consumers');
+    viewFrame.addBreadcrumb('/consumers', 'Consumers');
     viewFrame.setTitle('Consumers');
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 

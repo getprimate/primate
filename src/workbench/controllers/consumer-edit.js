@@ -345,7 +345,7 @@ export default function ConsumerEditController(scope, location, routeParams, res
     };
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/consumers', 'Consumers');
+    viewFrame.addBreadcrumb('/consumers', 'Consumers');
 
     switch (routeParams.consumerId) {
         case '__create__':

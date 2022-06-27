@@ -962,6 +962,11 @@ header#mainHeader ul.breadcrumbs li .material-icons {
     font-size: 1.2rem;
 }
 
+    header#mainHeader ul.breadcrumbs li:last-child .material-icons,
+    header#mainHeader ul.breadcrumbs li:only-child .material-icons {
+        display: none;
+    }
+
 header#mainHeader ul.breadcrumbs li > span {
     font-weight: normal;
     color: var(--default-fg);

@@ -73,7 +73,7 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Routes');
-    viewFrame.addBreadcrumb('#!/routes', 'Routes');
+    viewFrame.addBreadcrumb('/routes', 'Routes');
     viewFrame.addAction('New Route', '#!/routes/__create__');
 
     scope.fetchRouteList();

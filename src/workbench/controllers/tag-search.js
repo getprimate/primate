@@ -181,5 +181,5 @@ export default function TagSearchController(scope, restClient, viewFrame, toast)
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Tag Search');
-    viewFrame.addBreadcrumb('#!/tag-search', 'Tag Search');
+    viewFrame.addBreadcrumb('/tag-search', 'Tag Search');
 }

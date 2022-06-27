@@ -225,7 +225,7 @@ export default function OverviewController(scope, restClient, viewFrame, toast) 
 
     viewFrame.clearBreadcrumbs();
     viewFrame.setTitle('Overview');
-    viewFrame.addBreadcrumb('#!/overview', 'Overview');
+    viewFrame.addBreadcrumb('/overview', 'Overview');
 
     scope.fetchServerStatus();
     scope.fetchServerInfo();

@@ -125,7 +125,7 @@ export default function PluginListController(scope, restClient, viewFrame, toast
     viewFrame.setTitle('Plugins');
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('!#/plugins', 'Plugins');
+    viewFrame.addBreadcrumb('/plugins', 'Plugins');
 
     viewFrame.addAction('Apply Plugin', '#!/plugins/__create__');
 

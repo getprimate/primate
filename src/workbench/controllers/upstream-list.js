@@ -69,7 +69,7 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
     viewFrame.setTitle('Upstreams');
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/upstreams', 'Upstreams');
+    viewFrame.addBreadcrumb('/upstreams', 'Upstreams');
 
     viewFrame.addAction('New Upstream', '#!/upstreams/__create__');
 

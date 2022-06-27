@@ -7,6 +7,8 @@
 
 'use strict';
 
+import {isText} from '../lib/core-toolkit.js';
+
 /**
  * Provides controller constructor for handling the header bar.
  *
@@ -26,17 +28,17 @@ export default function HeaderController(scope, restClient, viewFrame, toast) {
      * @param {Event} event - Current DOM event object.
      * @returns {boolean} False if redirect did not happen.
      */
-    scope.redirectRoute = function (event) {
-        const {currentTarget: button} = event;
-        const {redirect} = button.dataset;
+    scope.handleRedirects = function (event) {
+        const {currentTarget: element, target} = event;
+        const {redirect} = isText(target.dataset.redirect) ? target.dataset : element.dataset;
 
         event.preventDefault();
 
-        if (typeof redirect !== 'string' || redirect.length === 0) return false;
+        if (!isText(redirect) || redirect.length === 0) {
+            return false;
+        }
 
-        viewFrame.getNextRoute();
-        window.location.href = redirect;
-
+        window.location.href = redirect.substring(0, 1) === '#!' ? redirect : `#!${redirect}`;
         return true;
     };
 

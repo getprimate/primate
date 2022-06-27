@@ -116,7 +116,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
     };
 
     viewFrame.clearBreadcrumbs();
-    viewFrame.addBreadcrumb('#!/certificates', 'Certificates');
+    viewFrame.addBreadcrumb('/certificates', 'Certificates');
 
     switch (routeParams.caId) {
         case '__create__':

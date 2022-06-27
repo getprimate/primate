@@ -461,7 +461,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         viewFrame.clearBreadcrumbs();
     }
 
-    viewFrame.addBreadcrumb('#!/upstreams', 'Upstreams');
+    viewFrame.addBreadcrumb('/upstreams', 'Upstreams');
 
     switch (routeParams.upstreamId) {
         case '__create__':
