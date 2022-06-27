@@ -50,7 +50,7 @@ const CLIENT_CONFIG = {
     contentType: 'application/json'
 };
 
-function configure(options) {
+function configure(options, external = false) {
     const request = {
         method: options.method,
         url: options.url || CLIENT_CONFIG.host + options.resource,
@@ -68,7 +68,7 @@ function configure(options) {
     if (typeof options.payload === 'object') request.data = options.payload;
     else if (typeof options.data === 'object') request.data = options.data;
 
-    if (typeof CLIENT_CONFIG.authorization === 'string') {
+    if (typeof CLIENT_CONFIG.authorization === 'string' && external === false) {
         request.withCredentials = true;
         request.headers['Authorization'] = CLIENT_CONFIG.authorization;
     }
@@ -79,15 +79,7 @@ function configure(options) {
 
     if (typeof options.headers === 'object') {
         for (let header in options.headers) {
-            switch (header) {
-                case 'Authorization':
-                    request.headers[header] = 'Basic ' + btoa(options.headers[header]);
-                    break;
-
-                default:
-                    request.headers[header] = options.headers[header];
-                    break;
-            }
+            request.headers[header] = options.headers[header];
         }
     }
 
@@ -116,8 +108,8 @@ function configure(options) {
  */
 function buildRESTClientFactory(http) {
     return {
-        request(options) {
-            return http(configure(options));
+        request(options, external = false) {
+            return http(configure(options, external));
         },
 
         get(endpoint) {
@@ -162,15 +154,7 @@ export default function RestClientProvider() {
                 continue;
             }
 
-            switch (name) {
-                case 'authorization':
-                    CLIENT_CONFIG[name] = 'Basic ' + btoa(options[name]);
-                    break;
-
-                default:
-                    CLIENT_CONFIG[name] = options[name];
-                    break;
-            }
+            CLIENT_CONFIG[name] = options[name];
         }
     };
 

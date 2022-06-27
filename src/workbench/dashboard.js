@@ -60,11 +60,13 @@ const responseLocker = {
  * @param {import('./services/view-frame-provider.js').ViewFrameProvider} vfProvider - The view actory provider.
  */
 function finalFactoryInitializer(restProvider, vfProvider) {
-    restProvider.initialize({
-        /* TODO : Include basic auth not provided. */
-        host: responseLocker.host
-    });
+    const options = {host: responseLocker.host};
 
+    if (isObject(responseLocker.basicAuth) && responseLocker.basicAuth.credentials.length >= 2) {
+        options.authorization = responseLocker.basicAuth.credentials;
+    }
+
+    restProvider.initialize(options);
     vfProvider.initialize(responseLocker);
 }
 
@@ -153,6 +155,8 @@ ipcBridge.onResponse('Read-Session-Connection', (connection) => {
     const adminPort = parseNumeric(connection.adminPort, 8001);
 
     responseLocker.host = `${connection.protocol}://${connection.adminHost}:${adminPort}`;
+    responseLocker.basicAuth = connection.basicAuth;
+
     responseLocker.config.sessionId = connection.id;
     responseLocker.config.sessionName = connection.name;
     responseLocker.config.sessionColor = connection.colorCode;

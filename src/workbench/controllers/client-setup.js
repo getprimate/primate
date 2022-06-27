@@ -74,6 +74,8 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
     scope.connectionList = cache.connectionList;
     scope.savedItemCount = cache.savedItemCount;
 
+    scope.credentials = {username: '', password: ''};
+
     /**
      * Attempts to connect to the specified server.
      *
@@ -116,9 +118,11 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         const url = `${setupModel.protocol}://${setupModel.adminHost}:${setupModel.adminPort}`;
         const options = {method: 'GET', headers: {}, url};
 
-        if (scope.setupModel.basicAuth.username.length >= 1) {
-            const {basicAuth} = scope.setupModel;
-            options.headers['Authorization'] = `${basicAuth.username}:${basicAuth.password}`;
+        if (scope.credentials.username.length >= 1) {
+            const {credentials} = scope;
+
+            options.headers['Authorization'] = btoa(`${credentials.username}:${credentials.password}`);
+            scope.setupModel.basicAuth.credentials = options.headers['Authorization'];
         }
 
         const request = restClient.request(options);

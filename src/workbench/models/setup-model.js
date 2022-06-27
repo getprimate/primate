@@ -8,8 +8,7 @@ export default {
     adminPort: 8001,
     colorCode: '#196b13',
     basicAuth: {
-        username: '',
-        password: ''
+        credentials: ''
     },
     isDefault: true,
     createdAt: 0

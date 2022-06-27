@@ -84,10 +84,13 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
          * @param {ViewFrameProvider} vfProvider - The view frame provider.
          */
         const configure = (restProvider, vfProvider) => {
-            restProvider.initialize({
-                /* TODO : Include basic auth not provided. */
-                host: `${connection.protocol}://${connection.adminHost}:${adminPort}`
-            });
+            const options = {host: `${connection.protocol}://${connection.adminHost}:${adminPort}`};
+
+            if (isObject(connection.basicAuth) && connection.basicAuth.credentials.length >= 2) {
+                options.authorization = connection.basicAuth.credentials;
+            }
+
+            restProvider.initialize(options);
 
             vfProvider.initialize({
                 config: {
