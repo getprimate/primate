@@ -527,15 +527,18 @@ export default function PluginEditController(scope, location, routeParams, restC
 
     /* Modify plugin resource endpoint according to the route parameters provided. */
     for (let entity of ['route', 'service', 'consumer']) {
-        let idField = routeParams[`${entity}Id`];
+        let idValue = routeParams[`${entity}Id`];
 
-        if (_.isText(idField)) {
-            ajaxConfig.endpoint = `/${entity}s/${idField}/${ajaxConfig.endpoint}`;
+        if (_.isText(idValue)) {
+            ajaxConfig.endpoint = `/${entity}s/${idValue}${ajaxConfig.endpoint}`;
 
-            scope[`${entity}Id`] = idField;
-            scope.pluginModel[entity] = idField;
+            console.log('EP: ', ajaxConfig.endpoint);
+
+            scope[`${entity}Id`] = idValue;
+            scope.pluginModel[entity] = idValue;
 
             loaderSteps--;
+            break;
         }
     }
 

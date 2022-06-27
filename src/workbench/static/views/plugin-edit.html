@@ -143,11 +143,6 @@
                     <div data-ng-switch-default=""><article>{{fieldProp.type}}</article></div>
                 </div><!-- .col.md-6 | data-ng-switch -->
             </div><!-- .row -->
-
-            <!--div data-ng-if="fieldProp.nodeType_ === 'static-record'">
-                <div><strong>{{fieldName | pgname}}</strong></div>
-                <div data-ng-include="'static/views/plugin-static-record.html'"></div>
-            </div-->
             
             </div><!-- .container.row-wrapper | data-ng-repeat -->
         </div><!-- .mg-bottom-10 -->
@@ -155,6 +150,7 @@
         <div class="panel__split"><span>Plugin Tags</span></div>
         <div class="form__field">
             <div class="field-input"><token-input data-ng-model="pluginModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
+            <div class="field-note">* Press enter key after typing the tags.</div>
         </div><!-- .form__field -->
 
         <div class="row">
