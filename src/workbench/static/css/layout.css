@@ -1883,6 +1883,10 @@ table.card-table.collapsed tr:last-child td {
     padding-bottom: 20px;
 }
 
+table.card-table.collapsed tr:only-child td {
+    padding-bottom: 10px;
+}
+
 table.card-table.collapsed tbody tr:first-child td:first-child {
     border-top-left-radius: var(--corner-radius);
 }
