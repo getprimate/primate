@@ -213,6 +213,9 @@ function RecordControlWatcher(event) {
 
         this._recordScope.isModified = false;
 
+        const li = createRecordItem('', '', this._options);
+        this._recordElement.appendChild(li);
+
         return true;
     }
 
@@ -286,6 +289,7 @@ function link(scope, element, attributes) {
     const context = {
         _options: options,
         _recordScope: scope,
+        _recordElement: childElements.recordElement,
         _recordControl: childElements.recordControl
     };
 
