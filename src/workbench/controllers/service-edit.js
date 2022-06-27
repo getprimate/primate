@@ -108,7 +108,7 @@ function prepareServiceObject(model) {
         delete payload.name;
     }
 
-    delete payload.client_certificate;
+    payload.client_certificate = null;
 
     if (model.client_certificate.length >= 10) {
         payload.client_certificate = {id: model.client_certificate};
