@@ -22,7 +22,7 @@ const repository = 'https://raw.githubusercontent.com/getprimate/release-info/ma
  */
 export async function FetchReleaseInfo(version) {
     const options = {method: 'GET', headers: {}, url: `${repository}/index.json`};
-    const {data: releaseIndex} = await this._restClient.request(options);
+    const {data: releaseIndex} = await this._restClient.request(options, true);
 
     if (version === 'latest') {
         options.url = `${repository}/versions/v${releaseIndex.latest.stable}.json`;
@@ -35,6 +35,6 @@ export async function FetchReleaseInfo(version) {
         options.url = `${repository}/versions/v${version}.json`;
     }
 
-    const {data: releaseInfo} = await this._restClient.request(options);
+    const {data: releaseInfo} = await this._restClient.request(options, true);
     return {releaseIndex, releaseInfo};
 }
