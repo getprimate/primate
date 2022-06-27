@@ -23,13 +23,25 @@ class RendererWindow {
      * @param {Electron.BrowserWindowConstructorOptions} options
      */
     constructor(options) {
+        let pixmap = '512x512.png';
+
         this._window = null;
         this._debug = app.isPackaged === false;
 
-        const icon =
-            'Windows_NT' === os.type()
-                ? path.join(RESOURCES_PATH, 'icons', 'primate-scalable.ico')
-                : nativeImage.createFromPath(path.join(RESOURCES_PATH, 'icons', '512x512.png'));
+        switch (os.type()) {
+            case 'Windows_NT':
+                pixmap = 'app-scalable.ico';
+                break;
+
+            case 'Darwin':
+                pixmap = 'app-scalable.icns';
+                break;
+
+            default:
+                break;
+        }
+
+        const icon = nativeImage.createFromPath(path.join(RESOURCES_PATH, 'icons', pixmap));
 
         this._options = {
             backgroundColor: '#1A242D',
@@ -53,6 +65,10 @@ class RendererWindow {
             if (typeof this._options[field] !== 'undefined') {
                 this._options[field] = optionFields[field];
             }
+        }
+
+        if (os.type() === 'Darwin') {
+            app.dock.setIcon(icon);
         }
     }
 
