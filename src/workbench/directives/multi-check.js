@@ -12,6 +12,23 @@ import {isObject, /* isText, */ randomHex} from '../lib/core-toolkit.js';
 const {document} = window;
 
 /**
+ * Creates a LI node with blank placeholder label.
+ *
+ * @param {HTMLUListElement} listElement - The parent UL element.
+ */
+function attachBlankLabel(listElement) {
+    let itemElement = document.createElement('li');
+    let labelElement = document.createElement('label');
+
+    labelElement.innerHTML = '-- Empty --';
+
+    itemElement.appendChild(labelElement);
+    listElement.appendChild(itemElement);
+
+    return labelElement;
+}
+
+/**
  * Creates LI nodes with token values under the specified UL element.
  *
  * @param {HTMLUListElement} listElement - The parent UL element.
@@ -33,9 +50,6 @@ function attachItemElements(listElement, available, selected = []) {
 
         inputElement.type = 'checkbox';
         inputElement.value = nodeValue;
-
-        /* Disabled because checkbox colour should default to theme accent colour.
-         * inputElement.classList.add(isText(inputClass) ? inputClass : 'success'); */
 
         if (selected.indexOf(nodeValue) >= 0) {
             inputElement.checked = true;
@@ -159,6 +173,7 @@ function link(scope, element) {
         clearItemElements(childElements.listElement);
 
         if (!Array.isArray(current) || current.length === 0) {
+            attachBlankLabel(childElements.listElement);
             return false;
         }
 
