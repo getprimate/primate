@@ -113,6 +113,10 @@ function TokenTextAreaWatcher(event) {
     if (event.keyCode === 13) {
         const value = target.value.trim();
 
+        if (_.isNil(this._scope.tokenModel)) {
+            this._scope.tokenModel = [];
+        }
+
         if (value.length >= 1) {
             const tokens = this._options.disableParser ? [value] : _.explode(value, ',');
             const items = attachItemElements(this._listElement, tokens);

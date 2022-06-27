@@ -1,7 +1,7 @@
 <!-- ==-==-==-==-== Display this block if no consumers are present. ==-==-==-==-== -->
 <ul data-ng-if="consumerList.length===0" class="hero-placeholder" >
     <li><span class="material-icons hero">person_pin</span></li>
-    <li><strong>Looks like no consumers are present yet!</strong></li>
+    <li><strong>Looks like no consumers are present</strong></li>
     <li>Consumers represents a user of a Service.
         <a target="_blank" href="https://docs.konghq.com/gateway/2.7.x/admin-api/#consumer-object">Learn More <span class="material-icons">launch</span></a>
     </li>
@@ -11,7 +11,7 @@
 <!-- ==-==-==-==-== Display this block only if consumers are present. ==-==-==-==-== -->
 <div data-ng-if="consumerList.length>=1" class="container">
 <div class="well">
-<div class="well__heading">List of consumers</div>
+<div class="well__heading">All Consumers</div>
 <table class="data-table">
     <thead><tr><th>Username</th><th>Custom Id</th><th>Created At</th><th class="row-actions">Actions</th></tr></thead>
 

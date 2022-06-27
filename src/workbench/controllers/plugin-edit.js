@@ -155,9 +155,9 @@ function buildPluginObject(pluginModel, schemaModel) {
 
     const payload = _.deepClone(pluginModel);
 
-    delete payload.service;
-    delete payload.route;
-    delete payload.consumer;
+    payload.service = null;
+    payload.route = null;
+    payload.consumer = null;
 
     if (pluginModel.service !== '__none__' && pluginModel.service.length > 12) {
         payload.service = {id: pluginModel.service};
