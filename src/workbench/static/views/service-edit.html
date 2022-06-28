@@ -10,13 +10,13 @@
                 <div class="form__field">
                     <ul class="field-input linked">
                         <li class="md-2">
-                            <select id="sv-ed__sel01" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required" data-placeholder="Protocol">
+                            <select id="sv-ed__sel01" name="protocol" data-ng-model="serviceModel.protocol" data-ng-selected="serviceModel.protocol" required="required" data-placeholder="Protocol" title="protocol">
                             <option value="__none__">- Protocol -</option>
                             <option data-ng-repeat="protocol in ENUM_PROTOCOL" value="{{protocol}}">{{protocol}}</option>
                             </select>
                         </li>
-                        <li class="stretch"><input type="text" name="serviceHost" data-ng-model="serviceModel.host" required="required" placeholder="example.com" title="Host (case-sensitive)" /></li>
-                        <li class="md-2"><input type="number" min="0" max="65535" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="Default: 80" title="Port" /></li>
+                        <li class="stretch"><input type="text" name="serviceHost" data-ng-model="serviceModel.host" required="required" placeholder="example.com" title="host" /></li>
+                        <li class="md-2"><input type="number" min="0" max="65535" name="servicePort" value="80" data-ng-model="serviceModel.port" required="required" placeholder="80" title="port" /></li>
                     </ul><!-- .linked -->
                 </div>
             </div><!-- .col.md-12 -->
@@ -25,14 +25,14 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label for="sv-ed__txt03" class="field-label">Service Name</label>
+                        <label for="sv-ed__txt03" class="field-label" title="name">Service Name</label>
                         <div class="field-input"><input id="sv-ed__txt03" type="text" name="serviceName" value="" data-ng-model="serviceModel.name" placeholder="my-service" /></div>
                     </div><!-- .form__field -->
                 </div><!-- .col-md-8 -->
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt03" class="field-label">Enable Service</label>
+                        <label for="sv-ed__txt03" class="field-label" title="enabled">Enable Service</label>
                         <div class="field-input">
                             <label class="checkbox"><input type="checkbox" id="sv-ed__chk01" name="serviceEnabled" data-ng-model="serviceModel.enabled" checked /> Publish service</label>
                         </div>
@@ -43,13 +43,13 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label for="sv-ed__txt04" class="field-label">Request Path</label>
+                        <label for="sv-ed__txt04" class="field-label" title="path">Request Path</label>
                         <div class="field-input"><input id="sv-ed__txt04" type="text" name="servicePath" value="" data-ng-model="serviceModel.path" placeholder="/some-path" /></div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-8 -->
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt08" class="field-label">Retries</label>
+                        <label for="sv-ed__txt08" class="field-label" title="retries">Retries</label>
                         <div class="field-input">
                             <input id="sv-ed__txt08" type="number" min="0" max="32767" name="retries" value="5" data-ng-model="serviceModel.retries" placeholder="Default: 5" />
                         </div><!-- .field-input -->
@@ -61,7 +61,7 @@
             <div class="row">
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt05" class="field-label">Connect Timeout</label>
+                        <label for="sv-ed__txt05" class="field-label" title="connect_timeout">Connect Timeout</label>
                         <div class="field-input"><input id="sv-ed__txt05" type="number" name="connectTimeout" value="60000" data-ng-model="serviceModel.connect_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
                         <div class="field-note">The timeout for server connection.</div>
                     </div>
@@ -69,7 +69,7 @@
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt06" class="field-label">Read Timeout</label>
+                        <label for="sv-ed__txt06" class="field-label" title="read_timeout">Read Timeout</label>
                         <div class="field-input"><input id="sv-ed__txt06" type="number" name="readTimeout" value="60000" data-ng-model="serviceModel.read_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
                         <div class="field-note">The timeout between read operations.</div>
                     </div>
@@ -77,7 +77,7 @@
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__txt07" class="field-label">Write Timeout</label>
+                        <label for="sv-ed__txt07" class="field-label" title="write_timeout">Write Timeout</label>
                         <div class="field-input"><input id="sv-ed__txt07" type="number" name="writeTimeout" value="60000" data-ng-model="serviceModel.write_timeout" placeholder="Default: 60000 ms" min="1" max="2147483646" /></div>
                         <div class="field-note">The timeout between write operations.</div>
                     </div>
@@ -91,7 +91,7 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label for="sv-ed__sel02" class="field-label">Client certificate</label>
+                        <label for="sv-ed__sel02" class="field-label" title="client_certificate">Client certificate</label>
                         <div class="field-input" data-ng-switch="pbCertId">
                             <select data-ng-switch-when="__none__" id="sv-ed__sel02" class="stretch" name="clientCertificate" data-ng-model="serviceModel.client_certificate" data-ng-selected="serviceModel.client_certificate">
                                 <option value="{{pbCertId}}">-- None --</option>
@@ -105,7 +105,7 @@
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label class="field-label">TLS Verification</label>
+                        <label class="field-label" title="tls_verify">TLS Verification</label>
                         <ul class="field-input named-group">
                             <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="__none__" /> Default</label></li>
                             <li><label><input class="warning" type="radio" name="tlsVerifyStatus" data-ng-model="serviceModel.tls_verify" value="true" />  On</label></li>
@@ -119,7 +119,7 @@
             <div class="row">
                 <div class="col md-8">
                     <div class="form__field">
-                        <label class="field-label">CA Certificates</label>
+                        <label class="field-label" title="ca_certificates">CA Certificates</label>
                         <div class="field-input">
                             <multi-check data-ng-model="serviceModel.ca_certificates" data-option-list="caCertList"></multi-check>
                         </div>
@@ -128,7 +128,7 @@
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="sv-ed__rge02" class="field-label">TLS Chain Depth
+                        <label for="sv-ed__rge02" class="field-label" title="tls_verify_depth">TLS Chain Depth
                             <output class="label-legend">{{serviceModel.tls_verify_depth === -1 ? 'Default' : serviceModel.tls_verify_depth}}</output></label>
                         <div class="field-input">
                             <input id="sv-ed__rge02" type="range" min="-1" max="64" name="tlsVerifyDepth" value="-1" data-ng-model="serviceModel.tls_verify_depth" />
@@ -139,7 +139,7 @@
 
             <div class="panel__split"></div>
             <div class="form__field">
-                <label class="field-label">Service Tags</label>
+                <label class="field-label" title="tags">Service Tags</label>
                 <div class="field-input"><token-input data-ng-model="serviceModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->

@@ -9,12 +9,12 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label for="rt-ed__txt01" class="field-label">Route Name (optional)</label>
+                <label for="rt-ed__txt01" class="field-label" title="name">Route Name (optional)</label>
                 <div class="field-input"><input id="rt-ed__txt01" type="text" name="serviceName" value="" data-ng-model="routeModel.name" placeholder="my-route" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label" for="rt-ed__sel02">Service</label>
+                <label class="field-label" for="rt-ed__sel02" title="service">Service</label>
                 <div data-ng-switch="serviceId" class="field-input">
                     <select data-ng-switch-when="__none__" id="rt-ed__sel02" name="service" data-ng-model="routeModel.service" data-ng-selected="routeModel.service">
                         <option value="__none__">-- None --</option>
@@ -27,7 +27,7 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label">Upstream URL</label>
+                        <label class="field-label" title="strip_path">Upstream URL</label>
                         <div class="field-input">
                             <label class="checkbox"><input type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
                         </div><!-- .field-input -->
@@ -35,7 +35,7 @@
                 </div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="rt-ed__rge01" class="field-label">Regex Priority</label>
+                        <label for="rt-ed__rge01" class="field-label" title="regex_priority">Regex Priority</label>
                         <div class="field-input">
                             <input id="rt-ed__rge01" type="range" min="0" max="100" name="regexPriority" data-ng-model="routeModel.regex_priority" />
                             <span class="field-input__legend">{{routeModel.regex_priority}}</span>
@@ -47,7 +47,7 @@
 
         <div class="col md-4">
             <div class="form__field">
-                <label class="field-label">Protocols</label>
+                <label class="field-label" title="protocols">Protocols</label>
                 <div class="field-input"><multi-check data-ng-model="routeModel.protocols" data-option-list="ENUM_PROTOCOL" data-input-style="warning"></multi-check></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
@@ -56,19 +56,19 @@
         <div class="row">
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
+                <div class="field-input"><label class="checkbox" title="preserve_host"><input type="checkbox" data-ng-model="routeModel.preserve_host"> Preserve Host</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
 
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
+                <div class="field-input"><label class="checkbox" title="request_buffering"><input type="checkbox" data-ng-model="routeModel.request_buffering"> Enable Request Buffering</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
 
         <div class="col md-4">
             <div class="form__field">
-                <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
+                <div class="field-input"><label class="checkbox" title="response_buffering"><input type="checkbox" data-ng-model="routeModel.response_buffering"> Enable Response Buffering</label></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
         </div><!-- .row -->
@@ -81,13 +81,13 @@
         <div class="row">
         <div class="col md-4">
             <div class="form__field">
-                <label class="field-label">Methods</label>
+                <label class="field-label" title="methods">Methods</label>
                 <div class="field-input"><multi-check data-ng-model="routeModel.methods" data-option-list="ENUM_METHOD" data-input-style="warning"></multi-check></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
         <div class="col md-4">
             <div class="form__field">
-                <label for="rt-ed__sel01" class="field-label">HTTPS Redirect Status Code</label>
+                <label for="rt-ed__sel01" class="field-label" title="https_redirect_status_code">HTTPS Redirect Status Code</label>
                 <div class="field-input">
                     <select id="rt-ed__sel01" class="stretch" name="httpsRedirectCode" data-ng-model="routeModel.https_redirect_status_code" data-ng-selected="routeModel.https_redirect_status_code">
                         <option data-ng-repeat="code in ENUM_REDIRECT_CODE" value="{{code}}">{{code}}</option>
@@ -103,7 +103,7 @@
 
         <div class="col md-4">
             <div class="form__field">
-                <label class="field-label">Path Handling Algorithm</label>
+                <label class="field-label" title="path_handling">Path Handling Algorithm</label>
                 <ul class="field-input">
                     <li><label><input type="radio" class="warning" name="pathHandling" data-ng-model="routeModel.path_handling" value="v0"> V0</label></li>
                     <li><label><input type="radio" class="warning" name="pathHandling" data-ng-model="routeModel.path_handling" value="v1"> V1</label></li>
@@ -116,7 +116,7 @@
         <div class="row">
         <div class="col md-12">
             <div class="form__field">
-                <label class="field-label">Hosts</label>
+                <label class="field-label" title="hosts">Hosts</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.hosts" data-placeholder="example.com, example.org"></token-input></div>
                 <div class="field-note">
                     Values are case sensitive.
@@ -125,13 +125,13 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Paths</label>
+                <label class="field-label" title="paths">Paths</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.paths" data-placeholder="/foo, /bar"></token-input></div>
                 <div class="field-note">* Press enter key after typing the addresses.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Headers</label>
+                <label class="field-label" title="headers">Headers</label>
                 <div class="field-input"><record-map data-ng-model="routeModel.headers" data-header-text="Headers and values" data-key-placeholder="X-Custom-Header" data-value-placeholder="foo, bar"></record-map></div>
                 <div class="field-note">* Press enter key after typing <strong>each</strong> header.</div><!-- .field-note -->
             </div><!-- .form__field -->
@@ -146,19 +146,19 @@
         <div class="row">
         <div class="col md-12">
             <div class="form__field">
-                <label class="field-label">Sources</label>
+                <label class="field-label" title="sources">Sources</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.sources" data-placeholder="192.168.1.10:8000, 10.1.0.0/16:8000"></token-input></div>
                 <div class="field-note">* Press enter key after typing the addresses.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Destinations</label>
+                <label class="field-label" title="destinations">Destinations</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.destinations" data-placeholder="192.168.1.10:8000, 10.1.0.0/16:8000"></token-input></div>
                 <div class="field-note">* Press enter key after typing the addresses.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">SNIs</label>
+                <label class="field-label" title="snis">SNIs</label>
                 <div class="field-input"><token-input data-ng-model="routeModel.snis" data-placeholder="example.com, example.org"></token-input></div>
                 <div class="field-note">* Press enter key after typing the SNIs.</div><!-- .field-note -->
             </div><!-- .form__field -->
@@ -167,7 +167,7 @@
 
         <div class="panel__split"></div>
         <div class="form__field">
-            <label class="field-label">Route Tags</label>
+            <label class="field-label" title="tags">Route Tags</label>
             <div class="field-input"><token-input data-ng-model="routeModel.tags" data-placeholder="user-level, high-priority"></token-input></div>
             <div class="field-note">* Press enter key after typing the tags.</div>
         </div><!-- .form__field -->
