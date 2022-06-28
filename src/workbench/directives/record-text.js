@@ -52,8 +52,8 @@ function RecordElementWatcher() {
     }
 
     this._recordScope.isModified = true;
-    this._recordControl.firstChild.innerHTML = '';
-    this._recordControl.lastChild.classList.add('success');
+    this._recordControl.firstElementChild.innerHTML = '';
+    this._recordControl.lastElementChild.classList.add('success');
 
     return true;
 }
@@ -75,7 +75,7 @@ function RecordElementWatcher() {
  */
 function RecordControlWatcher(event) {
     const {currentTarget: wrapper, target} = event;
-    wrapper.firstChild.innerHTML = '';
+    wrapper.firstElementChild.innerHTML = '';
 
     if (target.nodeName === 'DIV') return false;
 
@@ -86,8 +86,8 @@ function RecordControlWatcher(event) {
             scope.recordModel = null;
         });
 
-        wrapper.lastChild.classList.remove('success');
-        wrapper.lastChild.title = 'Changes applied';
+        wrapper.lastElementChild.classList.remove('success');
+        wrapper.lastElementChild.title = 'Changes applied';
 
         this._recordScope.isModified = false;
         return true;
@@ -100,7 +100,7 @@ function RecordControlWatcher(event) {
                 scope.recordModel = parsed;
             });
         } catch (e) {
-            wrapper.firstChild.innerHTML = 'JSON validation failed!';
+            wrapper.firstElementChild.innerHTML = 'JSON validation failed!';
             return false;
         }
 
@@ -127,8 +127,8 @@ function link(scope, element) {
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {
-        recordElement: parentElement.firstChild,
-        recordControl: parentElement.lastChild
+        recordElement: parentElement.firstElementChild,
+        recordControl: parentElement.lastElementChild
     };
 
     const context = {

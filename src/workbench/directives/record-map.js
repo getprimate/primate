@@ -20,8 +20,8 @@ const {document} = window;
 function clearRecordItems(listElement) {
     let length = 0;
 
-    while (listElement.firstChild !== null) {
-        listElement.removeChild(listElement.lastChild);
+    while (listElement.firstElementChild !== null) {
+        listElement.removeChild(listElement.lastElementChild);
         length++;
     }
 
@@ -93,15 +93,15 @@ function attachRecordItems(listElement, record, options) {
  * @return {Object} The updated model.
  */
 function updateRecordModel(listElement, model) {
-    const children = listElement.childNodes;
+    const children = listElement.children;
 
     for (let key of Object.keys(model)) {
         delete model[key];
     }
 
     for (let child of children) {
-        let key = _.trim(child.firstChild.value, ''); /* Key text. */
-        let value = _.trim(child.lastChild.value, ''); /* Value text. */
+        let key = _.trim(child.firstElementChild.value, ''); /* Key text. */
+        let value = _.trim(child.lastElementChild.value, ''); /* Value text. */
 
         if (key.length >= 1) {
             model[key] = value;
@@ -172,7 +172,7 @@ function RecordElementWatcher(event) {
     }
 
     this._recordScope.isModified = true;
-    this._recordControl.lastChild.classList.add('success');
+    this._recordControl.lastElementChild.classList.add('success');
 
     return true;
 }
@@ -207,8 +207,8 @@ function RecordControlWatcher(event) {
 
         clearRecordItems(this._recordElement);
 
-        wrapper.lastChild.classList.remove('success');
-        wrapper.lastChild.title = 'Changes applied';
+        wrapper.lastElementChild.classList.remove('success');
+        wrapper.lastElementChild.title = 'Changes applied';
 
         this._recordScope.isModified = false;
 
@@ -235,10 +235,10 @@ function RecordControlWatcher(event) {
     if (button.value === 'insert') {
         /* Do not insert a new LI if the input box in the last UL is empty. */
         if (
-            this._recordElement.childNodes.length >= 1 &&
-            _.trim(this._recordElement.lastChild.firstChild.value).length === 0
+            this._recordElement.children.length >= 1 &&
+            _.trim(this._recordElement.lastElementChild.firstElementChild.value).length === 0
         ) {
-            this._recordElement.lastChild.firstChild.focus();
+            this._recordElement.lastElementChild.firstElementChild.focus();
             return false;
         }
 
@@ -247,8 +247,8 @@ function RecordControlWatcher(event) {
 
         if (this._recordScope.isModified === false) {
             this._recordScope.isModified = true;
-            wrapper.lastChild.classList.add('success');
-            wrapper.lastChild.title = 'Apply changes';
+            wrapper.lastElementChild.classList.add('success');
+            wrapper.lastElementChild.title = 'Apply changes';
         }
 
         return true;
@@ -274,9 +274,9 @@ function link(scope, element, attributes) {
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {
-        headerElement: parentElement.firstChild,
-        recordElement: parentElement.childNodes[1],
-        recordControl: parentElement.lastChild
+        headerElement: parentElement.firstElementChild,
+        recordElement: parentElement.children[1],
+        recordControl: parentElement.lastElementChild
     };
 
     const options = {

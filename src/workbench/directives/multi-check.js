@@ -74,8 +74,8 @@ function attachItemElements(listElement, available, selected = []) {
 function clearItemElements(listElement) {
     const length = 0;
 
-    while (listElement.firstChild !== null) {
-        listElement.removeChild(listElement.lastChild);
+    while (listElement.firstElementChild !== null) {
+        listElement.removeChild(listElement.lastElementChild);
     }
 
     return length;

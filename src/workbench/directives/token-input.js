@@ -62,8 +62,8 @@ function detachItemElement(listElement, itemElement) {
 function clearItemElements(listElement) {
     let length = 0;
 
-    while (listElement.firstChild !== null) {
-        listElement.removeChild(listElement.lastChild);
+    while (listElement.firstElementChild !== null) {
+        listElement.removeChild(listElement.lastElementChild);
         length++;
     }
 
@@ -173,8 +173,8 @@ function link(scope, element, attributes) {
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {
-        textElement: parentElement.firstChild,
-        listElement: parentElement.lastChild
+        textElement: parentElement.firstElementChild,
+        listElement: parentElement.lastElementChild
     };
 
     const context = {
