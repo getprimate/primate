@@ -1455,8 +1455,8 @@ form p.metadata {
 .panel .panel__heading .clickable.clipboard {
     display: inline-block;
     color: var(--default-fg);
-    font-size: 1rem;
-    font-weight: 400;
+    font-size: 0.95rem;
+    font-weight: 500;
     text-transform: uppercase;
 }
 
@@ -1767,7 +1767,7 @@ table {
 }
 
 table th {
-    padding: 20px;
+    padding: 10px 20px;
     font-size: 1rem;
     font-weight: 500;
     color: var(--default-fg);
@@ -2167,8 +2167,8 @@ ul.hero-placeholder {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    animation: delayflash 1.5s;
-    -webkit-animation: delayflash 1.5s;
+    animation: delayflash 1s;
+    -webkit-animation: delayflash 1s;
 }
 
 ul.hero-placeholder li {
@@ -2197,6 +2197,10 @@ ul.hero-placeholder a .material-icons {
 
 .light-text {
     font-weight: 400;
+}
+
+.text-default {
+    color: var(--default-fg);
 }
 
 .border-solid {

@@ -61,8 +61,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
     scope.pluginList = [];
     scope.pluginNext = {offset: ''};
 
-    scope.metadata = {createdAt: ''};
-
     /**
      * Deletes the table row entry upon clicking the bin icon.
      *
@@ -135,7 +133,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
                 const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.consumerId = response.id;
-                scope.metadata.createdAt = `Created on ${createdAt}`;
 
                 restConfig.method = 'PATCH';
                 restConfig.endpoint = `${restConfig.endpoint}/${scope.consumerId}`;
@@ -381,8 +378,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
                 scope.consumerModel[field] = response[field];
             }
-
-            scope.metadata.createdAt = `Created on ${createdAt}`;
 
             viewFrame.addAction(
                 'Delete',

@@ -32,8 +32,7 @@
     </div><!-- .form__field -->
 
     <div class="row">
-        <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div><!-- .col.md-6 -->
-        <div class="col md-6">
+        <div class="col md-12">
             <div class="form__field align-right">
                 <div class="field-input" data-ng-switch="consumerId">
                 <button class="subtle" type="button" value="consumerModel" data-ng-click="resetGenericForm($event)">Clear</button>
@@ -41,7 +40,7 @@
                 <button data-ng-switch-default="" type="submit" name="action" value="update">Update</button>
                 </div><!-- .field-input -->
             </div><!-- .form__field -->
-        </div><!-- .col.md-6 -->
+        </div><!-- .col.md-12 -->
     </div><!-- .row -->
     
     </form><!-- .form -->
@@ -61,7 +60,7 @@
 </ul><!-- .notebook__tab -->
 
 <section id="cs-ed__npg01" class="notebook__page active">
-<div class="panel panel-border warning">
+<div class="panel panel-border">
 <div class="panel__heading bottom-solid"><span class="title">Key Authentication</span></div>
 <div class="panel__body">
     <div class="row">
@@ -119,8 +118,9 @@
 </section><!-- #cs-ed__npg01.notebook__page -->
 
 <section id="cs-ed__npg02" class="notebook__page" data-auth-method="basic-auth">
-<div class="well">
-<div class="well__heading">Basic Authentication</div>
+<div class="panel panel-border">
+<div class="panel__heading bottom-solid"><span class="title">Authentication</span></div>
+<div class="panel__body">
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
@@ -173,12 +173,14 @@
         </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
-</div><!-- .well -->
+</div><!-- .panel__body -->
+</div><!-- .panel -->
 </section><!-- #cs-ed__npg02.notebook__page -->
 
 <section id="cs-ed__npg03" class="notebook__page" data-auth-method="oauth2">
-<div class="well">
-<div class="well__heading">OAuth2</div>
+<div class="panel panel-border">
+<div class="panel__heading bottom-solid"><span class="title">OAuth2</span></div>
+<div class="panel__body">
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
@@ -252,12 +254,14 @@
         </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
-</div><!-- .well -->
+    </div><!-- .panel__body -->
+</div><!-- .panel -->
 </section><!-- #cs-ed__npg03.notebook__page -->
 
 <section id="cs-ed__npg04" class="notebook__page" data-auth-method="hmac-auth">
-<div class="well">
-<div class="well__heading">HMAC Authentication</div>
+<div class="panel panel-border">
+<div class="panel__heading bottom-solid"><span class="title">HMAC Authentication</span></div>
+<div class="panel__body">
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
@@ -309,12 +313,14 @@
         </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
-</div><!-- .well -->
+</div><!-- .panel__body -->
+</div><!-- .panel -->
 </section><!-- #cs-ed__npg04.notebook__page -->
 
 <section id="cs-ed__npg05" class="notebook__page" data-auth-method="jwt">
-<div class="well">
-<div class="well__heading">JWT Authentication</div>
+<div class="panel panel-border">
+<div class="panel__heading bottom-solid"><span class="title">JWT Authentication</span></div>
+<div class="panel__body">
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
@@ -382,12 +388,14 @@
         </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
-</div><!-- .well -->
+</div><!-- .panel__body -->
+</div><!-- .panel -->
 </section><!-- #cs-ed__npg05.notebook__page -->
 
 <section id="cs-ed__npg06" class="notebook__page" data-auth-name="acls">
-<div class="well">
-<div class="well__heading">Access Control Lists</div>
+<div class="panel">
+<div class="panel__heading bottom-solid"><span class="title">Access Control Lists</span></div>
+<div class="panel__body">
     <div class="row">
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
@@ -435,7 +443,8 @@
         </div><!-- .well__scroll-area -->
     </div><!-- .col.md-5 -->
     </div><!-- .row -->
-</div><!-- .well -->
+</div><!-- .panel__body -->
+</div><!-- .panel -->
 </section><!-- #cs-ed__npg06.notebook__page -->
 </div><!-- .well.notebook -->
 
