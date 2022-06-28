@@ -12,7 +12,7 @@
 
     "primary-fg": "#282828",
     "primary-bg": "#FFFFFF",
-    "primary-tc": "#edeef3",
+    "primary-tc": "#f0f0f7",
 
     "accent-fg": "#FFFFFF",
     "accent-bg": "#f1557e",
@@ -23,7 +23,7 @@
     "corner-radius": "5px",
 
     "border-size": "1px",
-    "border-fg": "#a3a4a9"
+    "border-fg": "#e9eaf1"
   },
 
   "sidebar": {
@@ -37,8 +37,8 @@
 
   "header": {
     "default-bg": "#FFFFFF",
-    "default-fg": "#434343",
-    "primary-fg": "#434343",
+    "default-fg": "#60626e",
+    "primary-fg": "#3e425e",
     "border-size": "1px",
     "border-fg": "#dfdfdf"
   },

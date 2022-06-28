@@ -1,6 +1,7 @@
 {
   "themeUID": "green-ocean-v1.0.0@getprimate.xyz",
   "name": "Green Ocean",
+  "description": "A greenish dark theme",
   "version": "0.1.0",
   "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
   "styles": "ocean-theme.json",
