@@ -99,10 +99,9 @@
         <tbody data-ng-click="setWorkbenchTheme($event)">
         <tr data-ng-repeat="theme in themeList">
             <td><input type="radio" name="themeSelector" data-ng-model="workbenchConfig.themeUID" value="{{theme.themeUID}}" /></td>
-            <td><strong>{{theme.name}}</strong>
-                <br />Version: {{theme.version}}</td>
-
-            <td>{{theme.maintainer}}</td>
+            <td><strong title="Version: {{theme.version}}">{{theme.name}}</strong>
+                <br /><span class="text-default">{{theme.description}}</span>
+                <br />{{theme.maintainer}}</td>
         </tr>
         </tbody>
     </table>

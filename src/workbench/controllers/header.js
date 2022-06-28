@@ -76,9 +76,7 @@ export default function HeaderController(scope, restClient, viewFrame, toast) {
             request.catch(() => {
                 toast.error(`Unable to delete ${target}.`);
             });
-        }
-
-        if (button.classList.contains('btn') && button.classList.contains('create')) {
+        } else if (button.classList.contains('create')) {
             window.location.href = redirect;
         }
 

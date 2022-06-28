@@ -94,9 +94,9 @@ function buildViewFrameFactory(timeoutFn) {
             frameState.frameTitle = title;
         },
 
-        addAction(displayText, redirect = '!#/', styles = 'success create', target = 'object', endpoint = '!#/') {
+        addAction(displayText, redirect = '!#/', styles = 'subtle create', target = 'object', endpoint = '!#/') {
             frameState.actionButtons.push({
-                styles: `btn ${styles}`,
+                styles: `${styles}`,
                 displayText,
                 redirect,
                 target,

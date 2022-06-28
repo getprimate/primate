@@ -311,7 +311,7 @@ export default function CertificateEditController(scope, location, routeParams, 
             viewFrame.addAction(
                 'Delete',
                 '#!/certificates',
-                'btn critical delete',
+                'critical delete',
                 'certificate',
                 `/certificates/${scope.certId}`
             );

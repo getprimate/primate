@@ -402,11 +402,12 @@ record-text .control {
 
 record-map .control button,
 record-text .control button {
+    color: var(--default-fg);
     display: inline-block;
     margin-left: 8px;
     padding: 2px 8px;
     background: var(--widget-tc) none;
-    border-color: var(--widget-tc);
+    border-color: var(--border-fg);
 }
 
 record-map .control .material-icons,
@@ -546,7 +547,7 @@ a {
 
 a:hover {
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--primary-fg);
 }
 
 a > b,
@@ -894,16 +895,16 @@ header#mainHeader ul.actions li {
     margin-left: 10px;
 }
 
-header#mainHeader button.create.success {
-    background: transparent none;
+header#mainHeader button.create.subtle {
+    background: var(--primary-tc) none;
+    border-color: var(--default-fg);
     color: var(--primary-fg);
     font-weight: 500;
-    background-blend-mode: multiply;
 }
 
-header#mainHeader button.create.success:hover {
+header#mainHeader button.create.subtle:hover {
     color: var(--primary-fg);
-    background-image: linear-gradient(to right, var(--std__success), var(--std__success)), var(--overlay__dark-10);
+    background-color: var(--widget-bg);
 }
 
 header#mainHeader .navigate button.text {

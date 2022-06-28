@@ -141,7 +141,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
             viewFrame.addAction(
                 'Delete',
                 '#!/certificates',
-                'btn critical delete',
+                'critical delete',
                 'CA certificate',
                 `/ca_certificates/${scope.caId}`
             );
