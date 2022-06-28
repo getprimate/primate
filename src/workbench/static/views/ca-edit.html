@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col md-6">
                         <div class="form__field">
-                            <label for="ca-ed__txa01" class="field-label">CA Certificate</label>
+                            <label for="ca-ed__txa01" class="field-label" title="cert">CA Certificate</label>
                             <div class="field-input"><textarea id="ca-ed__txa01" name="cert" data-ng-model="caModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                             <div class="field-note">PEM-encoded CA certificate.</div>
                         </div><!-- .form__field -->
@@ -20,7 +20,7 @@
 
                     <div class="col md-6">
                         <div class="form__field">
-                            <label for="ca-ed__txa02" class="field-label">SHA Digest</label>
+                            <label for="ca-ed__txa02" class="field-label" title="cert_digest">SHA Digest</label>
                             <div class="field-input"><textarea id="ca-ed__txa02" name="digest" data-ng-model="caModel.cert_digest" placeholder="Optional SHA256 hex digest of the public certificate."></textarea></div>
                         </div><!-- .form__field -->
                     </div><!-- col.md-6 -->
@@ -28,7 +28,7 @@
 
                 <div class="panel__split"></div>
                 <div class="form__field">
-                    <label class="field-label">CA Tags</label>
+                    <label class="field-label" title="tags">CA Tags</label>
                     <div class="field-input"><token-input data-ng-model="caModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                     <div class="field-note">* Press enter key after typing the tags.</div>
                 </div><!-- .form__field -->

@@ -10,21 +10,21 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa01" class="field-label">Main Certificate</label>
+                        <label for="cf-ed__txa01" class="field-label" title="cert">Main Certificate</label>
                         <div class="field-input"><textarea id="cf-ed__txa01" name="mainCert" data-ng-model="certModel.cert" required="required" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
 
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa02" class="field-label">Main Key</label>
+                        <label for="cf-ed__txa02" class="field-label" title="key">Main Key</label>
                         <div class="field-input"><textarea id="cf-ed__txa02" name="mainKey" data-ng-model="certModel.key" required="required" placeholder="-----BEGIN RSA PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- col.md-6 -->
             </div><!-- .row -->
 
             <div data-ng-if="certId=='__none__'" class="form__field">
-                <label class="field-label">Optional SNIs</label>
+                <label class="field-label" title="snis">Optional SNIs</label>
                 <div class="field-input"><token-input name="snis" data-ng-model="certModel.snis" data-placeholder="sni1.example.com, sni2.example.com"></token-input></div>
                 <div class="field-note">* Press enter key after typing the SNIs.</div>
             </div>
@@ -36,13 +36,13 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa03" class="field-label">Alternate Certificate</label>
+                        <label for="cf-ed__txa03" class="field-label" title="cert_alt">Alternate Certificate</label>
                         <div class="field-input"><textarea id="cf-ed__txa03" name="altCert" data-ng-model="certModel.cert_alt" placeholder="-----BEGIN CERTIFICATE-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label for="cf-ed__txa04" class="field-label">Alternate Key</label>
+                        <label for="cf-ed__txa04" class="field-label" title="key_alt">Alternate Key</label>
                         <div class="field-input"><textarea id="cf-ed__txa04" name="altKey" data-ng-model="certModel.key_alt" placeholder="-----BEGIN EC PRIVATE KEY-----..."></textarea></div>
                     </div>
                 </div><!-- .col.md-6 -->
@@ -50,7 +50,7 @@
 
             <div class="panel__split"></div>
             <div class="form__field">
-                <label class="field-label">Certificate Tags</label>
+                <label class="field-label" title="tags">Certificate Tags</label>
                 <div class="field-input"><token-input name="tags" data-ng-model="certModel.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div>
