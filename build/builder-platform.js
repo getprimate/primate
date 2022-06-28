@@ -11,7 +11,7 @@ const path = require('node:path');
 
 const {Arch, Platform} = require('electron-builder');
 
-const {ROOT_DIR, ICON_DIR, RES_DIR} = require('./constant');
+const {ICON_DIR, RES_DIR} = require('./constant');
 const {releaseConfig} = require('./builder-config');
 
 function configureLinuxOptions(type = 'dir') {

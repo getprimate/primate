@@ -11,7 +11,7 @@ const os = require('node:os');
 const path = require('node:path');
 const {app, nativeImage, Menu, BrowserWindow} = require('electron');
 
-const {ROOT_PATH, PLATFORM_PATH, WORKBENCH_PATH, RESOURCES_PATH} = require('../constant/paths');
+const {PLATFORM_PATH, WORKBENCH_PATH, RESOURCES_PATH} = require('../constant/paths');
 const {menuTemplate} = require('./menu');
 
 /**
