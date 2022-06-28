@@ -54,6 +54,7 @@ function RecordElementWatcher() {
     this._recordScope.isModified = true;
     this._recordControl.firstElementChild.innerHTML = '';
     this._recordControl.lastElementChild.classList.add('success');
+    this._recordControl.lastElementChild.title = 'Apply changes';
 
     return true;
 }

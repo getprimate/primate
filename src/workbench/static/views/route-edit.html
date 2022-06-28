@@ -27,9 +27,9 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label" title="strip_path">Upstream URL</label>
+                        <label class="field-label">Upstream URL</label>
                         <div class="field-input">
-                            <label class="checkbox"><input type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
+                            <label class="checkbox" title="strip_path"><input type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->
@@ -93,10 +93,7 @@
                         <option data-ng-repeat="code in ENUM_REDIRECT_CODE" value="{{code}}">{{code}}</option>
                     </select>
                 </div><!-- .field-input -->
-                <div class="field-note">
-                    The status code Kong responds with when all properties of a Route match except the protocol.<br />
-                    Location header is injected by Kong if the field is set to 301, 302, 307 or 308.
-                </div><!-- .field-note -->
+                <div class="field-note">Location header is injected by Kong if the field is set to 301, 302, 307 or 308.</div><!-- .field-note -->
             </div><!-- .form__field -->
 
         </div><!-- .col.md-4 -->
@@ -133,7 +130,6 @@
             <div class="form__field">
                 <label class="field-label" title="headers">Headers</label>
                 <div class="field-input"><record-map data-ng-model="routeModel.headers" data-header-text="Headers and values" data-key-placeholder="X-Custom-Header" data-value-placeholder="foo, bar"></record-map></div>
-                <div class="field-note">* Press enter key after typing <strong>each</strong> header.</div><!-- .field-note -->
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
         </div><!-- .row -->
@@ -191,7 +187,7 @@
 <div class="col md-4 sm-12">
     <div class="well">
         <div class="well__heading">Applied Plugins
-            <div data-ng-if="routeId !== '__none__'" class="pull-right"><a title="Apply new plugin" href="#!/routes/{{routeId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
+            <div data-ng-if="routeId !== '__none__'" class="pull-right"><a title="New Plugin" href="#!/routes/{{routeId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">

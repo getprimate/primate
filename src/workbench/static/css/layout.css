@@ -32,6 +32,33 @@
     --border-fg: #5f6170;
 }
 
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes delayflash {
+    0% { opacity:0; }
+    25% { opacity:0; }
+    50% { opacity:0; }
+    75% { opacity:0; }
+    90% { opacity:0; }
+    100% { opacity:1; }
+}
+
 * {
     box-sizing: border-box;
     outline: none !important;
@@ -979,6 +1006,11 @@ section#mainLayout {
     padding: 20px 20px 0 0;
     overflow-y: auto;
     z-index: 10;
+}
+
+section#mainLayout > .container {
+    animation: fadein 400ms;
+    -webkit-animation: fadein 400ms;
 }
 
 /* =-=-=-=-=-= Main footer styles =-=-=-=-=-= */
@@ -2135,6 +2167,8 @@ ul.hero-placeholder {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    animation: delayflash 1.5s;
+    -webkit-animation: delayflash 1.5s;
 }
 
 ul.hero-placeholder li {
@@ -2292,24 +2326,6 @@ body.hidden {
 .no-word-wrap {
     overflow-y: hidden;
     white-space: nowrap;
-}
-
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeout {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
 }
 
 canvas#chart_ServerStat {

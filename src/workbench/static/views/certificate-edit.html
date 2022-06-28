@@ -77,14 +77,20 @@
 
         <div class="well__scroll-area">
         <table id="sniListTable" class="card-table">
-            <tbody data-ng-click="deleteTableRow($event)">
+            <tbody data-ng-if="sniList.length >= 1" data-ng-click="deleteTableRow($event)">
             <tr data-ng-repeat="sni in sniList">
                 <td><strong>{{sni.name}}</strong><br />{{sni.subTagsText}}</td>
                 <td class="row-actions"><span class="material-icons critical delete" data-target="SNI" data-endpoint="/snis/{{sni.name}}">delete_forever</span></td>
             </tr>
             </tbody>
 
-            <tfoot data-ng-if="sniList.length<=0"><tr><th colspan="2">No host names configured to use this certificate.</th></tr></tfoot>
+            <tbody data-ng-if="sniList.length === 0" class="info-placeholder">
+                <tr data-ng-switch="certId">
+                    <td><span class="material-icons">dns</span></td>
+                    <td data-ng-switch-when="__none__">SNIs will be listed here.</td>
+                    <td data-ng-switch-default>No SNIs configured to use this certificate.</td>
+                </tr>
+                </tbody>
 
             <tfoot class="pagination" data-ng-if="sniNext.offset.length>=5">
                 <tr><th colspan="2"><button class="pagination" data-ng-click="fetchSniList(sniNext)">Load Next</button></th></tr>
@@ -107,7 +113,7 @@
     <div class="well">
         <div class="well__heading">Services
             <div data-ng-if="certId!=='__none__'" class="pull-right">
-                <a title="Create new service with this certificate." href="#!/certificates/{{certId}}/services/__create__"><span class="material-icons">launch</span> New</a>
+                <a title="New Service with this Certificate." href="#!/certificates/{{certId}}/services/__create__"><span class="material-icons">launch</span> New</a>
             </div><!-- .pull-right -->
         </div><!-- .well__heading -->
 
@@ -125,7 +131,7 @@
             <tbody data-ng-if="serviceList.length === 0" class="info-placeholder">
             <tr data-ng-switch="certId">
                 <td><span class="material-icons">settings_input_component</span></td>
-                <td data-ng-switch-when="__none__">Services that use this certificate will be listed here.</td>
+                <td data-ng-switch-when="__none__">Services with this certificate will be listed here.</td>
                 <td data-ng-switch-default>No services use this certificate.</td>
             </tr>
             </tbody>
@@ -140,7 +146,7 @@
     <div class="well">
         <div class="well__heading">Upstreams
             <div data-ng-if="certId!=='__none__'" class="pull-right">
-                <a title="Create new upstream with this certificate." href="#!/certificates/{{certId}}/upstreams/__create__"><span class="material-icons">launch</span> New</a>
+                <a title="New Upstream with this Certificate." href="#!/certificates/{{certId}}/upstreams/__create__"><span class="material-icons">launch</span> New</a>
             </div><!-- .pull-right -->
         </div><!-- .well__heading -->
 
@@ -158,7 +164,7 @@
             <tbody data-ng-if="upstreamList.length===0" class="info-placeholder">
             <tr data-ng-switch="certId">
                 <td><span class="material-icons">backup</span></td>
-                <td data-ng-switch-when="__none__">Upstreams that use this certificate will be listed here.</td>
+                <td data-ng-switch-when="__none__">Upstreams with this certificate will be listed here.</td>
                 <td data-ng-switch-default>No upstreams use this certificate.</td>
             </tr>
             </tbody>

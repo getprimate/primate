@@ -9,7 +9,7 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label class="field-label">Plugin Name</label>
+                <label class="field-label" title="name">Plugin Name</label>
                 <div class="field-input" data-ng-switch="pluginId">
                 <select data-ng-switch-when="__none__" id="pg-ed__sel01" name="name" data-ng-model="pluginModel.name" data-ng-change="changePlugin()">
                     <option value="__none__">- Select a Plugin -</option>
@@ -21,7 +21,7 @@
         </div><!-- .col.md-8 -->
         <div class="col md-4">
             <div class="form__field">
-                <label for="pg-ed__chk01" class="field-label">Plugin State</label>
+                <label for="pg-ed__chk01" class="field-label" title="enabled">Plugin State</label>
                 <div class="field-input">
                     <label class="checkbox"><input type="checkbox" id="pg-ed__chk01" class="success" name="pluginEnabled" data-ng-model="pluginModel.enabled" checked /> Enable Plugin</label>
                 </div>
@@ -32,7 +32,7 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label class="field-label">Route</label>
+                <label class="field-label" title="route">Route</label>
                 <div class="field-input" data-ng-switch="routeId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.route" data-ng-selected="pluginModel.route">
                         <option value="__none__">- All Routes -</option>
@@ -44,7 +44,7 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Service</label>
+                <label class="field-label" title="service">Service</label>
                 <div class="field-input" data-ng-switch="serviceId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.service" data-ng-selected="pluginModel.service">
                         <option value="__none__">- All Services -</option>
@@ -56,7 +56,7 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Consumer</label>
+                <label class="field-label" title="consumer">Consumer</label>
                 <div class="field-input" data-ng-switch="consumerId">
                     <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.consumer" data-ng-selected="pluginModel.consumer">
                         <option value="__none__">All Consumers</option>
@@ -70,7 +70,7 @@
 
         <div class="col md-4">
             <div class="form__field">
-                <label class="field-label">Protocols</label>
+                <label class="field-label" title="protocols">Protocols</label>
                 <div class="field-input"><multi-check data-ng-model="pluginModel.protocols" data-option-list="ENUM_PROTOCOL" data-input-style="warning"></multi-check></div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
@@ -83,52 +83,44 @@
             <div class="row"><!-- data-ng-if="fieldProp.nodeType_ !== 'static-record'" -->
                 <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label">{{fieldProp.fieldName}}</label>
-                        <div class="field-input">Field of type {{fieldProp.type}}. Default value is {{fieldProp.default}}.</div>
+                        <label class="field-label" title="{{fieldName}}">{{fieldProp.fieldName}}</label>
+                        <div class="field-input">{{fieldProp.required === true ? 'Required' : 'Optional'}}</div>
                     </div>
                 </div><!-- .col.md-6 -->
 
                 <div class="col md-6" data-ng-switch="fieldProp.nodeType_">
 
                     <div data-ng-switch-when="input__checkbox" class="form__field">
-                        <label class="field-label">&nbsp</label>
                         <div class="field-input">
                             <label class="checkbox"><input type="checkbox" class="warning" data-ng-model="schemaModel[fieldName]" /> {{fieldName | pgname}}</label>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="input__text" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><input type="text" data-ng-model="schemaModel[fieldName]" /></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="input__number" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><input type="number" data-ng-model="schemaModel[fieldName]" /></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="token-input" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><token-input data-ng-model="schemaModel[fieldName]" data-placeholder="Type the value and press enter."></token-input></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="multi-check" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><multi-check data-ng-model="schemaModel[fieldName]" data-option-list="fieldProp.nodeList_"></multi-check></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="record-text" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><record-text type="text" data-ng-model="schemaModel[fieldName]"></record-text></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="record-map" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input"><record-map data-ng-model="schemaModel[fieldName]" data-sanitise-values="true"></record-map></div>
                     </div><!-- .form__field -->
 
                     <div data-ng-switch-when="select" class="form__field">
-                        <label class="field-label">&nbsp;</label>
                         <div class="field-input">
                             <select data-ng-selected="schemaModel[fieldName]" data-ng-model="schemaModel[fieldName]">
                                 <option data-ng-repeat="option in fieldProp.nodeList_" value="{{option}}">{{option}}</option>
@@ -149,7 +141,7 @@
 
         <div class="panel__split"><span>Plugin Tags</span></div>
         <div class="form__field">
-            <div class="field-input"><token-input data-ng-model="pluginModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
+            <div class="field-input" title="tags"><token-input data-ng-model="pluginModel.tags" data-placeholder="Type a tag and press enter key."></token-input></div>
             <div class="field-note">* Press enter key after typing the tags.</div>
         </div><!-- .form__field -->
 

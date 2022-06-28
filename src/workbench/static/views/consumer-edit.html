@@ -10,14 +10,14 @@
     <div class="row">
         <div class="col md-6">
             <div class="form__field">
-                <label for="cs-ed__txt01" class="field-label">Username</label>
+                <label for="cs-ed__txt01" class="field-label" title="username">Username</label>
                 <div class="field-input"><input id="cs-ed__txt01" type="text" data-ng-model="consumerModel.username" name="username" placeholder="jane-doe" /></div>
-                <div class="field-note">Needs to be unique.</div>
+                <div class="field-note">Must be unique.</div>
             </div><!-- .form__field -->
         </div><!-- .col.md-6 -->
         <div class="col md-6">
             <div class="form__field">
-                <label for="cs-ed__txt02" class="field-label">Custom ID</label>
+                <label for="cs-ed__txt02" class="field-label" title="custom_id">Custom ID</label>
                 <div class="field-input"><input id="cs-ed__txt02" type="text" data-ng-model="consumerModel.custom_id" name="customId" placeholder="custom-id" /></div>
                 <div class="field-note">Either this field or username is required.</div>
             </div><!-- .form__field -->
@@ -26,7 +26,7 @@
 
     <div class="panel__split"></div>
     <div class="form__field">
-        <label class="field-label">Consumer Tags</label>
+        <label class="field-label" title="tags">Consumer Tags</label>
         <div class="field-input"><token-input data-ng-model="consumerModel.tags" data-placeholder="primary-consumer, high-priority"></token-input></div>
         <div class="field-note">* Press enter key after typing the tags.</div>
     </div><!-- .form__field -->
@@ -68,23 +68,23 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="key-auth">
             <div class="form__field">
-                <label for="cs-ed__txt03" class="field-label">Authentication Key</label>
+                <label for="cs-ed__txt03" class="field-label" title="key">Authentication Key</label>
                 <div class="field-input"><input id="cs-ed__txt03" class="param" type="text" data-ng-model="userAuthModel.keyAuth.key" name="keyName" placeholder="Leave blank to auto-generate" value="" /></div>
             </div><!-- .form__field -->
             <div class="form__field">
-                <label for="cs-ed__txt04" class="field-label">Time to Leave</label>
+                <label for="cs-ed__txt04" class="field-label" title="ttl">Time to Leave</label>
                 <div class="field-input"><input id="cs-ed__txt04" class="param" type="number" data-ng-model="userAuthModel.keyAuth.ttl" name="keyTtl" placeholder="Leave blank to auto-generate" value="" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.keyAuth.tags" data-placeholder="user-level, low-priority."></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="keyAuth" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="keyAuth" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -125,24 +125,24 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
             <div class="form__field">
-                <label for="cs-ed__txt05" class="field-label">Username</label>
+                <label for="cs-ed__txt05" class="field-label" title="username">Username</label>
                 <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="jane-doe" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label for="cs-ed__txt06" class="field-label">Password</label>
+                <label for="cs-ed__txt06" class="field-label" title="password">Password</label>
                 <div class="field-input"><input id="cs-ed__txt06" type="password" data-ng-model="userAuthModel.basicAuth.password" name="basicPassword" placeholder="Minimum 8 characters" minlength="8" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.basicAuth.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="basicAuth" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="basicAuth" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -183,45 +183,45 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
             <div class="form__field">
-                <label for="cs-ed__txt07" class="field-label">Application Name</label>
+                <label for="cs-ed__txt07" class="field-label" title="name">Application Name</label>
                 <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="demo-application" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label for="cs-ed__txt09" class="field-label">Client ID</label>
+                <label for="cs-ed__txt09" class="field-label" title="client_id">Client ID</label>
                 <div class="field-input"><input id="cs-ed__txt09" type="text" data-ng-model="userAuthModel.oauth2.client_id" name="oauthClientId" placeholder="Leave blank to generate" value="" /></div>
             </div><!-- .form__field -->
 
             <div class="row">
             <div class="col md-8">
             <div class="form__field">
-                <label for="cs-ed__txt10" class="field-label">Client Secret</label>
+                <label for="cs-ed__txt10" class="field-label" title="client_secret">Client Secret</label>
                 <div class="field-input"><input id="cs-ed__txt10" type="text" data-ng-model="userAuthModel.oauth2.client_secret" name="oauthSecret" placeholder="Leave blank to generate" value="" /></div>
             </div><!-- .form__field -->
             </div><!-- .col.md-8 -->
             <div class="col md-4">
                 <div class="form__field">
-                    <label class="field-label">Security Option</label>
+                    <label class="field-label" title="hash_secret">Security Option</label>
                     <div class="field-input"><label class="checkbox"><input type="checkbox" data-ng-model="userAuthModel.oauth2.hash_secret" name="oauthHashSecret" /> Hash Secret</label></div>
                 </div><!-- .form__field -->
             </div><!-- .col.md-4 -->
             </div><!-- .row -->
 
             <div class="form__field">
-                <label class="field-label">Redirect URIs</label>
+                <label class="field-label" title="redirect_uris">Redirect URIs</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.redirect_uris" name="oauthRedirectURIs" data-placeholder="https://example.com/foo, https://example.com/bar"></token-input></div>
                 <div class="field-note">* Press enter key after typing the URIs.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.oauth2.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="oauth2" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="oauth2" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -262,23 +262,23 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
             <div class="form__field">
-                <label for="cs-ed__txt11" class="field-label">Username</label>
+                <label for="cs-ed__txt11" class="field-label" title="username">Username</label>
                 <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="john-doe" required /></div>
             </div><!-- .form__field -->
             <div class="form__field">
-                <label for="cs-ed__txt12" class="field-label">Secret</label>
+                <label for="cs-ed__txt12" class="field-label" title="secret">Secret</label>
                 <div class="field-input"><input id="cs-ed__txt12" type="text" data-ng-model="userAuthModel.hmacAuth.secret" name="hmacSecret" placeholder="Leave blank to generate" value="" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.hmacAuth.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="hmacAuth" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="hmacAuth" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -319,7 +319,7 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
             <div class="form__field">
-                <label for="cs-ed__sel01" class="field-label">Signature Algorithm</label>
+                <label for="cs-ed__sel01" class="field-label" title="algorithm">Signature Algorithm</label>
                 <div class="field-input">
                     <select id="cs-ed__sel01" data-ng-model="userAuthModel.jwt.algorithm" data-ng-selected="userAuthModel.jwt.algorithm" name="jwtAlgorithm">
                         <option data-ng-repeat="algo in ENUM_JWT_ALGO">{{algo}}</option>
@@ -328,30 +328,30 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label for="cs-ed__txt13" class="field-label">JWT Key</label>
+                <label for="cs-ed__txt13" class="field-label" title="key">JWT Key</label>
                 <div class="field-input"><input id="cs-ed__txt13" type="text" data-ng-model="userAuthModel.jwt.key" name="jwtKey" placeholder="Leave blank to generate" value="" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label for="cs-ed__txt14" class="field-label">JWT Secret</label>
+                <label for="cs-ed__txt14" class="field-label" title="secret">JWT Secret</label>
                 <div class="field-input"><input id="cs-ed__txt14" type="text" data-ng-model="userAuthModel.jwt.secret" name="jwtSecret" placeholder="Leave blank to generate" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label for="cs-ed__txa01" class="field-label">RSA Public PEM</label>
+                <label for="cs-ed__txa01" class="field-label" title="rsa_public_key">RSA Public PEM</label>
                 <div class="field-input"><textarea class="tx-small" id="cs-ed__txa01" data-ng-model="userAuthModel.jwt.rsa_public_key" name="rsaPublicKey" placeholder="-----BEGIN RSA PUBLIC KEY-----..."></textarea></div>
                 <div class="field-note">Required only if algorithm is RS256 or ES256.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.jwt.tags" data-placeholder="user-level, low-priority."></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="jwt" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="jwt" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -392,19 +392,19 @@
     <div class="col md-6">
         <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
             <div class="form__field">
-                <label for="cs-ed__txt15" class="field-label">Group Name</label>
+                <label for="cs-ed__txt15" class="field-label" title="group">Group Name</label>
                 <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="admin-group" required /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Authentication Tags</label>
+                <label class="field-label" title="tags">Authentication Tags</label>
                 <div class="field-input"><token-input data-ng-model="userAuthModel.acls.tags" data-placeholder="user-level, low-priority"></token-input></div>
                 <div class="field-note">* Press enter key after typing the tags.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
                 <div class="field-input align-right">
-                    <button class="default" type="button" name="resetTarget" value="acls" data-ng-click="resetGenericForm($event)">Clear</button>
+                    <button class="subtle" type="button" name="resetTarget" value="acls" data-ng-click="resetGenericForm($event)">Clear</button>
                     <button class="success" type="submit" name="action" value="save">Save</button>
                 </div><!-- .field-input.align-right -->
             </div><!-- .form__field -->
@@ -445,7 +445,7 @@
 <div class="col md-4 sm-12">
     <div class="well">
         <div class="well__heading">Consumer Plugins
-            <div data-ng-if="consumerId!=='__none__'" class="pull-right"><a title="Apply new plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
+            <div data-ng-if="consumerId!=='__none__'" class="pull-right"><a title="New Plugin" href="#!/consumers/{{consumerId}}/plugins/__create__"><span class="material-icons">launch</span> New</a></div>
         </div><!-- .well__heading -->
 
         <div class="well__scroll-area">
