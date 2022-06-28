@@ -44,8 +44,6 @@ export default function CertificateEditController(scope, location, routeParams, 
     scope.certId = '__none__';
     scope.certModel = _.deepClone(certModel);
 
-    scope.metadata = {createdAt: ''};
-
     scope.sniModel = {shorthand: ''};
     scope.sniList = [];
     scope.sniNext = {offset: ''};
@@ -189,7 +187,6 @@ export default function CertificateEditController(scope, location, routeParams, 
                 const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.certId = response.id;
-                scope.metadata.createdAt = `Created on ${createdAt}`;
 
                 restConfig.method = 'PATCH';
                 restConfig.endpoint = `${restConfig.endpoint}/${scope.certId}`;
@@ -309,9 +306,6 @@ export default function CertificateEditController(scope, location, routeParams, 
         viewFrame.setLoaderSteps(4);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-            scope.metadata.createdAt = `Created on ${createdAt}`;
-
             refreshCertModel(scope.certModel, response);
 
             viewFrame.addAction(

@@ -45,7 +45,6 @@ export default function TrustedCAEditController(scope, location, routeParams, re
 
     scope.caId = '__none__';
     scope.caModel = deepClone(caModel);
-    scope.metadata = {createdAt: ''};
 
     /**
      * Builds CA certificate object from the model and submits the form.
@@ -74,10 +73,7 @@ export default function TrustedCAEditController(scope, location, routeParams, re
 
         request.then(({data: response}) => {
             if (isNone(scope.caId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-
                 scope.caId = response.id;
-                scope.metadata.createdAt = `Created on ${createdAt}`;
 
                 restConfig.method = 'PATCH';
                 restConfig.endpoint = `${restConfig.endpoint}/${scope.caId}`;
@@ -140,9 +136,6 @@ export default function TrustedCAEditController(scope, location, routeParams, re
         viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-            scope.metadata.createdAt = `Created on ${createdAt}`;
-
             refreshCAModel(scope.caModel, response);
 
             viewFrame.addAction(

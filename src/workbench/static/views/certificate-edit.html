@@ -56,14 +56,13 @@
             </div>
 
             <div class="row">
-                <div class="col md-6"><p class="metadata">{{metadata.createdAt}}&nbsp;</p></div>
-                <div class="col md-6">
+                <div class="col md-12">
                     <div class="form__field align-right" data-ng-switch="certId">
                         <button class="subtle" data-ng-click="resetCertForm($event)">Clear</button>
                         <button data-ng-switch-when="__none__" type="submit" name="action" value="create">Create</button>
                         <button data-ng-switch-default type="submit" name="action" value="update">Update</button>
                     </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
+                </div><!-- .col.md-12 -->
             </div><!-- .row -->
         </form>
     </div><!-- .panel__body -->
