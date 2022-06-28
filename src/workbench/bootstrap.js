@@ -33,8 +33,6 @@ const {
     document
 } = window;
 
-console.log(typeof window.ipcBridge, ' ', window.appBridge.getVersion());
-
 /**
  * Attaches application wide event listeners.
  */

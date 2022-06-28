@@ -532,8 +532,6 @@ export default function PluginEditController(scope, location, routeParams, restC
         if (_.isText(idValue)) {
             ajaxConfig.endpoint = `/${entity}s/${idValue}${ajaxConfig.endpoint}`;
 
-            console.log('EP: ', ajaxConfig.endpoint);
-
             scope[`${entity}Id`] = idValue;
             scope.pluginModel[entity] = idValue;
 

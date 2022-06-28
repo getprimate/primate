@@ -121,10 +121,9 @@ function updateRecordModel(listElement, model) {
  * @property {Object} _options - Configuration options.
  *
  * @param {Object} current - The current model object.
- * @param {Object} previous  - The previous model object.
  * @returns {boolean} True if handled, false otherwise.
  */
-function RecordModelWatcher(current, previous) {
+function RecordModelWatcher(current) {
     clearRecordItems(this._recordElement);
 
     if (!_.isObject(current)) {

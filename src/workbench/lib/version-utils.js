@@ -12,8 +12,13 @@ import {explode} from './core-toolkit.js';
 export function greaterThan(vLeft, vRight) {
     if (vLeft === vRight) return false;
 
-    const lParts = explode(vLeft, '.').map((part) => parseInt(part));
-    const rParts = explode(vRight, '.').map((part) => parseInt(part));
+    const lParts = explode(vLeft, '.').map((part) => {
+        return parseInt(part);
+    });
+
+    const rParts = explode(vRight, '.').map((part) => {
+        return parseInt(part);
+    });
 
     for (let index in lParts) {
         if (lParts[index] === rParts[index]) {

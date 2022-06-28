@@ -46,12 +46,14 @@ function hashBang(href) {
     const hashPath = href.substring(index + 2);
     const parts = hashPath.split('/');
 
+    const follow = parts[1] === 'release-info' ? `/${parts[1]}` : '';
+
     for (let index = parts.length - 1; index >= 0; index--) {
         if (parts[index] === '__create__' || parts[index].length >= 20) {
             continue;
         }
 
-        return `#!/${parts[index]}`;
+        return `#!${follow}/${parts[index]}`;
     }
 
     return '__none__';

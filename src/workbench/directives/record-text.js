@@ -19,10 +19,9 @@ import * as _ from '../lib/core-toolkit.js';
  * @property {HTMLElement} _recordElement - The text area element.
  *
  * @param {Object} current - The current model object.
- * @param {Object} previous  - The previous model object.
  * @returns {boolean} True if handled, false otherwise.
  */
-function RecordModelWatcher(current, previous) {
+function RecordModelWatcher(current) {
     if (_.isNil(current)) {
         this._recordElement.value = '';
         return false;
@@ -122,10 +121,9 @@ function RecordControlWatcher(event) {
  * @param {Object} scope - The injected scope object.
  * @property {string=} scope.recordModel - An object containing added items.
  * @param {Object} element - The parent element wrapped as jqLite object.
- * @param {{placeholder?: string}} attributes - The element attributes.
  * @return {boolean} True if linking successful, false otherwise.
  */
-function link(scope, element, attributes) {
+function link(scope, element) {
     /** @type HTMLElement */
     const parentElement = element[0];
     const childElements = {

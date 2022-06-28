@@ -23,8 +23,6 @@ const {document, appBridge} = window;
  * @param {LoggerFactory} logger - custom logger factory
  */
 export default function FooterController(scope, restClient, viewFrame, toast, logger) {
-    const {document} = window;
-
     const footerMain = document.getElementById('mainFooter');
     const fetchReleaseInfo = FetchReleaseInfo.bind({_restClient: restClient});
 

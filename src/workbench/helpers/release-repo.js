@@ -8,6 +8,7 @@
 'use strict';
 
 const repository = 'https://raw.githubusercontent.com/getprimate/release-info/main';
+const {appBridge} = window;
 
 /**
  * Retrieves version information from the repository.
