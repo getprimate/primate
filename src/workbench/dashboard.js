@@ -11,11 +11,7 @@ import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.
 
 import Primate from './primate.js';
 
-import TokenInputDirective from './directives/token-input.js';
-import MultiCheckDirective from './directives/multi-check.js';
-import ClipboardTextDirective from './directives/clipboard-text.js';
-import RecordMapDirective from './directives/record-map.js';
-import RecordTextDirective from './directives/record-text.js';
+import ThemeEngine from './interface/theme-engine.js';
 
 import HeaderController from './controllers/header.js';
 import FooterController from './controllers/footer.js';
@@ -37,11 +33,16 @@ import PluginListController from './controllers/plugin-list.js';
 import PluginEditController from './controllers/plugin-edit.js';
 import SettingsController from './controllers/settings.js';
 import ReleaseInfoController from './controllers/release-info.js';
-
-import {DashboardTemplate} from './template.js';
 import RouteListController from './controllers/route-list.js';
 
-import ThemeEngine from './interface/theme-engine.js';
+import {DashboardTemplate} from './template.js';
+
+import SidebarNavDirective from './directives/sidebar-nav.js';
+import TokenInputDirective from './directives/token-input.js';
+import MultiCheckDirective from './directives/multi-check.js';
+import ClipboardTextDirective from './directives/clipboard-text.js';
+import RecordMapDirective from './directives/record-map.js';
+import RecordTextDirective from './directives/record-text.js';
 
 const {/** @type {IPCBridge} */ ipcBridge, document} = window;
 
@@ -174,6 +175,7 @@ ipcBridge.onEventPush('Open-Release-Info', () => {
     window.location.href = '#!/release-info/current';
 });
 
+Primate.directive(SidebarNavDirective);
 Primate.directive(TokenInputDirective);
 Primate.directive(MultiCheckDirective);
 Primate.directive(ClipboardTextDirective);

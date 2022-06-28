@@ -21,6 +21,8 @@ import WelcomeIntroController from './controllers/welcome-intro.js';
 
 import {BootstrapTemplate} from './template.js';
 
+import SidebarNavDirective from './directives/sidebar-nav.js';
+
 const {
     /**
      * IPC bridge exposed over isolated context.
@@ -118,6 +120,8 @@ ipcBridge.onEventPush('Open-Release-Info', () => {
 });
 
 Primate.config(BootstrapTemplate, '$route');
+
+Primate.directive(SidebarNavDirective);
 
 Primate.controller(ClientSetupController, 'restClient', 'viewFrame', 'toast');
 Primate.controller(SidebarController, 'restClient', 'viewFrame', 'toast');

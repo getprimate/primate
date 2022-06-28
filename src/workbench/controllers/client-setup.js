@@ -214,11 +214,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         }
 
         if (savedItemCount === 0) {
-            document
-                .getElementById('sidebarMenu')
-                .querySelector('ul.navigation__menu li:first-child a.navigation__link')
-                .click();
-
+            window.location.href = '#!/welcome';
             return true;
         }
 

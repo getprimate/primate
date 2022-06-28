@@ -10,24 +10,7 @@
 <div class="app-layout hidden">
 <aside id="sidebarMenu" data-ng-controller="SidebarController">
     <div class="branding">Primate</div><!-- .branding -->
-    <nav class="navigation" data-ng-click="redirectNav($event)">
-        <div class="navigation__title">Node</div><!-- .navigation__title -->
-        <ul class="navigation__menu">
-            <li class="active"><a class="navigation__link" data-ng-href="#!/"><span class="material-icons">view_quilt</span><span>Overview</span></a></li>
-            <li><a class="navigation__link" data-ng-href="#!/node-config"><span class="material-icons">cloud_done</span><span>Configuration</span></a></li>
-        </ul><!-- .navigation__menu -->
-        <div class="navigation__title">Objects</div><!-- .navigation__title -->
-        <ul class="navigation__menu">
-            <li><a class="navigation__link" data-ng-href="#!/tag-search"><span class="material-icons warning">search</span><span>Tag Search</span></a></li>
-            <li data-ng-repeat="menu in navMenuObjects">
-                <a class="navigation__link" data-ng-href="{{menu.listView}}">
-                    <span class="material-icons">{{menu.icon}}</span>
-                    <span>{{menu.displayText}}</span>
-                </a>
-                <a data-ng-if="menu.editView.length>=5" href="{{menu.editView}}" class="navigation__link"><span class="material-icons">add</span></a>
-            </li>
-        </ul><!-- .navigation__menu -->
-    </nav><!-- .navigation -->
+    <nav class="navigation" data-sidebar-nav="sidebar-nav" data-current-view="dashboard"></nav><!-- .navigation -->
 
     <section class="drawer__base">
         <ul class="base-menu">

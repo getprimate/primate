@@ -12,9 +12,8 @@ import * as _ from '../lib/core-toolkit.js';
 /**
  * Provides a callback for record model watcher.
  *
- * This function should not be used directly.
- * Allways create and instant of this function with
- * the below properties:
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
  *
  * @property {Object} _recordScope - The current directive scope.
  * @property {HTMLElement} _recordElement - The text area element.
@@ -36,9 +35,8 @@ function RecordModelWatcher(current, previous) {
 /**
  * Provides a callback for input event listener.
  *
- * This function should not be used directly.
- * Allways create and instant of this function with
- * the below properties:
+ * This function should not be called directly.
+ * Allways create a bound function with the below context:
  *
  * @property {Object} _recordScope - The current directive scope.
  * @property {Object} _recordScope.recordModel - The model object.
