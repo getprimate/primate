@@ -204,8 +204,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
     scope.certList = [{id: '', displayName: '- None -'}];
     scope.certNext = {offset: ''};
 
-    scope.metadata = {createdAt: ''};
-
     /**
      * Retrieves target objects mapped under this upstream.
      *
@@ -280,7 +278,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
                 const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.upstreamId = response.id;
-                scope.metadata.createdAt = `Created on ${createdAt}`;
 
                 restConfig.method = 'PATCH';
                 restConfig.endpoint = `${restConfig.endpoint}/${scope.upstreamId}`;
@@ -494,8 +491,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
             for (let hashField of ['up-ed__txt04', 'up-ed__txt05']) {
                 scope.updateInputHint(hashField);
             }
-
-            scope.metadata.createdAt = `Created on ${createdAt}`;
 
             viewFrame.addAction('Delete', '#!/upstreams', 'critical delete', 'upstream', restConfig.endpoint);
             viewFrame.addBreadcrumb(location.path(), response.name);
