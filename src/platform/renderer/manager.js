@@ -31,14 +31,14 @@ const themeScanner = new ThemeScanner([path.join(DATA_PATH, 'User-Themes')]);
 RUNNING.mainWindow = new RendererWindow({title: APP_NAME});
 
 async function createMainWindow() {
-    RUNNING.mainWindow.create();
+    const isCreated = RUNNING.mainWindow.create();
 
     if (RUNNING.themesLoaded === false) {
         await themeScanner.scanThemes();
         RUNNING.themesLoaded = true;
     }
 
-    return true;
+    return isCreated;
 }
 
 async function loadBootstrap() {
@@ -47,6 +47,14 @@ async function loadBootstrap() {
 
 function writeConfigState() {
     configManager.saveState();
+}
+
+function clearSessions() {
+    const keys = Object.keys(RUNNING.sessions);
+
+    for (let key of keys) {
+        delete RUNNING.sessions[key];
+    }
 }
 
 ipcServer.registerRequestHandler('Write-Connection-Config', (event, payload) => {
@@ -127,5 +135,6 @@ app.on('browser-window-created', (event, window) => {
 module.exports = {
     createMainWindow,
     loadBootstrap,
-    writeConfigState
+    writeConfigState,
+    clearSessions
 };

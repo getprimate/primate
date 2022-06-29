@@ -22,8 +22,8 @@ app.setPath('userData', DATA_PATH);
 
 app.on('ready', async () => {
     try {
-        await rendererManager.createMainWindow();
-        await rendererManager.loadBootstrap();
+        const isCreated = await rendererManager.createMainWindow();
+        if (isCreated) await rendererManager.loadBootstrap();
     } catch (e) {
         /* eslint-disable-next-line no-console */
         console.error(e);
@@ -31,8 +31,9 @@ app.on('ready', async () => {
     }
 });
 
-app.on('activate', async() => {
-    await rendererManager.createMainWindow();
+app.on('activate', async () => {
+    const isCreated = await rendererManager.createMainWindow();
+    if (isCreated) await rendererManager.loadBootstrap();
 });
 
 app.on('will-quit', () => {
@@ -41,6 +42,8 @@ app.on('will-quit', () => {
 });
 
 app.on('window-all-closed', () => {
+    rendererManager.clearSessions();
+
     if (os.type() !== 'Darwin') app.quit();
 });
 
