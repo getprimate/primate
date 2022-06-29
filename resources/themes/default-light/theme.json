@@ -3,7 +3,7 @@
   "name": "Default Light",
   "description": "The default Light Theme for Primate",
   "version": "0.1.0",
-  "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
+  "maintainer": "Primate <github.com/getprimate>",
   "styles": "default-light.json",
   "fileType": "json"
 }

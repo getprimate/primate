@@ -3,7 +3,7 @@
   "name": "Green Ocean",
   "description": "A greenish dark theme",
   "version": "0.1.0",
-  "maintainer": "Ajay Sreedhar <ajaysreedhar05@mail.com>",
+  "maintainer": "Primate <github.com/getprimate>",
   "styles": "ocean-theme.json",
   "fileType": "json"
 }
