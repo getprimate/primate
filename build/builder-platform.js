@@ -73,7 +73,7 @@ function configureMacOptions() {
         background: path.join(RES_DIR, 'dmg-background.png'),
         icon: path.join(ICON_DIR, 'dmg-scalable.icns'),
         iconSize: 96,
-        title: 'Primate v1.0.0',
+        title: 'primate-v1.0.0',
         contents: [
             {
                 x: 175,
@@ -98,7 +98,7 @@ function configureMacOptions() {
  *
  * The default installer is NSIS.
  *
- * @returns {PackagerOptions} The packager options for electron builder.
+ * @returns {Object} The packager options for electron builder.
  */
 function configureWin32Options() {
     const config = releaseConfig;
@@ -107,7 +107,7 @@ function configureWin32Options() {
     config.win = {
         target: 'nsis',
         icon: path.join(ICON_DIR, 'app-scalable.ico'),
-        legalTrademarks: 'getprimate.xyz'
+        legalTrademarks: 'Primate'
     };
 
     config.nsis = {
