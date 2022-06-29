@@ -17,9 +17,9 @@
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label class="field-label" title="algorithm">Algorithm</label>
+                        <label class="field-label" title="algorithm" for="up-ed__sel01">Algorithm</label>
                         <div class="field-input">
-                            <select name="algorithm" data-ng-model="upstreamModel.algorithm" data-ng-selected="upstreamModel.algorithm">
+                            <select id="up-ed__sel01" name="algorithm" data-ng-model="upstreamModel.algorithm" data-ng-selected="upstreamModel.algorithm">
                                 <option data-ng-repeat="value in ENUM_ALGORITHMS" value="{{value}}">{{value | capitalise}}</option>
                             </select><!-- #up-ed__sel01 -->
                         </div><!-- .field-input -->
@@ -51,7 +51,7 @@
                         <div class="field-input" data-ng-switch="certId">
                             <select data-ng-switch-when="__none__" class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
                                 <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
-                            </select><!-- #up-ed__sel01 -->
+                            </select><!-- #up-ed__sel06 -->
                             <article data-ng-switch-default>{{upstreamModel.client_certificate}}</article>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
@@ -76,14 +76,14 @@
                         <div class="field-input">
                             <select class="stretch" id="up-ed__sel02" name="hashInput" data-ng-model="upstreamModel.hash_on" data-ng-selected="upstreamModel.hash_on" data-ng-change="updateInputHint('up-ed__txt04')">
                                 <option data-ng-repeat="value in ENUM_HASH_INPUTS" value="{{value}}">{{value | capitalise}}</option>
-                            </select><!-- #up-ed__sel01 -->
+                            </select><!-- #up-ed__sel02 -->
                         </div><!-- .field-input -->
                         <div class="field-note">Defaults to weighted-round-robin scheme.</div>
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
                 <div class="col md-8">
                     <div class="form__field">
-                        <label class="field-label" title="hash_on_header, hash_on_cookie">Primary Hash Value</label>
+                        <label class="field-label" title="hash_on_header, hash_on_cookie" for="up-ed__txt04">Primary Hash Value</label>
                         <div class="field-input"><input id="up-ed__txt04" type="text" name="primaryHashValue" value="" data-ng-model="upstreamModel.hash_on_value" placeholder="Not required when set to 'none'" /></div><!-- .field-input -->
                         <div class="field-note">Required only if primary hash input is header or cookie</strong>.</div>
                     </div>
@@ -105,7 +105,7 @@
 
                 <div class="col md-8">
                     <div class="form__field">
-                        <label class="field-label" title="hash_fallback_header">Fallback Hash Value</label><!-- .field-label -->
+                        <label class="field-label" title="hash_fallback_header" for="up-ed__txt05">Fallback Hash Value</label><!-- .field-label -->
                         <div class="field-input">
                             <div class="field-input"><input id="up-ed__txt05" type="text" name="fallbackHashValue" value="" data-ng-model="upstreamModel.hash_fallback_value" placeholder="Not required when set to 'none'" /></div><!-- .field-input -->
                             <div class="field-note">Required only if fallback hash input is header or cookie</strong>.</div>
@@ -123,15 +123,15 @@
                         <div class="field-input">
                             <select class="stretch" id="up-ed__sel04" name="hcaType" data-ng-model="upstreamModel.healthchecks.active.type" data-ng-selected="upstreamModel.healthchecks.active.type">
                                 <option data-ng-repeat="value in ENUM_PROTOCOL" value="{{value}}">{{value | capitalise}}</option>
-                            </select><!-- #up-ed__sel01 -->
+                            </select><!-- #up-ed__sel04 -->
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
                 <div class="col md-4">
                     <div class="form__field">
-                        <label for="up-ed__chk01" class="field-label" title="healthchecks.active.https_verify_certificate">SSL Validation</label>
-                        <div class="field-input"><label class="checkbox"><input id="up-ed__chk01" type="checkbox" data-name="hcaVerifySSL" value="{{upstreamModel.healthchecks.active.https_verify_certificate}}" data-ng-checked="upstreamModel.healthchecks.active.https_verify_certificate===true" /> Verify Certificate</label> </div><!-- .field-input -->
+                        <label for="up-ed__chk01" class="field-label">SSL Validation</label>
+                        <div class="field-input"><label title="healthchecks.active.https_verify_certificate" class="checkbox"><input id="up-ed__chk01" type="checkbox" data-name="hcaVerifySSL" value="{{upstreamModel.healthchecks.active.https_verify_certificate}}" data-ng-checked="upstreamModel.healthchecks.active.https_verify_certificate===true" /> Verify Certificate</label> </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-4 -->
 
@@ -243,7 +243,7 @@
                                 <div class="field-input">
                                     <select class="stretch" id="up-ed__sel05" name="hcpType" data-ng-model="upstreamModel.healthchecks.passive.type" data-ng-selected="upstreamModel.healthchecks.passive.type">
                                         <option data-ng-repeat="value in ENUM_PROTOCOL" value="{{value}}">{{value | capitalise}}</option>
-                                    </select><!-- #up-ed__sel01 -->
+                                    </select><!-- #up-ed__sel05 -->
                                 </div><!-- .field-input -->
                             </div><!-- .form__field -->
                         </div><!-- .col.md-6 -->

@@ -9,8 +9,9 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label for="rt-ed__txt01" class="field-label" title="name">Route Name (optional)</label>
+                <label for="rt-ed__txt01" class="field-label" title="name">Route Name</label>
                 <div class="field-input"><input id="rt-ed__txt01" type="text" name="serviceName" value="" data-ng-model="routeModel.name" placeholder="my-route" /></div>
+                <div class="field-note">Optional: Must be unique if present.</div>
             </div><!-- .form__field -->
 
             <div class="form__field">
@@ -27,9 +28,9 @@
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label">Upstream URL</label>
+                        <label class="field-label" for="rt-ed__chk01">Upstream URL</label>
                         <div class="field-input">
-                            <label class="checkbox" title="strip_path"><input type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
+                            <label class="checkbox" title="strip_path"><input id="rt-ed__chk01" type="checkbox" data-ng-model="routeModel.strip_path"> Strip matching prefix</label>
                         </div><!-- .field-input -->
                     </div><!-- .form__field -->
                 </div><!-- .col.md-6 -->

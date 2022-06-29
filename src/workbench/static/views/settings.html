@@ -44,28 +44,28 @@
             <div class="row">
                 <div class="col md-12">
                     <div class="form__field">
-                        <label class="field-label">Connection Name</label>
-                        <div class="field-input"><input data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" maxlength="35" /></div>
+                        <label class="field-label" for="st-ed__txt01">Connection Name</label>
+                        <div class="field-input"><input id="st-ed__txt01" data-ng-model="connectionModel.name" type="text" placeholder="Example: Staging server" name="connectionName" maxlength="35" /></div>
                     </div>
                 </div><!-- .col.md-12 -->
             </div><!-- .row -->
 
             <div class="form__field">
-                <label class="field-label">Username</label>
-                <div class="field-input"><input data-ng-model="credentialModel.username" type="text" placeholder="(Unchanged)" name="username" /></div>
+                <label class="field-label" for="st-ed__txt02">Username</label>
+                <div class="field-input"><input id="st-ed__txt02" data-ng-model="credentialModel.username" type="text" placeholder="(Unchanged)" name="username" /></div>
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label">Password</label>
-                <div class="field-input"><input data-ng-model="credentialModel.password" type="password" placeholder="(Unchanged)" name="password" /></div>
+                <label class="field-label" for="st-ed__txt03">Password</label>
+                <div class="field-input"><input id="st-ed__txt03" data-ng-model="credentialModel.password" type="password" placeholder="(Unchanged)" name="password" /></div>
             </div><!-- .form__field -->
 
             <div class="row">
                 <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label">Color</label>
+                        <label class="field-label" for="st-ed__clr01">Color</label>
                         <ul class="field-input linked">
-                            <li><input data-ng-model="connectionModel.colorCode" type="color" name="colorCode" /></li>
+                            <li><input id="st-ed__clr01" data-ng-model="connectionModel.colorCode" type="color" name="colorCode" /></li>
                             <li class="stretch"><input type="text" data-ng-model="connectionModel.colorCode" readonly /></li>
                         </ul>
                     </div>
@@ -116,9 +116,9 @@
             <div class="row">
             <div class="col md-6">
                     <div class="form__field">
-                        <label class="field-label">Date Format</label>
+                        <label class="field-label" for="st-ed__sel01">Date Format</label>
                         <div class="field-input">
-                            <select data-ng-model="workbenchConfig.dateFormat"><option data-ng-repeat="format in ENUM_DATE_FORMAT" value="{{format.nodeValue}}">{{format.displayText}}</option></select>
+                            <select id="st-ed__sel01" data-ng-model="workbenchConfig.dateFormat"><option data-ng-repeat="format in ENUM_DATE_FORMAT" value="{{format.nodeValue}}">{{format.displayText}}</option></select>
                         </div><!-- .field-input -->
                     </div>
             </div><!-- .col.md-6 -->

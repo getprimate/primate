@@ -9,21 +9,21 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label class="field-label" title="name">Plugin Name</label>
+                <label class="field-label" title="name" for="pg-ed__sel01">Plugin Name</label>
                 <div class="field-input" data-ng-switch="pluginId">
                 <select data-ng-switch-when="__none__" id="pg-ed__sel01" name="name" data-ng-model="pluginModel.name" data-ng-change="changePlugin()">
                     <option value="__none__">- Select a Plugin -</option>
                     <option data-ng-repeat="plugin in pluginList" value="{{plugin}}">{{plugin}}</option>
-                </select>
+                </select><!-- #pg-ed__sel01 -->
                 <article data-ng-switch-default>{{pluginModel.name}}</article>
                 </div><!-- .field-input -->
             </div><!-- .form__field -->
         </div><!-- .col.md-8 -->
         <div class="col md-4">
             <div class="form__field">
-                <label for="pg-ed__chk01" class="field-label" title="enabled">Plugin State</label>
+                <label for="pg-ed__chk01" class="field-label">Plugin State</label>
                 <div class="field-input">
-                    <label class="checkbox"><input type="checkbox" id="pg-ed__chk01" name="pluginEnabled" data-ng-model="pluginModel.enabled" checked /> Enable Plugin</label>
+                    <label class="checkbox" title="enabled"><input type="checkbox" id="pg-ed__chk01" name="pluginEnabled" data-ng-model="pluginModel.enabled" checked /> Enable Plugin</label>
                 </div>
             </div><!-- .form__field -->
         </div><!-- .col.md-4 -->
@@ -32,9 +32,9 @@
         <div class="row">
         <div class="col md-8">
             <div class="form__field">
-                <label class="field-label" title="route">Route</label>
+                <label for="pg-ed__sel02" class="field-label" title="route">Route</label>
                 <div class="field-input" data-ng-switch="routeId">
-                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.route" data-ng-selected="pluginModel.route">
+                    <select id="pg-ed__sel02" data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.route" data-ng-selected="pluginModel.route">
                         <option value="__none__">- All Routes -</option>
                         <option data-ng-repeat="route in routeList" value="{{route.id}}">{{route.displayText}} - {{route.subTagsText}}</option>
                     </select>
@@ -44,9 +44,9 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label" title="service">Service</label>
+                <label for="pg-ed__sel03" class="field-label" title="service">Service</label>
                 <div class="field-input" data-ng-switch="serviceId">
-                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.service" data-ng-selected="pluginModel.service">
+                    <select id="pg-ed__sel03" data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.service" data-ng-selected="pluginModel.service">
                         <option value="__none__">- All Services -</option>
                         <option data-ng-repeat="service in serviceList" value="{{service.id}}">{{service.displayText}} - {{service.subTagsText}}</option>
                     </select>
@@ -56,9 +56,9 @@
             </div><!-- .form__field -->
 
             <div class="form__field">
-                <label class="field-label" title="consumer">Consumer</label>
+                <label for="pg-ed__sel04" class="field-label" title="consumer">Consumer</label>
                 <div class="field-input" data-ng-switch="consumerId">
-                    <select data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.consumer" data-ng-selected="pluginModel.consumer">
+                    <select id="pg-ed__sel04" data-ng-switch-when="__none__" name="consumer" data-ng-model="pluginModel.consumer" data-ng-selected="pluginModel.consumer">
                         <option value="__none__">All Consumers</option>
                         <option data-ng-repeat="consumer in consumerList" value="{{consumer.id}}">{{consumer.displayText}} - {{consumer.subTagsText}}</option>
                     </select>
