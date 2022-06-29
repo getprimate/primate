@@ -416,6 +416,7 @@ record-text .control button {
     padding: 2px 8px;
     background: var(--widget-tc) none;
     border-color: var(--border-fg);
+    min-height: auto !important;
 }
 
 record-map .control .material-icons,
@@ -1033,7 +1034,7 @@ section#mainLayout > .container {
 /* =-=-=-=-=-= Main footer styles =-=-=-=-=-= */
 footer#mainFooter.maximized + section#mainLayout,
 main#mainWrapper section#mainLayout.resized {
-    height: calc(100% - 380px) !important;
+    height: calc(100% - 286px) !important;
 }
 
 footer#mainFooter.ng-scope.ng-hide + section#mainLayout {
@@ -1362,7 +1363,7 @@ form select[multiple] option:hover {
 form article {
     display: block;
     padding: 12px;
-    border: 2px dashed var(--border-fg);
+    border: 1px dashed var(--border-fg);
     border-radius: var(--corner-radius);
     color: var(--accent-bg);
     line-height: 1.19rem;
@@ -1984,6 +1985,15 @@ table.card-table tfoot.pagination th {
 table.card-table strong {
     color: var(--primary-fg);
     font-weight: 500;
+}
+
+table.card-table.clickable {
+    cursor: unset;
+}
+
+table.card-table.clickable strong,
+table.card-table.clickable .material-icons {
+    cursor: pointer;
 }
 
 table.card-table.clickable tbody tr td {
