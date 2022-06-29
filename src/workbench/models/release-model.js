@@ -9,7 +9,7 @@
 
 export default {
     version: window.appBridge.getVersion(),
-    publishedAt: 1655785734,
+    publishedAt: 1656499703,
     author: 'Ajay Sreedhar <ajaysreedhar05@gmail.com>',
     downloadLink: '',
     adminAPIList: ['v2.7.x'],
