@@ -2410,6 +2410,10 @@ canvas#chart_TimerStat {
     font-weight: 500;
 }
 
+form#pg-ed__frm01 > div.border-bottom-solid.ng-scope:nth-last-child(4) {
+    border-bottom-width: 0 !important;
+}
+
 /**
  * Responsive media queries
  *
