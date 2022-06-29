@@ -37,6 +37,7 @@ class ConfigManager {
         }
 
         this._location = location;
+        this._shouldSave = false;
 
         for (let name in CURRENT_CONFIG) {
             if (!fs.existsSync(`${this._location}/${name}.json`)) {
@@ -67,6 +68,7 @@ class ConfigManager {
     }
 
     removeDefaultConnection() {
+        this._shouldSave = true;
         CURRENT_CONFIG.gateway.defaultHost = '';
     }
 
@@ -104,6 +106,8 @@ class ConfigManager {
         }
 
         delete config.isDefault;
+        this._shouldSave = true;
+
         return config;
     }
 
@@ -120,13 +124,20 @@ class ConfigManager {
             }
         }
 
+        this._shouldSave = true;
         return CURRENT_CONFIG.workbench;
     }
 
     saveState() {
+        if (this._shouldSave === false) {
+            return this._shouldSave;
+        }
+
         for (let type in CURRENT_CONFIG) {
             this._write(type);
         }
+
+        return this._shouldSave;
     }
 }
 
