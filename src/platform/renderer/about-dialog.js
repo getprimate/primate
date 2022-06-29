@@ -13,7 +13,7 @@ const {app, dialog} = require('electron');
 const extended = {
     Version: app.getVersion(),
     Electron: process.versions.electron,
-    Date: new Date().toUTCString(),
+    Date: 'June 29, 2022',
     Platform: os.release()
 };
 
