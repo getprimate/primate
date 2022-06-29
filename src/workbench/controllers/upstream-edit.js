@@ -7,7 +7,6 @@
 'use strict';
 
 import * as _ from '../lib/core-toolkit.js';
-import {epochToDate} from '../helpers/date-lib.js';
 import {urlQuery, urlOffset, simplifyObjectId, editViewURL, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 import upstreamModel from '../models/upstream-model.js';
@@ -275,8 +274,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
             const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
 
             if (_.isNone(scope.upstreamId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-
                 scope.upstreamId = response.id;
 
                 restConfig.method = 'PATCH';
@@ -484,8 +481,6 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.get(restConfig.endpoint);
 
         request.then(({data: response}) => {
-            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-
             refreshUpstreamModel(scope.upstreamModel, response);
 
             for (let hashField of ['up-ed__txt04', 'up-ed__txt05']) {

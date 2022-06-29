@@ -184,8 +184,6 @@ export default function CertificateEditController(scope, location, routeParams, 
 
         request.then(({data: response}) => {
             if (_.isNone(scope.certId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-
                 scope.certId = response.id;
 
                 restConfig.method = 'PATCH';

@@ -8,7 +8,6 @@
 'use strict';
 
 import {deepClone, isNil, isNone} from '../lib/core-toolkit.js';
-import {epochToDate} from '../helpers/date-lib.js';
 import {simplifyObjectId} from '../helpers/rest-toolkit.js';
 
 import caModel from '../models/ca-model.js';
