@@ -145,14 +145,13 @@
             </div><!-- .form__field -->
 
             <div class="row">
-                <div class="col md-6">&nbsp;</div><!-- .col.md-6 -->
-                <div class="col md-6">
+                <div class="col md-12">
                     <div data-ng-switch="serviceId" class="form__field align-right">
                         <button class="subtle" type="button" data-ng-click="resetServiceForm($event)">Clear</button>
                         <button data-ng-switch-when="__none__" type="submit" name="action" value="create">Create</button>
                         <button data-ng-switch-default="" class="accent" type="submit" name="action" value="update">Update</button>
                     </div><!-- .form__field -->
-                </div><!-- .col.md-6 -->
+                </div><!-- .col.md-12 -->
             </div><!-- .row -->
 
         </form>
