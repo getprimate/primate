@@ -49,7 +49,7 @@ export default function ReleaseInfoController(scope, routeParams, restClient, vi
     });
 
     request.catch(() => {
-        if (routeParams.version === 'current') toast.error('Internet connection recommended.');
+        if (routeParams.version === 'current') toast.warning('Internet connection recommended.');
         else toast.error('Unable to fetch release information.');
 
         scope.upgradedVersion = 'Failed to check.';
