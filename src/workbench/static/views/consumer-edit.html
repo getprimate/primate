@@ -6,7 +6,7 @@
 <div class="panel__heading"><span class="title">Consumer Details</span> <span data-ng-if="consumerId.length>=12" data-clipboard-text="{{consumerId}}">{{consumerId}}</span></div>
 
 <div class="panel__body">
-    <form id="cs-ed__frm01" class="form" method="post" data-ng-submit="submitConsumerForm($event)">
+    <form class="form" method="post" data-ng-submit="submitConsumerForm($event)">
     <div class="row">
         <div class="col md-6">
             <div class="form__field">
@@ -63,7 +63,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="key-auth">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="key-auth">
             <div class="form__field">
                 <label for="cs-ed__txt03" class="field-label" title="key">Authentication Key</label>
                 <div class="field-input"><input id="cs-ed__txt03" class="param" type="text" data-ng-model="userAuthModel.keyAuth.key" name="keyName" placeholder="Leave blank to auto-generate" value="" /></div>
@@ -121,7 +121,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="basic-auth">
             <div class="form__field">
                 <label for="cs-ed__txt05" class="field-label" title="username">Username</label>
                 <div class="field-input"><input id="cs-ed__txt05" type="text" data-ng-model="userAuthModel.basicAuth.username" name="basicUsername" placeholder="jane-doe" required /></div>
@@ -181,7 +181,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="oauth2">
             <div class="form__field">
                 <label for="cs-ed__txt07" class="field-label" title="name">Application Name</label>
                 <div class="field-input"><input id="cs-ed__txt07" type="text" data-ng-model="userAuthModel.oauth2.name" name="oauthName" placeholder="demo-application" required /></div>
@@ -262,7 +262,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="hmac-auth">
             <div class="form__field">
                 <label for="cs-ed__txt11" class="field-label" title="username">Username</label>
                 <div class="field-input"><input id="cs-ed__txt11" type="text" data-ng-model="userAuthModel.hmacAuth.username" name="hmacUser" placeholder="john-doe" required /></div>
@@ -321,7 +321,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="jwt">
             <div class="form__field">
                 <label for="cs-ed__sel01" class="field-label" title="algorithm">Signature Algorithm</label>
                 <div class="field-input">
@@ -396,7 +396,7 @@
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
-        <form class="form form-new-auth" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
+        <form class="form form-new-auth pad-top-20" data-ng-submit="submitAuthForm($event)" data-auth-method="acls">
             <div class="form__field">
                 <label for="cs-ed__txt15" class="field-label" title="group">Group Name</label>
                 <div class="field-input"><input id="cs-ed__txt15" type="text" data-ng-model="userAuthModel.acls.group" name="aclGroup" placeholder="admin-group" required /></div>

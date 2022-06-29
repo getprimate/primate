@@ -141,6 +141,7 @@ textarea,
 select,
 label.checkbox {
     width: 100%;
+    min-height: 40px;
     padding: 10px;
     border: var(--border-size) solid var(--border-fg);
     border-radius: var(--corner-radius);
@@ -294,14 +295,21 @@ label.checkbox.success input[type="checkbox"]:checked { background-color: var(--
 
 input[type='color'] {
     display: inline-block;
+    min-height: 40px;
+    min-width: 50px;
+    padding-left: 5px ;
+    padding-right: 5px;
     background-color: var(--widget-bg);
     border: 2px solid var(--border-fg);
     border-radius: var(--corner-radius);
-    height: 41px;
 }
 
 input[type='color']::after {
     height: 20px;
+}
+
+input[type='color' i] {
+    background-color: var(--widget-tc);
 }
 
 multi-check,
@@ -474,8 +482,9 @@ token-input ul.token-input__list li span.material-icons {
 button,
 a.btn {
     display: inline-block;
+    min-height: 40px;
     margin: 0 6px 0 0;
-    padding: 8px 18px;
+    padding: 8px 28px;
     border: 0 solid transparent;
     border-radius: var(--corner-radius);
     cursor: pointer;
@@ -905,6 +914,13 @@ header#mainHeader button.create.subtle {
 header#mainHeader button.create.subtle:hover {
     color: var(--primary-fg);
     background-color: var(--widget-bg);
+}
+
+header#mainHeader button.create.subtle,
+header#mainHeader button.critical.delete {
+    min-height: auto !important;
+    padding-left: 18px;
+    padding-right: 18px;
 }
 
 header#mainHeader .navigate button.text {
