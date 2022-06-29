@@ -9,10 +9,9 @@
 
 const os = require('node:os');
 const path = require('node:path');
-const {app, nativeImage, Menu, BrowserWindow} = require('electron');
+const {app, nativeImage, BrowserWindow} = require('electron');
 
 const {PLATFORM_PATH, WORKBENCH_PATH, RESOURCES_PATH} = require('../constant/paths');
-const {menuTemplate} = require('./menu');
 
 /**
  * @property {Electron.BrowserWindow} _window
@@ -73,6 +72,10 @@ class RendererWindow {
     }
 
     create() {
+        if (this._window !== null) {
+            return false;
+        }
+
         const browserWindow = new BrowserWindow(this._options);
 
         browserWindow.on('closed', () => {
@@ -80,6 +83,7 @@ class RendererWindow {
         });
 
         this._window = browserWindow;
+        return true;
     }
 
     async showBootstrap() {
@@ -119,18 +123,4 @@ class RendererWindow {
     }
 }
 
-app.on('browser-window-created', (event, window) => {
-    let menu = Menu.buildFromTemplate(menuTemplate);
-
-    if (process.platform === 'darwin' || process.platform === 'mas') {
-        Menu.setApplicationMenu(menu);
-    } else {
-        window.setMenu(menu);
-    }
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
-});
-
-module.exports = {RendererWindow};
+module.exports = RendererWindow;
