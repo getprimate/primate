@@ -73,7 +73,7 @@ function configureMacOptions() {
         background: path.join(RES_DIR, 'dmg-background.png'),
         icon: path.join(ICON_DIR, 'dmg-scalable.icns'),
         iconSize: 96,
-        title: 'primate-v1.0.0',
+        title: 'Install Primate',
         contents: [
             {
                 x: 175,
@@ -87,7 +87,8 @@ function configureMacOptions() {
                 type: 'link',
                 path: '/Applications'
             }
-        ]
+        ],
+        artifactName: '${productName}-v${version}.dmg'
     };
 
     return {config, targets};
