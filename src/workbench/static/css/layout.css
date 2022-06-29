@@ -130,7 +130,7 @@ body {
     color: var(--default-fg);
     font-family: 'Roboto', sans-serif;
     letter-spacing: 0.2px;
-    background-color: var();
+    background-color: var(--default-bg);
     animation: fadein 1s;
     -webkit-animation: fadein 1s;
 
@@ -498,7 +498,6 @@ a.btn {
     min-height: 40px;
     margin: 0 6px 0 0;
     padding: 8px 28px;
-    border: 0 solid transparent;
     border-radius: var(--corner-radius);
     cursor: pointer;
     color: var(--accent-fg);
@@ -745,7 +744,7 @@ aside#sidebarMenu nav.navigation ul.navigation__menu li.active {
     background-color: var(--primary-bg);
     color: var(--primary-fg);
     font-weight: 500;
-    box-shadow: 2px 0px 0 0 var(--accent-bg) inset;
+    box-shadow: 2px 0 0 0 var(--accent-bg) inset;
 }
 
 aside#sidebarMenu nav.navigation ul.navigation__menu li.active a {
@@ -885,9 +884,9 @@ header#mainHeader::after {
     clear: both;
 }
 
-header#mainHeader .navigate {
+header#mainHeader .navigate,
+header#mainHeader .title {
     float: left;
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -898,6 +897,21 @@ header#mainHeader .navigate {
     width: auto;
     margin-right: 5px;
     vertical-align: middle;
+}
+
+header#mainHeader .navigate {
+    position: relative;
+}
+
+header#mainHeader .title {
+    padding: 0;
+}
+
+header#mainHeader .title > span {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--primary-fg);
 }
 
 header#mainHeader ul.actions {
@@ -938,36 +952,13 @@ header#mainHeader button.critical.delete {
 
 header#mainHeader .navigate button.text {
     display: inline-block;
-    padding: 0;
+    padding: 2px 0 0 0;
     text-align: left;
-    padding-top: 2px;
 }
 
 header#mainHeader .navigate .material-icons {
     font-size: 1.35rem;
     color: var(--default-fg);
-}
-
-header#mainHeader .title {
-    float: left;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    align-content: flex-start;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    height: 100%;
-    width: auto;
-    margin-right: 5px;
-    vertical-align: middle;
-    padding: 0;
-}
-
-header#mainHeader .title > span {
-    display: inline-block;
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: var(--primary-fg);
 }
 
 header#mainHeader .navigate ~ .title {
