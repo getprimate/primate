@@ -18,7 +18,8 @@
  *      'Read-Workbench-Config' |
  *      'Read-Theme-List' |
  *      'Read-Theme-Style' |
- *      'Write-Workbench-Config'
+ *      'Write-Workbench-Config' |
+ *      'Open-External-Link'
  * )} IPCAction
  */
 
