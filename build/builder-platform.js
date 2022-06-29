@@ -16,7 +16,6 @@ const {releaseConfig} = require('./builder-config');
 
 function configureLinuxOptions(type = 'dir') {
     const config = releaseConfig;
-    const targets = Platform.LINUX.createTarget(type, Arch.x64);
 
     config.linux = {
         icon: ICON_DIR,
@@ -56,6 +55,7 @@ function configureLinuxOptions(type = 'dir') {
             break;
     }
 
+    const targets = Platform.LINUX.createTarget(config.linux.target, Arch.x64);
     return {config, targets};
 }
 
