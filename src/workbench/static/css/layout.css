@@ -51,12 +51,24 @@
 }
 
 @keyframes delayflash {
-    0% { opacity:0; }
-    25% { opacity:0; }
-    50% { opacity:0; }
-    75% { opacity:0; }
-    90% { opacity:0; }
-    100% { opacity:1; }
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 0;
+    }
+    90% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 * {
@@ -297,7 +309,7 @@ input[type='color'] {
     display: inline-block;
     min-height: 40px;
     min-width: 50px;
-    padding-left: 5px ;
+    padding-left: 5px;
     padding-right: 5px;
     background-color: var(--widget-bg);
     border: 2px solid var(--border-fg);
@@ -387,7 +399,7 @@ record-map > h6 {
     font-size: 0.9rem;
     background: var(--primary-tc) none;
     border-bottom: var(--border-size) solid var(--border-fg);
-    border-radius: var(--corner-radius)var(--corner-radius) 0 0;
+    border-radius: var(--corner-radius) var(--corner-radius) 0 0;
 }
 
 record-text > textarea {
@@ -783,7 +795,7 @@ aside#sidebarMenu .drawer__base {
     position: absolute;
     bottom: 0;
     width: calc(100% - 20px);
-    padding: 10px 20px;
+    padding: 0 10px;
     margin: 10px;
     background-color: var(--primary-bg);
     border-radius: var(--corner-radius);
@@ -994,11 +1006,7 @@ header#mainHeader ul.breadcrumbs li {
     display: inline-block;
     margin-right: 5px;
     text-transform: lowercase;
-}
-
-header#mainHeader ul.breadcrumbs li > a {
-    font-weight: normal;
-    color: var(--default-fg);
+    cursor: pointer;
 }
 
 header#mainHeader ul.breadcrumbs li .material-icons {
@@ -1007,10 +1015,10 @@ header#mainHeader ul.breadcrumbs li .material-icons {
     font-size: 1.2rem;
 }
 
-    header#mainHeader ul.breadcrumbs li:last-child .material-icons,
-    header#mainHeader ul.breadcrumbs li:only-child .material-icons {
-        display: none;
-    }
+header#mainHeader ul.breadcrumbs li:last-child .material-icons,
+header#mainHeader ul.breadcrumbs li:only-child .material-icons {
+    display: none;
+}
 
 header#mainHeader ul.breadcrumbs li > span {
     font-weight: normal;
