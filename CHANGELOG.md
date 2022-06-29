@@ -1,4 +1,17 @@
-## v0.3.0
+# Version 1.0.0 (June 29, 2022)
+### What's New
+- KongDash is now known as Primate
+- Compatible with Kong Admin API v2.7.x
+- Support for storing multiple connections
+- Option to customise UI with themes
+- An activity monitor that logs HTTP API calls
+- Snap and AppImage packages for Linux machines
+
+### Improvements
+- Electron version 19.0.6
+
+
+# Version 0.3.0 (July 30, 2017)
 
 - Support for Kong Admin API v0.10.x
 [#14](https://github.com/getprimate/primate/issues/14)
@@ -8,7 +21,8 @@
 [#10](https://github.com/getprimate/primate/issues/10)
 - Settings option moved to File menu
 
-## v0.2.0
+
+# Version 0.2.0 (September 07, 2016)
 
 - Check for updates and notify
 - New view for cluster
@@ -19,6 +33,6 @@
 - Remove Reload option from Window menu
 - Mac OS X build
 
-## v0.1.0-beta
+# Version 0.1.0-beta (August 28, 2016)
 
 - Initial Release
