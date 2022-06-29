@@ -301,10 +301,6 @@ textarea.tx-small {
     height: 100px !important;
 }
 
-/* SAFE-DELETE
-label.checkbox.success input[type="checkbox"]:checked { background-color: var(--std__success); border-color: var(--std__success); }
-*/
-
 input[type='color'] {
     display: inline-block;
     min-height: 40px;
@@ -1895,8 +1891,6 @@ table.data-table.flat tr.active > td {
 
 table.card-table {
     border-collapse: separate;
-    /* SAFE-DELETE 
-    border-spacing: 0 20px; */
 }
 
 .well table.card-table,
