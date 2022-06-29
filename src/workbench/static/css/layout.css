@@ -2416,6 +2416,10 @@ form#pg-ed__frm01 > div.border-bottom-solid.ng-scope:nth-last-child(4) {
     html {
         font-size: 13px;
     }
+
+    a.btn {
+        padding-top: 10px;
+    }
 }
 
 @media only screen and (max-width: 1500px) and (-webkit-device-pixel-ratio: 1),
