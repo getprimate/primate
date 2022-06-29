@@ -21,7 +21,7 @@ export default {
             },
             {
                 primaryText: 'Supports UI customizations with themes.',
-                description: ['Themes can be placed in <i>/&lt;app-data&gt;/Primate/User-Themes</i> directory']
+                description: ['Themes can be placed in <app-data>/primate-ce/User-Themes</i> directory.']
             }
         ],
         bugfixes: [
