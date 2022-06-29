@@ -2184,8 +2184,8 @@ ul.hero-placeholder {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    animation: delayflash 1s;
-    -webkit-animation: delayflash 1s;
+    animation: delayflash 800ms;
+    -webkit-animation: delayflash 800ms;
 }
 
 ul.hero-placeholder li {

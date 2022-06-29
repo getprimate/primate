@@ -130,8 +130,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
             const displayText = _.isText(response.username) ? response.username : simplifyObjectId(response.id);
 
             if (_.isNone(scope.consumerId)) {
-                const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
-
                 scope.consumerId = response.id;
 
                 restConfig.method = 'PATCH';
@@ -269,6 +267,8 @@ export default function ConsumerEditController(scope, location, routeParams, res
                 if (Array.isArray(authItem.redirect_uris)) {
                     authItem.redirect_uris = authItem.redirect_uris.join(', ');
                 }
+
+                authItem.created_at = epochToDate(authItem.created_at, viewFrame.getConfig('dateFormat'));
             }
 
             scope.userAuthList[authName] = response.data;
@@ -369,7 +369,6 @@ export default function ConsumerEditController(scope, location, routeParams, res
 
         request.then(({data: response}) => {
             const fieldList = Object.keys(response);
-            const createdAt = epochToDate(response.created_at, viewFrame.getConfig('dateFormat'));
 
             for (let field of fieldList) {
                 if (_.isNil(scope.consumerModel[field]) || _.isNil(response[field])) {

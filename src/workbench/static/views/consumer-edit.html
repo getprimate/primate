@@ -46,7 +46,8 @@
 </div><!-- .panel.panel-border -->
 
 <div data-ng-show="consumerId.length>=12">
-<h2 class="light-text">Authentication Methods</h2>
+<div class="spacer pad-top-20"></div>
+<h3 class="light-text">Authentication Methods</h3>
 <div class="notebook">
 <ul class="notebook__tab" data-ng-click="switchAuthTab($event)">
     <li data-auth-method="key-auth" data-page-id="#cs-ed__npg01" class="active">Key Auth</li>
@@ -93,7 +94,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="keyAuth in userAuthList.keyAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at | date}}</td>
+                <td><strong>{{keyAuth.key}}</strong><br />{{keyAuth.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Key: {{keyAuth.key}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="authentication key" data-endpoint="/consumers/{{consumerId}}/key-auth/{{keyAuth.id}}">delete_forever</span>
@@ -117,7 +118,7 @@
 
 <section id="cs-ed__npg02" class="notebook__page" data-auth-method="basic-auth">
 <div class="panel panel-border">
-<div class="panel__heading bottom-solid"><span class="title">Authentication</span></div>
+<div class="panel__heading bottom-solid"><span class="title">Basic Authentication</span></div>
 <div class="panel__body">
     <div class="row">
     <div class="col md-6">
@@ -153,7 +154,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="basicAuth in userAuthList.basicAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at | date}}</td>
+                <td><strong>{{basicAuth.username}}</strong><br />{{basicAuth.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Username: {{basicAuth.username}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/basic-auth/{{basicAuth.id}}">delete_forever</span>
@@ -234,7 +235,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="oauth in userAuthList.oauth2">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at | date}}</td>
+                <td><strong>{{oauth.name}}</strong><br>{{oauth.client_id}}<br>{{oauth.redirect_uri}} {{oauth.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Application Name: {{oauth.name}} &#10; Client Id: {{oauth.client_id}} &#10; Client Secret: {{oauth.client_secret}} &#10; Redirect URIs: {{oauth.redirect_uris}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/oauth2/{{oauth.id}}">delete_forever</span>
@@ -293,7 +294,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="hmacAuth in userAuthList.hmacAuth">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at | date}}</td>
+                <td><strong>{{hmacAuth.username}}</strong><br />{{hmacAuth.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Username: {{hmacAuth.username}} &#10; Secret: {{hmacAuth.secret}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="username" data-endpoint="/consumers/{{consumerId}}/hmac-auth/{{hmacAuth.id}}">delete_forever</span>
@@ -368,7 +369,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="jwtAuth in userAuthList.jwt">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at | date}}</td>
+                <td><strong>{{jwtAuth.key}}</strong><br />{{jwtAuth.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Algorithm: {{jwtAuth.algorithm}} &#10; Key: {{jwtAuth.key}} &#10; Secret: {{jwtAuth.secret}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="token" data-endpoint="/consumers/{{consumerId}}/jwt/{{jwtAuth.id}}">delete_forever</span>
@@ -423,7 +424,7 @@
             <tbody data-ng-click="handleTableClickEvents($event)">
             <tr data-ng-repeat="acl in userAuthList.acls">
                 <td class="md-1"><span class="material-icons success">badge</span></td>
-                <td><strong>{{acl.group}}</strong><br>{{acl.created_at | date}}</td>
+                <td><strong>{{acl.group}}</strong><br>{{acl.created_at}}</td>
                 <td class="row-actions">
                     <span class="material-icons" title="Click to copy" data-clipboard-text="Group Name: {{acl.group}}">content_copy</span>
                     <span class="material-icons critical delete" data-target="group" data-endpoint="/consumers/{{consumerId}}/acls/{{acl.id}}">delete_forever</span>
