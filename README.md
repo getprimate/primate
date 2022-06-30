@@ -28,7 +28,7 @@ _For Ubuntu users:_
 
 Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate) store.
 
-## Contribute
+## :thumbsup: Contribute
 There are several ways to support development:
 
 - Provide feedbacks and suggest improvements.
@@ -64,5 +64,5 @@ Run `$ yarn run clean` to clean the output directories.
 
 _Currently, compiling to non-native binary is disabled._
 
-## License
+## :spiral_notepad: License
 MIT License. See [LICENSE](LICENSE).
