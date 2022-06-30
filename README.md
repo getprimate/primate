@@ -1,6 +1,6 @@
 <div align="center">
     <img src="logo-banner.png" alt="Primate Logo" height="128" />
-    <p>Primate (formerly KongDash) is a modern desktop client for Kong Admin API</p>
+    <p>Primate (formerly KongDash) is a desktop client for Kong Admin API</p>
     <p><a href="https://www.getprimate.xyz">getprimate.xyz</a></p>
     <p><img src="screenshot.png" alt="Primate Screenshot" /></p>
 </div>
