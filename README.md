@@ -1,67 +1,78 @@
-<div style="text-align: center;">
+<div align="center">
     <img src="logo-banner.png" alt="Primate Logo" height="128" />
-    <p><a href="https://www.getprimate.xyz">getprimate.xyz</a></p>
     <p>Primate (formerly KongDash) is a modern desktop client for Kong Admin API</p>
+    <p><a href="https://www.getprimate.xyz">getprimate.xyz</a></p>
     <p><img src="screenshot.png" alt="Primate Screenshot" /></p>
 </div>
 
 ---
 
-### How to Install
-
-👉 This information is only for versions v0.3.0 and below. 
-
-👉 The succeding release is still in the final stages of its development. See **For Developers** section below.
-
-#### On Linux
-_Ubuntu and other Debian distributions:_
-
-- Download the [latest](https://github.com/getprimate/primate/releases) .deb package. 
-- Run `dpkg -i kongdash-x.y.z-arch.deb`
-
-
-_Fedora and other Linux distributions:_
-
-- Download the [latest](https://github.com/getprimate/primate/releases) .tar.gz archive.
-- Extract the archive and run install.sh script.
-
-```shell
-tar -xvf kongdash-x.y.z-linux-arch.tar.gz
-cd kongdash-x.y.z-linux-arch
-./install.sh
-```
-
-_x.y.z refers to the version number and arch refers to the architecture (ia32 or x64)._
-
+## Download and Install 
+---
 #### On Windows
-Simply download the [latest](https://github.com/getprimate/primate/releases) .exe installer and run it.
+Download the [latest](https://github.com/getprimate/primate/releases/latest) setup executable and run it.
 
 #### On Mac OS X
-Download and open the [latest](https://github.com/getprimate/primate/releases) .dmg image, move the app to /Applications to start using it.
+Download and open the [latest](https://github.com/getprimate/primate/releases/latest) .dmg image, move the app to /Applications.
+
+#### On Linux
+Primate is available as AppImage for all major Linux distributions. 
+
+- Download the [latest](https://github.com/getprimate/primate/releases/latest) .AppImage.
+- Make it executable `$ sudo chmod a+x Primate-v<x.y.z>-x64.AppImage` where x.y.z determines the version number.
+- Run Primate `$ ./Primate-v<x.y.z>-x64.AppImage`
+
+_For Ubuntu users:_
+
+Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate)
+
+## Contribute
+---
+
+There are several ways to support development:
+
+- Provide feedbacks and suggest improvements
+- Contribute to the development with pull requests
+
 
 ### For Developers
-All kinds of contributions are welcome.
 
 - Requires NodeJs (v16.13.2 or higher) and yarn (v1.22.17 or higher).
 - Built with [Electron](https://www.electronjs.org/).
 
 Clone the repository
 ```shell
-git clone https://github.com/getprimate/primate
+$ git clone https://github.com/getprimate/primate
 ```
 
 Install dependencies
 ```shell
-yarn install
+$ yarn install
 ```
 
 Run the app
 ```shell
-yarn start
+$ yarn start
 ```
 
 Run ESLint
-```yarn run lint```
+```shell
+$ yarn run lint
+```
+
+#### How to package
+
+To package the application for your operating system, run: 
+
+```shell
+$ yarn run compile
+$ yarn run dist
+```
+
+The binaries will be written to `/dist` directory.
+
+_Currently, compiling to non-native binary is disabled._
+
 
 ### License
 MIT License. See [LICENSE](LICENSE).
