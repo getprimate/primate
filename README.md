@@ -8,29 +8,31 @@
 ---
 
 ## Download and Install 
----
+
+Builds are available for major desktop operating systems.
+
 #### On Windows
-Download the [latest](https://github.com/getprimate/primate/releases/latest) setup executable and run it.
+Download the [latest](https://github.com/getprimate/primate/releases/latest) executable setup file and run it.
 
 #### On Mac OS X
 Download and open the [latest](https://github.com/getprimate/primate/releases/latest) .dmg image, move the app to /Applications.
 
 #### On Linux
-Primate is available as AppImage for all major Linux distributions. 
+Primate is available as AppImage and tar.gz archive for all popular Linux distributions. 
 
 - Download the [latest](https://github.com/getprimate/primate/releases/latest) .AppImage.
-- Make it executable `$ sudo chmod a+x Primate-v<x.y.z>-x64.AppImage` where x.y.z determines the version number.
-- Run Primate `$ ./Primate-v<x.y.z>-x64.AppImage`
+- Make it executable `$ sudo chmod a+x Primate-version-x64.AppImage`.
+- Run Primate `$ ./Primate-version-x64.AppImage`.
 
 _For Ubuntu users:_
 
-Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate)
+Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate).
 
 ## Contribute
 There are several ways to support development:
 
-- Provide feedbacks and suggest improvements
-- Contribute to the development with pull requests
+- Provide feedbacks and suggest improvements.
+- Contribute to the development with pull requests.
 
 
 ### For Developers
