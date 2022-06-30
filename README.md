@@ -7,7 +7,7 @@
 
 ---
 
-## Download and Install 
+## :package: Download and Install 
 
 Builds are available for major desktop operating systems.
 
