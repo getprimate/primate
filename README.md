@@ -27,8 +27,6 @@ _For Ubuntu users:_
 Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate)
 
 ## Contribute
----
-
 There are several ways to support development:
 
 - Provide feedbacks and suggest improvements
@@ -36,31 +34,20 @@ There are several ways to support development:
 
 
 ### For Developers
-
 - Requires NodeJs (v16.13.2 or higher) and yarn (v1.22.17 or higher).
 - Built with [Electron](https://www.electronjs.org/).
 
-Clone the repository
+#### Build and Run
+
+Clone the repository, install dependencies and start.
 ```shell
 $ git clone https://github.com/getprimate/primate
-```
-
-Install dependencies
-```shell
+$ cd primate
 $ yarn install
-```
-
-Run the app
-```shell
 $ yarn start
 ```
 
-Run ESLint
-```shell
-$ yarn run lint
-```
-
-#### How to package
+#### Package the Application
 
 To package the application for your operating system, run: 
 
@@ -71,8 +58,9 @@ $ yarn run dist
 
 The binaries will be written to `/dist` directory.
 
+Run `$ yarn run clean` to clean the output directories.
+
 _Currently, compiling to non-native binary is disabled._
 
-
-### License
+## License
 MIT License. See [LICENSE](LICENSE).
