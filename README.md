@@ -1,8 +1,11 @@
-# Primate (formerly KongDash)
+<div style="text-align: center;">
+    <img src="logo-banner.png" alt="Primate Logo" height="128" />
+    <p><a href="https://www.getprimate.xyz">getprimate.xyz</a></p>
+    <p>Primate (formerly KongDash) is a modern desktop client for Kong Admin API</p>
+    <p><img src="screenshot.png" alt="Primate Screenshot" /></p>
+</div>
 
-> A modern desktop client for [Kong](https://konghq.com/kong/) admin API
-
-[![](screenshot.png)](screenshot.png)
+---
 
 ### How to Install
 
