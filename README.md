@@ -26,7 +26,11 @@ Primate is available as AppImage and tar.gz archive for all popular Linux distri
 
 _For Ubuntu users:_
 
-Primate can also be installed from the [Snapcraft](https://snapcraft.io/primate) store.
+Primate can also be installed from the [Snap store](https://snapcraft.io/primate).
+
+```shell
+$ sudo snap install primate
+```
 
 ## :thumbsup: Contribute
 There are several ways to support development:
