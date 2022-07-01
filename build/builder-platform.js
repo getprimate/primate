@@ -20,8 +20,9 @@ function configureLinuxOptions(type = 'dir') {
     config.linux = {
         icon: ICON_DIR,
         synopsis: 'A modern desktop client for Kong Admin API',
-        description: 'Primate is an open-source, cross platform desktop client for Kong Admin API. ' +
-            'Primate  helps you connect and manage your Kong gateway instances.',
+        description:
+            'Primate is an open source, cross-platform desktop client for Kong Admin API ' +
+            'that  helps you connect and manage your Kong gateway instances.',
         category: 'Development',
         target: 'dir',
         publish: [],
@@ -42,7 +43,6 @@ function configureLinuxOptions(type = 'dir') {
                 confinement: 'strict',
                 grade: 'devel',
                 autoStart: false,
-                compression: 'xz',
                 summary: 'A modern desktop client for Kong Admin API',
                 artifactName: '${productName}-v${version}-x64.snap'
             };
