@@ -14,7 +14,7 @@ Please follow these guidelines while opening an issue.
   If the issue is already present in the list:
   - Make relevant comments. 
   - Express your reactions with emojis.
-- If the issue is not reported yet, [open a new issue](https://github.com/getprimate/primate/issues/new):
+- If the issue is not reported yet, open a [new issue](https://github.com/getprimate/primate/issues/new):
   - Provide a descriptive title for the issue.
   - Include the version number of Primate you are using and also the name of your operating system.
   - If the issue is a `bug`, try to include steps to reproduce the same, numbered as `1, 2, 3...`
@@ -31,7 +31,7 @@ To start developing, you will need to install the following:
 
 If you don't have Yarn already installed, please refer [this link](https://yarnpkg.com/getting-started/install).
 
-Once you have all the requirements set up, [Fork](https://github.com/getprimate/primate/fork) the repository.
+Once you have all the requirements set up, [fork](https://github.com/getprimate/primate/fork) the repository.
 
 Clone the forked repository to your computer.
 ```shell
