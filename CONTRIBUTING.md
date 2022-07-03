@@ -26,8 +26,8 @@ Please follow these guidelines while opening an issue:
 
 To start developing, you will need to install the following:
 
-- `Node.js` version 16.0.0 LTS or higher.
-- `Yarn` version 1.22.0 or higher.
+- [x] `Node.js` version 16.0.0 LTS or higher.
+- [x] `Yarn` version 1.22.0 or higher.
 
 If you don't have Yarn already installed, please refer [this link](https://yarnpkg.com/getting-started/install).
 
