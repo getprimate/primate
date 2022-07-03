@@ -11,7 +11,7 @@ If you have found any bugs, issues or have any suggestions for improvement, you 
 
 Please follow these guidelines while opening an issue.
 - Check the list of [open issues](https://github.com/getprimate/primate/issues?q=is%3Aopen+is%3Aissue) to see if the issue has already been reported. 
-  If the issue is already reported:
+  If the issue is already present in the list:
   - Make relevant comments. 
   - Express your reactions with emojis.
 - If the issue is not reported yet, [open a new issue](https://github.com/getprimate/primate/issues/new):
