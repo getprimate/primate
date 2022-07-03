@@ -1,16 +1,9 @@
 # Contributing to Primate
 
-Thank you for your interest in contributing to Primate!
+Thank you for your interest in contributing to Primate! There are several ways by which you can contribute to Primate, 
+as a developer or even as regular user.
 
-There are several ways in which you can contribute to Primate, as a developer or even as regular user of the application.
-
-The goal of this document is to cover those ways by which you can participate.
-
-## Supporting the Community
-
-If you really liked the application express your love by adding a star to the repository. 
-
-Also, you can spread the word with you tweets, tagging @getprimate.
+The goal of this document is to provide a high level overview of those ways by which you can participate.
 
 ## Providing Feedbacks
 

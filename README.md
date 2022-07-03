@@ -38,6 +38,8 @@ There are several ways to support development:
 - Provide feedbacks and suggest improvements.
 - Contribute to the development with pull requests.
 
+For a complete overview, see the [contributing](CONTRIBUTING.md) guide.
+
 
 ### For Developers
 - Requires NodeJs (v16.13.2 or higher) and yarn (v1.22.17 or higher).
