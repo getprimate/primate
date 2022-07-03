@@ -1,8 +1,8 @@
 # Contributing to Primate
 
-Thank you for your interest in contributing to Primate! There are several ways by which you can contribute to Primate, 
-as a developer or even as regular user.
+Thank you for your interest in contributing to Primate! 
 
+There are several ways by which you can contribute to Primate, as a developer or even as regular user.
 The goal of this document is to provide a high level overview of those ways by which you can participate.
 
 ## Providing Feedbacks
