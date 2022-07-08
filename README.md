@@ -78,3 +78,13 @@ _Currently, compiling to non-native binary is disabled._
 
 ## :spiral_notepad: License
 MIT License. See [LICENSE](LICENSE).
+
+## :raised_hands: Supporters
+
+<a href="https://www.jetbrains.com/community/opensource/#support" target="_blank">
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo." height="64">
+</a>
+
+<a href="https://www.gitbook.com" target="_blank">
+    <img src="https://2775338190-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FNkEGS7hzeqa35sMXQZ4X%2Flogo%2FuSFZ1Ridsvf6xSX9vTQ1%2FLockup-PrimaryBlue%20-%20Spaced.svg?alt=media" height="64">
+</a>
