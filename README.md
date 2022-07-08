@@ -84,7 +84,7 @@ MIT License. See [LICENSE](LICENSE).
 <a href="https://www.gitbook.com" target="_blank">
     <img src="https://2775338190-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FNkEGS7hzeqa35sMXQZ4X%2Flogo%2FuSFZ1Ridsvf6xSX9vTQ1%2FLockup-PrimaryBlue%20-%20Spaced.svg?alt=media" height="64">
 </a>
-&nbsp;
+
 <a href="https://www.jetbrains.com/community/opensource/#support" target="_blank">
     <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" alt="JetBrains Black Box Logo logo." height="64">
 </a>
