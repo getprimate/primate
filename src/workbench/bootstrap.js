@@ -99,6 +99,9 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
                     sessionName: connection.name,
                     sessionColor: connection.colorCode,
                     sessionURL: `${connection.protocol}://${connection.adminHost}:${adminPort}`
+                },
+                state: {
+                    layoutName: 'bootstrap'
                 }
             });
         };
