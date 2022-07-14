@@ -28,10 +28,6 @@
  *
  * @typedef {Object} RESTClientProvider
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
- * @property {(function(username: string,
- *      password: string): void)} setBasicAuth - Sets basic authorization header.
- * @property {(function(type: string): void)} setAcceptType - Sets accept header.
- * @property {(function(type: string): void)} setContentType - Sets contentType header.
  */
 
 import * as _ from '../lib/core-toolkit.js';
@@ -160,18 +156,6 @@ export default function RestClientProvider() {
 
     this.setHost = (host) => {
         CLIENT_CONFIG.host = host;
-    };
-
-    this.setBasicAuth = (username, password) => {
-        CLIENT_CONFIG.authorization = 'Basic ' + btoa(username + ':' + (password || ''));
-    };
-
-    this.setAcceptType = (type) => {
-        CLIENT_CONFIG.accept = type;
-    };
-
-    this.setContentType = (type) => {
-        CLIENT_CONFIG.contentType = type;
     };
 
     this.$get = ['$http', buildRESTClientFactory];
