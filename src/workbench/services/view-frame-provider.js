@@ -21,7 +21,6 @@
  * @property {(function(string): void)} setTitle - Sets the current view title.
  * @property {(function(displayText:string, redirect:string=, styles:string=,
  *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
- * @property {(function(void): object[])} getActions - Returns the action buttons.
  * @property {(function(void):void)} clearActions - Clears action buttons.
  * @property {(function(void): Object)} getState - Returns the view frame state.
  * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
@@ -52,6 +51,7 @@ const frameCache = {
  */
 const frameState = {
     frameTitle: '',
+    layoutName: 'dashboard',
     kongVersion: 'Unknown',
     kongDatabase: 'Unknown',
     routeNext: '',
@@ -102,10 +102,6 @@ function buildViewFrameFactory(timeoutFn) {
                 target,
                 endpoint
             });
-        },
-
-        getActions() {
-            return frameState.actionButtons;
         },
 
         clearActions() {
@@ -215,7 +211,7 @@ export default function ViewFrameProvider() {
 
         for (let name of keyNames) {
             if (isDefined(frameState[name])) {
-                frameConfig[name] = state[name];
+                frameState[name] = state[name];
             }
         }
     };
