@@ -14,23 +14,6 @@ const WATCHER_LIST = [];
 const WRAPPER_LIST = [];
 
 /**
- * Menu item options for the template.
- *
- * @typedef {Object} MenuItemOptions
- * @property {boolean} enabled - Determines if menu is enabled or not.
- * @property {string} displayText - The menu text to be displayed
- * @property {string} listView - The URL for the list view
- * @property {string} editView - The URL for the edit view
- * @property {string}  icon - The material icon name
- */
-
-/**
- * The menu template.
- *
- * @typedef {[MenuItemOptions]} MenuTemplate
- */
-
-/**
  * Extracts hash bang #! component from the URL.
  *
  * @param {string} href - The location path.
