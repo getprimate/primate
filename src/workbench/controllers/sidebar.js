@@ -1,13 +1,41 @@
+/**
+ * Copyright (c) Ajay Sreedhar. All rights reserved.
+ *
+ * Licensed under the MIT License.
+ * Please see LICENSE file located in the project root for more information.
+ */
+
 'use strict';
 
-import {isNone} from '../lib/core-toolkit.js';
-
-const {/** @type {IPCBridge} */ ipcBridge} = window;
+/**
+ * Menu item options for the template.
+ *
+ * @typedef {Object} MenuItemOptions
+ * @property {boolean} enabled - Determines if menu is enabled or not.
+ * @property {string} displayText - The menu text to be displayed
+ * @property {string} listView - The URL for the list view
+ * @property {string} editView - The URL for the edit view
+ * @property {string}  icon - The material icon name
+ */
 
 /**
  * Menu template object
  *
  * @typedef {Record<string, MenuItemOptions>} MenuItemRecord
+ */
+
+/**
+ * The menu template.
+ *
+ * @typedef {[MenuItemOptions]} MenuTemplate
+ */
+
+const {/** @type {IPCBridge} */ ipcBridge} = window;
+
+/**
+ * Base menu item record.
+ *
+ * @type {MenuItemRecord}
  */
 const menuItemRecord = {
     search: {
@@ -111,9 +139,13 @@ function buildMenuTemplate(endpoints = []) {
  *
  * @constructor
  * @param {Object} scope - Injected scope object.
+ * @param {RESTClientFactory} restClient - Customised HTTP REST client factory.
  * @param {ViewFrameFactory} viewFrame - Factory for sharing UI details.
+ * @param {ToastFactory} toast - Factory for displaying notifications.
  */
 export default function SidebarController(scope, restClient, viewFrame, toast) {
+    const {layoutName} = viewFrame.getState();
+
     scope.menuTemplate = [];
     scope.frameConfig = viewFrame.getFrameConfig();
 
@@ -122,7 +154,7 @@ export default function SidebarController(scope, restClient, viewFrame, toast) {
         ipcBridge.removeListeners();
     };
 
-    if (restClient.isConfigured() && !isNone(viewFrame.getConfig('sessionId'))) {
+    if (layoutName === 'dashboard' && restClient.isConfigured()) {
         const request = restClient.get('/endpoints');
 
         request.then(({data: response}) => {
@@ -135,9 +167,9 @@ export default function SidebarController(scope, restClient, viewFrame, toast) {
         });
 
         request.catch(() => {
-            toast.error('An error occurred while configuring the Admin API objects.');
+            toast.error('Unable to configure the sidebar menu.');
         });
-    } else {
+    } else if (layoutName === 'bootstrap') {
         scope.menuTemplate.push(
             {enabled: false, displayText: 'Welcome', icon: 'view_quilt', listView: '#!/welcome'},
             {enabled: false, displayText: 'Connections', icon: 'cable', listView: '#!/'},
