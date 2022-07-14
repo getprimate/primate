@@ -9,6 +9,7 @@
 
 import {isObject, isText} from '../lib/core-toolkit.js';
 import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
 
 /**
  * Provides controller constructor for editing plugin objects.
@@ -48,14 +49,14 @@ export default function PluginListController(scope, restClient, viewFrame, toast
                     enabled: plugin.enabled,
                     name: plugin.name,
                     protocols: Array.isArray(plugin.protocols) ? plugin.protocols.join(', ') : 'None',
-                    created_at: plugin.created_at,
+                    created_at: epochToDate(plugin.created_at, viewFrame.getConfig('dateFormat')),
                     objectNames: objectNames.length === 0 ? 'None' : objectNames.join(', ')
                 });
             }
         });
 
         request.catch(() => {
-            toast.error('Could not load list of plugins');
+            toast.error('Could not load list of plugins.');
         });
 
         request.finally(() => {
@@ -68,7 +69,7 @@ export default function PluginListController(scope, restClient, viewFrame, toast
      *
      * The event listener is attached to plugin list table.
      *
-     * @param {HTMLInputElement} target - The target checkbox element.
+     * @param {Event} event - The event object.
      * @returns {boolean} True if action completed, false otherwise.
      */
     scope._togglePluginState = function (event) {
