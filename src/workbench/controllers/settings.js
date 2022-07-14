@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {deepClone, isText, isObject, isDefined} from '../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
 import {greaterThan} from '../lib/version-utils.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import {switchTabInitiator} from '../helpers/notebook.js';
@@ -19,8 +19,8 @@ import setupModel from '../models/setup-model.js';
  */
 const {
     /** @type {IPCBridge} */
-    appBridge,
-    ipcBridge
+    ipcBridge,
+    appBridge
 } = window;
 
 /**
@@ -47,7 +47,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
     scope.downloadLink = '';
 
     scope.connectionId = viewFrame.getConfig('sessionId');
-    scope.connectionModel = deepClone(setupModel);
+    scope.connectionModel = _.deepClone(setupModel);
     scope.connectionList = {};
 
     scope.credentialModel = {username: '', password: ''};
@@ -57,6 +57,11 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
     scope.setWorkbenchTheme = function (event) {
         const {target} = event;
+
+        if (target.nodeName !== 'INPUT' || _.isNil(target.value)) {
+            return false;
+        }
+
         const {value: themeUID} = target;
 
         scope.workbenchConfig.themeUID = themeUID;
@@ -75,7 +80,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
         event.preventDefault();
 
         for (let property in scope.connectionModel) {
-            if (isText(scope.connectionModel[property])) {
+            if (_.isText(scope.connectionModel[property])) {
                 scope.connectionModel[property] = scope.connectionModel[property].trim();
             }
         }
@@ -89,7 +94,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             return false;
         }
 
-        if (isDefined(scope.connectionModel.isDefault)) {
+        if (_.isDefined(scope.connectionModel.isDefault)) {
             delete scope.connectionModel.isDefault;
         }
 
@@ -138,8 +143,8 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             tr.classList.remove('active');
         }
 
-        if (isText(connectionId) && connectionId.length >= 5) {
-            scope.connectionModel = deepClone(scope.connectionList[connectionId]);
+        if (_.isText(connectionId) && connectionId.length >= 5) {
+            scope.connectionModel = _.deepClone(scope.connectionList[connectionId]);
             scope.connectionModel.id = connectionId;
         }
 
@@ -205,7 +210,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
     /* Populate connection list upon Read-Connection-List event response. */
     ipcBridge.onResponse('Read-Connection-List', (connectionList) => {
-        if (isText(connectionList.error)) {
+        if (_.isText(connectionList.error)) {
             toast.warning('Unable to display connection history.');
             return false;
         }
@@ -220,7 +225,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
             }
 
             if (id === scope.connectionId) {
-                scope.connectionModel = deepClone(connectionList[id]);
+                scope.connectionModel = _.deepClone(connectionList[id]);
                 break;
             }
         }
@@ -239,7 +244,7 @@ export default function SettingsController(scope, restClient, viewFrame, toast) 
 
     /* Remove deleted connections. */
     ipcBridge.onResponse('Write-Connection-Config', (payload) => {
-        if (!isObject(payload) || !isText(payload.id)) {
+        if (!_.isObject(payload) || !_.isText(payload.id)) {
             toast.error('Unable to save connection.');
             return false;
         }
