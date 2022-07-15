@@ -8,7 +8,7 @@
 'use strict';
 
 import {isText} from '../lib/core-toolkit.js';
-import {toDateText} from '../helpers/date-lib.js';
+import {epochToDate} from '../helpers/date-lib.js';
 import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
@@ -82,7 +82,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
 
             for (let service of response.data) {
                 service.displayText = isText(service.name) ? service.name : `${service.host}:${service.port}`;
-                service.created_at = toDateText(service.created_at, viewFrame.getConfig('dateFormat'));
+                service.created_at = epochToDate(service.created_at, viewFrame.getConfig('dateFormat'));
 
                 scope.serviceList.push(service);
             }
