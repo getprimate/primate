@@ -79,8 +79,7 @@ function implodeAddress(sources = []) {
 /**
  * Sanitises header name - value map from token list.
  *
- * @param {Record<string, string>} tokens - Array of tokens
- * @return {Record<string, [string]>} The header name - value map.
+ * @return {Record<string, [string]>} header - The header name - value map.
  */
 function sanitiseHeaderMap(header) {
     const headerMap = {};
@@ -178,7 +177,7 @@ function refreshRouteModel(model, source) {
  */
 function buildRouteObject(model) {
     if (model.protocols.length === 0) {
-        throw 'Please check at least one protocol from the list.';
+        throw new Error('Please check at least one protocol from the list.');
     }
 
     const payload = _.deepClone(model);
