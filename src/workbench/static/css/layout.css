@@ -128,7 +128,7 @@ body {
     padding: 0;
     overflow: hidden;
     color: var(--default-fg);
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     letter-spacing: 0.2px;
     background-color: var(--default-bg);
     animation: fadein 1s;
@@ -146,9 +146,9 @@ hr {
 
 /** =-=-=-=-=-= Form Input Elements =-=-=-=-=-= */
 
-input[type='text'],
-input[type='number'],
-input[type='password'],
+input[type="text"],
+input[type="number"],
+input[type="password"],
 textarea,
 select,
 label.checkbox {
@@ -184,33 +184,33 @@ textarea {
     min-height: 100px;
     width: 100%;
     height: 200px;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
-input[type='text']:focus,
-input[type='number']:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
 textarea:focus,
 select:focus,
-input[type='text']:active,
-input[type='number']:active,
-input[type='password']:active,
+input[type="text"]:active,
+input[type="number"]:active,
+input[type="password"]:active,
 textarea:active {
     background-color: var(--widget-tc);
 }
 
-input[type='text']:focus,
-input[type='number']:focus,
-input[type='password']:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
 textarea:focus {
     outline-width: 0;
 }
 
-input[type='text']:read-only,
+input[type="text"]:read-only,
 textarea:read-only {
     background-color: var(--widget-bg);
 }
 
-input[type='range'] {
+input[type="range"] {
     display: inline-block;
     width: 100%;
     height: 10px;
@@ -223,7 +223,7 @@ input[type='range'] {
     margin-top: 12px;
 }
 
-input[type='range']::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 18px;
@@ -234,7 +234,7 @@ input[type='range']::-webkit-slider-thumb {
     cursor: pointer;
 }
 
-input[type='checkbox'] {
+input[type="checkbox"] {
     position: relative;
     width: 17px;
     height: 17px;
@@ -245,23 +245,34 @@ input[type='checkbox'] {
     color: var(--primary-fg);
 }
 
-input[type='checkbox']::after {
-    display: block;
-    margin: -1px 0 0 1px;
-    content: '\00a0';
+input[type="checkbox"]:disabled {
+    border-color: var(--widget-tc);
+    color: var(--widget-tc);
 }
 
-input[type='checkbox']:checked {
+input[type="checkbox"]::after {
+    display: block;
+    margin: -1px 0 0 1px;
+    content: "\00a0";
+}
+
+input[type="checkbox"]:checked {
     background-color: var(--accent-bg);
     color: var(--accent-fg);
     border-color: var(--accent-bg);
 }
 
-input[type='checkbox']:checked::after {
-    content: '✔';
+input[type="checkbox"]:disabled:checked {
+    background-color: var(--widget-tc);
+    color: var(--default-fg);
+    border-color: var(--widget-tc);
 }
 
-input[type='radio'] {
+input[type="checkbox"]:checked::after {
+    content: "✔";
+}
+
+input[type="radio"] {
     position: relative;
     width: 20px;
     height: 20px;
@@ -272,25 +283,25 @@ input[type='radio'] {
     text-align: center;
 }
 
-input[type='checkbox'],
-input[type='radio'] {
+input[type="checkbox"],
+input[type="radio"] {
     appearance: none;
     transition: 0.5s;
     -webkit-appearance: none;
     -webkit-transition: 0.5s;
 }
 
-input[type='radio']::after {
+input[type="radio"]::after {
     display: none;
     margin: 2px 1px 1px 1px;
-    content: '\00a0';
+    content: "\00a0";
     background-color: transparent;
     border-radius: 100%;
     width: 12px;
     height: 12px;
 }
 
-input[type='radio']:checked::after {
+input[type="radio"]:checked::after {
     display: inline-block;
     background-color: var(--accent-bg);
     border-color: var(--accent-bg);
@@ -301,7 +312,7 @@ textarea.tx-small {
     height: 100px !important;
 }
 
-input[type='color'] {
+input[type="color"] {
     display: inline-block;
     min-height: 40px;
     min-width: 50px;
@@ -312,11 +323,11 @@ input[type='color'] {
     border-radius: var(--corner-radius);
 }
 
-input[type='color']::after {
+input[type="color"]::after {
     height: 20px;
 }
 
-input[type='color' i] {
+input[type="color" i] {
     background-color: var(--widget-tc);
 }
 
@@ -371,7 +382,7 @@ record-map ul > li {
     padding: 0;
 }
 
-record-map input[type='text'] {
+record-map input[type="text"] {
     display: inline-block;
     width: 50%;
     padding: 8px 5px;
@@ -380,11 +391,11 @@ record-map input[type='text'] {
     border-radius: 0;
 }
 
-record-map input[type='text']:focus {
+record-map input[type="text"]:focus {
     background: transparent none;
 }
 
-record-map input[type='text']:first-child {
+record-map input[type="text"]:first-child {
     border-right-width: 1px;
 }
 
@@ -876,7 +887,7 @@ header#mainHeader {
 
 header#mainHeader::after {
     display: table;
-    content: ' ';
+    content: " ";
     clear: both;
 }
 
@@ -1166,7 +1177,7 @@ footer#mainFooter span.material-icons {
     vertical-align: -2px;
 }
 
-input[type='checkbox']#chk_ToggleLog + label {
+input[type="checkbox"]#chk_ToggleLog + label {
     display: inline-block;
     height: 100%;
     background: transparent none;
@@ -1175,7 +1186,7 @@ input[type='checkbox']#chk_ToggleLog + label {
     padding: 0 8px;
 }
 
-input[type='checkbox']#chk_ToggleLog + label:hover {
+input[type="checkbox"]#chk_ToggleLog + label:hover {
     background-color: var(--primary-tc);
 }
 
@@ -1255,8 +1266,8 @@ form .form__field ul.field-input > li > label {
     display: inline-block;
 }
 
-form .form__field ul.field-input > li > label > input[type='checkbox'],
-form .form__field ul.field-input > li > label > input[type='radio'] {
+form .form__field ul.field-input > li > label > input[type="checkbox"],
+form .form__field ul.field-input > li > label > input[type="radio"] {
     vertical-align: text-bottom;
 }
 
@@ -1335,7 +1346,7 @@ form div.input-control label.field-label:last-child {
     margin-bottom: 0;
 }
 
-form .form__field .field-input input[type='range'] + .field-input__legend {
+form .form__field .field-input input[type="range"] + .field-input__legend {
     width: 100%;
     display: inline-block;
     text-align: center;
@@ -1680,7 +1691,7 @@ form .row {
 .row::before,
 .row::after {
     display: table;
-    content: ' ';
+    content: " ";
 }
 .row::after {
     clear: both;
@@ -2405,6 +2416,10 @@ canvas#chart_TimerStat {
 
 form#pg-ed__frm01 > div.border-bottom-solid.ng-scope:nth-last-child(4) {
     border-bottom-width: 0 !important;
+}
+
+.text-muted {
+    color: var(--default-fg) !important;
 }
 
 /**
