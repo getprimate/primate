@@ -22,7 +22,7 @@
  * @property {(function(displayText:string, redirect:string=, styles:string=,
  *      target:string=, endpoint:string=):void)} addAction - Adds an action to be displayed on the header.
  * @property {(function(void):void)} clearActions - Clears action buttons.
- * @property {(function(void): Object)} getState - Returns the view frame state.
+ * @property {(function(name: string=): Object|string)} getState - Returns the view frame state.
  * @property {(function(number):ViewFrameFactory)} setLoaderSteps - Sets the loader step with respect to viewport width.
  * @property {(function(void):void)} resetLoader - Clears loader step and sets width to zero.
  * @property {function(void):ViewFrameFactory} incrementLoader - Increments loader width by adding loader step.
@@ -38,7 +38,7 @@
  * @property {(function(options: Object): void)} initialize - Initializes with the provided options.
  */
 
-import {isText, isDefined, isEmpty} from '../lib/core-toolkit.js';
+import {isText, isDefined, isEmpty, isNil} from '../lib/core-toolkit.js';
 
 const frameCache = {
     isLoading: false
@@ -183,8 +183,12 @@ function buildViewFrameFactory(timeoutFn) {
             }
         },
 
-        getState() {
-            return frameState;
+        getState(name = null) {
+            if (isNil(name)) {
+                return frameState;
+            }
+
+            return frameState[name];
         },
 
         getFrameConfig() {
