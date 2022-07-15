@@ -10,12 +10,12 @@
 /**
  * Formats UNIX-timestamp to human-readable date text.
  *
- * @param {number} seconds - Unix timestamp in seconds.
+ * @param {number|string} seconds - Unix timestamp in seconds.
  * @param {('en-IN'|'en-US'|'standard')} format - Format specifier.
  * @return {string}
  */
 export function epochToDate(seconds, format = 'date') {
-    const date = new Date(seconds * 1000);
+    const date = new Date(parseInt(seconds) * 1000);
 
     switch (format) {
         case 'en-IN':
