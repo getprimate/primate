@@ -8,6 +8,7 @@
 'use strict';
 
 import {isText} from '../lib/core-toolkit.js';
+import {genericForm} from '../lib/version-utils.js';
 import {epochToDate} from '../helpers/date-lib.js';
 import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
@@ -23,6 +24,7 @@ import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolki
 export default function ServiceListController(scope, restClient, viewFrame, toast) {
     scope.serviceList = [];
     scope.serviceNext = {offset: ''};
+    scope.kongVersion = genericForm(viewFrame.getState('kongVersion'));
 
     /**
      * Handles click events on action buttons on table rows.
@@ -83,6 +85,7 @@ export default function ServiceListController(scope, restClient, viewFrame, toas
             for (let service of response.data) {
                 service.displayText = isText(service.name) ? service.name : `${service.host}:${service.port}`;
                 service.created_at = epochToDate(service.created_at, viewFrame.getConfig('dateFormat'));
+                service.enabled = scope.kongVersion === '2.6.z' ? true : service.enabled;
 
                 scope.serviceList.push(service);
             }

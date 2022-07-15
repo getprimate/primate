@@ -18,7 +18,7 @@
 
     <tbody data-ng-click="handleTableClickEvents($event)">
     <tr data-ng-repeat="service in serviceList">
-        <td><input type="checkbox" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
+        <td><input type="checkbox" data-ng-disabled="kongVersion==='2.6.z'" data-service-id="{{service.id}}" data-ng-checked="service.enabled===true" data-attribute="enabled" title="Enable or disable service" /></td>
 
         <td><a href="#!/services/{{service.id}}">{{service.displayText}}</a></td>
         <td>{{service.host}}</td>
