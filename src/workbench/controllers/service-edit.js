@@ -7,18 +7,12 @@
 
 'use strict';
 
-import {isText, isEmpty, isNil, deepClone, isNone} from '../lib/core-toolkit.js';
-import {
-    deleteMethodInitiator,
-    editViewURL,
-    simplifyObjectId,
-    implode,
-    urlOffset,
-    urlQuery
-} from '../helpers/rest-toolkit.js';
+import * as _ from '../lib/core-toolkit.js';
+import {deleteMethodInitiator, editViewURL, simplifyObjectId, urlOffset, urlQuery} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
 
 import serviceModel from '../models/service-model.js';
+import {genericForm} from '../lib/version-utils.js';
 
 const optionalFields = ['ca_certificates', 'client_certificate', 'tls_verify', 'tls_verify_depth'];
 
@@ -58,21 +52,21 @@ function refreshServiceModel(model, source = {}) {
     const fieldList = Object.keys(source);
 
     for (let field of fieldList) {
-        if (isNil(model[field]) || isNil(source[field])) {
+        if (_.isNil(model[field]) || _.isNil(source[field])) {
             continue;
         }
 
         switch (field) {
             case 'tls_verify':
-                model[field] = isNil(source[field]) ? '__none__' : String(source[field]);
+                model[field] = _.isNil(source[field]) ? '__none__' : String(source[field]);
                 break;
 
             case 'tls_verify_depth':
-                model[field] = isNil(source[field]) ? -1 : source[field];
+                model[field] = _.isNil(source[field]) ? -1 : source[field];
                 break;
 
             case 'client_certificate':
-                model[field] = isText(source[field]['id']) ? source[field]['id'] : '__none__';
+                model[field] = _.isText(source[field]['id']) ? source[field]['id'] : '__none__';
                 break;
 
             default:
@@ -97,11 +91,11 @@ function refreshServiceModel(model, source = {}) {
  * @return {Object} The prepared service object
  */
 function prepareServiceObject(model) {
-    if (isNone(model.protocol) || model.host.length === 0) {
+    if (_.isNone(model.protocol) || model.host.length === 0) {
         throw new Error('Please provide a valid protocol and host combination.');
     }
 
-    const payload = deepClone(model);
+    const payload = _.deepClone(model);
     const {excluded} = ENUM_PROTOCOL[payload.protocol];
 
     if (model.name.length === 0) {
@@ -163,7 +157,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
     scope.ENUM_PROTOCOL = Object.keys(ENUM_PROTOCOL);
 
     scope.serviceId = '__none__';
-    scope.serviceModel = deepClone(serviceModel);
+    scope.serviceModel = _.deepClone(serviceModel);
 
     scope.pbCertId = '__none__';
     scope.pbCertList = [];
@@ -174,6 +168,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
     scope.pluginList = [];
     scope.pluginNext = {offset: ''};
+    scope.versionForm = genericForm(viewFrame.getState('kongVersion'));
 
     /**
      * Handles click events on action buttons on table rows.
@@ -219,7 +214,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
      * @type {function(Event): boolean}
      */
     scope._deleteTableRow = deleteMethodInitiator(restClient, (err, properties) => {
-        if (isText(err)) toast.error(err);
+        if (_.isText(err)) toast.error(err);
         else toast.success(`${properties.target} deleted successfully.`);
     });
 
@@ -238,7 +233,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 scope.pbCertList.push({
                     nodeValue: current.id,
-                    displayText: simplifyObjectId(current.id) + ' - ' + implode(current.tags, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + _.implode(current.tags, 64)
                 });
             }
 
@@ -273,7 +268,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let current of response.data) {
                 certificates.push({
                     nodeValue: current.id,
-                    displayText: simplifyObjectId(current.id) + ' - ' + implode(current.tags, 64)
+                    displayText: simplifyObjectId(current.id) + ' - ' + _.implode(current.tags, 64)
                 });
 
                 scope.caCertList = certificates;
@@ -310,8 +305,8 @@ export default function ServiceEditController(scope, location, routeParams, rest
             for (let route of response.data) {
                 scope.routeList.push({
                     id: route.id,
-                    displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
-                    subTagsText: isEmpty(route.tags) ? epochToDate(route.created_at) : implode(route.tags)
+                    displayText: _.isText(route.name) ? route.name : simplifyObjectId(route.id),
+                    subTagsText: _.isEmpty(route.tags) ? epochToDate(route.created_at) : _.implode(route.tags)
                 });
             }
 
@@ -347,7 +342,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
                 scope.pluginList.push({
                     id: plugin.id,
                     displayText: plugin.name,
-                    subTagsText: isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : implode(plugin.tags),
+                    subTagsText: _.isEmpty(plugin.tags) ? epochToDate(plugin.created_at) : _.implode(plugin.tags),
                     enabled: plugin.enabled
                 });
             }
@@ -383,16 +378,21 @@ export default function ServiceEditController(scope, location, routeParams, rest
         }
 
         for (let key of Object.keys(scope.serviceModel)) {
-            if (isText(scope.serviceModel[key])) {
+            if (_.isText(scope.serviceModel[key])) {
                 scope.serviceModel[key] = scope.serviceModel[key].trim();
             }
         }
 
-        let payload = null;
+        let payload = {};
 
         try {
             payload = prepareServiceObject(scope.serviceModel);
             eventLocks.submitServiceForm = true;
+
+            /* Quickfix - Compatibility with API v2.6.x */
+            if (scope.versionForm === '2.6.z' && !_.isNil(payload.enabled)) {
+                delete payload.enabled;
+            }
 
             viewFrame.setLoaderSteps(1);
         } catch (error) {
@@ -404,7 +404,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
 
         request.then(({data: response}) => {
             const redirectURL = editViewURL(location.path(), response.id);
-            const displayText = isText(response.name) ? response.name : `${response.host}:${response.port}`;
+            const displayText = _.isText(response.name) ? response.name : `${response.host}:${response.port}`;
 
             if (scope.serviceId === '__none__') {
                 scope.serviceId = response.id;
@@ -449,7 +449,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
         const proceed = confirm('Proceed to clear the form?');
 
         if (proceed) {
-            scope.serviceModel = deepClone(serviceModel);
+            scope.serviceModel = _.deepClone(serviceModel);
         }
 
         return proceed;
@@ -468,7 +468,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
         else return scope._deleteTableRow(event);
     };
 
-    if (isText(routeParams.certId)) {
+    if (_.isText(routeParams.certId)) {
         restConfig.endpoint = `/certificates/${routeParams.certId}${restConfig.endpoint}`;
 
         scope.pbCertId = routeParams.certId;
@@ -512,7 +512,7 @@ export default function ServiceEditController(scope, location, routeParams, rest
             const {id, name} = response;
             refreshServiceModel(scope.serviceModel, response);
 
-            viewFrame.addBreadcrumb(`/services/${id}`, isText(name) ? name : simplifyObjectId(id));
+            viewFrame.addBreadcrumb(`/services/${id}`, _.isText(name) ? name : simplifyObjectId(id));
             viewFrame.addAction('Delete', '#!/services', 'critical delete', 'service', restConfig.endpoint);
         });
 

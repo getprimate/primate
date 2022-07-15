@@ -34,7 +34,7 @@
                     <div class="form__field">
                         <label for="sv-ed__chk01" class="field-label">Enable Service</label>
                         <div class="field-input">
-                            <label class="checkbox" title="enabled"><input type="checkbox" id="sv-ed__chk01" name="serviceEnabled" data-ng-model="serviceModel.enabled" checked /> Publish service</label>
+                            <label class="checkbox" title="enabled"><input type="checkbox" id="sv-ed__chk01" name="serviceEnabled" data-ng-model="serviceModel.enabled" data-ng-disabled="versionForm==='2.6.z'" checked /> Publish service</label>
                         </div>
                     </div><!-- .form__field -->
                 </div><!-- .col-md-4 -->
