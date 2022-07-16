@@ -73,7 +73,7 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
 
     viewFrame.addAction('New Upstream', '#!/upstreams/__create__');
 
-    scope.fetchUpstreamList('/upstreams');
+    scope.fetchUpstreamList();
 
     scope.$on('$destroy', () => {
         scope.upstreamList.length = 0;
