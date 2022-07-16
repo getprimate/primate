@@ -41,6 +41,7 @@ export default function UpstreamListController(scope, restClient, viewFrame, toa
                 scope.upstreamList.push({
                     id: upstream.id,
                     name: upstream.name,
+                    slots: upstream.slots,
                     algorithm: upstream.algorithm.toUpperCase(),
                     createdAt: epochToDate(upstream.created_at, viewFrame.getConfig('dateFormat'))
                 });
