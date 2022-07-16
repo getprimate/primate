@@ -72,7 +72,7 @@ const upstreamModel = {
     },
     tags: [],
     host_header: '',
-    client_certificate: ''
+    client_certificate: '__none__'
 };
 
 export default upstreamModel;

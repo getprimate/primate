@@ -44,7 +44,7 @@ function refreshUpstreamModel(model, source = {}) {
         }
 
         if (field === 'client_certificate') {
-            model.client_certificate = _.get(source.client_certificate, 'id', '');
+            model.client_certificate = _.get(source.client_certificate, 'id', '__none__');
         }
 
         if (_.isObject(current)) {
@@ -200,8 +200,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
     scope.targetNext = {offset: ''};
 
     scope.certId = '__none__';
-    scope.certList = [{id: '', displayName: '- None -'}];
-    scope.certNext = {offset: ''};
+    scope.certList = [];
 
     /**
      * Retrieves target objects mapped under this upstream.
@@ -388,11 +387,11 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.get('/certificates' + urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.certNext.offset = urlOffset(response.next);
-
-            for (let cert of response.data) {
-                cert.displayName = (simplifyObjectId(cert.id) + ' - ' + cert.tags.join(', ')).substring(0, 64);
-                scope.certList.push(cert);
+            for (let current of response.data) {
+                scope.certList.push({
+                    nodeValue: current.id,
+                    displayText: simplifyObjectId(current.id) + ' - ' + _.implode(current.tags, 64)
+                });
             }
         });
 
@@ -503,7 +502,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
         scope.fetchTargetList();
     }
 
-    if (!_.isNone(scope.certId)) {
+    if (_.isNone(scope.certId)) {
         scope.fetchCertificates();
     }
 

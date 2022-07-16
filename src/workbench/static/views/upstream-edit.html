@@ -50,7 +50,8 @@
                         <label for="up-ed__sel06" class="field-label" title="client_certificate">Client Certificate</label>
                         <div class="field-input" data-ng-switch="certId">
                             <select data-ng-switch-when="__none__" class="stretch" id="up-ed__sel06" name="clientCertificate" data-ng-model="upstreamModel.client_certificate" data-ng-selected="upstreamModel.client_certificate">
-                                <option data-ng-repeat="cert in certList" value="{{cert.id}}">{{cert.displayName}}</option>
+                                <option value="__none__">-- None --</option>
+                                <option data-ng-repeat="cert in certList" value="{{cert.nodeValue}}">{{cert.displayText}}</option>
                             </select><!-- #up-ed__sel06 -->
                             <article data-ng-switch-default>{{upstreamModel.client_certificate}}</article>
                         </div><!-- .field-input -->

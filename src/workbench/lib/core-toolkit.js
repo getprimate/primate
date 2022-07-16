@@ -33,7 +33,7 @@ export function isNone(value) {
             return true;
 
         case 'string':
-            return value === '__none__';
+            return value.length === 0 || value === '__none__';
 
         default:
             return false;
