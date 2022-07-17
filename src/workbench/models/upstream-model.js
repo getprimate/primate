@@ -54,6 +54,7 @@ const upstreamModel = {
             concurrency: 10,
             https_sni: '',
             type: 'http',
+            headers: {},
             healthy: {
                 interval: 0,
                 http_statuses: [],
