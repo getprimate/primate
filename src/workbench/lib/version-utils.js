@@ -40,6 +40,36 @@ export function greaterThan(vLeft, vRight) {
 }
 
 /**
+ * Compares version string on left side with that of right side.
+ *
+ * The two version strings should be semantic.
+ * Returns true if vLeft is less than vRight.
+ *
+ * @param {string} vLeft - Version string.
+ * @param {string} vRight - Version string.
+ * @return {boolean} True if greater, false otherwise.
+ */
+export function lesserThan(vLeft, vRight) {
+    if (vLeft === vRight) return false;
+
+    const lParts = explode(vLeft, '.').map((part) => {
+        return parseInt(part);
+    });
+
+    const rParts = explode(vRight, '.').map((part) => {
+        return parseInt(part);
+    });
+
+    for (let index in lParts) {
+        if (lParts[index] === rParts[index]) {
+            continue;
+        }
+
+        return lParts[index] < rParts[index];
+    }
+}
+
+/**
  * Returns the generic semantic version form.
  *
  * For example:
