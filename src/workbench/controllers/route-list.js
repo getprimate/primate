@@ -7,9 +7,9 @@
 
 'use strict';
 
-import {isText} from '../lib/core-toolkit.js';
-import {implode, urlQuery, urlOffset, simplifyObjectId, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
-import {toDateText} from '../helpers/date-lib.js';
+import {isText, implode} from '../lib/core-toolkit.js';
+import {epochToDate} from '../helpers/date-lib.js';
+import {urlQuery, urlOffset, simplifyObjectId, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing routes.
@@ -44,7 +44,7 @@ export default function RouteListController(scope, restClient, viewFrame, toast)
                     id: route.id,
                     displayText: isText(route.name) ? route.name : simplifyObjectId(route.id),
                     protocols: implode(route.protocols),
-                    createdAt: toDateText(route.created_at, viewFrame.getConfig('dateFormat')),
+                    createdAt: epochToDate(route.created_at, viewFrame.getConfig('dateFormat')),
                     pathHandling: route.path_handling
                 });
             }
