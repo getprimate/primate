@@ -9,6 +9,16 @@
 
 import {explode} from './core-toolkit.js';
 
+/**
+ * Compares version string on left side with that of right side.
+ *
+ * The two version strings should be semantic.
+ * Returns true if vLeft is greater than vRight.
+ *
+ * @param {string} vLeft - Version string.
+ * @param {string} vRight - Version string.
+ * @return {boolean} True if greater, false otherwise.
+ */
 export function greaterThan(vLeft, vRight) {
     if (vLeft === vRight) return false;
 
@@ -25,11 +35,7 @@ export function greaterThan(vLeft, vRight) {
             continue;
         }
 
-        if (lParts[index] > rParts[index]) {
-            return true;
-        }
-
-        return false;
+        return lParts[index] > rParts[index];
     }
 }
 
