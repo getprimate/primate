@@ -162,6 +162,13 @@ export function snakeToDisplayText(value) {
     return displayText.trim();
 }
 
+/**
+ * Wraps array join function.
+ *
+ * @param {string[]} keywords - An array of strings.
+ * @param {number} maxLen - Length beyond which string should be trimmed.
+ * @return {string} Imploded string.
+ */
 export function implode(keywords, maxLen = 50) {
     if (isEmpty(keywords) || !Array.isArray(keywords)) return '';
 

@@ -16,6 +16,7 @@
  */
 
 import {isText, isObject, isEmpty} from '../lib/core-toolkit.js';
+import * as _ from '../lib/core-toolkit';
 
 /**
  * Handles delete requests initiated from delete icons.
@@ -187,4 +188,46 @@ export function editViewURL(current, id = '') {
     }
 
     return replaced;
+}
+
+/**
+ * Sanitises header name - value map from token list.
+ *
+ * @param {Record<string, string>} header - The header key and value as string.
+ * @return {Record<string, [string]>} The header key and values as array.
+ */
+export function explodeHeaderMap(header) {
+    const headerMap = {};
+
+    for (let key of Object.keys(header)) {
+        let value = header[key];
+
+        key = key.trim().replace(/[^-_a-zA-Z0-9]/g, '-');
+
+        if (key.length === 0) {
+            continue;
+        }
+
+        headerMap[key] = _.explode(value, ',');
+    }
+
+    return headerMap;
+}
+
+/**
+ * Creates header tokens from name-value map.
+ *
+ * This function does the reverse of {@link explodeHeaderMap}.
+ *
+ * @param {Record<string, string[]>} headers - The header key-value pair.
+ * @return {Record<string, string>} The record map.
+ */
+export function implodeHeaderMap(headers) {
+    const nameList = Object.keys(headers);
+
+    for (let name of nameList) {
+        headers[name] = _.implode(headers[name]);
+    }
+
+    return headers;
 }

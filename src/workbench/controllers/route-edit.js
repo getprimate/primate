@@ -8,9 +8,8 @@
 'use strict';
 
 import * as _ from '../lib/core-toolkit.js';
+import * as rsUtils from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlOffset, urlQuery, editViewURL, simplifyObjectId} from '../helpers/rest-toolkit.js';
-
 import routeModel from '../models/route-model.js';
 
 /**
@@ -77,47 +76,6 @@ function implodeAddress(sources = []) {
 }
 
 /**
- * Sanitises header name - value map from token list.
- *
- * @return {Record<string, [string]>} header - The header name - value map.
- */
-function sanitiseHeaderMap(header) {
-    const headerMap = {};
-
-    for (let key of Object.keys(header)) {
-        let value = header[key];
-
-        key = key.trim().replace(/[^-_a-zA-Z0-9]/g, '-');
-
-        if (key.length === 0) {
-            continue;
-        }
-
-        headerMap[key] = _.explode(value, ',');
-    }
-
-    return headerMap;
-}
-
-/**
- * Creates header tokens from name-value map.
- *
- * This function does the reverse of {@link sanitiseHeaderMap}.
- *
- * @param {Record<string, [string]>} headers - The header key-value pair.
- * @return {Record<string, [string]>} The record map.
- */
-function implodeHeaders(headers) {
-    const nameList = Object.keys(headers);
-
-    for (let name of nameList) {
-        headers[name] = _.implode(headers[name]);
-    }
-
-    return headers;
-}
-
-/**
  * Populates the route model after sanitising values in the route object.
  *
  * @private
@@ -150,7 +108,7 @@ function refreshRouteModel(model, source) {
                 break;
 
             case 'headers':
-                model[field] = implodeHeaders(source[field]);
+                model[field] = rsUtils.implodeHeaderMap(source[field]);
                 break;
 
             default:
@@ -201,7 +159,7 @@ function buildRouteObject(model) {
                 break;
 
             case 'headers':
-                payload.headers = sanitiseHeaderMap(model[field]);
+                payload.headers = rsUtils.explodeHeaderMap(model[field]);
                 break;
 
             case 'service':
@@ -336,8 +294,8 @@ export default function RouteEditController(scope, location, routeParams, restCl
         });
 
         request.then(({data: response}) => {
-            const redirectURL = editViewURL(location.path(), response.id);
-            const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
+            const redirectURL = rsUtils.editViewURL(location.path(), response.id);
+            const displayText = _.isText(response.name) ? response.name : rsUtils.simplifyObjectId(response.id);
 
             if (scope.routeId === '__none__') {
                 scope.routeId = response.id;
@@ -425,10 +383,10 @@ export default function RouteEditController(scope, location, routeParams, restCl
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchPluginList = function (filters = null) {
-        const request = restClient.get(`/routes/${scope.routeId}/plugins` + urlQuery(filters));
+        const request = restClient.get(`/routes/${scope.routeId}/plugins` + rsUtils.urlQuery(filters));
 
         request.then(({data: response}) => {
-            scope.pluginNext.offset = urlOffset(response.next);
+            scope.pluginNext.offset = rsUtils.urlOffset(response.next);
 
             for (let plugin of response.data) {
                 scope.pluginList.push({
@@ -497,7 +455,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
                 restConfig.endpoint
             );
 
-            viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : simplifyObjectId(id));
+            viewFrame.addBreadcrumb(location.path(), _.isText(name) ? name : rsUtils.simplifyObjectId(id));
         });
 
         request.catch(() => {
