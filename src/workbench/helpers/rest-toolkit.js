@@ -194,7 +194,7 @@ export function editViewURL(current, id = '') {
  * Sanitises header name - value map from token list.
  *
  * @param {Record<string, string>} header - The header key and value as string.
- * @return {Record<string, [string]>} The header key and values as array.
+ * @return {Record<string, string[]>} The header key and values as array.
  */
 export function explodeHeaderMap(header) {
     const headerMap = {};
