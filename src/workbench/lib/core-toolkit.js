@@ -100,31 +100,6 @@ export function explode(input = '', separator = ',') {
 }
 
 /**
- * @deprecated Use simplifyObjectId function instead.
- */
-export function objectName(input) {
-    if (typeof input !== 'string' || input.length === 0) {
-        return 'None';
-    }
-
-    let position = input.length;
-
-    while (position >= 0) {
-        if (input.charAt(position) === '-') {
-            break;
-        }
-
-        position--;
-    }
-
-    if (position === 0 || position === input.length) {
-        return input;
-    }
-
-    return input.substr(position + 1).toUpperCase();
-}
-
-/**
  * Converts dashed string to camel case.
  *
  * For example, the text dash-to-camel becomes dashToCamel.
@@ -221,7 +196,7 @@ export function randomHex(length = 16) {
         textLength = textLength + suffix.length;
     }
 
-    return randomText.substr(0, length);
+    return randomText.substring(0, length);
 }
 
 export function parseNumeric(value, defaultValue = -1) {
