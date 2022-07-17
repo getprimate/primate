@@ -7,8 +7,7 @@
 'use strict';
 
 import * as _ from '../lib/core-toolkit.js';
-import {urlQuery, urlOffset, simplifyObjectId, editViewURL, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
-
+import * as rsUtils from '../helpers/rest-toolkit.js';
 import upstreamModel from '../models/upstream-model.js';
 
 /**
@@ -41,10 +40,13 @@ function refreshUpstreamModel(model, source = {}) {
             model[field] = current.map((value) => {
                 return `${value}`;
             });
+
+            continue;
         }
 
         if (field === 'client_certificate') {
             model.client_certificate = _.get(source.client_certificate, 'id', '__none__');
+            continue;
         }
 
         if (_.isObject(current)) {
@@ -209,12 +211,12 @@ export default function UpstreamEditController(scope, location, routeParams, res
      * @return boolean - True if request could be made, false otherwise
      */
     scope.fetchTargetList = (filters = null) => {
-        const request = restClient.get(`/upstreams/${scope.upstreamId}/targets` + urlQuery(filters));
+        const request = restClient.get(`/upstreams/${scope.upstreamId}/targets` + rsUtils.urlQuery(filters));
 
         viewFrame.setLoaderSteps(1);
 
         request.then(({data: response}) => {
-            scope.targetNext.offset = urlOffset(response.next);
+            scope.targetNext.offset = rsUtils.urlOffset(response.next);
 
             for (let target of response.data) {
                 scope.targetList.push(target);
@@ -269,8 +271,8 @@ export default function UpstreamEditController(scope, location, routeParams, res
         const request = restClient.request({method: restConfig.method, resource: restConfig.endpoint, payload});
 
         request.then(({data: response}) => {
-            const redirectURL = editViewURL(location.path(), response.id);
-            const displayText = _.isText(response.name) ? response.name : simplifyObjectId(response.id);
+            const redirectURL = rsUtils.editViewURL(location.path(), response.id);
+            const displayText = _.isText(response.name) ? response.name : rsUtils.simplifyObjectId(response.id);
 
             if (_.isNone(scope.upstreamId)) {
                 scope.upstreamId = response.id;
@@ -384,13 +386,13 @@ export default function UpstreamEditController(scope, location, routeParams, res
      * @return {boolean} True if request could be made, false otherwise.
      */
     scope.fetchCertificates = (filters = null) => {
-        const request = restClient.get('/certificates' + urlQuery(filters));
+        const request = restClient.get('/certificates' + rsUtils.urlQuery(filters));
 
         request.then(({data: response}) => {
             for (let current of response.data) {
                 scope.certList.push({
                     nodeValue: current.id,
-                    displayText: simplifyObjectId(current.id) + ' - ' + _.implode(current.tags, 64)
+                    displayText: rsUtils.simplifyObjectId(current.id) + ' - ' + _.implode(current.tags, 64)
                 });
             }
         });
@@ -440,7 +442,7 @@ export default function UpstreamEditController(scope, location, routeParams, res
      *
      * @type {function(Event): boolean}
      */
-    scope.deleteTableRow = deleteMethodInitiator(restClient, (err) => {
+    scope.deleteTableRow = rsUtils.deleteMethodInitiator(restClient, (err) => {
         if (_.isText(err)) toast.error(err);
         else toast.success('Target deleted successfully.');
     });
