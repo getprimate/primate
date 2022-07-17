@@ -16,7 +16,7 @@
  */
 
 import {isText, isObject, isEmpty} from '../lib/core-toolkit.js';
-import * as _ from '../lib/core-toolkit';
+import * as _ from '../lib/core-toolkit.js';
 
 /**
  * Handles delete requests initiated from delete icons.
@@ -134,7 +134,7 @@ export function simplifyObjectId(objectId) {
         return objectId;
     }
 
-    return objectId.substr(position + 1).toUpperCase();
+    return objectId.substring(position + 1).toUpperCase();
 }
 
 export function urlOffset(location) {
