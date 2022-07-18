@@ -8,8 +8,7 @@
 'use strict';
 
 const path = require('node:path');
-const os = require('node:os');
-const {app, Menu} = require('electron');
+const {shell} = require('electron');
 
 const {APP_NAME} = require('../constant/product');
 const {DATA_PATH} = require('../constant/paths');
@@ -17,7 +16,6 @@ const RendererWindow = require('./window');
 const ConfigManager = require('../config/config-manager');
 const ThemeScanner = require('../theme/theme-scanner');
 const {ipcServer} = require('../ipc/ipc-server');
-const {menuTemplate} = require('./menu');
 
 const RUNNING = {
     themesLoaded: false,
@@ -122,14 +120,9 @@ ipcServer.registerRequestHandler('Create-Workbench-Session', async (event, sessi
     return {};
 });
 
-app.on('browser-window-created', (event, window) => {
-    let menu = Menu.buildFromTemplate(menuTemplate);
-
-    if (os.type() === 'Darwin' || process.platform === 'darwin') {
-        Menu.setApplicationMenu(menu);
-    } else {
-        window.setMenu(menu);
-    }
+ipcServer.registerRequestHandler('Open-External-Link', async (event, payload) => {
+    await shell.openExternal(payload.url);
+    return {};
 });
 
 module.exports = {
