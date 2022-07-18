@@ -57,27 +57,6 @@ class ConfigManager {
         return this._configWrap.gateway.connections;
     }
 
-    getDefaultConnection() {
-        const {gateway} = this._configWrap;
-
-        if (gateway.defaultHost.length === 0) {
-            return null;
-        }
-
-        const {defaultHost} = gateway;
-
-        if (typeof gateway.connections[defaultHost] === 'undefined') {
-            return null;
-        }
-
-        return gateway.connections[defaultHost];
-    }
-
-    removeDefaultConnection() {
-        this._shouldSave = true;
-        this._configWrap.gateway.defaultHost = '';
-    }
-
     getConnectionById(id) {
         const {connections} = this._configWrap.gateway;
 
@@ -86,6 +65,21 @@ class ConfigManager {
         }
 
         return connections[id];
+    }
+
+    getDefaultConnection() {
+        const {defaultHost} = this._configWrap.gateway;
+
+        if (defaultHost.length === 0) {
+            return null;
+        }
+
+        return this.getConnectionById(defaultHost);
+    }
+
+    removeDefaultConnection() {
+        this._shouldSave = true;
+        this._configWrap.gateway.defaultHost = '';
     }
 
     writeConnection(connection) {
