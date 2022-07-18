@@ -73,6 +73,12 @@ class RendererWindow {
 
     create() {
         if (this._window !== null) {
+            if (this._window.isMinimized()) {
+                this._window.restore();
+            }
+
+            this._window.focus();
+
             return false;
         }
 

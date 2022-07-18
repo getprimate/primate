@@ -17,6 +17,21 @@ const rendererManager = require('./renderer/manager');
 const {menuTemplate} = require('./renderer/menu');
 
 const {app, Menu} = electron;
+const instanceLock = app.requestSingleInstanceLock();
+
+async function activateWindow() {
+    const created = await rendererManager.createMainWindow();
+
+    if (created) {
+        await rendererManager.loadBootstrap();
+    }
+}
+
+if (instanceLock === false) {
+    app.quit();
+} else {
+    app.on('second-instance', activateWindow);
+}
 
 app.setName(APP_NAME);
 app.setPath('userData', DATA_PATH);
@@ -42,13 +57,7 @@ app.on('browser-window-created', (event, window) => {
     }
 });
 
-app.on('activate', async () => {
-    const isCreated = await rendererManager.createMainWindow();
-
-    if (isCreated) {
-        await rendererManager.loadBootstrap();
-    }
-});
+app.on('activate', activateWindow);
 
 app.on('will-quit', () => {
     rendererManager.writeConfigState();
