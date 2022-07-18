@@ -12,7 +12,7 @@ const {shell} = require('electron');
 
 const {APP_NAME} = require('../constant/product');
 const {DATA_PATH} = require('../constant/paths');
-const RendererWindow = require('./window');
+const RendererWindow = require('./renderer-window');
 const ConfigManager = require('../config/config-manager');
 const ThemeScanner = require('../theme/theme-scanner');
 const {ipcServer} = require('../ipc/ipc-server');

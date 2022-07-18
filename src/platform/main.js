@@ -13,17 +13,17 @@ const electron = require('electron');
 const {APP_NAME} = require('./constant/product');
 const {DATA_PATH} = require('./constant/paths');
 const {ipcServer} = require('./ipc/ipc-server');
-const rendererManager = require('./renderer/manager');
 const {menuTemplate} = require('./renderer/menu');
+const windowManager = require('./renderer/window-manager');
 
 const {app, Menu} = electron;
 const instanceLock = app.requestSingleInstanceLock();
 
 async function activateWindow() {
-    const created = await rendererManager.createMainWindow();
+    const created = await windowManager.createMainWindow();
 
     if (created) {
-        await rendererManager.loadBootstrap();
+        await windowManager.loadBootstrap();
     }
 }
 
@@ -38,8 +38,8 @@ app.setPath('userData', DATA_PATH);
 
 app.on('ready', async () => {
     try {
-        const isCreated = await rendererManager.createMainWindow();
-        if (isCreated) await rendererManager.loadBootstrap();
+        const isCreated = await windowManager.createMainWindow();
+        if (isCreated) await windowManager.loadBootstrap();
     } catch (e) {
         /* eslint-disable-next-line no-console */
         console.error(e);
@@ -60,12 +60,12 @@ app.on('browser-window-created', (event, window) => {
 app.on('activate', activateWindow);
 
 app.on('will-quit', () => {
-    rendererManager.writeConfigState();
+    windowManager.writeConfigState();
     ipcServer.removeListeners();
 });
 
 app.on('window-all-closed', () => {
-    rendererManager.clearSessions();
+    windowManager.clearSessions();
 
     if (os.type() !== 'Darwin') app.quit();
 });
