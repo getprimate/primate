@@ -16,14 +16,9 @@ const BASE_CONFIG = {
     workbench: require('./workbench-base')
 };
 
-const CURRENT_CONFIG = {
-    gateway: {...BASE_CONFIG.gateway},
-    workbench: {...BASE_CONFIG.workbench}
-};
-
 class ConfigManager {
     _write(name) {
-        const config = JSON.stringify(CURRENT_CONFIG[name], null, 4);
+        const config = JSON.stringify(this._configWrap[name], null, 4);
         fs.writeFileSync(path.join(this._location, `${name}.json`), `${config}\n`, {encoding: 'utf-8', flag: 'w'});
     }
 
@@ -38,60 +33,77 @@ class ConfigManager {
 
         this._location = location;
         this._shouldSave = false;
+        this._configWrap = {
+            gateway: {...BASE_CONFIG.gateway},
+            workbench: {...BASE_CONFIG.workbench}
+        };
 
-        for (let name in CURRENT_CONFIG) {
+        for (let name in this._configWrap) {
             if (!fs.existsSync(`${this._location}/${name}.json`)) {
                 continue;
             }
 
             let loaded = require(`${this._location}/${name}.json`);
 
-            for (let key of Object.keys(CURRENT_CONFIG[name])) {
+            for (let key of Object.keys(this._configWrap[name])) {
                 if (typeof loaded[key] !== 'undefined') {
-                    CURRENT_CONFIG[name][key] = loaded[key];
+                    this._configWrap[name][key] = loaded[key];
                 }
             }
         }
     }
 
     getAllConnections() {
-        return CURRENT_CONFIG.gateway.connections;
+        return this._configWrap.gateway.connections;
     }
 
     getDefaultConnection() {
-        if (CURRENT_CONFIG.gateway.defaultHost.length === 0) return null;
+        const {gateway} = this._configWrap;
 
-        const defaultHost = CURRENT_CONFIG.gateway.defaultHost;
-        if (typeof CURRENT_CONFIG.gateway.connections[defaultHost] === 'undefined') return null;
+        if (gateway.defaultHost.length === 0) {
+            return null;
+        }
 
-        return CURRENT_CONFIG.gateway.connections[defaultHost];
+        const {defaultHost} = gateway;
+
+        if (typeof gateway.connections[defaultHost] === 'undefined') {
+            return null;
+        }
+
+        return gateway.connections[defaultHost];
     }
 
     removeDefaultConnection() {
         this._shouldSave = true;
-        CURRENT_CONFIG.gateway.defaultHost = '';
+        this._configWrap.gateway.defaultHost = '';
     }
 
     getConnectionById(id) {
-        if (typeof CURRENT_CONFIG.gateway.connections[id] === 'undefined') return null;
+        const {connections} = this._configWrap.gateway;
 
-        return CURRENT_CONFIG.gateway.connections[id];
+        if (connections[id] === 'undefined') {
+            return null;
+        }
+
+        return connections[id];
     }
 
     writeConnection(connection) {
+        const {gateway} = this._configWrap;
+
         if (typeof connection.id !== 'string' || connection.id.length <= 15) {
             connection.id = crypto.randomBytes(8).toString('hex');
         }
 
         if (connection.isRemoved === true) {
-            const config = CURRENT_CONFIG.gateway.connections[connection.id];
+            const config = gateway.connections[connection.id];
             config.isRemoved = true;
 
-            if (connection.id === CURRENT_CONFIG.gateway.defaultHost) {
-                CURRENT_CONFIG.gateway.defaultHost = '';
+            if (connection.id === gateway.defaultHost) {
+                gateway.defaultHost = '';
             }
 
-            delete CURRENT_CONFIG.gateway.connections[connection.id];
+            delete gateway.connections[connection.id];
             return config;
         }
 
@@ -99,10 +111,10 @@ class ConfigManager {
             typeof BASE_CONFIG.gateway.connections[connection.id] === 'object' ? BASE_CONFIG.gateway.connections : {};
         const config = {...base, ...connection};
 
-        CURRENT_CONFIG.gateway.connections[connection.id] = config;
+        gateway.connections[connection.id] = config;
 
         if (config.isDefault === true) {
-            CURRENT_CONFIG.gateway.defaultHost = config.id;
+            gateway.defaultHost = config.id;
         }
 
         delete config.isDefault;
@@ -112,20 +124,21 @@ class ConfigManager {
     }
 
     getWorkbenchConfig() {
-        return CURRENT_CONFIG.workbench;
+        return this._configWrap.workbench;
     }
 
     writeWorkbenchConfig(config) {
+        const {workbench} = this._configWrap;
         const fieldList = Object.keys(config);
 
         for (let field of fieldList) {
             if (config[field] !== null) {
-                CURRENT_CONFIG.workbench[field] = config[field];
+                workbench[field] = config[field];
             }
         }
 
         this._shouldSave = true;
-        return CURRENT_CONFIG.workbench;
+        return workbench;
     }
 
     saveState() {
@@ -133,7 +146,7 @@ class ConfigManager {
             return this._shouldSave;
         }
 
-        for (let type in CURRENT_CONFIG) {
+        for (let type in this._configWrap) {
             this._write(type);
         }
 
