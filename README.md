@@ -11,7 +11,7 @@
 
 | Primate Version | Kong Admin API Version |
 |-----------------|------------------------|
-| 1.0.0           | `2.6.x` `2.7.x`        |
+| 1.0.0           | `2.7.x` `2.8.x`        |
 
 ## :package: Download and Install 
 
