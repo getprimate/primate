@@ -8,5 +8,6 @@
 'use strict';
 
 module.exports = {
-    APP_NAME: 'Primate'
+    APP_NAME: 'Primate',
+    VERSION: '1.0.0'
 };
