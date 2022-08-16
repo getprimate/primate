@@ -10,7 +10,6 @@
 import * as _ from '../lib/core-toolkit.js';
 import {
     editViewURL,
-    urlOffset,
     urlQuery,
     simplifyObjectId,
     patchMethodInitiator,
@@ -21,6 +20,7 @@ import {switchTabInitiator} from '../helpers/notebook.js';
 import consumerModel from '../models/consumer-model.js';
 import userAuthModel from '../models/user-auth-model.js';
 import {epochToDate} from '../helpers/date-lib.js';
+import {urlOffset} from '../services/rest-provider.js';
 
 /**
  * Provides controller constructor for editing consumer objects.

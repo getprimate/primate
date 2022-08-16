@@ -138,6 +138,16 @@ function buildRESTClientFactory(http) {
     };
 }
 
+export function urlOffset(location) {
+    if (!_.isText(location)) return '';
+
+    const url = new URL(location, CLIENT_CONFIG.host);
+    const params = url.searchParams;
+
+    return params.has('offset') ? params.get('offset') : '';
+}
+
+
 /**
  * Implements the provider for {@link RESTClientFactory REST factory service}.
  *
