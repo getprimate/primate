@@ -137,15 +137,6 @@ export function simplifyObjectId(objectId) {
     return objectId.substring(position + 1).toUpperCase();
 }
 
-export function urlOffset(location) {
-    if (!isText(location)) return '';
-
-    const url = new URL(location);
-    const params = url.searchParams;
-
-    return params.has('offset') ? params.get('offset') : '';
-}
-
 export function urlQuery(options) {
     if (isObject(options)) {
         const params = new URLSearchParams();

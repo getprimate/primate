@@ -10,7 +10,8 @@
 import {isText} from '../lib/core-toolkit.js';
 import {genericForm} from '../lib/version-utils.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlQuery, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlOffset} from '../services/rest-provider.js';
 
 /**
  * Provides controller constructor for listing services.
