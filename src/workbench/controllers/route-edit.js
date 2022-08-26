@@ -245,7 +245,7 @@ export default function RouteEditController(scope, location, routeParams, restCl
     let loaderSteps = 0;
 
     scope.ENUM_PROTOCOL = ['http', 'https', 'grpc', 'grpcs', 'tcp', 'tls', 'tls_passthrough'];
-    scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTION'];
+    scope.ENUM_METHOD = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
     scope.ENUM_REDIRECT_CODE = [426, 301, 302, 307, 308];
 
     scope.currentPath = location.path();
