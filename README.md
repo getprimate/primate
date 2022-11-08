@@ -9,9 +9,9 @@
 
 ## Version Compatibility
 
-| Primate Version | Kong Admin API Version |
-|-----------------|------------------------|
-| 1.0.0           | `2.7.x` `2.8.x`        |
+| Primate version | Kong Admin API versions |
+|-----------------|-------------------------|
+| 1.0.0           | `2.7.x` `2.8.x`         |
 
 ## :package: Download and Install 
 
@@ -20,8 +20,8 @@ Builds are available for major desktop operating systems.
 #### On Windows
 Download the [latest](https://github.com/getprimate/primate/releases/latest) executable setup file and run it.
 
-#### On Mac OS X
-Download and open the [latest](https://github.com/getprimate/primate/releases/latest) .dmg image, move the app to /Applications.
+#### On macOS
+Download and open the [latest](https://github.com/getprimate/primate/releases/latest) DMG file, move the app to /Applications.
 
 #### On Linux
 Primate is available as AppImage and tar.gz archive for all popular Linux distributions. 
