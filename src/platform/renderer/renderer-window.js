@@ -54,6 +54,7 @@ class RendererWindow {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
+                sandbox: true,
                 preload: path.join(PLATFORM_PATH, 'preload.js')
             }
         };
