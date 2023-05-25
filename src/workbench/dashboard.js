@@ -51,6 +51,9 @@ const {/** @type {IPCBridge} */ ipcBridge, document} = window;
  */
 const responseLocker = {
     completedSteps: 0,
+    state: {
+        layoutName: 'dashboard'
+    },
     config: {}
 };
 
