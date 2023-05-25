@@ -51,7 +51,7 @@ const frameCache = {
  */
 const frameState = {
     frameTitle: '',
-    layoutName: 'dashboard',
+    layoutName: 'bootstrap',
     kongVersion: 'Unknown',
     kongDatabase: 'Unknown',
     routeNext: '',
