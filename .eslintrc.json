@@ -11,7 +11,7 @@
         "ecmaVersion": 2020
     },
     "rules": {
-        "linebreak-style": ["warn", "unix"],
+        "linebreak-style": "off",
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "no-console": ["warn"],
