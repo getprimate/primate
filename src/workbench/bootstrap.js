@@ -76,8 +76,6 @@ ipcBridge.onResponse('Read-Workbench-Config', (config) => {
 
 ipcBridge.onResponse('Read-Default-Connection', (connection) => {
     if (isText(connection.adminHost) && isText(connection.protocol)) {
-        const adminPort = parseNumeric(connection.adminPort, 8001);
-
         /**
          * Configures REST client and view frame factories.
          *
@@ -85,7 +83,7 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
          * @param {ViewFrameProvider} vfProvider - The view frame provider.
          */
         const configure = (restProvider, vfProvider) => {
-            const options = {host: `${connection.protocol}://${connection.adminHost}:${adminPort}`};
+            const options = {host: `${connection.protocol}://${connection.adminHost}`};
 
             if (isObject(connection.basicAuth) && connection.basicAuth.credentials.length >= 2) {
                 options.authorization = connection.basicAuth.credentials;
@@ -98,7 +96,7 @@ ipcBridge.onResponse('Read-Default-Connection', (connection) => {
                     sessionId: connection.id,
                     sessionName: connection.name,
                     sessionColor: connection.colorCode,
-                    sessionURL: `${connection.protocol}://${connection.adminHost}:${adminPort}`
+                    sessionURL: `${connection.protocol}://${connection.adminHost}`
                 },
                 state: {
                     layoutName: 'bootstrap'

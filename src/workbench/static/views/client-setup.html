@@ -79,7 +79,7 @@
             <tr data-ng-repeat="(connId, connProps) in connectionList" data-connection-id="{{connId}}">
                 <td title="Connect"><span class="material-icons" data-ng-style="{'color': connProps.colorCode}">noise_aware</span></td>
                 <td title="Connect"><strong>{{connProps.name}}</strong>
-                    <br>{{connProps.protocol}}://{{connProps.adminHost}}:{{connProps.adminPort}}
+                    <br>{{connProps.protocol}}://{{connProps.adminHost}}
                     <br>Created on: {{connProps.createdAt}}</td>
                 <td class="row-actions"><span title="Delete connection" class="material-icons critical delete" data-target="consumer">delete_forever</span></td><!-- .row-actions -->
             </tr>
