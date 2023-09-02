@@ -115,7 +115,7 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
         eventLocks.submitSetupForm = true;
         viewFrame.setLoaderSteps(1);
 
-        const url = `${setupModel.protocol}://${setupModel.adminHost}:${setupModel.adminPort}`;
+        const url = `${setupModel.protocol}://${setupModel.adminHost}`;
         const options = {method: 'GET', headers: {}, url};
 
         if (scope.credentials.username.length >= 1) {
