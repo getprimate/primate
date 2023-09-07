@@ -1,3 +1,10 @@
+# Version 1.1.0 (September 08, 2023)
+### Improvements
+- Fixed basic user authentication in connection setup
+[#40](https://github.com/getprimate/primate/issues/40)
+- Support for adding paths in connection setup
+[#45](https://github.com/getprimate/primate/issues/45)
+
 # Version 1.0.0 (June 29, 2022)
 ### What's New
 - KongDash is now known as Primate
