@@ -120,9 +120,10 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
 
         if (scope.credentials.username.length >= 1) {
             const {credentials} = scope;
+            const encoded = btoa(`${credentials.username}:${credentials.password}`);
 
-            options.headers['Authorization'] = btoa(`${credentials.username}:${credentials.password}`);
-            scope.setupModel.basicAuth.credentials = options.headers['Authorization'];
+            options.headers['Authorization'] = `Basic ${encoded}`;
+            scope.setupModel.basicAuth.credentials = encoded;
         }
 
         const request = restClient.request(options);

@@ -152,6 +152,8 @@ ipcBridge.onResponse('Read-Workbench-Config', (config) => {
 });
 
 ipcBridge.onResponse('Read-Session-Connection', (connection) => {
+    console.log("Read-Session-Connection", JSON.stringify(connection));
+
     if (!isText(connection.adminHost) || !isText(connection.protocol)) {
         return false;
     }

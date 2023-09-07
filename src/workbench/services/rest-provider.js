@@ -66,7 +66,7 @@ function configure(options, external = false) {
 
     if (typeof CLIENT_CONFIG.authorization === 'string' && external === false) {
         request.withCredentials = true;
-        request.headers['Authorization'] = CLIENT_CONFIG.authorization;
+        request.headers['Authorization'] = `Basic ${CLIENT_CONFIG.authorization}`;
     }
 
     if (typeof CLIENT_CONFIG.accept === 'string') request.headers['Accept'] = CLIENT_CONFIG.accept;
