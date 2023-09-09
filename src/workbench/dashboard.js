@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {isNil, isNone, isObject, isText, parseNumeric} from './lib/core-toolkit.js';
+import {isNil, isNone, isObject, isText} from './lib/core-toolkit.js';
 
 import Primate from './primate.js';
 
