@@ -1,4 +1,4 @@
-# Version 1.1.0 (September 08, 2023)
+# Version 1.1.0 (September 10, 2023)
 ### Improvements
 - Fixed basic user authentication in connection setup
 [#40](https://github.com/getprimate/primate/issues/40)
