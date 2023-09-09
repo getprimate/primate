@@ -76,7 +76,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     viewFrame.setTitle('Consumers');
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
-    scope.fetchConsumerList({size: 1});
+    scope.fetchConsumerList();
 
     scope.$on('$destroy', () => {
         scope.consumerList.length = 0;
