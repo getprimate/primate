@@ -8,9 +8,14 @@
 'use strict';
 
 import * as _ from '../lib/core-toolkit.js';
-import {deleteMethodInitiator, editViewURL, simplifyObjectId, urlQuery} from '../helpers/rest-toolkit.js';
+import {
+    urlQuery, 
+    urlOffset, 
+    deleteMethodInitiator, 
+    editViewURL, 
+    simplifyObjectId
+} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlOffset} from '../services/rest-provider.js';
 
 import serviceModel from '../models/service-model.js';
 import {genericForm} from '../lib/version-utils.js';
