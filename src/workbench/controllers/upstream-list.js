@@ -8,8 +8,7 @@
 'use strict';
 import {isText} from '../lib/core-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlQuery, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
-import {urlOffset} from '../services/rest-provider.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 
 /**
  * Provides controller constructor for listing upstream objects.
