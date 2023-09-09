@@ -8,9 +8,8 @@
 'use strict';
 
 import {isNil, isText} from '../lib/core-toolkit.js';
-import {urlQuery, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator, simplifyObjectId} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlOffset} from '../services/rest-provider.js';
 
 /**
  * Provides controller constructor for editing consumer objects.
@@ -77,7 +76,7 @@ export default function ConsumerListController(scope, restClient, viewFrame, toa
     viewFrame.setTitle('Consumers');
     viewFrame.addAction('New Consumer', '#!/consumers/__create__');
 
-    scope.fetchConsumerList();
+    scope.fetchConsumerList({size: 1});
 
     scope.$on('$destroy', () => {
         scope.consumerList.length = 0;

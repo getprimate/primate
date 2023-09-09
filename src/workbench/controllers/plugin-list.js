@@ -8,9 +8,8 @@
 'use strict';
 
 import {isObject, isText} from '../lib/core-toolkit.js';
-import {urlQuery, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
+import {urlQuery, urlOffset, deleteMethodInitiator} from '../helpers/rest-toolkit.js';
 import {epochToDate} from '../helpers/date-lib.js';
-import {urlOffset} from '../services/rest-provider.js';
 
 /**
  * Provides controller constructor for editing plugin objects.
