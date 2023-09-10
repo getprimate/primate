@@ -39,13 +39,6 @@
                 <li data-ng-repeat="text in bugfix.description">- {{text}}</li>
             </ul>
         </article>
-
-        <article data-ng-if="releaseModel.contributors && releaseModel.contributors.length >= 1" class="letterpad">
-            <h2>Contributors</h2>
-            <ul data-ng-repeat="contrib in releaseModel.contributors">
-                <li><a target="_blank" href="{{contrib.profileLink}}" title="Open Link in Browser">@{{contrib.username}} ({{contrib.fullname}})</a> - {{contrib.description}}</li>
-            </ul>
-        </article>
     </div><!-- .col.md-7 -->
 
     <div class="col md-5">
