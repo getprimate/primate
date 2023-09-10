@@ -14,7 +14,8 @@ export default {
     downloadLink: '',
     adminAPIList: ['v2.7.x'],
     releaseNotes: {
-        features: [
+        features: [],
+        upgrades: [
             {
                 primaryText: 'Support for adding paths in connection setup.',
                 description: []
@@ -25,7 +26,6 @@ export default {
                 primaryText: 'Fixed basic user authentication in connection setup.',
                 description: []
             }
-        ],
-        upgrades: []
+        ]
     }
 };

@@ -16,7 +16,7 @@
             <p><span data-ng-repeat="version in releaseModel.adminAPIList" class="label default">{{version}}</span></p>
         </article><!-- .letterpad -->
 
-        <article class="letterpad">
+        <article data-ng-if="releaseModel.releaseNotes.features.length >= 1" class="letterpad">
             <h2>What's New</h2>
             <ul data-ng-repeat="feature in releaseModel.releaseNotes.features">
                 <li><strong>{{feature.primaryText}}</strong></li>
