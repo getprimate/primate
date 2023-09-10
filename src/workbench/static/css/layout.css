@@ -168,6 +168,7 @@ select option {
     background: var(--primary-bg);
     border: 1px solid var(--border-fg);
     border-radius: 3px;
+    appearance: menulist;
     -webkit-appearance: menulist;
 }
 
