@@ -12,7 +12,7 @@ export default {
     publishedAt: 1694323695,
     author: 'Ajay Sreedhar <ajaysreedhar05@gmail.com>',
     downloadLink: '',
-    adminAPIList: ['v2.7.x'],
+    adminAPIList: ['v2.7.x', 'v2.8.x'],
     releaseNotes: {
         features: [],
         upgrades: [
