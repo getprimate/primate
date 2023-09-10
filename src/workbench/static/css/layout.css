@@ -564,6 +564,11 @@ button.text:hover {
     color: var(--primary-fg);
 }
 
+button.clickable.clipboard {
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
 /* =-=-=-=-=-= Anchor Hyper Links =-=-=-=-=-= */
 a {
     font-size: 1rem;
