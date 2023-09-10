@@ -32,10 +32,6 @@ export default function ReleaseInfoController(scope, routeParams, restClient, vi
     const request = fetchReleaseInfo(routeParams.version);
 
     request.then(({releaseIndex, releaseInfo}) => {
-        if (Array.isArray(releaseIndex.contributors) && Array.isArray(releaseInfo.contributors)) {
-            releaseInfo.contributors = releaseIndex.contributors.concat(releaseInfo.contributors);
-        }
-
         releaseInfo.publishedAt = epochToDate(releaseInfo.publishedAt, viewFrame.getConfig('dateFormat'));
 
         scope.$apply((scope_) => {
