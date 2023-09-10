@@ -16,30 +16,13 @@ export default {
     releaseNotes: {
         features: [
             {
-                primaryText: 'KongDash is now renamed as Primate.',
+                primaryText: 'Support for adding paths in connection setup.',
                 description: []
-            },
-            {
-                primaryText: 'Supports Kong Admin API v2.7.x',
-                description: []
-            },
-            {
-                primaryText: 'Stores multiple connections in history.',
-                description: ['All connection information are stored locally in the app data directory.']
-            },
-            {
-                primaryText: 'Supports UI customizations with themes.',
-                description: ['Themes can be placed in <app-data>/primate-ce/User-Themes</i> directory.']
-            },
-            {
-                primaryText: 'Added an activity monitor that logs HTTP API calls.',
-                description: ['Monitor is helpful while checking HTTP request status.']
             }
-
         ],
         bugfixes: [
             {
-                primaryText: 'Fixed a host configuration issue in settings view.',
+                primaryText: 'Fixed basic user authentication in connection setup.',
                 description: []
             }
         ],
@@ -49,11 +32,5 @@ export default {
                 description: []
             }
         ]
-    },
-    contributors: [{
-        username: 'ajaysreedhar',
-        fullname: 'Ajay Sreedhar',
-        profileLink: 'https://github.com/ajaysreedhar',
-        description: 'Project maintainer'
-    }]
+    }
 };
