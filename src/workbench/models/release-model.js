@@ -26,11 +26,6 @@ export default {
                 description: []
             }
         ],
-        upgrades: [
-            {
-                primaryText: 'Electron to version 19.x.x',
-                description: []
-            }
-        ]
+        upgrades: []
     }
 };
