@@ -37,6 +37,7 @@ function configureLinuxOptions(type = 'dir') {
 
     switch (type) {
         case 'Snap':
+            config.linux.executableName = 'primate';
             config.linux.target = 'snap';
 
             config.snap = {
