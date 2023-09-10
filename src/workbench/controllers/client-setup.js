@@ -123,9 +123,12 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
             const encoded = btoa(`${credentials.username}:${credentials.password}`);
 
             options.headers['Authorization'] = `Basic ${encoded}`;
-            scope.setupModel.basicAuth.credentials = encoded;
-        }
+            setupModel.basicAuth.credentials = encoded;
 
+        } else if (typeof setupModel.basicAuth.credentials === 'string' && setupModel.basicAuth.credentials.length >= 1) {
+            options.headers['Authorization'] = `Basic ${setupModel.basicAuth.credentials}`;
+        }
+        
         const request = restClient.request(options);
 
         request.then(({data: response}) => {
@@ -196,9 +199,12 @@ export default function ClientSetupController(scope, restClient, viewFrame, toas
 
         const fields = Object.keys(scope.connectionList[connectionId]);
 
+        scope.credentials.username = '';
+        scope.credentials.password = '';
+        scope.setupModel.id = connectionId;
+
         for (let field of fields) {
             scope.setupModel[field] = scope.connectionList[connectionId][field];
-            scope.setupModel.id = connectionId;
         }
 
         return scope.attemptConnection({target: {nodeName: '__none__'}});
