@@ -19,7 +19,7 @@
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "babel-preset-minify": "^0.5.2",
-    "electron": "^22.0.3",
+    "electron": "^22.3.25",
     "electron-builder": "^23.6.0",
     "eslint": "^8.29.0",
     "grunt": "^1.5.3",
