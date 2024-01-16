@@ -23,6 +23,7 @@ import {epochToDate} from '../helpers/date-lib.js';
 export default function ConsumerListController(scope, restClient, viewFrame, toast) {
     scope.consumerList = [];
     scope.consumerNext = {offset: ''};
+    scope.consumerFilter = '';
 
     /**
      * Retrieves the list of consumers.
