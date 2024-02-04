@@ -1,33 +1,10 @@
 {
   "name": "primate-ce",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A modern desktop client for Kong Admin API",
   "main": "out/platform/main.js",
   "repository": "git@github.com:getprimate/primate.git",
   "author": "Ajay Sreedhar <ajaysreedhar05@gmail.com>",
   "license": "MIT",
-  "private": false,
-  "scripts": {
-    "lint": "eslint src/platform src/workbench build/",
-    "clean": "grunt clean",
-    "start": "grunt start",
-    "compile": "grunt compile",
-    "dist": "grunt dist",
-    "release": "grunt release"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
-    "babel-preset-minify": "^0.5.2",
-    "electron": "^22.0.3",
-    "electron-builder": "^23.6.0",
-    "eslint": "^8.29.0",
-    "grunt": "^1.5.3",
-    "grunt-babel": "^8.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "inquirer": "^8.2.3",
-    "load-grunt-tasks": "^5.1.0",
-    "prettier": "^2.8.0",
-    "rimraf": "^3.0.2"
-  }
+  "private": false
 }
