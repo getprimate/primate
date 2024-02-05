@@ -6,5 +6,15 @@
   "repository": "git@github.com:getprimate/primate.git",
   "author": "Ajay Sreedhar <ajaysreedhar05@gmail.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.11.16",
+    "electron": "^28.2.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
 }
