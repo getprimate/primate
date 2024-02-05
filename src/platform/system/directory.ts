@@ -5,14 +5,12 @@
  * Please see LICENSE file located in the project root for more information.
  */
 
-"use strict";
-
 import path from "node:path";
 import os from "node:os";
 
 const platform = os.type();
 
-export function home(): string {
+function home(): string {
     if (typeof os.homedir === "function") {
         return os.homedir();
     }
@@ -30,11 +28,11 @@ export function home(): string {
     }
 }
 
-export function desktop(): string {
+function desktop(): string {
     return path.join(home(), "Desktop");
 }
 
-export function appData(): string {
+function appData(): string {
     switch (platform) {
         case "Windows_NT":
             return typeof process.env.APPDATA === "string"
@@ -51,7 +49,7 @@ export function appData(): string {
     }
 }
 
-export function temp(): string {
+function temp(): string {
     if (typeof os.tmpdir === "function") {
         return os.tmpdir();
     }
@@ -68,3 +66,10 @@ export function temp(): string {
             throw new Error(`Unsupported operating system: ${platform}.`);
     }
 }
+
+export default {
+    home,
+    desktop,
+    appData,
+    temp
+};
