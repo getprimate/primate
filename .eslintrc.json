@@ -1,24 +1,61 @@
 {
     "env": {
-        "browser": true,
-        "node": true,
-        "es6": true,
-        "jquery": true
+      "node": true,
+      "es6": true,
+      "browser": true,
+      "jquery": false
     },
-    "extends": "eslint:recommended",
+    "parser": "vue-eslint-parser",
+    "plugins": ["@typescript-eslint", "vue"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:vue/vue3-recommended"
+    ],
     "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": 2020
+      "parser": "@typescript-eslint/parser",
+      "sourceType": "module",
+      "ecmaVersion": 2020
     },
     "rules": {
-        "linebreak-style": "off",
-        "quotes": ["error", "single"],
-        "semi": ["error", "always"],
-        "no-console": ["warn"],
-        "no-unused-vars": ["warn"],
-        "arrow-body-style": ["error", "always"],
-        "require-await": ["error"],
-        "eol-last": ["error", "always"]
+      "linebreak-style": ["warn", "unix"],
+      "quotes": ["error", "double"],
+      "semi": ["error", "always"],
+      "no-console": ["warn"],
+      "no-unused-vars": ["off"],
+      "arrow-body-style": ["error", "always"],
+      "require-await": ["error"],
+      "eol-last": ["error", "always"],
+      "@typescript-eslint/no-unused-vars": ["error"],
+      "vue/script-indent": ["error", 4, {
+        "baseIndent": 0,
+        "switchCase": 1
+      }],
+      "vue/html-indent": ["error", 2, {
+        "attribute": 1,
+        "baseIndent": 0,
+        "closeBracket": 0,
+        "alignAttributesVertically": true,
+        "ignores": []
+      }],
+      "vue/singleline-html-element-content-newline": 0,
+      "vue/one-component-per-file": 0,
+      "vue/max-attributes-per-line": ["error", {
+        "singleline": {
+          "max": 7
+        },
+        "multiline": {
+          "max": 7
+        }
+      }],
+      "vue/html-self-closing": ["error", {
+        "html": {
+          "void": "always",
+          "normal": "always",
+          "component": "always"
+        }
+      }]
     },
-    "ignorePatterns": ["**/static/*.js", "dist/**"]
+    "ignorePatterns": ["build/*.js", "tailwind*.js", "out/**"]
 }
