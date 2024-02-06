@@ -1,14 +1,17 @@
 /**
+ * ------------------------------------------------------------
+ * 
  * Copyright (c) 2022-present Ajay Sreedhar.
  *
  * Licensed under the MIT License.
- * Please see LICENSE file located in the project root for more information.
+ * See LICENSE file located in the root directory.
+ * 
+ * ============================================================
  */
 
 import path from "node:path";
-import directory from "../system/directory";
-
 import {app} from "electron";
+import directory from "../system/directory";
 
 const PLATFORM_PATH = path.dirname(__dirname);
 
