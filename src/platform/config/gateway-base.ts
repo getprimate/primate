@@ -9,7 +9,7 @@
  * ============================================================
  */
 
-interface ConnectionProps {
+export interface ConnectionProps {
     id: string;
     name: string;
     protocol: string;
@@ -21,6 +21,7 @@ interface ConnectionProps {
         credentials: string;
     };
     isRemoved?: boolean;
+    isDefault?: boolean;
 }
 
 export interface GatewayBase {
