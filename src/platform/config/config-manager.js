@@ -60,7 +60,7 @@ class ConfigManager {
     getConnectionById(id) {
         const {connections} = this._configWrap.gateway;
 
-        if (connections[id] === 'undefined') {
+        if (typeof connections[id] === 'undefined') {
             return null;
         }
 
