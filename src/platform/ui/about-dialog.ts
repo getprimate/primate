@@ -10,7 +10,7 @@
  */
 
 import os from "node:os";
-import {app, dialog, MessageBoxOptions} from "electron";
+import {app, dialog, BrowserWindow, MessageBoxOptions} from "electron";
 
 const extended: Record<string, string> = {
     Version: app.getVersion(),
@@ -37,7 +37,7 @@ const options: MessageBoxOptions = {
     detail: buildDetails(extended)
 };
 
-function showAboutDialog(window): void {
+function showAboutDialog(window: BrowserWindow): void {
     dialog.showMessageBox(window, options).finally(() => { /* Do notihing. */ });
 }
 
