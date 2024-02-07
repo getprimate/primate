@@ -37,8 +37,7 @@ const options: MessageBoxOptions = {
     detail: buildDetails(extended)
 };
 
-function showAboutDialog(window: BrowserWindow): void {
+export function showAboutDialog(window: BrowserWindow): void {
     dialog.showMessageBox(window, options).finally(() => { /* Do notihing. */ });
 }
 
-export default {showAboutDialog};
