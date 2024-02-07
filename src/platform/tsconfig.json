@@ -28,6 +28,9 @@
       /* Completeness */
       "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
       "skipLibCheck": true,                             /* Skip type checking all .d.ts files. */
+      "typeRoots": [
+        "../typings"
+      ]
     },
-    "include": ["system/*.ts", "constant/*.ts", "config/*.ts"]
+    "include": ["../typings/*.d.ts", "system/*.ts", "constant/*.ts", "config/*.ts", "ipc/*.ts", "ui/*.ts"]
 }
