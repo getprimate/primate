@@ -20,6 +20,27 @@ export function isObject(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/**
+ * Removes dangerous keys such as __proto__, constructor and prototype from a
+ * plain object to prevent prototype pollution when the object originates
+ * from untrusted, user-controlled input.
+ *
+ * @param {Object} payload - The object to sanitize.
+ * @returns {Object} A shallow copy of the payload without dangerous keys.
+ */
+export function sanitizePayload(payload) {
+    if (!isObject(payload)) return payload;
+
+    const unsafeKeys = ['__proto__', 'constructor', 'prototype'];
+    const sanitized = {};
+
+    for (let key of Object.keys(payload)) {
+        if (!unsafeKeys.includes(key)) sanitized[key] = payload[key];
+    }
+
+    return sanitized;
+}
+
 export function isNil(value) {
     return typeof value === 'undefined' || value === null;
 }

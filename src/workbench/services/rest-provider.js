@@ -54,8 +54,8 @@ function configure(options, external = false) {
         request.url = CLIENT_CONFIG.host + (typeof options.endpoint === 'string' ? options.endpoint : options.resource);
     }
 
-    if (typeof options.payload === 'object') request.data = options.payload;
-    else if (typeof options.data === 'object') request.data = options.data;
+    if (typeof options.payload === 'object') request.data = _.sanitizePayload(options.payload);
+    else if (typeof options.data === 'object') request.data = _.sanitizePayload(options.data);
 
     if (typeof CLIENT_CONFIG.authorization === 'string' && external === false) {
         request.withCredentials = true;
@@ -67,8 +67,10 @@ function configure(options, external = false) {
     if (typeof CLIENT_CONFIG.contentType === 'string') request.headers['Content-Type'] = CLIENT_CONFIG.contentType;
 
     if (typeof options.headers === 'object') {
-        for (let header in options.headers) {
-            request.headers[header] = options.headers[header];
+        const safeHeaders = _.sanitizePayload(options.headers);
+
+        for (let header of Object.keys(safeHeaders)) {
+            request.headers[header] = safeHeaders[header];
         }
     }
 
