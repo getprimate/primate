@@ -1,35 +1,65 @@
 <!-- ==-==-==-==-== Display this block if no consumers are present. ==-==-==-==-== -->
-<ul data-ng-if="consumerList.length===0" class="hero-placeholder" >
+<ul data-ng-if="consumerList.length===0" class="hero-placeholder">
     <li><span class="material-icons hero">person_pin</span></li>
     <li><strong>Looks like no consumers are present</strong></li>
-    <li>Consumers represents a user of a service.
-        <a target="_blank" href="https://docs.konghq.com/gateway/2.7.x/admin-api/#consumer-object">Learn More <span class="material-icons">launch</span></a>
+    <li>
+        Consumers represents a user of a service.
+        <a target="_blank" href="https://docs.konghq.com/gateway/2.7.x/admin-api/#consumer-object"
+            >Learn More <span class="material-icons">launch</span></a
+        >
     </li>
     <li><a href="#!/consumers/__create__" class="btn">Create Consumer</a></li>
-</ul><!-- .hero-placeholder -->
+</ul>
+<!-- .hero-placeholder -->
 
 <!-- ==-==-==-==-== Display this block only if consumers are present. ==-==-==-==-== -->
 <div data-ng-if="consumerList.length>=1" class="container">
-<div class="well">
-<div class="well__heading">All Consumers</div>
-<table class="data-table">
-    <thead><tr><th title="username or id">Username</th><th title="custom_id">Custom Id</th><th title="created_at">Created On</th><th class="row-actions">Actions</th></tr></thead>
+    <div class="well">
+        <div class="well__heading">All Consumers</div>
+        <input
+            class="well__filter"
+            type="text"
+            name="consumerPrefix"
+            placeholder="Filter..."
+            data-ng-model="consumerFilter" />
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th title="username or id">Username</th>
+                    <th title="custom_id">Custom Id</th>
+                    <th title="created_at">Created On</th>
+                    <th class="row-actions">Actions</th>
+                </tr>
+            </thead>
 
-    <tbody data-ng-click="deleteTableRow($event)">
-    <tr data-ng-repeat="consumer in consumerList">
-        <td><a href="#!/consumers/{{consumer.id}}">{{consumer.displayText}}</a></td>
-        <td>{{consumer.custom_id}}</td>
-        <td>{{consumer.createdAt}}</td>
-        <td class="row-actions">
-            <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"><span class="material-icons warning">edit</span></a>
-            <span title="Delete Consumer" class="material-icons critical delete" data-target="consumer" data-endpoint="/consumers/{{consumer.id}}">delete_forever</span>
-        </td>
-    </tr>
-    </tbody>
-</table>
-</div><!-- .well -->
+            <tbody data-ng-click="deleteTableRow($event)">
+                <tr data-ng-repeat="consumer in consumerList | filter: {displayText: consumerFilter}">
+                    <td><a href="#!/consumers/{{consumer.id}}">{{consumer.displayText}}</a></td>
+                    <td>{{consumer.custom_id}}</td>
+                    <td>{{consumer.createdAt}}</td>
+                    <td class="row-actions">
+                        <a title="Edit Consumer" href="#!/consumers/{{consumer.id}}"
+                            ><span class="material-icons warning">edit</span></a
+                        >
+                        <span
+                            title="Delete Consumer"
+                            class="material-icons critical delete"
+                            data-target="consumer"
+                            data-endpoint="/consumers/{{consumer.id}}"
+                            >delete_forever</span
+                        >
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- .well -->
 
-<div data-ng-if="consumerNext.offset.length>=5" class="pagination">
-    <button class="text" data-ng-click="fetchConsumerList(consumerNext)">Load More<span class="material-icons">navigate_next</span></button>
-</div><!-- .pagination -->
-</div><!-- .container -->
+    <div data-ng-if="consumerNext.offset.length>=5" class="pagination">
+        <button class="text" data-ng-click="fetchConsumerList(consumerNext)">
+            Load More<span class="material-icons">navigate_next</span>
+        </button>
+    </div>
+    <!-- .pagination -->
+</div>
+<!-- .container -->
